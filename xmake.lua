@@ -1,0 +1,10 @@
+add_requires("glfw")
+
+target("Old3DEngine")
+    set_kind("binary")
+    set_toolset("cxx", "clang++")
+    set_optimize("aggressive")
+    add_files("src/*.cpp", "src/Render/*.cpp", "src/Utilities/*.cpp", "src/Objects/*.cpp", "src/*.c")
+    set_languages("c++11")
+    add_includedirs("include")
+    add_packages("glfw")
