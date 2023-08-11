@@ -41,11 +41,16 @@ GLfloat color[] = {
 
 glm::vec3 prevTranslate = {0, 0, 0};
 glm::vec3 prevRotate = {0, 0, 0};
+
+OpenGL15::OpenGL15(std::vector<Engine::SceneObject> *m) {
+    meshes = m;
+}
+
 void OpenGL15::Draw() {
     prevTranslate = {0, 0, 0};
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    for (OGLObject &obj : meshes) {
-        Mesh *mesh = obj.mesh;
+    for (Engine::SceneObject &obj : *meshes) {
+        Mesh *mesh = (Mesh*)obj.obj;
         glm::vec3 pos = mesh->getPosition();
 
         glPushMatrix();
@@ -89,45 +94,13 @@ void OpenGL15::Draw() {
 }
 
 
-UUID_Generator::UUID OpenGL15::addObjectClone(Mesh mesh) {
-    std::lock_guard<std::mutex> guard(meshesVecMutex);
-    UUID_Generator::UUID id = uuid_generator.gen();
-    Mesh *new_mesh = new Mesh;
-    *new_mesh = mesh;
-    meshes.push_back({new_mesh, id, false});
-    return id;
-}
-
-UUID_Generator::UUID OpenGL15::addObjectRef(Mesh *mesh) {
-    std::lock_guard<std::mutex> guard(meshesVecMutex);
-    UUID_Generator::UUID id = uuid_generator.gen();
-    meshes.push_back({mesh, id, true});
-    return id;
-}
-
-bool OpenGL15::removeObject(UUID_Generator::UUID id) {
-    std::lock_guard<std::mutex> guard(meshesVecMutex);
-    std::vector<OGLObject>::iterator iter = std::find_if(
-            meshes.begin(), meshes.end(), [&id] (OGLObject &obj) -> bool {return obj.id == id;}
-    );
-
-    if (iter == meshes.end())
-        return false;
-
-    if (not meshes[iter-meshes.begin()].is_ref)
-        delete meshes[iter-meshes.begin()].mesh;
-
-    meshes.erase(iter);
-    return true;
-}
-
-void OpenGL15::eraseObjects() {
+/*void OpenGL15::eraseObjects() {
     std::lock_guard<std::mutex> guard(meshesVecMutex);
     for (OGLObject &mesh : meshes) {
         if (not mesh.is_ref)
             delete mesh.mesh;
     }
     meshes.clear();
-}
+}*/
 
 

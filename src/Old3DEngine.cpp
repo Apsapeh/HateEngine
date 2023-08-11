@@ -2,6 +2,7 @@
 #include "Render/OpenGL15.h"
 #include "Error.h"
 #include <thread>
+#include <algorithm>
 #include <iostream>
 #include <glm/glm.hpp>
 #include <glm/matrix.hpp>
@@ -77,17 +78,18 @@ void Engine::Run() {
     mesh1.setRotation({10, 20, 30});
     std::cout << glm::normalize(mesh1.getRotation()).x << "\n";
 
-    OpenGL15 ogl;
-    auto a1 = ogl.addObjectRef(&mesh1);
-    auto a2 = ogl.addObjectClone(mesh2);
+    OpenGL15 ogl(&meshes);
+    //auto a1 = addObjectRef(&mesh1);
+    //auto a2 = addObjectClone(mesh2);
 
     //gl.Draw();
     glfwSwapBuffers(this->window);
     double oldTime = glfwGetTime();
     while (not glfwWindowShouldClose(this->window)) {
+        glfwPollEvents();
         /*mesh1.setPosition(mesh1.getPosition().x + 0.001, mesh1.getPosition().y, mesh1.getPosition().z);
         mesh2.setPosition(mesh2.getPosition().x + 0.001, mesh2.getPosition().y, mesh2.getPosition().z);*/
-        mesh1.setRotation(mesh1.getRotation() + glm::vec3(0, 0.001, 0));
+        //mesh1.setRotation(mesh1.getRotation() + glm::vec3(0, 0.001, 0));
 
         double delta = glfwGetTime() - oldTime;
         oldTime = glfwGetTime();
@@ -96,12 +98,12 @@ void Engine::Run() {
             this->cameraObject->renderOpenGL15();
 
         if (this->processLoop != nullptr)
-            this->processLoop(delta);
+            this->processLoop(this, delta);
 
         ogl.Draw();
 
         glfwSwapBuffers(this->window);
-        glfwPollEvents();
+        //glfwPollEvents();
     }
 }
 
@@ -117,20 +119,85 @@ void Engine::threadFixedProcessLoop() {
         delta = glfwGetTime() - oldTime;
         oldTime = glfwGetTime();
 
-        fixedProcessLoop(delta);
+        fixedProcessLoop(this, delta);
         func_delta = glfwGetTime() - oldTime;
     }
 }
 
 
-void Engine::setProcessLoop(void (*func)(double)) {
+void Engine::setProcessLoop(void (*func)(Engine*, double)) {
     this->processLoop = func;
 }
 
-void Engine::setFixedProcessLoop(void (*func)(double)) {
+void Engine::setFixedProcessLoop(void (*func)(Engine*, double)) {
     this->fixedProcessLoop = func;
 }
 
 void Engine::setCameraRef(Camera *cam) {
     this->cameraObject = cam;
 }
+
+
+
+
+UUID_Generator::UUID Engine::addObjectClone(Object object) {
+    UUID_Generator::UUID id = uuidGenerator.gen();
+    Object *new_mesh = new Object;
+    *new_mesh = object;
+    objects.push_back({new_mesh, id, false});
+    return id;
+}
+
+UUID_Generator::UUID Engine::addObjectClone(Mesh object) {
+    UUID_Generator::UUID id = uuidGenerator.gen();
+    Mesh *new_mesh = new Mesh;
+    *new_mesh = object;
+    meshes.push_back({new_mesh, id, false});
+    return id;
+}
+
+UUID_Generator::UUID Engine::addObjectRef(Object *object) {
+    UUID_Generator::UUID id = uuidGenerator.gen();
+    objects.push_back({object, id, true});
+    return id;
+}
+
+UUID_Generator::UUID Engine::addObjectRef(Mesh *object) {
+    UUID_Generator::UUID id = uuidGenerator.gen();
+    meshes.push_back({object, id, true});
+    return id;
+}
+
+bool Engine::removeObject(UUID_Generator::UUID uuid) {
+    // FIXME: OPTIMIZE IT!!!
+    std::vector<Engine::SceneObject>::iterator iter = std::find_if(
+            objects.begin(), objects.end(), [&uuid] (SceneObject &obj) -> bool {return obj.id == uuid;}
+    );
+    if (iter != objects.end() and iter->id == uuid) {
+        if (not iter->is_ref)
+            delete iter->obj;
+        objects.erase(iter);
+        return true;
+    }
+
+    iter = std::find_if(
+            meshes.begin(), meshes.end(), [&uuid] (SceneObject &obj) -> bool {return obj.id == uuid;}
+    );
+    if (iter != meshes.end() and iter->id == uuid) {
+        if (not iter->is_ref)
+            delete iter->obj;
+        meshes.erase(iter);
+        return true;
+    }
+
+    /*iter = findIterInObjVec(meshes, uuid);
+    if (iter != meshes.end() and iter->id == uuid) {
+        if (not iter->is_ref)
+            delete iter->obj;
+        meshes.erase(iter);
+        return true;
+    }*/
+
+    return false;
+}
+
