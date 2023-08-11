@@ -6,11 +6,12 @@ namespace Old3DEngine {
     // Object -> Mesh
     class Mesh : public Object {
     public:
-        float *verticies;
-        uint32_t *indicies;
-        float *normals;
+        float *verticies = nullptr;
+        uint32_t *indicies = nullptr;
+        float *normals = nullptr;
         uint32_t verticesSize;
         uint32_t indiciesSize;
 
+        ~Mesh();
     };
 }

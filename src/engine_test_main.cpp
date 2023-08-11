@@ -2,15 +2,20 @@
 #include "Old3DEngine.h"
 #include "Render/OpenGL15.h"
 #include "Objects/Mesh.h"
+#include "Objects/Camera.h"
 
 
 void _process(double);
 void _physics_process(double);
 
 int main() {
+    Old3DEngine::Camera camera(800.0/600.0, 60, 60);
+    camera.setPosition(0, 0, 3);
+
     Old3DEngine::Engine game("Old3DE Test", 800, 600);
-    game.setProcessLoop(_process);
-    game.setFixedProcessLoop(_physics_process);
+    //game.setProcessLoop(_process);
+    //game.setFixedProcessLoop(_physics_process);
+    game.setCameraRef(&camera);
     game.Run();
     Old3DEngine::Mesh m;
 }

@@ -29,45 +29,75 @@ GLubyte indicies[] = {
         0, 1, 2,
         2, 3, 0
 };
-CubeMesh mesh;
+CubeMesh mesha;
+CubeMesh mesha2;
+
 
 GLfloat color[] = {
         0.7608, 0.9333, 0.051, 0.6549, 0.6235, 0.1647, 0.7255, 0.0157, 0.8471, 0.5098, 0.8314, 0.8627, 0.4078, 0.3216, 0.8863, 0.9098, 0.7294, 0.1804, 0.8314, 0.451, 0.5412, 0.5647, 0.4235, 0.4196
 };
 
 void OpenGL15::Draw() {
-
+    //mesha.setPosition({0, 0, mesha.getPosition().z - 1 * 0.1});
+    mesha.setPosition({-1, 0, 0});
+    mesha2.setPosition({1, 0, 0});
+    // TODO: Add mutex lock?
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    glVertexPointer(3, GL_FLOAT, 0, mesh.verticies);
+    glTranslatef(mesha.getPosition().x, mesha.getPosition().z, mesha.getPosition().y);
+    glRotatef(10,0.0,1,0);
+    glVertexPointer(3, GL_FLOAT, 0, mesha.verticies);
     glColorPointer(3, GL_FLOAT,0, color);
-    glDrawElements(GL_TRIANGLES, mesh.indiciesSize, GL_UNSIGNED_INT, mesh.indicies);
-    glRotatef(0.01, 0.1, 0.2, 0.3);
+    glDrawElements(GL_TRIANGLES, mesha.indiciesSize, GL_UNSIGNED_INT, mesha.indicies);
 
-/*    glVertexPointer(2, GL_FLOAT, 0, vertices);
-    glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_BYTE, indicies);
-    glVertexPointer(2, GL_FLOAT, 0, vertices2);
-    glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_BYTE, indicies);
-    glVertexPointer(2, GL_FLOAT, 0, vertices3);
-    glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_BYTE, indicies);*/
+    glTranslatef(mesha2.getPosition().x, mesha2.getPosition().z, mesha2.getPosition().y);
+    glRotatef(-10,0.0,1,0);
+    glVertexPointer(3, GL_FLOAT, 0, mesha2.verticies);
+    glColorPointer(3, GL_FLOAT,0, color);
+    glDrawElements(GL_TRIANGLES, mesha2.indiciesSize, GL_UNSIGNED_INT, mesha2.indicies);
+
+
 }
 
-UUID_Generator::UUID OpenGL15::addObject(float *buffer, uint32_t buffer_size) {
+
+UUID_Generator::UUID OpenGL15::addObjectClone(Mesh mesh) {
+    std::lock_guard<std::mutex> guard(meshesVecMutex);
     UUID_Generator::UUID id = uuid_generator.gen();
-    float* buf = new float[buffer_size];
-    std::copy(buffer, buffer+buffer_size, buf);
-    objects.push_back({buf, buffer_size, id});
+    Mesh *new_mesh = new Mesh;
+    *new_mesh = mesh;
+    meshes.push_back({new_mesh, id, false});
+    return id;
+}
+
+UUID_Generator::UUID OpenGL15::addObjectRef(Mesh *mesh) {
+    std::lock_guard<std::mutex> guard(meshesVecMutex);
+    UUID_Generator::UUID id = uuid_generator.gen();
+    meshes.push_back({mesh, id, true});
     return id;
 }
 
 bool OpenGL15::removeObject(UUID_Generator::UUID id) {
+    std::lock_guard<std::mutex> guard(meshesVecMutex);
     std::vector<OGLObject>::iterator iter = std::find_if(
-        objects.begin(), objects.end(), [&id] (OGLObject &obj) -> bool {return obj.id == id;}
+            meshes.begin(), meshes.end(), [&id] (OGLObject &obj) -> bool {return obj.id == id;}
     );
 
-    if (iter == objects.end())
+    if (iter == meshes.end())
         return false;
 
-    delete [] objects[iter-objects.begin()].buffer;
-    objects.erase(iter);
+    if (not meshes[iter-meshes.begin()].is_ref)
+        delete meshes[iter-meshes.begin()].mesh;
+
+    meshes.erase(iter);
     return true;
 }
+
+void OpenGL15::eraseObjects() {
+    std::lock_guard<std::mutex> guard(meshesVecMutex);
+    for (OGLObject &mesh : meshes) {
+        if (not mesh.is_ref)
+            delete mesh.mesh;
+    }
+    meshes.clear();
+}
+
+
