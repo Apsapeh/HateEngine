@@ -9,12 +9,6 @@
 namespace Old3DEngine {
     class OpenGL15 {
     public:
-        struct OGLObject {
-            Mesh *mesh;
-            UUID_Generator::UUID id;
-            bool is_ref;
-        };
-
         OpenGL15(std::vector<Engine::SceneObject>*);
         void Draw();
         void eraseObjects();
