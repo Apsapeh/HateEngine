@@ -3,7 +3,9 @@
 using namespace Old3DEngine;
 
 CubeMesh::CubeMesh() {
-    this->verticies = new float [24] {
+    verticies.reserve(24);
+    indicies.reserve(36);
+    this->verticies =  {
             -0.5, -0.5,  0.5,
              0.5, -0.5,  0.5,
              0.5,  0.5,  0.5,
@@ -13,7 +15,7 @@ CubeMesh::CubeMesh() {
              0.5,  0.5, -0.5,
             -0.5,  0.5, -0.5,
     };
-    this->indicies = new uint32_t [36] {
+    this->indicies = {
         0, 1, 2,
         2, 3, 0,
         1, 5, 6,
@@ -28,6 +30,4 @@ CubeMesh::CubeMesh() {
         5, 1, 0
 
     };
-    this->verticesSize = 24;
-    this->indiciesSize = 36;
 }

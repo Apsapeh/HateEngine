@@ -37,23 +37,53 @@ GLfloat color[] = {
         0.7608, 0.9333, 0.051, 0.6549, 0.6235, 0.1647, 0.7255, 0.0157, 0.8471, 0.5098, 0.8314, 0.8627, 0.4078, 0.3216, 0.8863, 0.9098, 0.7294, 0.1804, 0.8314, 0.451, 0.5412, 0.5647, 0.4235, 0.4196
 };
 
+#include <iostream>
+
+glm::vec3 prevTranslate = {0, 0, 0};
+glm::vec3 prevRotate = {0, 0, 0};
 void OpenGL15::Draw() {
-    //mesha.setPosition({0, 0, mesha.getPosition().z - 1 * 0.1});
-    mesha.setPosition({-1, 0, 0});
-    mesha2.setPosition({1, 0, 0});
+    prevTranslate = {0, 0, 0};
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    for (OGLObject &obj : meshes) {
+        Mesh *mesh = obj.mesh;
+        glm::vec3 pos = mesh->getPosition();
+
+        glPushMatrix();
+        glTranslatef(pos.x, pos.y, pos.z);
+        glRotatef(mesh->getRotation().x, 1, 0, 0);
+        glRotatef(mesh->getRotation().y, 0, 1, 0);
+        glRotatef(mesh->getRotation().z, 0, 0, 1);
+
+        glVertexPointer(3, GL_FLOAT, 0, &mesh->verticies[0]);
+        glColorPointer(3, GL_FLOAT, 0, color);
+        glDrawElements(GL_TRIANGLES, mesh->indicies.size(), GL_UNSIGNED_INT, &mesh->indicies[0]);
+        glPopMatrix();
+
+        //glRotatef(-mesh->getRotation().y, 0, 1, 0);
+
+
+        //glRotatef(-30, 0, 1, 0);
+
+        prevTranslate = mesh->getPosition();
+        prevRotate = {0, 30, 0};
+    }
+
+    /*mesha.setPosition({-1, 0, 0});
+    mesha2.setPosition({2, 0, 0});
     // TODO: Add mutex lock?
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glTranslatef(mesha.getPosition().x, mesha.getPosition().z, mesha.getPosition().y);
-    glRotatef(10,0.0,1,0);
-    glVertexPointer(3, GL_FLOAT, 0, mesha.verticies);
+    glRotatef(30,0.0,1,0);
+    glVertexPointer(3, GL_FLOAT, 0, mesha.verticies.data());
     glColorPointer(3, GL_FLOAT,0, color);
-    glDrawElements(GL_TRIANGLES, mesha.indiciesSize, GL_UNSIGNED_INT, mesha.indicies);
+    glDrawElements(GL_TRIANGLES, mesha.indicies.size(), GL_UNSIGNED_INT, mesha.indicies.data());
+    glRotatef(-30, 0.0, 1.0, 0.0);
 
     glTranslatef(mesha2.getPosition().x, mesha2.getPosition().z, mesha2.getPosition().y);
-    glRotatef(-10,0.0,1,0);
-    glVertexPointer(3, GL_FLOAT, 0, mesha2.verticies);
+    glRotatef(30,0.0,1,0);
+    glVertexPointer(3, GL_FLOAT, 0, mesha2.verticies.data());
     glColorPointer(3, GL_FLOAT,0, color);
-    glDrawElements(GL_TRIANGLES, mesha2.indiciesSize, GL_UNSIGNED_INT, mesha2.indicies);
+    glDrawElements(GL_TRIANGLES, mesha2.indicies.size(), GL_UNSIGNED_INT, mesha2.indicies.data());*/
 
 
 }

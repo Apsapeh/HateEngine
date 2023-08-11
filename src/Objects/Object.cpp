@@ -2,14 +2,38 @@
 
 using namespace Old3DEngine;
 
-void Object::setPosition(glm::vec3 pos) {
-    position = pos;
+void Object::setPosition(glm::vec3 value) {
+    this->position = value;
 }
 
 void Object::setPosition(float x, float y, float z) {
-    position = glm::vec3(x, y, z);
+    this->position = glm::vec3(x, y, z);
+}
+
+void Object::setRotation(glm::vec3 value) {
+    this->rotation = value;
+}
+
+void Object::setRotation(float x, float y, float z) {
+    this->rotation = glm::vec3(x, y, z);
+}
+
+void Object::setScale(glm::vec3 value) {
+    this->scale = value;
+}
+
+void Object::setScale(float x, float y, float z) {
+    this->scale = glm::vec3(x, y, z);
 }
 
 glm::vec3 Object::getPosition() {
-    return position;
+    return this->position;
+}
+
+glm::vec3 Object::getRotation() {
+    return this->rotation;
+}
+
+glm::vec3 Object::getScale() {
+    return this->scale;
 }

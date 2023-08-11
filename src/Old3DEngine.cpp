@@ -7,6 +7,8 @@
 #include <glm/matrix.hpp>
 #include <glm/ext.hpp>
 
+#include "Objects/CubeMesh.h"
+
 using namespace Old3DEngine;
 Engine::Engine(std::string window_lbl, int width, int height) {
     glfwInit();
@@ -68,11 +70,25 @@ void Engine::Run() {
 
     //glEnableClientState(GL_IN)
 
+    CubeMesh mesh1;
+    CubeMesh mesh2;
+    mesh1.setPosition({-1, 0, 0});
+    mesh2.setPosition({1, 0, 0});
+    mesh1.setRotation({10, 20, 30});
+    std::cout << glm::normalize(mesh1.getRotation()).x << "\n";
+
     OpenGL15 ogl;
+    auto a1 = ogl.addObjectRef(&mesh1);
+    auto a2 = ogl.addObjectClone(mesh2);
+
     //gl.Draw();
     glfwSwapBuffers(this->window);
     double oldTime = glfwGetTime();
     while (not glfwWindowShouldClose(this->window)) {
+        /*mesh1.setPosition(mesh1.getPosition().x + 0.001, mesh1.getPosition().y, mesh1.getPosition().z);
+        mesh2.setPosition(mesh2.getPosition().x + 0.001, mesh2.getPosition().y, mesh2.getPosition().z);*/
+        mesh1.setRotation(mesh1.getRotation() + glm::vec3(0, 0.001, 0));
+
         double delta = glfwGetTime() - oldTime;
         oldTime = glfwGetTime();
 

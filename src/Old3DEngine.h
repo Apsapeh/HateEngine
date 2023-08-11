@@ -4,12 +4,20 @@
 #include <GLFW/glfw3.h>
 #include <cstdint>
 #include "Objects/Camera.h"
+#include "Utilities/UUID_Generator.h"
+#include "Objects/Mesh.h"
 
 namespace Old3DEngine {
     class Engine {
     public:
         enum RenderAPI {
             OpenGL_1_5
+        };
+
+        struct SceneObject {
+            Mesh *mesh;
+            UUID_Generator::UUID id;
+            bool is_ref;
         };
 
     private:
