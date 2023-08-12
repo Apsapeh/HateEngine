@@ -4,14 +4,12 @@
 #include <thread>
 #include <algorithm>
 #include <iostream>
-#include <glm/glm.hpp>
-#include <glm/matrix.hpp>
-#include <glm/ext.hpp>
+
 
 #include "Objects/CubeMesh.h"
 
 using namespace Old3DEngine;
-Engine::Engine(std::string window_lbl, int width, int height) {
+Engine::Engine(std::string window_lbl, int width, int height) : Input(this){
     glfwInit();
 
     // Create window
@@ -37,7 +35,17 @@ Engine::Engine(std::string window_lbl, int width, int height) {
     }
 
     // Calculating the delay between FixedProcessLoop iterations
-    this->fixedProcessDelayMCS = 1000000 / fixedLoopRefreshRate;
+    #ifdef __linux__
+        std::chrono::high_resolution_clock::time_point t1 = std::chrono::high_resolution_clock::now();
+        for (int o = 0; o < 10; ++o)
+            std::this_thread::sleep_for(std::chrono::nanoseconds(1000));
+        std::chrono::high_resolution_clock::time_point t2 = std::chrono::high_resolution_clock::now();
+        // Sleep correction
+        int64_t d = (std::chrono::duration_cast<std::chrono::microseconds>(t2-t1).count() - 10) / 10;
+        this->fixedProcessDelayMCS = 1000000 / (fixedLoopRefreshRate) - d;
+    #elif _WIN32
+        this->fixedProcessDelayMCS = 1000000 / fixedLoopRefreshRate;
+    #endif
 }
 
 void Engine::frameBufferSizeChange(GLFWwindow* win, int w, int h) {
@@ -54,10 +62,10 @@ void Engine::frameBufferSizeChange(GLFWwindow* win, int w, int h) {
 }
 
 void Engine::Run() {
-    if (this->fixedProcessLoop != nullptr) {
-        std::thread fixedProcessThread(&Engine::threadFixedProcessLoop, this);
-        fixedProcessThread.detach();
-    }
+    std::thread *fixedProcessThread = nullptr;
+    if (this->fixedProcessLoop != nullptr)
+        fixedProcessThread = new std::thread(&Engine::threadFixedProcessLoop, this);
+
 
     if (cameraObject == nullptr) {
         Error::throwError("Camera is not installed", false);
@@ -67,59 +75,55 @@ void Engine::Run() {
     glEnableClientState(GL_VERTEX_ARRAY);
     glEnableClientState(GL_COLOR_ARRAY);
     glEnable(GL_DEPTH_TEST);
-    //glShadeModel(GL_FLAT);
-
-    //glEnableClientState(GL_IN)
-
-    CubeMesh mesh1;
-    CubeMesh mesh2;
-    mesh1.setPosition({-1, 0, 0});
-    mesh2.setPosition({1, 0, 0});
-    mesh1.setRotation({10, 20, 30});
-    std::cout << glm::normalize(mesh1.getRotation()).x << "\n";
 
     OpenGL15 ogl(&meshes);
-    //auto a1 = addObjectRef(&mesh1);
-    //auto a2 = addObjectClone(mesh2);
 
-    //gl.Draw();
     glfwSwapBuffers(this->window);
     double oldTime = glfwGetTime();
     while (not glfwWindowShouldClose(this->window)) {
-        glfwPollEvents();
-        /*mesh1.setPosition(mesh1.getPosition().x + 0.001, mesh1.getPosition().y, mesh1.getPosition().z);
-        mesh2.setPosition(mesh2.getPosition().x + 0.001, mesh2.getPosition().y, mesh2.getPosition().z);*/
-        //mesh1.setRotation(mesh1.getRotation() + glm::vec3(0, 0.001, 0));
-
         double delta = glfwGetTime() - oldTime;
         oldTime = glfwGetTime();
+        glfwPollEvents();
+        if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
+            glfwSetWindowShouldClose(window, true);
+
+        //meshesMutex.lock();
+        if (this->processLoop != nullptr)
+            this->processLoop(this, delta);
+        //meshesMutex.unlock();
 
         if (this->renderApi == RenderAPI::OpenGL_1_5)
             this->cameraObject->renderOpenGL15();
 
-        if (this->processLoop != nullptr)
-            this->processLoop(this, delta);
-
+        //meshesMutex.lock();
         ogl.Draw();
+        //meshesMutex.unlock();
 
         glfwSwapBuffers(this->window);
-        //glfwPollEvents();
     }
+
+    if (fixedProcessThread != nullptr and fixedProcessThread->joinable())
+        fixedProcessThread->join();
 }
 
 void Engine::threadFixedProcessLoop() {
     double oldTime = glfwGetTime();
-    double delta;
+    double delta = (float)this->fixedProcessDelayMCS / 1000000;
     double func_delta = 0.0;
 
     while (not glfwWindowShouldClose(this->window)) {
+        int64_t a = this->fixedProcessDelayMCS - int64_t(func_delta * 1000000);
         std::this_thread::sleep_for(
-                std::chrono::microseconds(this->fixedProcessDelayMCS - int64_t(func_delta * 1000000))
+                std::chrono::microseconds(a)
         );
+
+        //std::cout << d / 10<< "\n";
         delta = glfwGetTime() - oldTime;
         oldTime = glfwGetTime();
 
+        //meshesMutex.lock();
         fixedProcessLoop(this, delta);
+        //meshesMutex.unlock();
         func_delta = glfwGetTime() - oldTime;
     }
 }
@@ -189,14 +193,6 @@ bool Engine::removeObject(UUID_Generator::UUID uuid) {
         meshes.erase(iter);
         return true;
     }
-
-    /*iter = findIterInObjVec(meshes, uuid);
-    if (iter != meshes.end() and iter->id == uuid) {
-        if (not iter->is_ref)
-            delete iter->obj;
-        meshes.erase(iter);
-        return true;
-    }*/
 
     return false;
 }

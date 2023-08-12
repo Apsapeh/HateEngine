@@ -1,14 +1,27 @@
 #pragma once
 #include <string>
+#include <cstdint>
+#include <mutex>
 #include <glad/gl.h>
 #include <GLFW/glfw3.h>
-#include <cstdint>
 #include "Objects/Camera.h"
 #include "Utilities/UUID_Generator.h"
 #include "Objects/Mesh.h"
+#include "glm/vec2.hpp"
 
 namespace Old3DEngine {
     class Engine {
+    private:
+        class InputClass {
+            Engine *engine;
+        public:
+            InputClass(Engine*);
+            bool isKeyPressed(int key);
+            glm::vec2 getVector(int left, int right, int up, int down);
+            //bool isKeyPressed(int key);
+        };
+        friend class InputClass;
+
     public:
         enum RenderAPI {
             OpenGL_1_5
@@ -20,11 +33,7 @@ namespace Old3DEngine {
             bool is_ref;
         };
 
-    public:
-        void (*fixedProcessLoopTEST)(Engine*, double) = nullptr;
-
-
-    private:
+    protected:
         void (*processLoop)(Engine*, double) = nullptr;
         void (*fixedProcessLoop)(Engine*, double) = nullptr;
 
@@ -39,10 +48,14 @@ namespace Old3DEngine {
         std::vector<SceneObject> objects;
         std::vector<SceneObject> meshes;
 
+        //std::mutex meshesMutex;
+
         void threadFixedProcessLoop();
         void frameBufferSizeChange(GLFWwindow* win, int w, int h);
 
     public:
+        InputClass Input;
+
         Engine(std::string window_lbl, int width, int height);
         void Run();
 

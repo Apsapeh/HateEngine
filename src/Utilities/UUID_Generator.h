@@ -1,12 +1,14 @@
 #pragma once
 #include <chrono>
 #include <cstdint>
+#include <mutex>
 
 namespace Old3DEngine {
     class UUID_Generator {
     private:
         uint64_t prevTime = 0;
         uint32_t idTimeAdder = 0;
+        std::mutex getMutex;
 
     public:
         struct UUID {
