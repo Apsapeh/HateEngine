@@ -27,7 +27,8 @@ void OpenGL15::Draw() {
             glRotatef(mesh->getRotation().z, 0, 0, 1);
 
             glVertexPointer(3, GL_FLOAT, 0, &mesh->verticies[0]);
-            glColorPointer(3, GL_FLOAT, 0, color);
+            glNormalPointer(GL_FLOAT, 0, &mesh->normals[0]);
+            //glColorPointer(3, GL_FLOAT, 0, color);
             glDrawElements(GL_TRIANGLES, mesh->indicies.size(), GL_UNSIGNED_INT, &mesh->indicies[0]);
             glPopMatrix();
         }
