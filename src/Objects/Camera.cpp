@@ -1,8 +1,9 @@
 #include "Camera.h"
 #include <glad/gl.h>
-//#include <GLFW/glfw3.h>
+#include <GLFW/glfw3.h>
 #include <glm/glm.hpp>
 #include <glm/ext.hpp>
+#include <iostream>
 
 using namespace Old3DEngine;
 
@@ -18,8 +19,15 @@ void Camera::renderOpenGL15() {
     glMatrixMode(GL_PROJECTION);
     glLoadMatrixf(glm::value_ptr(Mp));
 
-    glm::vec3 lookat = glm::vec3(0, 0, 0);
-    glm::mat4 M = glm::lookAt(this->position, lookat, this->upVec);
+    glm::vec3 direction;
+    direction.x = cos(glm::radians(rotation.y)) * cos(glm::radians(rotation.x));
+    direction.y = sin(glm::radians(rotation.x));
+    direction.z = sin(glm::radians(rotation.y)) * cos(glm::radians(rotation.x));
+    glm::vec3 cameraFront = glm::normalize(direction);
+    //std::cout << this->rotation.x << " | " << this->rotation.y << "\n";
+    //std::cout << cameraFront.x << " | " << cameraFront.y << " | " << cameraFront.z << "\n";
+
+    glm::mat4 M = glm::lookAt(this->position, this->position + cameraFront, this->upVec);
 
     glMatrixMode(GL_MODELVIEW);
     glLoadMatrixf(glm::value_ptr(M));

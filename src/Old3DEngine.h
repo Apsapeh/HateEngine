@@ -27,15 +27,30 @@ namespace Old3DEngine {
             OpenGL_1_5
         };
 
+        enum InputEventType {
+            InputEventKey,
+            InputEventMouseMove,
+            InputEventMouseScroll
+        };
+
         struct SceneObject {
             Object *obj;
             UUID_Generator::UUID id;
             bool is_ref;
         };
 
-    protected:
+
+        struct InputEventInfo {
+            InputEventType type;
+            int key, scancode, action, mods = 0;
+            glm::vec2 offset = {0, 0};
+            glm::vec2 position = {0, 0};
+        };
+
+    public:
         void (*processLoop)(Engine*, double) = nullptr;
         void (*fixedProcessLoop)(Engine*, double) = nullptr;
+        void (*inputEventFunc)(Engine*, InputEventInfo) = nullptr;
 
         GLFWwindow *window;
         RenderAPI renderApi = RenderAPI::OpenGL_1_5;
@@ -48,7 +63,7 @@ namespace Old3DEngine {
         std::vector<SceneObject> objects;
         std::vector<SceneObject> meshes;
 
-        //std::mutex meshesMutex;
+        std::mutex meshesMutex;
 
         void threadFixedProcessLoop();
         void frameBufferSizeChange(GLFWwindow* win, int w, int h);
@@ -61,17 +76,16 @@ namespace Old3DEngine {
 
         void setProcessLoop(void (*func)(Engine*, double));
         void setFixedProcessLoop(void (*func)(Engine*, double));
+        void setInputEvent(void (*func)(Engine*, InputEventInfo));
 
         void setCameraRef(Camera *cam);
-
         UUID_Generator::UUID addObjectClone(Object object);
         UUID_Generator::UUID addObjectClone(Mesh object);
         UUID_Generator::UUID addObjectRef(Object* object);
+
         UUID_Generator::UUID addObjectRef(Mesh* object);
 
+
         bool removeObject(UUID_Generator::UUID uuid);
-
-
-        //void setInputEvent(void (*func)());
     };
 }

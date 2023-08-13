@@ -5,9 +5,6 @@
 #include <algorithm>
 #include <iostream>
 
-
-#include "Objects/CubeMesh.h"
-
 using namespace Old3DEngine;
 Engine::Engine(std::string window_lbl, int width, int height) : Input(this){
     glfwInit();
@@ -22,9 +19,21 @@ Engine::Engine(std::string window_lbl, int width, int height) : Input(this){
     glfwSetWindowUserPointer(this->window, this);
     glfwMakeContextCurrent(this->window);
     glfwSwapInterval( 0 );
+    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+
     glfwSetFramebufferSizeCallback(this->window, [] (GLFWwindow *win, int w, int h) {
         Engine *th = static_cast<Engine*>(glfwGetWindowUserPointer(win));
         th->frameBufferSizeChange(win, w, h);
+    });
+
+    glfwSetCursorPosCallback(window, [] (GLFWwindow *win, double x, double y) {
+        Engine *th = static_cast<Engine*>(glfwGetWindowUserPointer(win));
+        if (th->inputEventFunc != nullptr) {
+            InputEventInfo info;
+            info.type = InputEventType::InputEventMouseMove;
+            info.position = {x, y};
+            th->inputEventFunc(th, info);
+        }
     });
 
     // Load Glad
@@ -61,6 +70,7 @@ void Engine::frameBufferSizeChange(GLFWwindow* win, int w, int h) {
         this->cameraObject->renderOpenGL15();
 }
 
+
 void Engine::Run() {
     std::thread *fixedProcessThread = nullptr;
     if (this->fixedProcessLoop != nullptr)
@@ -87,7 +97,9 @@ void Engine::Run() {
         if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
             glfwSetWindowShouldClose(window, true);
 
-        //meshesMutex.lock();
+        //glfwCal
+
+        meshesMutex.lock();
         if (this->processLoop != nullptr)
             this->processLoop(this, delta);
         //meshesMutex.unlock();
@@ -97,7 +109,7 @@ void Engine::Run() {
 
         //meshesMutex.lock();
         ogl.Draw();
-        //meshesMutex.unlock();
+        meshesMutex.unlock();
 
         glfwSwapBuffers(this->window);
     }
@@ -121,9 +133,9 @@ void Engine::threadFixedProcessLoop() {
         delta = glfwGetTime() - oldTime;
         oldTime = glfwGetTime();
 
-        //meshesMutex.lock();
+        meshesMutex.lock();
         fixedProcessLoop(this, delta);
-        //meshesMutex.unlock();
+        meshesMutex.unlock();
         func_delta = glfwGetTime() - oldTime;
     }
 }
@@ -132,9 +144,11 @@ void Engine::threadFixedProcessLoop() {
 void Engine::setProcessLoop(void (*func)(Engine*, double)) {
     this->processLoop = func;
 }
-
 void Engine::setFixedProcessLoop(void (*func)(Engine*, double)) {
     this->fixedProcessLoop = func;
+}
+void Engine::setInputEvent(void (*func)(Engine *, InputEventInfo)) {
+    this->inputEventFunc = func;
 }
 
 void Engine::setCameraRef(Camera *cam) {
@@ -153,6 +167,7 @@ UUID_Generator::UUID Engine::addObjectClone(Object object) {
 }
 
 UUID_Generator::UUID Engine::addObjectClone(Mesh object) {
+    std::lock_guard<std::mutex> guard(meshesMutex);
     UUID_Generator::UUID id = uuidGenerator.gen();
     Mesh *new_mesh = new Mesh;
     *new_mesh = object;
@@ -167,12 +182,14 @@ UUID_Generator::UUID Engine::addObjectRef(Object *object) {
 }
 
 UUID_Generator::UUID Engine::addObjectRef(Mesh *object) {
+    std::lock_guard<std::mutex> guard(meshesMutex);
     UUID_Generator::UUID id = uuidGenerator.gen();
     meshes.push_back({object, id, true});
     return id;
 }
 
 bool Engine::removeObject(UUID_Generator::UUID uuid) {
+    std::lock_guard<std::mutex> guard(meshesMutex);
     // FIXME: OPTIMIZE IT!!!
     std::vector<Engine::SceneObject>::iterator iter = std::find_if(
             objects.begin(), objects.end(), [&uuid] (SceneObject &obj) -> bool {return obj.id == uuid;}
@@ -196,4 +213,5 @@ bool Engine::removeObject(UUID_Generator::UUID uuid) {
 
     return false;
 }
+
 

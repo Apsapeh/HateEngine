@@ -12,9 +12,8 @@ bool Engine::InputClass::isKeyPressed(int key) {
 
 glm::vec2 Engine::InputClass::getVector(int left, int right, int up, int down) {
     glm::vec2 vec;
-    vec.x -= (float)isKeyPressed(left);
-    vec.x += (float)isKeyPressed(right);
-    vec.y -= (float)isKeyPressed(up);
-    vec.y += (float)isKeyPressed(down);
+    vec.x = isKeyPressed(right) - isKeyPressed(left) ;
+    //vec.x += isKeyPressed(right);
+    vec.y = isKeyPressed(up) - isKeyPressed(down);
     return vec;
 }

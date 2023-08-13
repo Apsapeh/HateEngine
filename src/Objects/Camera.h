@@ -10,6 +10,9 @@ namespace Old3DEngine {
         glm::vec3 upVec = {0, 1.0, 0};
 
     public:
+        float yaw = -90;
+        float pitch = 0;
+
         Camera(float view_aspect, float fov, float render_dist);
         void renderOpenGL15();
 
