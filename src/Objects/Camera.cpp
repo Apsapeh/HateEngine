@@ -24,10 +24,16 @@ void Camera::renderOpenGL15() {
     direction.y = sin(glm::radians(rotation.x));
     direction.z = sin(glm::radians(rotation.y)) * cos(glm::radians(rotation.x));
     glm::vec3 cameraFront = glm::normalize(direction);
+
+    glm::vec3 up = {
+            sin(glm::radians(rotation.z)),
+            cos(glm::radians(rotation.z)),
+            0.0
+    };
     //std::cout << this->rotation.x << " | " << this->rotation.y << "\n";
     //std::cout << cameraFront.x << " | " << cameraFront.y << " | " << cameraFront.z << "\n";
 
-    glm::mat4 M = glm::lookAt(this->position, this->position + cameraFront, this->upVec);
+    glm::mat4 M = glm::lookAt(this->position, this->position + cameraFront, up);
 
     glMatrixMode(GL_MODELVIEW);
     glLoadMatrixf(glm::value_ptr(M));

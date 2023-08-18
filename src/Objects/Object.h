@@ -18,6 +18,12 @@ namespace Old3DEngine {
         void setScale(float x, float y, float z);
         void setVisible(bool);
 
+        void offset(float x, float y, float z);
+        void offset(glm::vec3 vec);
+        void rotate(float x, float y, float z);
+        void rotate(glm::vec3 vec);
+
+
         glm::vec3 getPosition();
         glm::vec3 getRotation();
         glm::vec3 getScale();

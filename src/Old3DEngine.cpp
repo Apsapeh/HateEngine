@@ -90,21 +90,23 @@ void Engine::Run() {
     glShadeModel(GL_SMOOTH);
     //glMaterialfv(GL_FRONT,GL_SPECULAR,mat_specular);
     //glMaterialfv(GL_FRONT,GL_SHININESS,mat_shininess);
-    GLfloat light_ambient[]={0.0,0.0,1.0,1.0};
-    glLightfv(GL_LIGHT0,GL_AMBIENT,light_ambient);
+    GLfloat light_ambient[]={1.0,1.0,1.0,1.0};
+    /*glLightfv(GL_LIGHT0,GL_AMBIENT,light_ambient);
     glLightfv(GL_LIGHT0,GL_POSITION,light_position);
+    glLightf(GL_LIGHT0, GL_CONSTANT_ATTENUATION, 1.0);
+    glLightf(GL_LIGHT0, GL_LINEAR_ATTENUATION, 0.2);
+    glLightf(GL_LIGHT0, GL_QUADRATIC_ATTENUATION, 0.5);*/
     //glLightfv(GL_LIGHT0,GL_DIFFUSE,white_light);
     //glLightfv(GL_LIGHT0,GL_SPECULAR,white_light);
     glEnable(GL_LIGHTING);
-    glEnable(GL_LIGHT0);
-
+    //glEnable(GL_LIGHT0);
 
     glEnableClientState(GL_VERTEX_ARRAY);
     glEnableClientState(GL_NORMAL_ARRAY);
     //glEnableClientState(GL_COLOR_ARRAY);
     glEnable(GL_DEPTH_TEST);
 
-    OpenGL15 ogl(&meshes);
+    OpenGL15 ogl(&meshes, &lights);
 
     glfwSwapBuffers(this->window);
     double oldTime = glfwGetTime();
@@ -193,6 +195,15 @@ UUID_Generator::UUID Engine::addObjectClone(Mesh object) {
     return id;
 }
 
+UUID_Generator::UUID Engine::addObjectClone(Light object) {
+    std::lock_guard<std::mutex> guard(meshesMutex);
+    UUID_Generator::UUID id = uuidGenerator.gen();
+    Light *new_mesh = new Light(object.getType());
+    *new_mesh = object;
+    lights.push_back({new_mesh, id, false});
+    return id;
+}
+
 UUID_Generator::UUID Engine::addObjectRef(Object *object) {
     UUID_Generator::UUID id = uuidGenerator.gen();
     objects.push_back({object, id, true});
@@ -203,6 +214,13 @@ UUID_Generator::UUID Engine::addObjectRef(Mesh *object) {
     std::lock_guard<std::mutex> guard(meshesMutex);
     UUID_Generator::UUID id = uuidGenerator.gen();
     meshes.push_back({object, id, true});
+    return id;
+}
+
+UUID_Generator::UUID Engine::addObjectRef(Light *object) {
+    std::lock_guard<std::mutex> guard(meshesMutex);
+    UUID_Generator::UUID id = uuidGenerator.gen();
+    lights.push_back({object, id, true});
     return id;
 }
 

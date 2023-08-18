@@ -7,6 +7,7 @@
 #include "Objects/Camera.h"
 #include "Utilities/UUID_Generator.h"
 #include "Objects/Mesh.h"
+#include "Objects/Light/Light.h"
 #include "glm/vec2.hpp"
 
 namespace Old3DEngine {
@@ -62,6 +63,7 @@ namespace Old3DEngine {
 
         std::vector<SceneObject> objects;
         std::vector<SceneObject> meshes;
+        std::vector<SceneObject> lights;
 
         std::mutex meshesMutex;
 
@@ -81,9 +83,10 @@ namespace Old3DEngine {
         void setCameraRef(Camera *cam);
         UUID_Generator::UUID addObjectClone(Object object);
         UUID_Generator::UUID addObjectClone(Mesh object);
+        UUID_Generator::UUID addObjectClone(Light object);
         UUID_Generator::UUID addObjectRef(Object* object);
-
         UUID_Generator::UUID addObjectRef(Mesh* object);
+        UUID_Generator::UUID addObjectRef(Light* object);
 
 
         bool removeObject(UUID_Generator::UUID uuid);

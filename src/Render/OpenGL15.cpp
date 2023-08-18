@@ -1,5 +1,11 @@
 #include "OpenGL15.h"
+#include "../Objects/Light/Light.h"
+#include "../Objects/Light/DirectionalLight.h"
+#include "../Objects/Light/SpotLight.h"
+#include "../Objects/Light/OmniLight.h"
 #include <glad/gl.h>
+#include <algorithm>
+#include <glm/glm.hpp>
 
 using namespace Old3DEngine;
 
@@ -9,8 +15,9 @@ GLfloat color[] = {
 
 #include <iostream>
 
-OpenGL15::OpenGL15(std::vector<Engine::SceneObject> *m) {
+OpenGL15::OpenGL15(std::vector<Engine::SceneObject> *m, std::vector<Engine::SceneObject> *l) {
     meshes = m;
+    lights = l;
 }
 
 void OpenGL15::Draw() {
@@ -19,6 +26,9 @@ void OpenGL15::Draw() {
         Mesh *mesh = (Mesh*)obj.obj;
         if (mesh->getVisible()) {
             glm::vec3 pos = mesh->getPosition();
+
+            std::vector<int> light_indicies = getNearestLights(pos);
+            renderLight(light_indicies);
 
             glPushMatrix();
             glTranslatef(pos.x, pos.y, pos.z);
@@ -31,8 +41,58 @@ void OpenGL15::Draw() {
             //glColorPointer(3, GL_FLOAT, 0, color);
             glDrawElements(GL_TRIANGLES, mesh->indicies.size(), GL_UNSIGNED_INT, &mesh->indicies[0]);
             glPopMatrix();
+            for (int i = 0; i < light_indicies.size(); ++i)
+                glDisable(GL_LIGHT0 + i);
         }
     }
+}
+
+inline void OpenGL15::renderLight(std::vector<int> indicies) {
+    for (int i = 0; i < indicies.size(); ++i) {
+        int index = indicies[i];
+        int light_num = GL_LIGHT0 + i;
+        Light *light = (Light*)(*lights)[index].obj;
+        glm::vec3 pos = light->getPosition();
+        float l_position[4] = {pos.x, pos.y, pos.z, 1.0};
+
+        if (light->getType() == Light::LightTypeEnum::DirectionalLight)
+            l_position[3] = 0.0;
+
+        glEnable(light_num);
+        glLightfv(light_num,GL_DIFFUSE,light->getColor().data());
+        glLightfv(light_num,GL_POSITION, l_position);
+        glLightf(light_num, GL_CONSTANT_ATTENUATION, 1.0);
+        glLightf(light_num, GL_LINEAR_ATTENUATION, 0.2);
+        glLightf(light_num, GL_QUADRATIC_ATTENUATION, 0.5);
+    }
+}
+
+struct LightDistSt {
+    float length;
+    int   index;
+};
+
+inline std::vector<int> OpenGL15::getNearestLights(glm::vec3 position) {
+    std::vector<int> result;
+
+    std::vector<LightDistSt> light_dist;
+    light_dist.reserve(lights->size());
+    for (int i = 0; i < lights->size() and result.size() <= maxLightCount; ++i) {
+        Light *light = (Light*)(*lights)[i].obj;
+        if (!light->getVisible())
+            continue;
+        if (light->getType() == Light::LightTypeEnum::DirectionalLight)
+            result.push_back(i);
+        else
+            light_dist.push_back({glm::length(position - light->getPosition()), i});
+    }
+    std::sort(light_dist.begin(), light_dist.end(), [] (LightDistSt &a, LightDistSt &b) {
+        return a.length < b.length;
+    });
+    for (int i = 0; i < light_dist.size() and result.size() <= maxLightCount; ++i) {
+        result.push_back(light_dist[i].index);
+    }
+    return result;
 }
 
 

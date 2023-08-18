@@ -1,0 +1,16 @@
+#include "Light.h"
+
+using namespace Old3DEngine;
+
+Light::Light(Light::LightTypeEnum type) {
+    lightType = type;
+    color = {1.0, 0.0, 0.0, 1.0};
+}
+
+Light::LightTypeEnum Light::getType() {
+    return lightType;
+}
+
+std::vector<float> Light::getColor() {
+    return color;
+}
