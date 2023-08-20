@@ -1,12 +1,11 @@
 #include <iostream>
 #include <cmath>
 #include <glm/glm.hpp>
-#include "Old3DEngine.hpp"
-#include "Objects/CubeMesh.hpp"
-#include "Objects/Camera.hpp"
-#include "Objects/Light/DirectionalLight.hpp"
-#include "Resources/Texture.hpp"
-#include "globalStaticParams.hpp"
+#include "Old3DEngine/Old3DEngine.hpp"
+#include "Old3DEngine/Objects/CubeMesh.hpp"
+#include "Old3DEngine/Objects/Camera.hpp"
+#include "Old3DEngine/Objects/Light/DirectionalLight.hpp"
+#include "Old3DEngine/Resources/Texture.hpp"
 
 void _process(Old3DEngine::Engine*, double);
 void _physics_process(Old3DEngine::Engine*, double);

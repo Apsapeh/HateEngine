@@ -1,5 +1,5 @@
 #include <cstring>
-#include "Object.hpp"
+#include "../../include/Old3DEngine/Objects/Object.hpp"
 
 using namespace Old3DEngine;
 

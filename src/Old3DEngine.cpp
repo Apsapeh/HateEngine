@@ -1,6 +1,6 @@
-#include "Old3DEngine.hpp"
-#include "Render/OpenGL15.hpp"
-#include "Error.hpp"
+#include "../include/Old3DEngine/Old3DEngine.hpp"
+#include "../include/Old3DEngine/Render/OpenGL15.hpp"
+#include "../include/Old3DEngine/Error.hpp"
 #include "globalStaticParams.hpp"
 #include <thread>
 #include <algorithm>

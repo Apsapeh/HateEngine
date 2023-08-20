@@ -1,15 +1,26 @@
 add_requires("glfw", "glm")
 
-target("Old3DEngine")
+target("Old3DE")
+    set_kind("static")
+    set_optimize("aggressive")
+    add_files(
+            "src/*.c", "src/*.cpp",
+            "src/Render/*.cpp", "src/Utilities/*.cpp",
+            "src/Objects/*.cpp", "src/Objects/Light/*.cpp",
+            "src/Resources/*.cpp"
+    )
+    set_languages("cxx11")
+    add_includedirs("libs", "include")
+    add_packages("glfw", "glm")
+
+target("ex")
     set_kind("binary")
     --set_toolset("cxx", "clang++")
     set_optimize("aggressive")
     add_files(
-        "src/*.c", "src/*.cpp",
-        "src/Render/*.cpp", "src/Utilities/*.cpp",
-        "src/Objects/*.cpp", "src/Objects/Light/*.cpp",
-        "src/Resources/*.cpp"
+        "examples/*.cpp"
     )
     set_languages("cxx11")
-    add_includedirs("libs")
-    add_packages("glfw", "glm")
+    add_includedirs("libs", "include")
+    add_deps("Old3DE")
+    add_packages("glm")

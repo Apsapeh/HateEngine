@@ -2,7 +2,7 @@
 #include <string>
 #include <cstdint>
 #include <mutex>
-#include <glad/gl.h>
+#include "glad/gl.h"
 #include <GLFW/glfw3.h>
 #include "Objects/Camera.hpp"
 #include "Utilities/UUID_Generator.hpp"

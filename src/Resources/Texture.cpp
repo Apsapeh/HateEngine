@@ -2,8 +2,8 @@
 #include <stb_image.h>
 #include <glad/gl.h>
 #include <GLFW/glfw3.h>
-#include "../Error.hpp"
-#include "Texture.hpp"
+#include "../../include/Old3DEngine/Error.hpp"
+#include "../../include/Old3DEngine/Resources/Texture.hpp"
 #include "../globalStaticParams.hpp"
 
 using namespace Old3DEngine;
