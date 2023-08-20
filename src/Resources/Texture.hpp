@@ -23,5 +23,9 @@ namespace Old3DEngine {
         Texture(std::string file_name, TexWrap tex_wrap, TexFiltering tex_filtering, bool autoload = true);
         ~Texture();
         bool Load();
+        void Unload();
+        uint32_t getTextureID();
+
+        void setAutoload(bool value);
     };
 }

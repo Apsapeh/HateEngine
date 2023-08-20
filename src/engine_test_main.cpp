@@ -6,6 +6,7 @@
 #include "Objects/Camera.hpp"
 #include "Objects/Light/DirectionalLight.hpp"
 #include "Resources/Texture.hpp"
+#include "globalStaticParams.hpp"
 
 void _process(Old3DEngine::Engine*, double);
 void _physics_process(Old3DEngine::Engine*, double);
@@ -28,11 +29,12 @@ int main() {
     sun.setPosition({1.0, 1.0, 1.0});
 
 
-    Old3DEngine::Engine game("Old3DE Test", 800, 600);
     Old3DEngine::Texture tex("Assets/brick.png", Old3DEngine::Texture::Repeat, Old3DEngine::Texture::Linear);
+    Old3DEngine::Engine game("Old3DE Test", 800, 600);
     game.addObjectRef(&mesh1);
     game.addObjectRef(&floor);
     game.addObjectRef(&sun);
+
     /*int n = 50;
     for (int a = 0; a < n; ++a) {
         for (int b = 0; b < n; ++b) {

@@ -4,28 +4,29 @@
 #include <GLFW/glfw3.h>
 #include "../Error.hpp"
 #include "Texture.hpp"
+#include "../globalStaticParams.hpp"
 
 using namespace Old3DEngine;
 #include <iostream>
 Texture::Texture(std::string file_name, Texture::TexWrap tex_wrap, Texture::TexFiltering tex_filtering, bool autoload) {
-    if (!glfwInit()) {
+    if (!glad_is_initialized) {
         this->fileName = file_name;
         this->texWrap = tex_wrap;
         this->texFiltering = tex_filtering;
         this->autoload = autoload;
         return;
     }
-
-
 }
 
 Texture::~Texture() {
-    if (this->textureGL_ID != 0)
-        glDeleteTextures(1, &this->textureGL_ID);
+    Unload();
 }
 
 bool Texture::Load() {
-    if (!glfwInit())
+    if (textureGL_ID != 0)
+        return true;
+
+    if (!glad_is_initialized)
         return false;
 
     int width, height, n;
@@ -46,4 +47,23 @@ bool Texture::Load() {
 
     stbi_image_free(data);
     return true;
+}
+
+void Texture::Unload() {
+    if (this->textureGL_ID != 0) {
+        glDeleteTextures(1, &this->textureGL_ID);
+        textureGL_ID = 0;
+        autoload = false;
+    }
+}
+
+uint32_t Texture::getTextureID() {
+    if (this->autoload)
+        Load();
+
+    return this->textureGL_ID;
+}
+
+void Texture::setAutoload(bool value) {
+    this->autoload = value;
 }

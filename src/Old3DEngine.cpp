@@ -1,9 +1,12 @@
 #include "Old3DEngine.hpp"
 #include "Render/OpenGL15.hpp"
 #include "Error.hpp"
+#include "globalStaticParams.hpp"
 #include <thread>
 #include <algorithm>
 #include <iostream>
+
+bool glad_is_initialized = false;
 
 using namespace Old3DEngine;
 Engine::Engine(std::string window_lbl, int width, int height) : Input(this){
@@ -42,6 +45,7 @@ Engine::Engine(std::string window_lbl, int width, int height) : Input(this){
         Error::throwError("Failed to initialize GLAD", false);
         glfwTerminate();
     }
+    glad_is_initialized = true;
 
     // Calculating the delay between FixedProcessLoop iterations
     #ifdef __linux__

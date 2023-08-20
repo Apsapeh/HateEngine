@@ -11,5 +11,5 @@ target("Old3DEngine")
         "src/Resources/*.cpp"
     )
     set_languages("cxx11")
-    add_includedirs("include")
+    add_includedirs("libs")
     add_packages("glfw", "glm")
