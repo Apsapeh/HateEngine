@@ -1,5 +1,5 @@
 #pragma once
-#include "../Object.h"
+#include "../Object.hpp"
 #include <vector>
 
 namespace Old3DEngine {

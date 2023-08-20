@@ -1,3 +1,3 @@
-#include "OmniLight.h"
+#include "OmniLight.hpp"
 
 using namespace Old3DEngine;

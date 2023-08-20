@@ -1,5 +1,5 @@
 #pragma once
-#include "Light.h"
+#include "Light.hpp"
 
 
 namespace Old3DEngine {

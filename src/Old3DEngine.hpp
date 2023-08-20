@@ -4,10 +4,10 @@
 #include <mutex>
 #include <glad/gl.h>
 #include <GLFW/glfw3.h>
-#include "Objects/Camera.h"
-#include "Utilities/UUID_Generator.h"
-#include "Objects/Mesh.h"
-#include "Objects/Light/Light.h"
+#include "Objects/Camera.hpp"
+#include "Utilities/UUID_Generator.hpp"
+#include "Objects/Mesh.hpp"
+#include "Objects/Light/Light.hpp"
 #include "glm/vec2.hpp"
 
 namespace Old3DEngine {

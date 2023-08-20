@@ -1,5 +1,5 @@
 #pragma once
-#include "Mesh.h"
+#include "Mesh.hpp"
 
 namespace Old3DEngine {
     class CubeMesh : public Mesh {

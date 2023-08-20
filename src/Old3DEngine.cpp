@@ -1,6 +1,6 @@
-#include "Old3DEngine.h"
-#include "Render/OpenGL15.h"
-#include "Error.h"
+#include "Old3DEngine.hpp"
+#include "Render/OpenGL15.hpp"
+#include "Error.hpp"
 #include <thread>
 #include <algorithm>
 #include <iostream>

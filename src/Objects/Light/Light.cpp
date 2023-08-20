@@ -1,4 +1,4 @@
-#include "Light.h"
+#include "Light.hpp"
 
 using namespace Old3DEngine;
 

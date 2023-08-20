@@ -1,8 +1,4 @@
-#include "OpenGL15.h"
-#include "../Objects/Light/Light.h"
-#include "../Objects/Light/DirectionalLight.h"
-#include "../Objects/Light/SpotLight.h"
-#include "../Objects/Light/OmniLight.h"
+#include "OpenGL15.hpp"
 #include <glad/gl.h>
 #include <algorithm>
 #include <glm/glm.hpp>
@@ -90,7 +86,8 @@ inline std::vector<int> OpenGL15::getNearestLights(glm::vec3 position) {
         return a.length < b.length;
     });
     for (int i = 0; i < light_dist.size() and result.size() <= maxLightCount; ++i) {
-        result.push_back(light_dist[i].index);
+        if (light_dist[i].length <= maxLightRenderDist)
+            result.push_back(light_dist[i].index);
     }
     return result;
 }

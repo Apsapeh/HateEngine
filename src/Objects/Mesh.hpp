@@ -1,7 +1,7 @@
 #pragma once
 #include <cstdint>
 #include <vector>
-#include "Object.h"
+#include "Object.hpp"
 
 namespace Old3DEngine {
     // Object -> Mesh

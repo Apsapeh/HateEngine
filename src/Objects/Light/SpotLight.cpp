@@ -1,3 +1,3 @@
-#include "SpotLight.h"
+#include "SpotLight.hpp"
 
 using namespace Old3DEngine;
