@@ -12,7 +12,7 @@ void _physics_process(Old3DEngine::Engine*, double);
 void _input_event(Old3DEngine::Engine*, Old3DEngine::Engine::InputEventInfo);
 
 Old3DEngine::CubeMesh mesh1;
-//Old3DEngine::CubeMesh meshes[400];
+Old3DEngine::CubeMesh meshes[10000];
 Old3DEngine::Camera camera(800.0/600.0, 60, 60);
 Old3DEngine::Light sun(Old3DEngine::Light::DirectionalLight);
 int main() {
@@ -28,16 +28,32 @@ int main() {
     sun.setPosition({1.0, 1.0, 1.0});
 
 
-    Old3DEngine::Texture tex("Assets/brick.png", Old3DEngine::Texture::Repeat, Old3DEngine::Texture::Linear);
+    Old3DEngine::Texture tex("Assets/brick.png", Old3DEngine::Texture::Repeat, Old3DEngine::Texture::Nearest);
     Old3DEngine::Engine game("Old3DE Test", 800, 600);
+    mesh1.addTexture(&tex, {
+            0, 0, 1, 0, 1, 1, 1, 1, 0, 1, 0, 0,
+            0, 0, 1, 0, 1, 1, 1, 1, 0, 1, 0, 0,
+            0, 0, 1, 0, 1, 1, 1, 1, 0, 1, 0, 0,
+            0, 0, 1, 0, 1, 1, 1, 1, 0, 1, 0, 0,
+            0, 0, 1, 0, 1, 1, 1, 1, 0, 1, 0, 0,
+            0, 0, 1, 0, 1, 1, 1, 1, 0, 1, 0, 0,
+    });
     game.addObjectRef(&mesh1);
-    game.addObjectRef(&floor);
+    //game.addObjectRef(&floor);
     game.addObjectRef(&sun);
 
-    /*int n = 50;
+    /*int n = 100;
     for (int a = 0; a < n; ++a) {
         for (int b = 0; b < n; ++b) {
             Old3DEngine::CubeMesh m;
+            m.addTexture(&tex, {
+                    0, 0, 1, 0, 1, 1, 1, 1, 0, 1, 0, 0,
+                    0, 0, 1, 0, 1, 1, 1, 1, 0, 1, 0, 0,
+                    0, 0, 1, 0, 1, 1, 1, 1, 0, 1, 0, 0,
+                    0, 0, 1, 0, 1, 1, 1, 1, 0, 1, 0, 0,
+                    0, 0, 1, 0, 1, 1, 1, 1, 0, 1, 0, 0,
+                    0, 0, 1, 0, 1, 1, 1, 1, 0, 1, 0, 0,
+            });
             m.setPosition(-(n / 2) + b, -(n / 2) + a, 0.0);
             meshes[a*n + b] = m;
             game.addObjectRef(&meshes[a*n + b]);

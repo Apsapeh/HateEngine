@@ -1,5 +1,4 @@
-#include <cstring>
-#include "../../include/Old3DEngine/Objects/Object.hpp"
+#include <Old3DEngine/Objects/Object.hpp>
 
 using namespace Old3DEngine;
 

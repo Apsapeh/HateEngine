@@ -1,7 +1,7 @@
-#include "../../include/Old3DEngine/Render/OpenGL15.hpp"
-#include <glad/gl.h>
 #include <algorithm>
 #include <glm/glm.hpp>
+#include <glad/gl.h>
+#include <Old3DEngine/Render/OpenGL15.hpp>
 
 using namespace Old3DEngine;
 
@@ -32,10 +32,14 @@ void OpenGL15::Draw() {
             glRotatef(mesh->getRotation().y, 0, 1, 0);
             glRotatef(mesh->getRotation().z, 0, 0, 1);
 
-            glVertexPointer(3, GL_FLOAT, 0, &mesh->verticies[0]);
-            glNormalPointer(GL_FLOAT, 0, &mesh->normals[0]);
+            int a = (*mesh->getTextures())[0]->getTextureID();
+            glBindTexture(GL_TEXTURE_2D, a);
+
+            glVertexPointer(3, GL_FLOAT, 0, mesh->getVertices()->data());
+            glNormalPointer(GL_FLOAT, 0, mesh->getNormals()->data());
             //glColorPointer(3, GL_FLOAT, 0, color);
-            glDrawElements(GL_TRIANGLES, mesh->indicies.size(), GL_UNSIGNED_INT, &mesh->indicies[0]);
+            glTexCoordPointer(2, GL_FLOAT, 0, (*mesh->getTexturesCoords())[0].data());
+            glDrawElements(GL_TRIANGLES, mesh->getIndicies()->size(), GL_UNSIGNED_INT, mesh->getIndicies()->data());
             glPopMatrix();
             for (int i = 0; i < light_indicies.size(); ++i)
                 glDisable(GL_LIGHT0 + i);

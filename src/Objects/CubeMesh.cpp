@@ -1,4 +1,4 @@
-#include "../../include/Old3DEngine/Objects/CubeMesh.hpp"
+#include <Old3DEngine/Objects/CubeMesh.hpp>
 
 using namespace Old3DEngine;
 

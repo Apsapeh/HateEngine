@@ -1,9 +1,7 @@
-#include "../../include/Old3DEngine/Objects/Camera.hpp"
 #include <glad/gl.h>
-#include <GLFW/glfw3.h>
 #include <glm/glm.hpp>
 #include <glm/ext.hpp>
-#include <iostream>
+#include <Old3DEngine/Objects/Camera.hpp>
 
 using namespace Old3DEngine;
 

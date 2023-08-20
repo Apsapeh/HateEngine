@@ -1,5 +1,5 @@
-#include "../include/Old3DEngine/Error.hpp"
 #include <iostream>
+#include <Old3DEngine/Error.hpp>
 using namespace Old3DEngine;
 
 void Error::throwError(std::string msg, bool terminate) {

@@ -1,9 +1,8 @@
 #define STB_IMAGE_IMPLEMENTATION
 #include <stb_image.h>
 #include <glad/gl.h>
-#include <GLFW/glfw3.h>
-#include "../../include/Old3DEngine/Error.hpp"
-#include "../../include/Old3DEngine/Resources/Texture.hpp"
+#include <Old3DEngine/Error.hpp>
+#include <Old3DEngine/Resources/Texture.hpp>
 #include "../globalStaticParams.hpp"
 
 using namespace Old3DEngine;

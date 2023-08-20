@@ -1,10 +1,11 @@
-#include "../include/Old3DEngine/Old3DEngine.hpp"
-#include "../include/Old3DEngine/Render/OpenGL15.hpp"
-#include "../include/Old3DEngine/Error.hpp"
-#include "globalStaticParams.hpp"
 #include <thread>
 #include <algorithm>
 #include <iostream>
+#include <glad/gl.h>
+#include <Old3DEngine/Old3DEngine.hpp>
+#include <Old3DEngine/Render/OpenGL15.hpp>
+#include <Old3DEngine/Error.hpp>
+#include "globalStaticParams.hpp"
 
 bool glad_is_initialized = false;
 
@@ -46,6 +47,10 @@ Engine::Engine(std::string window_lbl, int width, int height) : Input(this){
         glfwTerminate();
     }
     glad_is_initialized = true;
+
+    int n;
+    glGetIntegerv(GL_MAX_TEXTURE_UNITS, &n);
+    std::cout << n << "\n";
 
     // Calculating the delay between FixedProcessLoop iterations
     #ifdef __linux__
@@ -103,10 +108,12 @@ void Engine::Run() {
     //glLightfv(GL_LIGHT0,GL_DIFFUSE,white_light);
     //glLightfv(GL_LIGHT0,GL_SPECULAR,white_light);
     glEnable(GL_LIGHTING);
-    //glEnable(GL_LIGHT0);
+    glEnable(GL_TEXTURE_2D);
 
     glEnableClientState(GL_VERTEX_ARRAY);
     glEnableClientState(GL_NORMAL_ARRAY);
+    glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+
     //glEnableClientState(GL_COLOR_ARRAY);
     glEnable(GL_DEPTH_TEST);
 
