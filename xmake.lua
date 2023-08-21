@@ -2,6 +2,8 @@ add_requires("glfw", "glm")
 
 target("Old3DE")
     set_kind("static")
+    set_policy("build.optimization.lto", true)
+    set_fpmodels("fast")
     set_optimize("aggressive")
     add_files(
             "src/*.c", "src/*.cpp",
@@ -16,6 +18,9 @@ target("Old3DE")
 target("Old3DEngine")
     set_kind("binary")
     --set_toolset("cxx", "clang++")
+    set_strip("all")
+    set_policy("build.optimization.lto", true)
+    set_fpmodels("fast")
     set_optimize("aggressive")
     add_files(
         "examples/*.cpp"
