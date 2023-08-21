@@ -6,7 +6,7 @@ target("Old3DE")
     add_files(
             "src/*.c", "src/*.cpp",
             "src/Render/*.cpp", "src/Utilities/*.cpp",
-            "src/Objects/*.cpp", "src/Objects/Light/*.cpp",
+            "src/Objects/*.cpp", "src/Objects/Light/*.cpp", "src/Objects/Physics/*.cpp",
             "src/Resources/*.cpp"
     )
     set_languages("cxx11")

@@ -20,7 +20,7 @@ void Mesh::setNormals(std::vector<float> vec) {
 }
 
 bool Mesh::addTexture(Texture *tex, std::vector<float> coords) {
-    if (this->textures.size() > 31)
+    if (this->textures.size() > 0)
         return false;
 
     this->textures.push_back(tex);

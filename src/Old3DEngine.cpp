@@ -48,12 +48,16 @@ Engine::Engine(std::string window_lbl, int width, int height) : Input(this){
     }
     glad_is_initialized = true;
 
-    int n;
-    glGetIntegerv(GL_MAX_TEXTURE_UNITS, &n);
-    std::cout << n << "\n";
-
     // Calculating the delay between FixedProcessLoop iterations
     #ifdef __linux__
+        std::chrono::high_resolution_clock::time_point t1 = std::chrono::high_resolution_clock::now();
+        for (int o = 0; o < 10; ++o)
+            std::this_thread::sleep_for(std::chrono::nanoseconds(1000));
+        std::chrono::high_resolution_clock::time_point t2 = std::chrono::high_resolution_clock::now();
+        // Sleep correction
+        int64_t d = (std::chrono::duration_cast<std::chrono::microseconds>(t2-t1).count() - 10) / 10;
+        this->fixedProcessDelayMCS = 1000000 / (fixedLoopRefreshRate) - d;
+    #elif __APPLE__
         std::chrono::high_resolution_clock::time_point t1 = std::chrono::high_resolution_clock::now();
         for (int o = 0; o < 10; ++o)
             std::this_thread::sleep_for(std::chrono::nanoseconds(1000));

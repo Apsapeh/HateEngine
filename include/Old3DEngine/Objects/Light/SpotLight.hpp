@@ -1,8 +1,8 @@
 #pragma once
-#include "../Object.hpp"
+#include "Light.hpp"
 
 namespace Old3DEngine {
-    class SpotLight : public Object {
+    class SpotLight : public Light {
 
     };
 }
