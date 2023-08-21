@@ -10,7 +10,7 @@ target("Old3DE")
             "src/Resources/*.cpp"
     )
     set_languages("cxx11")
-    add_includedirs("libs", "include")
+    add_includedirs("deps", "include")
     add_packages("glfw", "glm")
 
 target("Old3DEngine")
@@ -21,6 +21,6 @@ target("Old3DEngine")
         "examples/*.cpp"
     )
     set_languages("cxx11")
-    add_includedirs("libs", "include")
+    add_includedirs("deps", "include")
     add_deps("Old3DE")
     add_packages("glfw", "glm")
