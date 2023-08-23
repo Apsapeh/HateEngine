@@ -4,7 +4,8 @@
 namespace Old3DEngine {
 
     class StaticBody : public PhysicalBody {
-
+    public:
+        StaticBody();
     };
 
 }

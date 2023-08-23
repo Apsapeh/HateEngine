@@ -20,13 +20,16 @@ namespace Old3DEngine {
             bool is_ref;
         };
 
-        UUID_Generator generator;
+        UUID_Generator uuidGenerator;
+        std::vector<ShapeObject> shapes;
 
     protected:
-        BodyType bType;
+        BodyType bodyType;
 
     public:
         ~PhysicalBody();
+
+        BodyType getBodyType();
 
         /**
          * Adds a collision shape to the body by copying the object
@@ -48,7 +51,7 @@ namespace Old3DEngine {
          * @param id Object ID
          * @return True if deleted successfully, False if the object is not found
          */
-        bool delCollisionShape(UUID_Generator::UUID id);
+        bool delCollisionShape(UUID_Generator::UUID uuid);
     };
 
 }

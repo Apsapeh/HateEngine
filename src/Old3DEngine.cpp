@@ -7,12 +7,16 @@
 #include <Old3DEngine/Error.hpp>
 #include "globalStaticParams.hpp"
 
+#include <reactphysics3d/reactphysics3d.h>
+
 bool glad_is_initialized = false;
 
 using namespace Old3DEngine;
 Engine::Engine(std::string window_lbl, int width, int height) : Input(this){
     glfwInit();
-
+    reactphysics3d::PhysicsCommon physicsCommon;
+    reactphysics3d::PhysicsWorld* world = physicsCommon.createPhysicsWorld();
+    world->update(0.01);
     // Create window
     this->window = glfwCreateWindow(width, height, window_lbl.c_str(), NULL, NULL);
     if (this->window == NULL) {

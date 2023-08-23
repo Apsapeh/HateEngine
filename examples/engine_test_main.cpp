@@ -12,7 +12,7 @@ void _physics_process(Old3DEngine::Engine*, double);
 void _input_event(Old3DEngine::Engine*, Old3DEngine::Engine::InputEventInfo);
 
 Old3DEngine::CubeMesh mesh1;
-Old3DEngine::CubeMesh meshes[10000];
+Old3DEngine::CubeMesh meshes[22500];
 Old3DEngine::Camera camera(800.0/600.0, 60, 60);
 Old3DEngine::Light sun(Old3DEngine::Light::DirectionalLight);
 int main() {
@@ -42,7 +42,7 @@ int main() {
     //game.addObjectRef(&floor);
     game.addObjectRef(&sun);
 
-    /*int n = 100;
+    int n = 150;
     for (int a = 0; a < n; ++a) {
         for (int b = 0; b < n; ++b) {
             Old3DEngine::CubeMesh m;
@@ -58,7 +58,7 @@ int main() {
             meshes[a*n + b] = m;
             game.addObjectRef(&meshes[a*n + b]);
         }
-    }*/
+    }
 
 
     game.setProcessLoop(_process);

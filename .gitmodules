@@ -1,0 +1,6 @@
+[submodule "lib/doxygen-awesome-css"]
+	path = lib/doxygen-awesome-css
+	url = https://github.com/jothepro/doxygen-awesome-css
+[submodule "lib/reactphysics3d"]
+	path = lib/reactphysics3d
+	url = https://github.com/DanielChappuis/reactphysics3d

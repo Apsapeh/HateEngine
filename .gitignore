@@ -3,4 +3,5 @@
 /.idea/
 /.xmake
 /build
-/include/glm
+/lib/
+
