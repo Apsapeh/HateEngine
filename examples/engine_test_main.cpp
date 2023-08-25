@@ -12,7 +12,7 @@ void _physics_process(Old3DEngine::Engine*, double);
 void _input_event(Old3DEngine::Engine*, Old3DEngine::Engine::InputEventInfo);
 
 Old3DEngine::CubeMesh mesh1;
-Old3DEngine::CubeMesh meshes[22500];
+//Old3DEngine::CubeMesh meshes[22500];
 Old3DEngine::Camera camera(800.0/600.0, 60, 60);
 Old3DEngine::Light sun(Old3DEngine::Light::DirectionalLight);
 int main() {
@@ -28,7 +28,7 @@ int main() {
     sun.setPosition({1.0, 1.0, 1.0});
 
 
-    Old3DEngine::Texture tex("Assets/brick.png", Old3DEngine::Texture::Repeat, Old3DEngine::Texture::Nearest);
+    Old3DEngine::Texture tex("examples/Assets/brick.png", Old3DEngine::Texture::Repeat, Old3DEngine::Texture::Nearest);
     Old3DEngine::Engine game("Old3DE Test", 800, 600);
     mesh1.addTexture(&tex, {
             0, 0, 1, 0, 1, 1, 1, 1, 0, 1, 0, 0,
@@ -41,8 +41,9 @@ int main() {
     game.addObjectRef(&mesh1);
     //game.addObjectRef(&floor);
     game.addObjectRef(&sun);
+    std::cout << sizeof(Old3DEngine::Mesh) << "\n";
 
-    int n = 150;
+    /*int n = 150;
     for (int a = 0; a < n; ++a) {
         for (int b = 0; b < n; ++b) {
             Old3DEngine::CubeMesh m;
@@ -58,7 +59,7 @@ int main() {
             meshes[a*n + b] = m;
             game.addObjectRef(&meshes[a*n + b]);
         }
-    }
+    }*/
 
 
     game.setProcessLoop(_process);

@@ -13,6 +13,10 @@ namespace Old3DEngine {
             RigidBody
         };
 
+        struct CoordStruct {
+            float x, y, z;
+        };
+
     private:
         struct ShapeObject {
             CollisionShape *shape;
@@ -20,8 +24,16 @@ namespace Old3DEngine {
             bool is_ref;
         };
 
-        UUID_Generator uuidGenerator;
+        struct ControlledObject {
+            Object* obj;
+            CoordStruct offset;
+            UUID_Generator::UUID id;
+        };
+
+        UUID_Generator uuidGenerator_shapes;
+        UUID_Generator uuidGenerator_bindObj;
         std::vector<ShapeObject> shapes;
+        std::vector<ControlledObject> binded_objects;
 
     protected:
         BodyType bodyType;
@@ -29,6 +41,10 @@ namespace Old3DEngine {
     public:
         ~PhysicalBody();
 
+        /**
+         * Updates the position of linked objects taking into account the offset
+         */
+        void UpdateBindsPos();
         BodyType getBodyType();
 
         /**
@@ -52,6 +68,22 @@ namespace Old3DEngine {
          * @return True if deleted successfully, False if the object is not found
          */
         bool delCollisionShape(UUID_Generator::UUID uuid);
+
+
+        /**
+         * Binds the object to be moved along with the PhysicalBody
+         * @param obj Pointer to Object
+         * @param offset Displacement relative to the PhysicsBody position (x, y, z)
+         * @return Object ID
+         */
+        UUID_Generator::UUID bindObjRef(Object* obj, CoordStruct offset = {0.0f, 0.0f, 0.0f});
+
+        /**
+         * Unbinds the object from moving with PhysicalBody
+         * @param id Object ID
+         * @return True if deleted successfully, False if the object is not found
+         */
+        bool unbindObj(UUID_Generator::UUID uuid);
     };
 
 }
