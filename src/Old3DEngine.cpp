@@ -7,16 +7,12 @@
 #include <Old3DEngine/Error.hpp>
 #include "globalStaticParams.hpp"
 
-#include <reactphysics3d/reactphysics3d.h>
 
 bool glad_is_initialized = false;
 
 using namespace Old3DEngine;
 Engine::Engine(std::string window_lbl, int width, int height) : Input(this){
     glfwInit();
-    reactphysics3d::PhysicsCommon physicsCommon;
-    reactphysics3d::PhysicsWorld* world = physicsCommon.createPhysicsWorld();
-    world->update(0.01);
     // Create window
     this->window = glfwCreateWindow(width, height, window_lbl.c_str(), NULL, NULL);
     if (this->window == NULL) {
@@ -136,7 +132,10 @@ void Engine::Run() {
         if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
             glfwSetWindowShouldClose(window, true);
 
-        //glfwCal
+
+
+
+
 
         meshesMutex.lock();
         if (this->processLoop != nullptr)
@@ -162,6 +161,11 @@ void Engine::threadFixedProcessLoop() {
     double delta = (float)this->fixedProcessDelayMCS / 1000000;
     double func_delta = 0.0;
 
+
+
+
+
+
     while (not glfwWindowShouldClose(this->window)) {
         int64_t a = this->fixedProcessDelayMCS - int64_t(func_delta * 1000000);
         std::this_thread::sleep_for(
@@ -171,6 +175,8 @@ void Engine::threadFixedProcessLoop() {
         //std::cout << d / 10<< "\n";
         delta = glfwGetTime() - oldTime;
         oldTime = glfwGetTime();
+        //physicsWorld->update((float)delta);
+        //std::cout << rbody->getTransform().getPosition().y << "\n";
 
         meshesMutex.lock();
         fixedProcessLoop(this, delta);

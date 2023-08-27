@@ -6,15 +6,14 @@
 #include "../globalStaticParams.hpp"
 
 using namespace Old3DEngine;
-#include <iostream>
+
 Texture::Texture(std::string file_name, Texture::TexWrap tex_wrap, Texture::TexFiltering tex_filtering, bool autoload) {
-    if (!glad_is_initialized) {
-        this->fileName = file_name;
-        this->texWrap = tex_wrap;
-        this->texFiltering = tex_filtering;
-        this->autoload = autoload;
-        return;
-    }
+    this->fileName = file_name;
+    this->texWrap = tex_wrap;
+    this->texFiltering = tex_filtering;
+    this->autoload = autoload;
+    if (autoload)
+        Load();
 }
 
 Texture::~Texture() {

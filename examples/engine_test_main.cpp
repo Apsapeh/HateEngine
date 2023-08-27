@@ -1,28 +1,62 @@
 #include <iostream>
 #include <cmath>
 #include <glm/glm.hpp>
-#include "Old3DEngine/Old3DEngine.hpp"
-#include "Old3DEngine/Objects/CubeMesh.hpp"
-#include "Old3DEngine/Objects/Camera.hpp"
-#include "Old3DEngine/Objects/Light/DirectionalLight.hpp"
-#include "Old3DEngine/Resources/Texture.hpp"
+#include <Old3DEngine/Old3DEngine.hpp>
+#include <Old3DEngine/Objects/CubeMesh.hpp>
+#include <Old3DEngine/Objects/Camera.hpp>
+#include <Old3DEngine/Objects/Light/DirectionalLight.hpp>
+#include <Old3DEngine/Resources/Texture.hpp>
+
+#include <reactphysics3d/reactphysics3d.h>
+
+using namespace reactphysics3d;
+
+
 
 void _process(Old3DEngine::Engine*, double);
 void _physics_process(Old3DEngine::Engine*, double);
 void _input_event(Old3DEngine::Engine*, Old3DEngine::Engine::InputEventInfo);
+
+
+PhysicsCommon physicsCommon;
+PhysicsWorld* physicsWorld = physicsCommon.createPhysicsWorld();
+Vector3 posvec3(0.0, -6.0, 0.0);
+Quaternion quaternion = Quaternion::identity();
+Transform transform(posvec3, quaternion);
+RigidBody* floor_col = physicsWorld->createRigidBody(transform);
+BoxShape* boxShape = physicsCommon.createBoxShape({50.0f, 0.5f, 50.0f});
+Transform box_transform = Transform::identity();
+Collider* collider_box = floor_col->addCollider(boxShape, transform);
+
+Vector3 rbodypos3(0, 0, 0);
+Quaternion rbodyQuat = Quaternion::identity();
+Transform rbodyTrans(rbodypos3, rbodyQuat);
+RigidBody* rbody = physicsWorld->createRigidBody(rbodyTrans);
+
+
+BoxShape* sphereShape = physicsCommon.createBoxShape({1, 1, 1});
+Transform sphere_transform = Transform::identity();
+Collider* collider = rbody->addCollider(sphereShape, rbodyTrans);
+
 
 Old3DEngine::CubeMesh mesh1;
 //Old3DEngine::CubeMesh meshes[22500];
 Old3DEngine::Camera camera(800.0/600.0, 60, 60);
 Old3DEngine::Light sun(Old3DEngine::Light::DirectionalLight);
 int main() {
+    //physicsWorld->setGravity({0, -0.01, 0});
+    floor_col->setType(BodyType::STATIC);
+
+
+
     camera.setPosition(0, 0, 3);
     camera.setRotation(0, -90, 0);
     mesh1.setRotation(0, 0, 0);
+    mesh1.setSize(2, 2, 2);
 
     Old3DEngine::CubeMesh floor;
-    floor.setPosition(0, -0.1, 0);
-    floor.setSize(25, 0.1, 25);
+    floor.setPosition(0, -12, 0);
+    floor.setSize(25, 1, 25);
 
 //    sun.setPosition(camera.getPosition());
     sun.setPosition({1.0, 1.0, 1.0});
@@ -30,6 +64,14 @@ int main() {
 
     Old3DEngine::Texture tex("examples/Assets/brick.png", Old3DEngine::Texture::Repeat, Old3DEngine::Texture::Nearest);
     Old3DEngine::Engine game("Old3DE Test", 800, 600);
+    floor.addTexture(&tex, {
+            0, 0, 10, 0, 10, 10, 10, 10, 0, 10, 0, 0,
+            0, 0, 10, 0, 10, 10, 10, 10, 0, 10, 0, 0,
+            0, 0, 10, 0, 10, 10, 10, 10, 0, 10, 0, 0,
+            0, 0, 10, 0, 10, 10, 10, 10, 0, 10, 0, 0,
+            0, 0, 10, 0, 10, 10, 10, 10, 0, 10, 0, 0,
+            0, 0, 10, 0, 10, 10, 10, 10, 0, 10, 0, 0,
+    });
     mesh1.addTexture(&tex, {
             0, 0, 1, 0, 1, 1, 1, 1, 0, 1, 0, 0,
             0, 0, 1, 0, 1, 1, 1, 1, 0, 1, 0, 0,
@@ -39,7 +81,7 @@ int main() {
             0, 0, 1, 0, 1, 1, 1, 1, 0, 1, 0, 0,
     });
     game.addObjectRef(&mesh1);
-    //game.addObjectRef(&floor);
+    game.addObjectRef(&floor);
     game.addObjectRef(&sun);
     std::cout << sizeof(Old3DEngine::Mesh) << "\n";
 
@@ -83,15 +125,31 @@ void _process(Old3DEngine::Engine* engine, double delta) {
     }
 }
 
+
+
+
 void _physics_process(Old3DEngine::Engine* engine, double delta) {
+    physicsWorld->update((float)delta);
+    Vector3 rbodyPosVect = rbody->getTransform().getPosition();
+    mesh1.setPosition(rbodyPosVect.x, rbodyPosVect.y, rbodyPosVect.z);
+    std::cout << rbodyPosVect.y << "\n";
+
+
+
+
     /*float y = 0.125 * 0.125 * sin(glfwGetTime());
     glm::vec3 rot = meshes[0].getRotation() + glm::vec3 {0, 1, 0};
     for (Old3DEngine::CubeMesh &cube : meshes) {
         //cube.setRotation(rot);
         //cube.setPosition(cube.getPosition().x,  cube.getPosition().y + y, 0.0);
     }*/
-    if (engine->Input.isKeyPressed(GLFW_KEY_LEFT_SHIFT))
-        mesh1.offset({0, 0.1, 0});
+    if (engine->Input.isKeyPressed(GLFW_KEY_LEFT_SHIFT)) {
+        Vector3 newPos = rbodyPosVect;
+        newPos.y += 0.1;
+        Transform newTrans = Transform(newPos, rbody->getTransform().getOrientation());
+        rbody->setTransform(newTrans);
+        //mesh1.offset({0, 0.1, 0});
+    }
     else if (engine->Input.isKeyPressed(GLFW_KEY_LEFT_CONTROL))
         mesh1.offset({0, -0.1, 0});
 
@@ -106,7 +164,7 @@ void _physics_process(Old3DEngine::Engine* engine, double delta) {
         glfwSetWindowMonitor(engine->window, monitor, 0, 0, 3440, 1440, 144);
     }
 
-    mesh1.rotate({1, 2, 3});
+    //mesh1.rotate({1, 2, 3});
 
     glm::vec2 dir = engine->Input.getVector(GLFW_KEY_A, GLFW_KEY_D, GLFW_KEY_W, GLFW_KEY_S);
     glm::vec3 direction;

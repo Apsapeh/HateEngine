@@ -16,7 +16,7 @@ target("Old3DE")
     --set_policy("build.optimization.lto", true)
     set_fpmodels("fast")
     set_optimize("aggressive")
-    set_policy("build.merge_archive", true)
+    --set_policy("build.merge_archive", true)
     add_files(
             "src/*.c", "src/**.cpp"
     )
@@ -35,7 +35,7 @@ target("Old3DEngine")
         "examples/*.cpp"
     )
     set_languages("cxx11")
-    add_includedirs("deps", "include")
+    add_includedirs("deps", "include", "lib/reactphysics3d/include")
     --set_policy("build.merge_archive", true)
     add_deps("Old3DE")
     add_packages("glfw", "glm")
