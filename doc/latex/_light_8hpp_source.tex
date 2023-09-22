@@ -1,0 +1,28 @@
+\doxysection{Light.\+hpp}
+\hypertarget{_light_8hpp_source}{}\label{_light_8hpp_source}\index{include/Old3DEngine/Objects/Light/Light.hpp@{include/Old3DEngine/Objects/Light/Light.hpp}}
+\mbox{\hyperlink{_light_8hpp}{Go to the documentation of this file.}}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{preprocessor}{\#pragma\ once}}
+\DoxyCodeLine{00002\ \textcolor{preprocessor}{\#include\ "{}../Object.hpp"{}}}
+\DoxyCodeLine{00003\ \textcolor{preprocessor}{\#include\ <vector>}}
+\DoxyCodeLine{00004\ }
+\DoxyCodeLine{00005\ \textcolor{keyword}{namespace\ }\mbox{\hyperlink{namespace_old3_d_engine}{Old3DEngine}}\ \{}
+\DoxyCodeLine{00006\ \ \ \ \ \textcolor{keyword}{class\ }\mbox{\hyperlink{class_old3_d_engine_1_1_light}{Light}}\ :\ \textcolor{keyword}{public}\ \mbox{\hyperlink{class_old3_d_engine_1_1_object}{Object}}\ \{}
+\DoxyCodeLine{00007\ \ \ \ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00008\ \ \ \ \ \ \ \ \ \textcolor{keyword}{enum}\ \mbox{\hyperlink{class_old3_d_engine_1_1_light_a1c23a0de1614e6cc894b2a19baacb0f6}{LightTypeEnum}}\ \{}
+\DoxyCodeLine{00009\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{class_old3_d_engine_1_1_light_a1c23a0de1614e6cc894b2a19baacb0f6a709fd1eda30d9bde1fa73ac770081375}{DirectionalLight}},}
+\DoxyCodeLine{00010\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{class_old3_d_engine_1_1_light_a1c23a0de1614e6cc894b2a19baacb0f6a40ccce07ae81828b1a4af5518fdd2da0}{OmniLight}},}
+\DoxyCodeLine{00011\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{class_old3_d_engine_1_1_spot_light}{SpotLight}}}
+\DoxyCodeLine{00012\ \ \ \ \ \ \ \ \ \};}
+\DoxyCodeLine{00013\ }
+\DoxyCodeLine{00014\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{class_old3_d_engine_1_1_light_a8bae5a5d512d69bceb41547cd4e2d711}{Light}}(\mbox{\hyperlink{class_old3_d_engine_1_1_light_a1c23a0de1614e6cc894b2a19baacb0f6}{LightTypeEnum}}\ type);}
+\DoxyCodeLine{00015\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{class_old3_d_engine_1_1_light_a1c23a0de1614e6cc894b2a19baacb0f6}{LightTypeEnum}}\ \mbox{\hyperlink{class_old3_d_engine_1_1_light_a6c223a3d9c5b36f5356cd1d3f32436a1}{getType}}();}
+\DoxyCodeLine{00016\ \ \ \ \ \ \ \ \ std::vector<float>\ \mbox{\hyperlink{class_old3_d_engine_1_1_light_a637230fe545b0914dc94622cf31c3830}{getColor}}();}
+\DoxyCodeLine{00017\ \ \ \ \ \textcolor{keyword}{protected}:}
+\DoxyCodeLine{00018\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{class_old3_d_engine_1_1_light_a1c23a0de1614e6cc894b2a19baacb0f6}{LightTypeEnum}}\ \mbox{\hyperlink{class_old3_d_engine_1_1_light_aca3a9ebbe0f83441c4e66bee604d3c7b}{lightType}};}
+\DoxyCodeLine{00019\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{bool}\ \mbox{\hyperlink{class_old3_d_engine_1_1_light_a1dcecf413aca9b121a11b20870fc08ad}{shadowsEnabled}}\ =\ \textcolor{keyword}{true};}
+\DoxyCodeLine{00020\ \ \ \ \ \ \ \ \ std::vector<float>\ \mbox{\hyperlink{class_old3_d_engine_1_1_light_a662013e6538c7ff7a89816ba5a774f93}{color}};}
+\DoxyCodeLine{00021\ \ \ \ \ \};}
+\DoxyCodeLine{00022\ \}}
+
+\end{DoxyCode}

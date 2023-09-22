@@ -1,0 +1,325 @@
+\doxysection{Old3\+DEngine\+::Engine Class Reference}
+\hypertarget{class_old3_d_engine_1_1_engine}{}\label{class_old3_d_engine_1_1_engine}\index{Old3DEngine::Engine@{Old3DEngine::Engine}}
+
+
+{\ttfamily \#include $<$Old3\+DEngine.\+hpp$>$}
+
+\doxysubsubsection*{Classes}
+\begin{DoxyCompactItemize}
+\item 
+struct \mbox{\hyperlink{struct_old3_d_engine_1_1_engine_1_1_input_event_info}{Input\+Event\+Info}}
+\item 
+struct \mbox{\hyperlink{struct_old3_d_engine_1_1_engine_1_1_scene_object}{Scene\+Object}}
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Public Types}
+\begin{DoxyCompactItemize}
+\item 
+enum \mbox{\hyperlink{class_old3_d_engine_1_1_engine_ad9a56ab1446da63dba502ce4a34e2264}{Render\+API}} \{ \mbox{\hyperlink{class_old3_d_engine_1_1_engine_ad9a56ab1446da63dba502ce4a34e2264a0bce4353745dbb2337d5d9b2788b4fbb}{Open\+GL\+\_\+1\+\_\+5}}
+ \}
+\item 
+enum \mbox{\hyperlink{class_old3_d_engine_1_1_engine_acb6967b6d052b8d95035f3c70f1bb3d3}{Input\+Event\+Type}} \{ \mbox{\hyperlink{class_old3_d_engine_1_1_engine_acb6967b6d052b8d95035f3c70f1bb3d3a509b7e89c3754200e68db0101b789f84}{Input\+Event\+Key}}
+, \mbox{\hyperlink{class_old3_d_engine_1_1_engine_acb6967b6d052b8d95035f3c70f1bb3d3a0e6a7b0bc806809eaff69157a8ed5e05}{Input\+Event\+Mouse\+Move}}
+, \mbox{\hyperlink{class_old3_d_engine_1_1_engine_acb6967b6d052b8d95035f3c70f1bb3d3a4e63e3e91a01c1b4b157ecf2ea5927e8}{Input\+Event\+Mouse\+Scroll}}
+ \}
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+void \mbox{\hyperlink{class_old3_d_engine_1_1_engine_a2ce5e049a487f4ca0948343455b8fd65}{thread\+Fixed\+Process\+Loop}} ()
+\item 
+void \mbox{\hyperlink{class_old3_d_engine_1_1_engine_a582a7350e37e8d95bffeb4c1b36c21e0}{frame\+Buffer\+Size\+Change}} (GLFWwindow \texorpdfstring{$\ast$}{*}win, int w, int h)
+\item 
+\mbox{\hyperlink{class_old3_d_engine_1_1_engine_afec53649c34c63c56cf059ed2184eeea}{Engine}} (std\+::string window\+\_\+lbl, int width, int height)
+\item 
+void \mbox{\hyperlink{class_old3_d_engine_1_1_engine_a7ff84a7077893c5d1fec6db99978635b}{Run}} ()
+\item 
+void \mbox{\hyperlink{class_old3_d_engine_1_1_engine_a04bf42666f8b64c46ba91547abcc7075}{set\+Process\+Loop}} (void(\texorpdfstring{$\ast$}{*}func)(\mbox{\hyperlink{class_old3_d_engine_1_1_engine}{Engine}} \texorpdfstring{$\ast$}{*}, double))
+\item 
+void \mbox{\hyperlink{class_old3_d_engine_1_1_engine_a28700b4a606ef5e758837a252adcd023}{set\+Fixed\+Process\+Loop}} (void(\texorpdfstring{$\ast$}{*}func)(\mbox{\hyperlink{class_old3_d_engine_1_1_engine}{Engine}} \texorpdfstring{$\ast$}{*}, double))
+\item 
+void \mbox{\hyperlink{class_old3_d_engine_1_1_engine_a574a8aa83ef60a3677b0a1fc3e609afd}{set\+Input\+Event}} (void(\texorpdfstring{$\ast$}{*}func)(\mbox{\hyperlink{class_old3_d_engine_1_1_engine}{Engine}} \texorpdfstring{$\ast$}{*}, \mbox{\hyperlink{struct_old3_d_engine_1_1_engine_1_1_input_event_info}{Input\+Event\+Info}}))
+\item 
+void \mbox{\hyperlink{class_old3_d_engine_1_1_engine_a275c706fb7e0d17b69c903143b423bd6}{set\+Camera\+Ref}} (\mbox{\hyperlink{class_old3_d_engine_1_1_camera}{Camera}} \texorpdfstring{$\ast$}{*}cam)
+\item 
+\mbox{\hyperlink{struct_old3_d_engine_1_1_u_u_i_d___generator_1_1_u_u_i_d}{UUID\+\_\+\+Generator\+::\+UUID}} \mbox{\hyperlink{class_old3_d_engine_1_1_engine_a21c6adb9e33112025a241276f85287e2}{add\+Object\+Clone}} (\mbox{\hyperlink{class_old3_d_engine_1_1_object}{Object}} object)
+\item 
+\mbox{\hyperlink{struct_old3_d_engine_1_1_u_u_i_d___generator_1_1_u_u_i_d}{UUID\+\_\+\+Generator\+::\+UUID}} \mbox{\hyperlink{class_old3_d_engine_1_1_engine_a9bf15ffd0334cc9140c80c732a745691}{add\+Object\+Clone}} (\mbox{\hyperlink{class_old3_d_engine_1_1_mesh}{Mesh}} object)
+\item 
+\mbox{\hyperlink{struct_old3_d_engine_1_1_u_u_i_d___generator_1_1_u_u_i_d}{UUID\+\_\+\+Generator\+::\+UUID}} \mbox{\hyperlink{class_old3_d_engine_1_1_engine_ab9c486a29514a47044a24220e8880c6a}{add\+Object\+Clone}} (\mbox{\hyperlink{class_old3_d_engine_1_1_light}{Light}} object)
+\item 
+\mbox{\hyperlink{struct_old3_d_engine_1_1_u_u_i_d___generator_1_1_u_u_i_d}{UUID\+\_\+\+Generator\+::\+UUID}} \mbox{\hyperlink{class_old3_d_engine_1_1_engine_a2edc857d2936a7b606ccbfe0731f7138}{add\+Object\+Ref}} (\mbox{\hyperlink{class_old3_d_engine_1_1_object}{Object}} \texorpdfstring{$\ast$}{*}object)
+\item 
+\mbox{\hyperlink{struct_old3_d_engine_1_1_u_u_i_d___generator_1_1_u_u_i_d}{UUID\+\_\+\+Generator\+::\+UUID}} \mbox{\hyperlink{class_old3_d_engine_1_1_engine_a6a1d1260f110cfcb6430c94b88feb37f}{add\+Object\+Ref}} (\mbox{\hyperlink{class_old3_d_engine_1_1_mesh}{Mesh}} \texorpdfstring{$\ast$}{*}object)
+\item 
+\mbox{\hyperlink{struct_old3_d_engine_1_1_u_u_i_d___generator_1_1_u_u_i_d}{UUID\+\_\+\+Generator\+::\+UUID}} \mbox{\hyperlink{class_old3_d_engine_1_1_engine_aefc73ce694c08ad7ae28b034c0a4aa54}{add\+Object\+Ref}} (\mbox{\hyperlink{class_old3_d_engine_1_1_light}{Light}} \texorpdfstring{$\ast$}{*}object)
+\item 
+bool \mbox{\hyperlink{class_old3_d_engine_1_1_engine_ab621adf26bdfbb4fc8a7309d5d6ef4aa}{remove\+Object}} (\mbox{\hyperlink{struct_old3_d_engine_1_1_u_u_i_d___generator_1_1_u_u_i_d}{UUID\+\_\+\+Generator\+::\+UUID}} uuid)
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+void(\texorpdfstring{$\ast$}{*} \mbox{\hyperlink{class_old3_d_engine_1_1_engine_ab12c9d1e657cd424e4a68de3f61bf8f0}{process\+Loop}} )(\mbox{\hyperlink{class_old3_d_engine_1_1_engine}{Engine}} \texorpdfstring{$\ast$}{*}, double) = nullptr
+\item 
+void(\texorpdfstring{$\ast$}{*} \mbox{\hyperlink{class_old3_d_engine_1_1_engine_a631102339fe74ddbf9bcae940a81e9cb}{fixed\+Process\+Loop}} )(\mbox{\hyperlink{class_old3_d_engine_1_1_engine}{Engine}} \texorpdfstring{$\ast$}{*}, double) = nullptr
+\item 
+void(\texorpdfstring{$\ast$}{*} \mbox{\hyperlink{class_old3_d_engine_1_1_engine_a0c1b3366c0c1dd44441c8693368df057}{input\+Event\+Func}} )(\mbox{\hyperlink{class_old3_d_engine_1_1_engine}{Engine}} \texorpdfstring{$\ast$}{*}, \mbox{\hyperlink{struct_old3_d_engine_1_1_engine_1_1_input_event_info}{Input\+Event\+Info}}) = nullptr
+\item 
+GLFWwindow \texorpdfstring{$\ast$}{*} \mbox{\hyperlink{class_old3_d_engine_1_1_engine_af154a745593dcbbca637461c3f5aee0b}{window}}
+\item 
+\mbox{\hyperlink{class_old3_d_engine_1_1_engine_ad9a56ab1446da63dba502ce4a34e2264}{Render\+API}} \mbox{\hyperlink{class_old3_d_engine_1_1_engine_a664ad43a93db0002545557171002bec8}{render\+Api}} = \mbox{\hyperlink{class_old3_d_engine_1_1_engine_ad9a56ab1446da63dba502ce4a34e2264a0bce4353745dbb2337d5d9b2788b4fbb}{Render\+API\+::\+Open\+GL\+\_\+1\+\_\+5}}
+\item 
+uint16\+\_\+t \mbox{\hyperlink{class_old3_d_engine_1_1_engine_af9954a7ebeeb280e7e0ce021979e8336}{fixed\+Loop\+Refresh\+Rate}} = 60
+\item 
+int64\+\_\+t \mbox{\hyperlink{class_old3_d_engine_1_1_engine_a698197ef0abd16c265c8c88fa7e19877}{fixed\+Process\+Delay\+MCS}}
+\item 
+\mbox{\hyperlink{class_old3_d_engine_1_1_camera}{Camera}} \texorpdfstring{$\ast$}{*} \mbox{\hyperlink{class_old3_d_engine_1_1_engine_aed15fa392e31a824acac03bd913c3b56}{camera\+Object}} = nullptr
+\item 
+\mbox{\hyperlink{class_old3_d_engine_1_1_u_u_i_d___generator}{UUID\+\_\+\+Generator}} \mbox{\hyperlink{class_old3_d_engine_1_1_engine_ab20380d00a71c13126f3abf811eed30a}{uuid\+Generator}}
+\item 
+std\+::vector$<$ \mbox{\hyperlink{struct_old3_d_engine_1_1_engine_1_1_scene_object}{Scene\+Object}} $>$ \mbox{\hyperlink{class_old3_d_engine_1_1_engine_a5145f6f0df56ccf97da14363784132f7}{objects}}
+\item 
+std\+::vector$<$ \mbox{\hyperlink{struct_old3_d_engine_1_1_engine_1_1_scene_object}{Scene\+Object}} $>$ \mbox{\hyperlink{class_old3_d_engine_1_1_engine_a4e4239db8c73fdff481bb111769e3bf9}{meshes}}
+\item 
+std\+::vector$<$ \mbox{\hyperlink{struct_old3_d_engine_1_1_engine_1_1_scene_object}{Scene\+Object}} $>$ \mbox{\hyperlink{class_old3_d_engine_1_1_engine_aaa5dc8a07da7a1f5e2b9b5df2c69d4e4}{lights}}
+\item 
+std\+::mutex \mbox{\hyperlink{class_old3_d_engine_1_1_engine_aad8bf3ad22c7f0d7f513550d10bcc117}{meshes\+Mutex}}
+\item 
+Input\+Class \mbox{\hyperlink{class_old3_d_engine_1_1_engine_aa559fa6eb1ca45a28cb4e3847da1a470}{Input}}
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Friends}
+\begin{DoxyCompactItemize}
+\item 
+class \mbox{\hyperlink{class_old3_d_engine_1_1_engine_abc0326b946eced80bb9eb6f580200a6d}{Input\+Class}}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Member Enumeration Documentation}
+\Hypertarget{class_old3_d_engine_1_1_engine_acb6967b6d052b8d95035f3c70f1bb3d3}\label{class_old3_d_engine_1_1_engine_acb6967b6d052b8d95035f3c70f1bb3d3} 
+\index{Old3DEngine::Engine@{Old3DEngine::Engine}!InputEventType@{InputEventType}}
+\index{InputEventType@{InputEventType}!Old3DEngine::Engine@{Old3DEngine::Engine}}
+\doxysubsubsection{\texorpdfstring{InputEventType}{InputEventType}}
+{\footnotesize\ttfamily enum \mbox{\hyperlink{class_old3_d_engine_1_1_engine_acb6967b6d052b8d95035f3c70f1bb3d3}{Old3\+DEngine\+::\+Engine\+::\+Input\+Event\+Type}}}
+
+\begin{DoxyEnumFields}{Enumerator}
+\raisebox{\heightof{T}}[0pt][0pt]{\index{InputEventKey@{InputEventKey}!Old3DEngine::Engine@{Old3DEngine::Engine}}\index{Old3DEngine::Engine@{Old3DEngine::Engine}!InputEventKey@{InputEventKey}}}\Hypertarget{class_old3_d_engine_1_1_engine_acb6967b6d052b8d95035f3c70f1bb3d3a509b7e89c3754200e68db0101b789f84}\label{class_old3_d_engine_1_1_engine_acb6967b6d052b8d95035f3c70f1bb3d3a509b7e89c3754200e68db0101b789f84} 
+Input\+Event\+Key&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{InputEventMouseMove@{InputEventMouseMove}!Old3DEngine::Engine@{Old3DEngine::Engine}}\index{Old3DEngine::Engine@{Old3DEngine::Engine}!InputEventMouseMove@{InputEventMouseMove}}}\Hypertarget{class_old3_d_engine_1_1_engine_acb6967b6d052b8d95035f3c70f1bb3d3a0e6a7b0bc806809eaff69157a8ed5e05}\label{class_old3_d_engine_1_1_engine_acb6967b6d052b8d95035f3c70f1bb3d3a0e6a7b0bc806809eaff69157a8ed5e05} 
+Input\+Event\+Mouse\+Move&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{InputEventMouseScroll@{InputEventMouseScroll}!Old3DEngine::Engine@{Old3DEngine::Engine}}\index{Old3DEngine::Engine@{Old3DEngine::Engine}!InputEventMouseScroll@{InputEventMouseScroll}}}\Hypertarget{class_old3_d_engine_1_1_engine_acb6967b6d052b8d95035f3c70f1bb3d3a4e63e3e91a01c1b4b157ecf2ea5927e8}\label{class_old3_d_engine_1_1_engine_acb6967b6d052b8d95035f3c70f1bb3d3a4e63e3e91a01c1b4b157ecf2ea5927e8} 
+Input\+Event\+Mouse\+Scroll&\\
+\hline
+
+\end{DoxyEnumFields}
+\Hypertarget{class_old3_d_engine_1_1_engine_ad9a56ab1446da63dba502ce4a34e2264}\label{class_old3_d_engine_1_1_engine_ad9a56ab1446da63dba502ce4a34e2264} 
+\index{Old3DEngine::Engine@{Old3DEngine::Engine}!RenderAPI@{RenderAPI}}
+\index{RenderAPI@{RenderAPI}!Old3DEngine::Engine@{Old3DEngine::Engine}}
+\doxysubsubsection{\texorpdfstring{RenderAPI}{RenderAPI}}
+{\footnotesize\ttfamily enum \mbox{\hyperlink{class_old3_d_engine_1_1_engine_ad9a56ab1446da63dba502ce4a34e2264}{Old3\+DEngine\+::\+Engine\+::\+Render\+API}}}
+
+\begin{DoxyEnumFields}{Enumerator}
+\raisebox{\heightof{T}}[0pt][0pt]{\index{OpenGL\_1\_5@{OpenGL\_1\_5}!Old3DEngine::Engine@{Old3DEngine::Engine}}\index{Old3DEngine::Engine@{Old3DEngine::Engine}!OpenGL\_1\_5@{OpenGL\_1\_5}}}\Hypertarget{class_old3_d_engine_1_1_engine_ad9a56ab1446da63dba502ce4a34e2264a0bce4353745dbb2337d5d9b2788b4fbb}\label{class_old3_d_engine_1_1_engine_ad9a56ab1446da63dba502ce4a34e2264a0bce4353745dbb2337d5d9b2788b4fbb} 
+Open\+GL\+\_\+1\+\_\+5&\\
+\hline
+
+\end{DoxyEnumFields}
+
+
+\doxysubsection{Constructor \& Destructor Documentation}
+\Hypertarget{class_old3_d_engine_1_1_engine_afec53649c34c63c56cf059ed2184eeea}\label{class_old3_d_engine_1_1_engine_afec53649c34c63c56cf059ed2184eeea} 
+\index{Old3DEngine::Engine@{Old3DEngine::Engine}!Engine@{Engine}}
+\index{Engine@{Engine}!Old3DEngine::Engine@{Old3DEngine::Engine}}
+\doxysubsubsection{\texorpdfstring{Engine()}{Engine()}}
+{\footnotesize\ttfamily Old3\+DEngine\+::\+Engine\+::\+Engine (\begin{DoxyParamCaption}\item[{std\+::string}]{window\+\_\+lbl,  }\item[{int}]{width,  }\item[{int}]{height }\end{DoxyParamCaption})}
+
+
+
+\doxysubsection{Member Function Documentation}
+\Hypertarget{class_old3_d_engine_1_1_engine_ab9c486a29514a47044a24220e8880c6a}\label{class_old3_d_engine_1_1_engine_ab9c486a29514a47044a24220e8880c6a} 
+\index{Old3DEngine::Engine@{Old3DEngine::Engine}!addObjectClone@{addObjectClone}}
+\index{addObjectClone@{addObjectClone}!Old3DEngine::Engine@{Old3DEngine::Engine}}
+\doxysubsubsection{\texorpdfstring{addObjectClone()}{addObjectClone()}\hspace{0.1cm}{\footnotesize\ttfamily [1/3]}}
+{\footnotesize\ttfamily \mbox{\hyperlink{struct_old3_d_engine_1_1_u_u_i_d___generator_1_1_u_u_i_d}{UUID\+\_\+\+Generator\+::\+UUID}} Old3\+DEngine\+::\+Engine\+::add\+Object\+Clone (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{class_old3_d_engine_1_1_light}{Light}}}]{object }\end{DoxyParamCaption})}
+
+\Hypertarget{class_old3_d_engine_1_1_engine_a9bf15ffd0334cc9140c80c732a745691}\label{class_old3_d_engine_1_1_engine_a9bf15ffd0334cc9140c80c732a745691} 
+\index{Old3DEngine::Engine@{Old3DEngine::Engine}!addObjectClone@{addObjectClone}}
+\index{addObjectClone@{addObjectClone}!Old3DEngine::Engine@{Old3DEngine::Engine}}
+\doxysubsubsection{\texorpdfstring{addObjectClone()}{addObjectClone()}\hspace{0.1cm}{\footnotesize\ttfamily [2/3]}}
+{\footnotesize\ttfamily \mbox{\hyperlink{struct_old3_d_engine_1_1_u_u_i_d___generator_1_1_u_u_i_d}{UUID\+\_\+\+Generator\+::\+UUID}} Old3\+DEngine\+::\+Engine\+::add\+Object\+Clone (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{class_old3_d_engine_1_1_mesh}{Mesh}}}]{object }\end{DoxyParamCaption})}
+
+\Hypertarget{class_old3_d_engine_1_1_engine_a21c6adb9e33112025a241276f85287e2}\label{class_old3_d_engine_1_1_engine_a21c6adb9e33112025a241276f85287e2} 
+\index{Old3DEngine::Engine@{Old3DEngine::Engine}!addObjectClone@{addObjectClone}}
+\index{addObjectClone@{addObjectClone}!Old3DEngine::Engine@{Old3DEngine::Engine}}
+\doxysubsubsection{\texorpdfstring{addObjectClone()}{addObjectClone()}\hspace{0.1cm}{\footnotesize\ttfamily [3/3]}}
+{\footnotesize\ttfamily \mbox{\hyperlink{struct_old3_d_engine_1_1_u_u_i_d___generator_1_1_u_u_i_d}{UUID\+\_\+\+Generator\+::\+UUID}} Old3\+DEngine\+::\+Engine\+::add\+Object\+Clone (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{class_old3_d_engine_1_1_object}{Object}}}]{object }\end{DoxyParamCaption})}
+
+\Hypertarget{class_old3_d_engine_1_1_engine_aefc73ce694c08ad7ae28b034c0a4aa54}\label{class_old3_d_engine_1_1_engine_aefc73ce694c08ad7ae28b034c0a4aa54} 
+\index{Old3DEngine::Engine@{Old3DEngine::Engine}!addObjectRef@{addObjectRef}}
+\index{addObjectRef@{addObjectRef}!Old3DEngine::Engine@{Old3DEngine::Engine}}
+\doxysubsubsection{\texorpdfstring{addObjectRef()}{addObjectRef()}\hspace{0.1cm}{\footnotesize\ttfamily [1/3]}}
+{\footnotesize\ttfamily \mbox{\hyperlink{struct_old3_d_engine_1_1_u_u_i_d___generator_1_1_u_u_i_d}{UUID\+\_\+\+Generator\+::\+UUID}} Old3\+DEngine\+::\+Engine\+::add\+Object\+Ref (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{class_old3_d_engine_1_1_light}{Light}} \texorpdfstring{$\ast$}{*}}]{object }\end{DoxyParamCaption})}
+
+\Hypertarget{class_old3_d_engine_1_1_engine_a6a1d1260f110cfcb6430c94b88feb37f}\label{class_old3_d_engine_1_1_engine_a6a1d1260f110cfcb6430c94b88feb37f} 
+\index{Old3DEngine::Engine@{Old3DEngine::Engine}!addObjectRef@{addObjectRef}}
+\index{addObjectRef@{addObjectRef}!Old3DEngine::Engine@{Old3DEngine::Engine}}
+\doxysubsubsection{\texorpdfstring{addObjectRef()}{addObjectRef()}\hspace{0.1cm}{\footnotesize\ttfamily [2/3]}}
+{\footnotesize\ttfamily \mbox{\hyperlink{struct_old3_d_engine_1_1_u_u_i_d___generator_1_1_u_u_i_d}{UUID\+\_\+\+Generator\+::\+UUID}} Old3\+DEngine\+::\+Engine\+::add\+Object\+Ref (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{class_old3_d_engine_1_1_mesh}{Mesh}} \texorpdfstring{$\ast$}{*}}]{object }\end{DoxyParamCaption})}
+
+\Hypertarget{class_old3_d_engine_1_1_engine_a2edc857d2936a7b606ccbfe0731f7138}\label{class_old3_d_engine_1_1_engine_a2edc857d2936a7b606ccbfe0731f7138} 
+\index{Old3DEngine::Engine@{Old3DEngine::Engine}!addObjectRef@{addObjectRef}}
+\index{addObjectRef@{addObjectRef}!Old3DEngine::Engine@{Old3DEngine::Engine}}
+\doxysubsubsection{\texorpdfstring{addObjectRef()}{addObjectRef()}\hspace{0.1cm}{\footnotesize\ttfamily [3/3]}}
+{\footnotesize\ttfamily \mbox{\hyperlink{struct_old3_d_engine_1_1_u_u_i_d___generator_1_1_u_u_i_d}{UUID\+\_\+\+Generator\+::\+UUID}} Old3\+DEngine\+::\+Engine\+::add\+Object\+Ref (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{class_old3_d_engine_1_1_object}{Object}} \texorpdfstring{$\ast$}{*}}]{object }\end{DoxyParamCaption})}
+
+\Hypertarget{class_old3_d_engine_1_1_engine_a582a7350e37e8d95bffeb4c1b36c21e0}\label{class_old3_d_engine_1_1_engine_a582a7350e37e8d95bffeb4c1b36c21e0} 
+\index{Old3DEngine::Engine@{Old3DEngine::Engine}!frameBufferSizeChange@{frameBufferSizeChange}}
+\index{frameBufferSizeChange@{frameBufferSizeChange}!Old3DEngine::Engine@{Old3DEngine::Engine}}
+\doxysubsubsection{\texorpdfstring{frameBufferSizeChange()}{frameBufferSizeChange()}}
+{\footnotesize\ttfamily void Old3\+DEngine\+::\+Engine\+::frame\+Buffer\+Size\+Change (\begin{DoxyParamCaption}\item[{GLFWwindow \texorpdfstring{$\ast$}{*}}]{win,  }\item[{int}]{w,  }\item[{int}]{h }\end{DoxyParamCaption})}
+
+\Hypertarget{class_old3_d_engine_1_1_engine_ab621adf26bdfbb4fc8a7309d5d6ef4aa}\label{class_old3_d_engine_1_1_engine_ab621adf26bdfbb4fc8a7309d5d6ef4aa} 
+\index{Old3DEngine::Engine@{Old3DEngine::Engine}!removeObject@{removeObject}}
+\index{removeObject@{removeObject}!Old3DEngine::Engine@{Old3DEngine::Engine}}
+\doxysubsubsection{\texorpdfstring{removeObject()}{removeObject()}}
+{\footnotesize\ttfamily bool Old3\+DEngine\+::\+Engine\+::remove\+Object (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{struct_old3_d_engine_1_1_u_u_i_d___generator_1_1_u_u_i_d}{UUID\+\_\+\+Generator\+::\+UUID}}}]{uuid }\end{DoxyParamCaption})}
+
+\Hypertarget{class_old3_d_engine_1_1_engine_a7ff84a7077893c5d1fec6db99978635b}\label{class_old3_d_engine_1_1_engine_a7ff84a7077893c5d1fec6db99978635b} 
+\index{Old3DEngine::Engine@{Old3DEngine::Engine}!Run@{Run}}
+\index{Run@{Run}!Old3DEngine::Engine@{Old3DEngine::Engine}}
+\doxysubsubsection{\texorpdfstring{Run()}{Run()}}
+{\footnotesize\ttfamily void Old3\+DEngine\+::\+Engine\+::\+Run (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+\Hypertarget{class_old3_d_engine_1_1_engine_a275c706fb7e0d17b69c903143b423bd6}\label{class_old3_d_engine_1_1_engine_a275c706fb7e0d17b69c903143b423bd6} 
+\index{Old3DEngine::Engine@{Old3DEngine::Engine}!setCameraRef@{setCameraRef}}
+\index{setCameraRef@{setCameraRef}!Old3DEngine::Engine@{Old3DEngine::Engine}}
+\doxysubsubsection{\texorpdfstring{setCameraRef()}{setCameraRef()}}
+{\footnotesize\ttfamily void Old3\+DEngine\+::\+Engine\+::set\+Camera\+Ref (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{class_old3_d_engine_1_1_camera}{Camera}} \texorpdfstring{$\ast$}{*}}]{cam }\end{DoxyParamCaption})}
+
+\Hypertarget{class_old3_d_engine_1_1_engine_a28700b4a606ef5e758837a252adcd023}\label{class_old3_d_engine_1_1_engine_a28700b4a606ef5e758837a252adcd023} 
+\index{Old3DEngine::Engine@{Old3DEngine::Engine}!setFixedProcessLoop@{setFixedProcessLoop}}
+\index{setFixedProcessLoop@{setFixedProcessLoop}!Old3DEngine::Engine@{Old3DEngine::Engine}}
+\doxysubsubsection{\texorpdfstring{setFixedProcessLoop()}{setFixedProcessLoop()}}
+{\footnotesize\ttfamily void Old3\+DEngine\+::\+Engine\+::set\+Fixed\+Process\+Loop (\begin{DoxyParamCaption}\item[{void(\texorpdfstring{$\ast$}{*})(\mbox{\hyperlink{class_old3_d_engine_1_1_engine}{Engine}} \texorpdfstring{$\ast$}{*}, double)}]{func }\end{DoxyParamCaption})}
+
+\Hypertarget{class_old3_d_engine_1_1_engine_a574a8aa83ef60a3677b0a1fc3e609afd}\label{class_old3_d_engine_1_1_engine_a574a8aa83ef60a3677b0a1fc3e609afd} 
+\index{Old3DEngine::Engine@{Old3DEngine::Engine}!setInputEvent@{setInputEvent}}
+\index{setInputEvent@{setInputEvent}!Old3DEngine::Engine@{Old3DEngine::Engine}}
+\doxysubsubsection{\texorpdfstring{setInputEvent()}{setInputEvent()}}
+{\footnotesize\ttfamily void Old3\+DEngine\+::\+Engine\+::set\+Input\+Event (\begin{DoxyParamCaption}\item[{void(\texorpdfstring{$\ast$}{*})(\mbox{\hyperlink{class_old3_d_engine_1_1_engine}{Engine}} \texorpdfstring{$\ast$}{*}, \mbox{\hyperlink{struct_old3_d_engine_1_1_engine_1_1_input_event_info}{Input\+Event\+Info}})}]{func }\end{DoxyParamCaption})}
+
+\Hypertarget{class_old3_d_engine_1_1_engine_a04bf42666f8b64c46ba91547abcc7075}\label{class_old3_d_engine_1_1_engine_a04bf42666f8b64c46ba91547abcc7075} 
+\index{Old3DEngine::Engine@{Old3DEngine::Engine}!setProcessLoop@{setProcessLoop}}
+\index{setProcessLoop@{setProcessLoop}!Old3DEngine::Engine@{Old3DEngine::Engine}}
+\doxysubsubsection{\texorpdfstring{setProcessLoop()}{setProcessLoop()}}
+{\footnotesize\ttfamily void Old3\+DEngine\+::\+Engine\+::set\+Process\+Loop (\begin{DoxyParamCaption}\item[{void(\texorpdfstring{$\ast$}{*})(\mbox{\hyperlink{class_old3_d_engine_1_1_engine}{Engine}} \texorpdfstring{$\ast$}{*}, double)}]{func }\end{DoxyParamCaption})}
+
+\Hypertarget{class_old3_d_engine_1_1_engine_a2ce5e049a487f4ca0948343455b8fd65}\label{class_old3_d_engine_1_1_engine_a2ce5e049a487f4ca0948343455b8fd65} 
+\index{Old3DEngine::Engine@{Old3DEngine::Engine}!threadFixedProcessLoop@{threadFixedProcessLoop}}
+\index{threadFixedProcessLoop@{threadFixedProcessLoop}!Old3DEngine::Engine@{Old3DEngine::Engine}}
+\doxysubsubsection{\texorpdfstring{threadFixedProcessLoop()}{threadFixedProcessLoop()}}
+{\footnotesize\ttfamily void Old3\+DEngine\+::\+Engine\+::thread\+Fixed\+Process\+Loop (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+\doxysubsection{Friends And Related Symbol Documentation}
+\Hypertarget{class_old3_d_engine_1_1_engine_abc0326b946eced80bb9eb6f580200a6d}\label{class_old3_d_engine_1_1_engine_abc0326b946eced80bb9eb6f580200a6d} 
+\index{Old3DEngine::Engine@{Old3DEngine::Engine}!InputClass@{InputClass}}
+\index{InputClass@{InputClass}!Old3DEngine::Engine@{Old3DEngine::Engine}}
+\doxysubsubsection{\texorpdfstring{InputClass}{InputClass}}
+{\footnotesize\ttfamily friend class Input\+Class\hspace{0.3cm}{\ttfamily [friend]}}
+
+
+
+\doxysubsection{Member Data Documentation}
+\Hypertarget{class_old3_d_engine_1_1_engine_aed15fa392e31a824acac03bd913c3b56}\label{class_old3_d_engine_1_1_engine_aed15fa392e31a824acac03bd913c3b56} 
+\index{Old3DEngine::Engine@{Old3DEngine::Engine}!cameraObject@{cameraObject}}
+\index{cameraObject@{cameraObject}!Old3DEngine::Engine@{Old3DEngine::Engine}}
+\doxysubsubsection{\texorpdfstring{cameraObject}{cameraObject}}
+{\footnotesize\ttfamily \mbox{\hyperlink{class_old3_d_engine_1_1_camera}{Camera}}\texorpdfstring{$\ast$}{*} Old3\+DEngine\+::\+Engine\+::camera\+Object = nullptr}
+
+\Hypertarget{class_old3_d_engine_1_1_engine_af9954a7ebeeb280e7e0ce021979e8336}\label{class_old3_d_engine_1_1_engine_af9954a7ebeeb280e7e0ce021979e8336} 
+\index{Old3DEngine::Engine@{Old3DEngine::Engine}!fixedLoopRefreshRate@{fixedLoopRefreshRate}}
+\index{fixedLoopRefreshRate@{fixedLoopRefreshRate}!Old3DEngine::Engine@{Old3DEngine::Engine}}
+\doxysubsubsection{\texorpdfstring{fixedLoopRefreshRate}{fixedLoopRefreshRate}}
+{\footnotesize\ttfamily uint16\+\_\+t Old3\+DEngine\+::\+Engine\+::fixed\+Loop\+Refresh\+Rate = 60}
+
+\Hypertarget{class_old3_d_engine_1_1_engine_a698197ef0abd16c265c8c88fa7e19877}\label{class_old3_d_engine_1_1_engine_a698197ef0abd16c265c8c88fa7e19877} 
+\index{Old3DEngine::Engine@{Old3DEngine::Engine}!fixedProcessDelayMCS@{fixedProcessDelayMCS}}
+\index{fixedProcessDelayMCS@{fixedProcessDelayMCS}!Old3DEngine::Engine@{Old3DEngine::Engine}}
+\doxysubsubsection{\texorpdfstring{fixedProcessDelayMCS}{fixedProcessDelayMCS}}
+{\footnotesize\ttfamily int64\+\_\+t Old3\+DEngine\+::\+Engine\+::fixed\+Process\+Delay\+MCS}
+
+\Hypertarget{class_old3_d_engine_1_1_engine_a631102339fe74ddbf9bcae940a81e9cb}\label{class_old3_d_engine_1_1_engine_a631102339fe74ddbf9bcae940a81e9cb} 
+\index{Old3DEngine::Engine@{Old3DEngine::Engine}!fixedProcessLoop@{fixedProcessLoop}}
+\index{fixedProcessLoop@{fixedProcessLoop}!Old3DEngine::Engine@{Old3DEngine::Engine}}
+\doxysubsubsection{\texorpdfstring{fixedProcessLoop}{fixedProcessLoop}}
+{\footnotesize\ttfamily void(\texorpdfstring{$\ast$}{*} Old3\+DEngine\+::\+Engine\+::fixed\+Process\+Loop) (\mbox{\hyperlink{class_old3_d_engine_1_1_engine}{Engine}} \texorpdfstring{$\ast$}{*}, double) = nullptr}
+
+\Hypertarget{class_old3_d_engine_1_1_engine_aa559fa6eb1ca45a28cb4e3847da1a470}\label{class_old3_d_engine_1_1_engine_aa559fa6eb1ca45a28cb4e3847da1a470} 
+\index{Old3DEngine::Engine@{Old3DEngine::Engine}!Input@{Input}}
+\index{Input@{Input}!Old3DEngine::Engine@{Old3DEngine::Engine}}
+\doxysubsubsection{\texorpdfstring{Input}{Input}}
+{\footnotesize\ttfamily Input\+Class Old3\+DEngine\+::\+Engine\+::\+Input}
+
+\Hypertarget{class_old3_d_engine_1_1_engine_a0c1b3366c0c1dd44441c8693368df057}\label{class_old3_d_engine_1_1_engine_a0c1b3366c0c1dd44441c8693368df057} 
+\index{Old3DEngine::Engine@{Old3DEngine::Engine}!inputEventFunc@{inputEventFunc}}
+\index{inputEventFunc@{inputEventFunc}!Old3DEngine::Engine@{Old3DEngine::Engine}}
+\doxysubsubsection{\texorpdfstring{inputEventFunc}{inputEventFunc}}
+{\footnotesize\ttfamily void(\texorpdfstring{$\ast$}{*} Old3\+DEngine\+::\+Engine\+::input\+Event\+Func) (\mbox{\hyperlink{class_old3_d_engine_1_1_engine}{Engine}} \texorpdfstring{$\ast$}{*}, \mbox{\hyperlink{struct_old3_d_engine_1_1_engine_1_1_input_event_info}{Input\+Event\+Info}}) = nullptr}
+
+\Hypertarget{class_old3_d_engine_1_1_engine_aaa5dc8a07da7a1f5e2b9b5df2c69d4e4}\label{class_old3_d_engine_1_1_engine_aaa5dc8a07da7a1f5e2b9b5df2c69d4e4} 
+\index{Old3DEngine::Engine@{Old3DEngine::Engine}!lights@{lights}}
+\index{lights@{lights}!Old3DEngine::Engine@{Old3DEngine::Engine}}
+\doxysubsubsection{\texorpdfstring{lights}{lights}}
+{\footnotesize\ttfamily std\+::vector$<$\mbox{\hyperlink{struct_old3_d_engine_1_1_engine_1_1_scene_object}{Scene\+Object}}$>$ Old3\+DEngine\+::\+Engine\+::lights}
+
+\Hypertarget{class_old3_d_engine_1_1_engine_a4e4239db8c73fdff481bb111769e3bf9}\label{class_old3_d_engine_1_1_engine_a4e4239db8c73fdff481bb111769e3bf9} 
+\index{Old3DEngine::Engine@{Old3DEngine::Engine}!meshes@{meshes}}
+\index{meshes@{meshes}!Old3DEngine::Engine@{Old3DEngine::Engine}}
+\doxysubsubsection{\texorpdfstring{meshes}{meshes}}
+{\footnotesize\ttfamily std\+::vector$<$\mbox{\hyperlink{struct_old3_d_engine_1_1_engine_1_1_scene_object}{Scene\+Object}}$>$ Old3\+DEngine\+::\+Engine\+::meshes}
+
+\Hypertarget{class_old3_d_engine_1_1_engine_aad8bf3ad22c7f0d7f513550d10bcc117}\label{class_old3_d_engine_1_1_engine_aad8bf3ad22c7f0d7f513550d10bcc117} 
+\index{Old3DEngine::Engine@{Old3DEngine::Engine}!meshesMutex@{meshesMutex}}
+\index{meshesMutex@{meshesMutex}!Old3DEngine::Engine@{Old3DEngine::Engine}}
+\doxysubsubsection{\texorpdfstring{meshesMutex}{meshesMutex}}
+{\footnotesize\ttfamily std\+::mutex Old3\+DEngine\+::\+Engine\+::meshes\+Mutex}
+
+\Hypertarget{class_old3_d_engine_1_1_engine_a5145f6f0df56ccf97da14363784132f7}\label{class_old3_d_engine_1_1_engine_a5145f6f0df56ccf97da14363784132f7} 
+\index{Old3DEngine::Engine@{Old3DEngine::Engine}!objects@{objects}}
+\index{objects@{objects}!Old3DEngine::Engine@{Old3DEngine::Engine}}
+\doxysubsubsection{\texorpdfstring{objects}{objects}}
+{\footnotesize\ttfamily std\+::vector$<$\mbox{\hyperlink{struct_old3_d_engine_1_1_engine_1_1_scene_object}{Scene\+Object}}$>$ Old3\+DEngine\+::\+Engine\+::objects}
+
+\Hypertarget{class_old3_d_engine_1_1_engine_ab12c9d1e657cd424e4a68de3f61bf8f0}\label{class_old3_d_engine_1_1_engine_ab12c9d1e657cd424e4a68de3f61bf8f0} 
+\index{Old3DEngine::Engine@{Old3DEngine::Engine}!processLoop@{processLoop}}
+\index{processLoop@{processLoop}!Old3DEngine::Engine@{Old3DEngine::Engine}}
+\doxysubsubsection{\texorpdfstring{processLoop}{processLoop}}
+{\footnotesize\ttfamily void(\texorpdfstring{$\ast$}{*} Old3\+DEngine\+::\+Engine\+::process\+Loop) (\mbox{\hyperlink{class_old3_d_engine_1_1_engine}{Engine}} \texorpdfstring{$\ast$}{*}, double) = nullptr}
+
+\Hypertarget{class_old3_d_engine_1_1_engine_a664ad43a93db0002545557171002bec8}\label{class_old3_d_engine_1_1_engine_a664ad43a93db0002545557171002bec8} 
+\index{Old3DEngine::Engine@{Old3DEngine::Engine}!renderApi@{renderApi}}
+\index{renderApi@{renderApi}!Old3DEngine::Engine@{Old3DEngine::Engine}}
+\doxysubsubsection{\texorpdfstring{renderApi}{renderApi}}
+{\footnotesize\ttfamily \mbox{\hyperlink{class_old3_d_engine_1_1_engine_ad9a56ab1446da63dba502ce4a34e2264}{Render\+API}} Old3\+DEngine\+::\+Engine\+::render\+Api = \mbox{\hyperlink{class_old3_d_engine_1_1_engine_ad9a56ab1446da63dba502ce4a34e2264a0bce4353745dbb2337d5d9b2788b4fbb}{Render\+API\+::\+Open\+GL\+\_\+1\+\_\+5}}}
+
+\Hypertarget{class_old3_d_engine_1_1_engine_ab20380d00a71c13126f3abf811eed30a}\label{class_old3_d_engine_1_1_engine_ab20380d00a71c13126f3abf811eed30a} 
+\index{Old3DEngine::Engine@{Old3DEngine::Engine}!uuidGenerator@{uuidGenerator}}
+\index{uuidGenerator@{uuidGenerator}!Old3DEngine::Engine@{Old3DEngine::Engine}}
+\doxysubsubsection{\texorpdfstring{uuidGenerator}{uuidGenerator}}
+{\footnotesize\ttfamily \mbox{\hyperlink{class_old3_d_engine_1_1_u_u_i_d___generator}{UUID\+\_\+\+Generator}} Old3\+DEngine\+::\+Engine\+::uuid\+Generator}
+
+\Hypertarget{class_old3_d_engine_1_1_engine_af154a745593dcbbca637461c3f5aee0b}\label{class_old3_d_engine_1_1_engine_af154a745593dcbbca637461c3f5aee0b} 
+\index{Old3DEngine::Engine@{Old3DEngine::Engine}!window@{window}}
+\index{window@{window}!Old3DEngine::Engine@{Old3DEngine::Engine}}
+\doxysubsubsection{\texorpdfstring{window}{window}}
+{\footnotesize\ttfamily GLFWwindow\texorpdfstring{$\ast$}{*} Old3\+DEngine\+::\+Engine\+::window}
+
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+include/\+Old3\+DEngine/\mbox{\hyperlink{_old3_d_engine_8hpp}{Old3\+DEngine.\+hpp}}\end{DoxyCompactItemize}

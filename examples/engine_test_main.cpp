@@ -47,8 +47,6 @@ int main() {
     //physicsWorld->setGravity({0, -0.01, 0});
     floor_col->setType(BodyType::STATIC);
 
-
-
     camera.setPosition(0, 0, 3);
     camera.setRotation(0, -90, 0);
     mesh1.setRotation(0, 0, 0);
@@ -81,7 +79,7 @@ int main() {
             0, 0, 1, 0, 1, 1, 1, 1, 0, 1, 0, 0,
     });
     game.addObjectRef(&mesh1);
-    game.addObjectRef(&floor);
+    game.addObjectClone(floor);
     game.addObjectRef(&sun);
     std::cout << sizeof(Old3DEngine::Mesh) << "\n";
 
@@ -119,7 +117,7 @@ void _process(Old3DEngine::Engine* engine, double delta) {
         del += delta;
     }
     else {
-        std::cout << "FPS: " << (float)count / del << std::endl;
+        //std::cout << "FPS: " << (float)count / del << std::endl;
         count = 0;
         del = 0.0;
     }
@@ -127,12 +125,12 @@ void _process(Old3DEngine::Engine* engine, double delta) {
 
 
 
-
+bool t = true;
 void _physics_process(Old3DEngine::Engine* engine, double delta) {
     physicsWorld->update((float)delta);
     Vector3 rbodyPosVect = rbody->getTransform().getPosition();
     mesh1.setPosition(rbodyPosVect.x, rbodyPosVect.y, rbodyPosVect.z);
-    std::cout << rbodyPosVect.y << "\n";
+    //std::cout << rbodyPosVect.y << "\n";
 
 
 
@@ -143,11 +141,17 @@ void _physics_process(Old3DEngine::Engine* engine, double delta) {
         //cube.setRotation(rot);
         //cube.setPosition(cube.getPosition().x,  cube.getPosition().y + y, 0.0);
     }*/
+    if (glfwGetKey(engine->getWindow(), GLFW_KEY_ESCAPE) == GLFW_PRESS) {
+        //physicsWorld.
+        glfwSetWindowShouldClose(engine->getWindow(), true);
+    }
+
     if (engine->Input.isKeyPressed(GLFW_KEY_LEFT_SHIFT)) {
         Vector3 newPos = rbodyPosVect;
         newPos.y += 0.1;
         Transform newTrans = Transform(newPos, rbody->getTransform().getOrientation());
-        rbody->setTransform(newTrans);
+        //rbody->setTransform(newTrans);
+        rbody->setLinearVelocity({0, 10, 0});
         //mesh1.offset({0, 0.1, 0});
     }
     else if (engine->Input.isKeyPressed(GLFW_KEY_LEFT_CONTROL))
@@ -159,9 +163,21 @@ void _physics_process(Old3DEngine::Engine* engine, double delta) {
     if (engine->Input.isKeyPressed(GLFW_KEY_E))
         camera.rotate(0, 0, .1);
 
+    if (engine->Input.isKeyPressed(GLFW_KEY_R) and t) {
+        Vector3 newPos = rbodyPosVect;
+        newPos.y += 10;
+        Transform newTrans = Transform(newPos, rbody->getTransform().getOrientation());
+        rbody->setTransform(newTrans);
+        t = false;
+    }
+
+    if (not engine->Input.isKeyPressed(GLFW_KEY_R))
+        t = true;
+
+
     if (engine->Input.isKeyPressed(GLFW_KEY_F11)) {
         GLFWmonitor *monitor = glfwGetPrimaryMonitor();
-        glfwSetWindowMonitor(engine->window, monitor, 0, 0, 3440, 1440, 144);
+        glfwSetWindowMonitor(engine->getWindow(), monitor, 0, 0, 3440, 1440, 144);
     }
 
     //mesh1.rotate({1, 2, 3});
@@ -178,7 +194,7 @@ void _physics_process(Old3DEngine::Engine* engine, double delta) {
         dir.y * 0.1 * direction.z + dir.x * 0.1 * direction.x
     });
 
-    //std::cout << "Fixed FPS: " << 1.0 / delta <<  delta<< std::endl;
+    std::cout << "Fixed FPS: " << 1.0 / delta <<  delta<< std::endl;
 }
 
 float lastX = 400;

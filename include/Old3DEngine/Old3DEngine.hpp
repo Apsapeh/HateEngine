@@ -7,6 +7,7 @@
 #include "Utilities/UUID_Generator.hpp"
 #include "Objects/Mesh.hpp"
 #include "Objects/Light/Light.hpp"
+#include "PhysEngine.hpp"
 #include "glm/vec2.hpp"
 
 namespace Old3DEngine {
@@ -47,7 +48,7 @@ namespace Old3DEngine {
             glm::vec2 position = {0, 0};
         };
 
-    public:
+    private:
         void (*processLoop)(Engine*, double) = nullptr;
         void (*fixedProcessLoop)(Engine*, double) = nullptr;
         void (*inputEventFunc)(Engine*, InputEventInfo) = nullptr;
@@ -56,8 +57,11 @@ namespace Old3DEngine {
         RenderAPI renderApi = RenderAPI::OpenGL_1_5;
         uint16_t fixedLoopRefreshRate = 60;
         int64_t fixedProcessDelayMCS; // 1_000_000 / fixedLoopRefreshRate
+        uint16_t physicsEngineIterateLoopRefreshRate = 60;
+        int64_t physicsEngineIterateDelayMCS;
 
         Camera* cameraObject = nullptr;
+        PhysEngine physEngine;
         UUID_Generator uuidGenerator;
 
         std::vector<SceneObject> objects;
@@ -68,6 +72,7 @@ namespace Old3DEngine {
 
         void threadFixedProcessLoop();
         void frameBufferSizeChange(GLFWwindow* win, int w, int h);
+        void threadPhysicsEngineIterateLoop();
 
     public:
         InputClass Input;
@@ -87,7 +92,9 @@ namespace Old3DEngine {
         UUID_Generator::UUID addObjectRef(Mesh* object);
         UUID_Generator::UUID addObjectRef(Light* object);
 
-
         bool removeObject(UUID_Generator::UUID uuid);
+
+
+        GLFWwindow* getWindow();
     };
 }

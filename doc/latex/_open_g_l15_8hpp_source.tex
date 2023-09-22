@@ -1,0 +1,28 @@
+\doxysection{Open\+GL15.\+hpp}
+\hypertarget{_open_g_l15_8hpp_source}{}\label{_open_g_l15_8hpp_source}\index{include/Old3DEngine/Render/OpenGL15.hpp@{include/Old3DEngine/Render/OpenGL15.hpp}}
+\mbox{\hyperlink{_open_g_l15_8hpp}{Go to the documentation of this file.}}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{preprocessor}{\#pragma\ once}}
+\DoxyCodeLine{00002\ \textcolor{preprocessor}{\#include\ <vector>}}
+\DoxyCodeLine{00003\ \textcolor{preprocessor}{\#include\ <cstdint>}}
+\DoxyCodeLine{00004\ \textcolor{preprocessor}{\#include\ "{}../Old3DEngine.hpp"{}}}
+\DoxyCodeLine{00005\ }
+\DoxyCodeLine{00006\ \textcolor{keyword}{namespace\ }\mbox{\hyperlink{namespace_old3_d_engine}{Old3DEngine}}\ \{}
+\DoxyCodeLine{00007\ \ \ \ \ \textcolor{keyword}{class\ }\mbox{\hyperlink{class_old3_d_engine_1_1_open_g_l15}{OpenGL15}}\ \{}
+\DoxyCodeLine{00008\ \ \ \ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00009\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{class_old3_d_engine_1_1_open_g_l15_a20f216feaf5570c0538ab5eb47c15ffa}{OpenGL15}}(std::vector<Engine::SceneObject>*\ meshes,\ std::vector<Engine::SceneObject>*\ lights);}
+\DoxyCodeLine{00010\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{class_old3_d_engine_1_1_open_g_l15_a3fe73e56bbd617e7eaa39a1778015d16}{Draw}}();}
+\DoxyCodeLine{00011\ \ \ \ \ \ \ \ \ \textcolor{comment}{//void\ eraseObjects();}}
+\DoxyCodeLine{00012\ }
+\DoxyCodeLine{00013\ \ \ \ \ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00014\ \ \ \ \ \ \ \ \ std::vector<Engine::SceneObject>\ *meshes;}
+\DoxyCodeLine{00015\ \ \ \ \ \ \ \ \ std::vector<Engine::SceneObject>\ *lights;}
+\DoxyCodeLine{00016\ \ \ \ \ \ \ \ \ uint8\_t\ maxLightCount\ =\ 8;}
+\DoxyCodeLine{00017\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{float}\ maxLightRenderDist\ =\ 25;}
+\DoxyCodeLine{00018\ }
+\DoxyCodeLine{00019\ \ \ \ \ \ \ \ \ \textcolor{keyword}{inline}\ \textcolor{keywordtype}{void}\ renderLight(std::vector<int>\ indicies);}
+\DoxyCodeLine{00020\ \ \ \ \ \ \ \ \ \textcolor{keyword}{inline}\ std::vector<int>\ getNearestLights(glm::vec3\ position);}
+\DoxyCodeLine{00021\ \ \ \ \ \};}
+\DoxyCodeLine{00022\ \}}
+
+\end{DoxyCode}

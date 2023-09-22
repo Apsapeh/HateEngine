@@ -1,0 +1,33 @@
+\doxysection{Camera.\+hpp}
+\hypertarget{_camera_8hpp_source}{}\label{_camera_8hpp_source}\index{include/Old3DEngine/Objects/Camera.hpp@{include/Old3DEngine/Objects/Camera.hpp}}
+\mbox{\hyperlink{_camera_8hpp}{Go to the documentation of this file.}}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{preprocessor}{\#pragma\ once}}
+\DoxyCodeLine{00002\ \textcolor{preprocessor}{\#include\ "{}\mbox{\hyperlink{_object_8hpp}{Object.hpp}}"{}}}
+\DoxyCodeLine{00003\ }
+\DoxyCodeLine{00004\ \textcolor{keyword}{namespace\ }\mbox{\hyperlink{namespace_old3_d_engine}{Old3DEngine}}\ \{}
+\DoxyCodeLine{00005\ \ \ \ \ \textcolor{keyword}{class\ }\mbox{\hyperlink{class_old3_d_engine_1_1_camera}{Camera}}\ :\ \textcolor{keyword}{public}\ \mbox{\hyperlink{class_old3_d_engine_1_1_object}{Object}}\ \{}
+\DoxyCodeLine{00006\ \ \ \ \ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00007\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{float}\ viewAspect;}
+\DoxyCodeLine{00008\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{float}\ FOV;}
+\DoxyCodeLine{00009\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{float}\ renderDist;}
+\DoxyCodeLine{00010\ \ \ \ \ \ \ \ \ glm::vec3\ upVec\ =\ \{0,\ 1.0,\ 0\};}
+\DoxyCodeLine{00011\ }
+\DoxyCodeLine{00012\ \ \ \ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00013\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{float}\ \mbox{\hyperlink{class_old3_d_engine_1_1_camera_a5f974a903c5bc2149872e2915db1d5b7}{yaw}}\ =\ -\/90;}
+\DoxyCodeLine{00014\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{float}\ \mbox{\hyperlink{class_old3_d_engine_1_1_camera_a1cf9420863a5d71826b5351328369342}{pitch}}\ =\ 0;}
+\DoxyCodeLine{00015\ }
+\DoxyCodeLine{00016\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{class_old3_d_engine_1_1_camera_aa2e7dbf67311f900869d2feaab291612}{Camera}}(\textcolor{keywordtype}{float}\ view\_aspect,\ \textcolor{keywordtype}{float}\ fov,\ \textcolor{keywordtype}{float}\ render\_dist);}
+\DoxyCodeLine{00017\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{class_old3_d_engine_1_1_camera_ab05b4441373e5b3e4637d4d77ea57da2}{renderOpenGL15}}();}
+\DoxyCodeLine{00018\ }
+\DoxyCodeLine{00019\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{class_old3_d_engine_1_1_camera_a1d3e2c37f9b9512ea03baf1171a4c433}{setViewAspect}}(\textcolor{keywordtype}{float}\ view\_aspect);}
+\DoxyCodeLine{00020\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{class_old3_d_engine_1_1_camera_acd6e4e5490ac8ffb191657360d3d5ee5}{setFOV}}(\textcolor{keywordtype}{float}\ fov);}
+\DoxyCodeLine{00021\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{class_old3_d_engine_1_1_camera_a4c03ac3075406a116eaf3100b371adac}{setRenderDist}}(\textcolor{keywordtype}{float}\ dist);}
+\DoxyCodeLine{00022\ }
+\DoxyCodeLine{00023\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{float}\ \mbox{\hyperlink{class_old3_d_engine_1_1_camera_a746d76c7affc4fbc5ed6a7536a545fb1}{getViewAspect}}(\textcolor{keywordtype}{float}\ view\_aspect);}
+\DoxyCodeLine{00024\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{float}\ \mbox{\hyperlink{class_old3_d_engine_1_1_camera_aeee72296f60a216ec0063b3930d68129}{getFOV}}(\textcolor{keywordtype}{float}\ fov);}
+\DoxyCodeLine{00025\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{float}\ \mbox{\hyperlink{class_old3_d_engine_1_1_camera_aac8c5d488cc25c2963462258888ea6a3}{getRenderDist}}(\textcolor{keywordtype}{float}\ dist);}
+\DoxyCodeLine{00026\ \ \ \ \ \};}
+\DoxyCodeLine{00027\ \}}
+
+\end{DoxyCode}

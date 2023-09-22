@@ -5,6 +5,7 @@
 #include <Old3DEngine/Old3DEngine.hpp>
 #include <Old3DEngine/Render/OpenGL15.hpp>
 #include <Old3DEngine/Error.hpp>
+#include <sched.h>
 #include "globalStaticParams.hpp"
 
 
@@ -57,16 +58,34 @@ Engine::Engine(std::string window_lbl, int width, int height) : Input(this){
         // Sleep correction
         int64_t d = (std::chrono::duration_cast<std::chrono::microseconds>(t2-t1).count() - 10) / 10;
         this->fixedProcessDelayMCS = 1000000 / (fixedLoopRefreshRate) - d;
+        this->physicsEngineIterateDelayMCS = 1000000 / physicsEngineIterateLoopRefreshRate - d;
     #elif __APPLE__
+        sched_param sch_params;
+        sch_params.sched_priority = 99;
+        pthread_t this_thread = pthread_self();
+        pthread_setschedparam(pthread_self(), SCHED_RR, &sch_params);
+
+        int64_t fixDelay = 1000000/fixedLoopRefreshRate;
+        int64_t physDelay = 1000000/physicsEngineIterateLoopRefreshRate;
+
         std::chrono::high_resolution_clock::time_point t1 = std::chrono::high_resolution_clock::now();
         for (int o = 0; o < 10; ++o)
-            std::this_thread::sleep_for(std::chrono::nanoseconds(1000));
+            std::this_thread::sleep_for(std::chrono::microseconds(fixDelay));
         std::chrono::high_resolution_clock::time_point t2 = std::chrono::high_resolution_clock::now();
-        // Sleep correction
-        int64_t d = (std::chrono::duration_cast<std::chrono::microseconds>(t2-t1).count() - 10) / 10;
-        this->fixedProcessDelayMCS = 1000000 / (fixedLoopRefreshRate) - d;
+        int64_t d_fp = std::chrono::duration_cast<std::chrono::microseconds>(t2-t1).count() / 10 - fixDelay;
+
+        t1 = std::chrono::high_resolution_clock::now();
+        for (int o = 0; o < 10; ++o)
+            std::this_thread::sleep_for(std::chrono::microseconds(physDelay));
+        t2 = std::chrono::high_resolution_clock::now();
+        int64_t d_pp = std::chrono::duration_cast<std::chrono::microseconds>(t2-t1).count() / 10 - physDelay;
+
+        this->fixedProcessDelayMCS = fixDelay - d_fp;
+        this->physicsEngineIterateDelayMCS = physDelay - d_pp;
     #elif _WIN32
+        // TODO: Fix Win
         this->fixedProcessDelayMCS = 1000000 / fixedLoopRefreshRate;
+        this->physicsEngineIterateDelayMCS = 1000000 / physicsEngineIterateLoopRefreshRate;
     #endif
 }
 
@@ -88,6 +107,10 @@ void Engine::Run() {
     std::thread *fixedProcessThread = nullptr;
     if (this->fixedProcessLoop != nullptr)
         fixedProcessThread = new std::thread(&Engine::threadFixedProcessLoop, this);
+
+    std::thread physicsEngineProcessThread = std::thread(
+            &Engine::threadPhysicsEngineIterateLoop, this
+    );
 
 
     if (cameraObject == nullptr) {
@@ -111,7 +134,7 @@ void Engine::Run() {
     glLightf(GL_LIGHT0, GL_QUADRATIC_ATTENUATION, 0.5);*/
     //glLightfv(GL_LIGHT0,GL_DIFFUSE,white_light);
     //glLightfv(GL_LIGHT0,GL_SPECULAR,white_light);
-    glEnable(GL_LIGHTING);
+    //glEnable(GL_LIGHTING);
     glEnable(GL_TEXTURE_2D);
 
     glEnableClientState(GL_VERTEX_ARRAY);
@@ -129,13 +152,6 @@ void Engine::Run() {
         double delta = glfwGetTime() - oldTime;
         oldTime = glfwGetTime();
         glfwPollEvents();
-        if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
-            glfwSetWindowShouldClose(window, true);
-
-
-
-
-
 
         meshesMutex.lock();
         if (this->processLoop != nullptr)
@@ -154,24 +170,27 @@ void Engine::Run() {
 
     if (fixedProcessThread != nullptr and fixedProcessThread->joinable())
         fixedProcessThread->join();
+    if (physicsEngineProcessThread.joinable())
+        physicsEngineProcessThread.join();
 }
 
 void Engine::threadFixedProcessLoop() {
+#ifdef __APPLE__
+    sched_param sch_params;
+    sch_params.sched_priority = 99;
+    pthread_t this_thread = pthread_self();
+    pthread_setschedparam(pthread_self(), SCHED_RR, &sch_params);
+#endif
+
     double oldTime = glfwGetTime();
     double delta = (float)this->fixedProcessDelayMCS / 1000000;
     double func_delta = 0.0;
-
-
-
-
-
 
     while (not glfwWindowShouldClose(this->window)) {
         int64_t a = this->fixedProcessDelayMCS - int64_t(func_delta * 1000000);
         std::this_thread::sleep_for(
                 std::chrono::microseconds(a)
         );
-
         //std::cout << d / 10<< "\n";
         delta = glfwGetTime() - oldTime;
         oldTime = glfwGetTime();
@@ -181,6 +200,40 @@ void Engine::threadFixedProcessLoop() {
         meshesMutex.lock();
         fixedProcessLoop(this, delta);
         meshesMutex.unlock();
+        func_delta = glfwGetTime() - oldTime;
+    }
+}
+
+void Engine::threadPhysicsEngineIterateLoop() {
+#ifdef __APPLE__
+    sched_param sch_params;
+    sch_params.sched_priority = 99;
+    pthread_t this_thread = pthread_self();
+    pthread_setschedparam(pthread_self(), SCHED_RR, &sch_params);
+#endif
+
+    double oldTime = glfwGetTime();
+    double delta = (float)this->physicsEngineIterateDelayMCS / 1000000;
+    double func_delta = 0.0;
+
+    while (not glfwWindowShouldClose(this->window)) {
+        int64_t a = this->fixedProcessDelayMCS - int64_t(func_delta * 1000000);
+        std::this_thread::sleep_for(
+                std::chrono::microseconds(a)
+        );
+
+        //std::cout << d / 10<< "\n";
+        delta = glfwGetTime() - oldTime;
+        physEngine.IteratePhysics((float)delta);
+        //std::cout << "Phys FPS: " << (float)1 / delta << "\n";
+        oldTime = glfwGetTime();
+        //physicsWorld->update((float)delta);
+        //std::cout << rbody->getTransform().getPosition().y << "\n";
+
+
+        /*meshesMutex.lock();
+        fixedProcessLoop(this, delta);
+        meshesMutex.unlock();*/
         func_delta = glfwGetTime() - oldTime;
     }
 }
@@ -214,8 +267,10 @@ UUID_Generator::UUID Engine::addObjectClone(Object object) {
 UUID_Generator::UUID Engine::addObjectClone(Mesh object) {
     std::lock_guard<std::mutex> guard(meshesMutex);
     UUID_Generator::UUID id = uuidGenerator.gen();
-    Mesh *new_mesh = new Mesh;
-    *new_mesh = object;
+    Mesh *new_mesh = new Mesh(object);
+
+    //delete new_mesh;
+    //*new_mesh = std::move(object);
     meshes.push_back({new_mesh, id, false});
     return id;
 }
@@ -273,6 +328,10 @@ bool Engine::removeObject(UUID_Generator::UUID uuid) {
     }
 
     return false;
+}
+
+GLFWwindow *Engine::getWindow() {
+    return window;
 }
 
 

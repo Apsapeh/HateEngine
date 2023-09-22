@@ -2,31 +2,44 @@
 #include <cstdint>
 #include <vector>
 #include "Object.hpp"
+#include "../Utilities/UUID_Generator.hpp"
 #include "../Resources/Texture.hpp"
 
 namespace Old3DEngine {
     // Object -> Mesh
     class Mesh : public Object {
+    public:
+        struct TextureObject {
+            Texture* texture;
+            std::vector<float> UV;
+            UUID_Generator::UUID id;
+        };
+
+    private:
+        UUID_Generator tex_uuid_generator;
+
+
     protected:
         std::vector<float> verticies;
         std::vector<uint32_t> indicies;
         std::vector<float> normals;
-        std::vector<Texture*> textures;
-        std::vector<std::vector<float>> texturesCoords;
+        std::vector<TextureObject> textures;
 
     public:
         ~Mesh();
+        Mesh();
+        Mesh(Mesh& mesh);
 
         void setVertices(std::vector<float> vec);
         void setIndicies(std::vector<uint32_t> vec);
         void setNormals(std::vector<float> vec);
-        bool addTexture(Texture* tex, std::vector<float> coords);
-        bool delTexture(uint32_t n);
+        UUID_Generator::UUID addTexture(Texture* tex, std::vector<float> uv);
+        bool delTexture(UUID_Generator::UUID uuid);
 
-        std::vector<float>*     getVertices();
-        std::vector<uint32_t>*  getIndicies();
-        std::vector<float>*     getNormals();
-        const std::vector<Texture*>*  getTextures();
-        const std::vector<std::vector<float>>* getTexturesCoords();
+        const std::vector<float>*     getVertices();
+        const std::vector<uint32_t>*  getIndicies();
+        const std::vector<float>*     getNormals();
+        const std::vector<TextureObject>*  getTextures();
+        //const std::vector<std::vector<float>>* getTexturesCoords();
     };
 }

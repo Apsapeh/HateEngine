@@ -1,0 +1,50 @@
+\doxysection{Collision\+Shape.\+hpp}
+\hypertarget{_collision_shape_8hpp_source}{}\label{_collision_shape_8hpp_source}\index{include/Old3DEngine/Objects/Physics/CollisionShape.hpp@{include/Old3DEngine/Objects/Physics/CollisionShape.hpp}}
+\mbox{\hyperlink{_collision_shape_8hpp}{Go to the documentation of this file.}}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{preprocessor}{\#pragma\ once}}
+\DoxyCodeLine{00002\ \textcolor{preprocessor}{\#include\ <vector>}}
+\DoxyCodeLine{00003\ \textcolor{preprocessor}{\#include\ "{}../Object.hpp"{}}}
+\DoxyCodeLine{00004\ }
+\DoxyCodeLine{00005\ \textcolor{keyword}{namespace\ }\mbox{\hyperlink{namespace_old3_d_engine}{Old3DEngine}}\ \{}
+\DoxyCodeLine{00006\ \ \ \ \ \textcolor{keyword}{class\ }\mbox{\hyperlink{class_old3_d_engine_1_1_collision_shape}{CollisionShape}}\ :\ \textcolor{keyword}{public}\ \mbox{\hyperlink{class_old3_d_engine_1_1_object}{Object}}\ \{}
+\DoxyCodeLine{00007\ \ \ \ \ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00008\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{bool}\ collisionLayers[16]\ =\ \{}
+\DoxyCodeLine{00009\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ 1,\ 0,\ 0,\ 0,\ 0,\ 0,\ 0,\ 0,}
+\DoxyCodeLine{00010\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ 0,\ 0,\ 0,\ 0,\ 0,\ 0,\ 0,\ 0}
+\DoxyCodeLine{00011\ \ \ \ \ \ \ \ \ \};}
+\DoxyCodeLine{00012\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{bool}\ collisionMasks[16]\ \ =\ \{}
+\DoxyCodeLine{00013\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ 1,\ 0,\ 0,\ 0,\ 0,\ 0,\ 0,\ 0,}
+\DoxyCodeLine{00014\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ 0,\ 0,\ 0,\ 0,\ 0,\ 0,\ 0,\ 0}
+\DoxyCodeLine{00015\ \ \ \ \ \ \ \ \ \};}
+\DoxyCodeLine{00016\ }
+\DoxyCodeLine{00017\ }
+\DoxyCodeLine{00018\ \ \ \ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00019\ \ \ \ \ \ \ \ \ \textcolor{keyword}{enum}\ \mbox{\hyperlink{class_old3_d_engine_1_1_collision_shape_a6366b530ad6efbc6437aad49bd63c616}{ShapeEnum}}\ \{}
+\DoxyCodeLine{00020\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{class_old3_d_engine_1_1_collision_shape_a6366b530ad6efbc6437aad49bd63c616a85d870e14fa0595a995ba521ec5f2295}{Sphere}},}
+\DoxyCodeLine{00021\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{class_old3_d_engine_1_1_collision_shape_a6366b530ad6efbc6437aad49bd63c616ab2e24205af06387baf4e3f1bd26aa414}{Capsule}},}
+\DoxyCodeLine{00022\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{class_old3_d_engine_1_1_collision_shape_a6366b530ad6efbc6437aad49bd63c616a775e50ef3def43771497be2d15317c98}{Box}}}
+\DoxyCodeLine{00023\ \ \ \ \ \ \ \ \ \};}
+\DoxyCodeLine{00024\ }
+\DoxyCodeLine{00025\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ \ \ \ \ \ \ \ \ \ \ \ \ \ Sphere\ \ \ \ \ \ Capsule\ \ \ \ \ Box}}
+\DoxyCodeLine{00026\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{float}\ \mbox{\hyperlink{class_old3_d_engine_1_1_collision_shape_a4b8a28ccece395d7a77154c9a6561866}{param1}};\textcolor{comment}{//\ radius\ \ \ \ \ \ radius\ \ \ \ \ width}}
+\DoxyCodeLine{00027\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{float}\ \mbox{\hyperlink{class_old3_d_engine_1_1_collision_shape_afa31b2ef5ed884ea3bdee1e0f621d31c}{param2}};\textcolor{comment}{//\ \ \ \ \ \ \ \ \ \ \ \ \ height\ \ \ \ \ height}}
+\DoxyCodeLine{00028\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{float}\ \mbox{\hyperlink{class_old3_d_engine_1_1_collision_shape_a12b293825f3857b50d9b6ea7255290d7}{param3}};\textcolor{comment}{//\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ length}}
+\DoxyCodeLine{00029\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{class_old3_d_engine_1_1_collision_shape_a6366b530ad6efbc6437aad49bd63c616}{ShapeEnum}}\ \mbox{\hyperlink{class_old3_d_engine_1_1_collision_shape_a498c3da86d78b23141627a39bd7f0abb}{shapeType}};}
+\DoxyCodeLine{00030\ }
+\DoxyCodeLine{00038\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{class_old3_d_engine_1_1_collision_shape_a2cf235ddea0b28f4262a751d9d9fd5c3}{CollisionShape}}(\mbox{\hyperlink{class_old3_d_engine_1_1_collision_shape_a6366b530ad6efbc6437aad49bd63c616}{ShapeEnum}}\ shape,\ \textcolor{keywordtype}{float}\ \mbox{\hyperlink{class_old3_d_engine_1_1_collision_shape_a4b8a28ccece395d7a77154c9a6561866}{param1}},\ \textcolor{keywordtype}{float}\ \mbox{\hyperlink{class_old3_d_engine_1_1_collision_shape_afa31b2ef5ed884ea3bdee1e0f621d31c}{param2}}\ =\ 0.0,\ \textcolor{keywordtype}{float}\ \mbox{\hyperlink{class_old3_d_engine_1_1_collision_shape_a12b293825f3857b50d9b6ea7255290d7}{param3}}\ =\ 0.0);}
+\DoxyCodeLine{00039\ }
+\DoxyCodeLine{00044\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{class_old3_d_engine_1_1_collision_shape_a4447f418fc31d280043455393a325d18}{CollisionShape}}(\textcolor{keywordtype}{float}\ radius);}
+\DoxyCodeLine{00045\ }
+\DoxyCodeLine{00051\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{class_old3_d_engine_1_1_collision_shape_a26cb649297ef0695a9443b090c7afbb7}{CollisionShape}}(\textcolor{keywordtype}{float}\ radius,\ \textcolor{keywordtype}{float}\ height);}
+\DoxyCodeLine{00052\ }
+\DoxyCodeLine{00059\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{class_old3_d_engine_1_1_collision_shape_abd6a9141b99c63410493b44f49c520ab}{CollisionShape}}(\textcolor{keywordtype}{float}\ width,\ \textcolor{keywordtype}{float}\ height,\ \textcolor{keywordtype}{float}\ length);}
+\DoxyCodeLine{00060\ }
+\DoxyCodeLine{00061\ }
+\DoxyCodeLine{00067\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{class_old3_d_engine_1_1_collision_shape_aef0fff67d9180ceddbacdc5896ac861f}{setCollisionLayers}}(std::vector<uint8\_t>\&\ layers,\ std::vector<bool>\ state);}
+\DoxyCodeLine{00068\ }
+\DoxyCodeLine{00074\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{class_old3_d_engine_1_1_collision_shape_a5109e01c68e69fe64d6234fa6219e4cf}{setCollisionMasks}}(std::vector<uint8\_t>\&\ masks,\ std::vector<bool>\ state);}
+\DoxyCodeLine{00075\ \ \ \ \ \};}
+\DoxyCodeLine{00076\ \}}
+
+\end{DoxyCode}

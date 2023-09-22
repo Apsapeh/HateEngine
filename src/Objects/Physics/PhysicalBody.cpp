@@ -66,3 +66,7 @@ bool PhysicalBody::unbindObj(UUID_Generator::UUID uuid) {
     return false;
 }
 
+const reactphysics3d::PhysicsCommon* PhysicalBody::getParentPhysCommon() {
+    return this->parentPhysCommon;
+}
+

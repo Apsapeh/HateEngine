@@ -32,13 +32,16 @@ void OpenGL15::Draw() {
             glRotatef(mesh->getRotation().y, 0, 1, 0);
             glRotatef(mesh->getRotation().z, 0, 0, 1);
 
-            int a = (*mesh->getTextures())[0]->getTextureID();
-            glBindTexture(GL_TEXTURE_2D, a);
+            // Render Textures
+            const std::vector<Mesh::TextureObject>* textures = mesh->getTextures();
+            for (const Mesh::TextureObject &tex : *textures) {
+                glBindTexture(GL_TEXTURE_2D, tex.texture->getTextureID());
+                glTexCoordPointer(2, GL_FLOAT, 0, tex.UV.data());
+            }
 
             glVertexPointer(3, GL_FLOAT, 0, mesh->getVertices()->data());
             glNormalPointer(GL_FLOAT, 0, mesh->getNormals()->data());
             //glColorPointer(3, GL_FLOAT, 0, color);
-            glTexCoordPointer(2, GL_FLOAT, 0, (*mesh->getTexturesCoords())[0].data());
             glDrawElements(GL_TRIANGLES, mesh->getIndicies()->size(), GL_UNSIGNED_INT, mesh->getIndicies()->data());
             glPopMatrix();
             for (int i = 0; i < light_indicies.size(); ++i)

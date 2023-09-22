@@ -155,4 +155,10 @@ void CubeMesh::setSize(float width, float height, float length) {
             x, -y,  z,        //1
             -x, -y,  z,       //0
     };
+
+    float tex_coord_x = 0;
+    float tex_coord_y = 0;
+    this->textures = {
+
+    };
 }

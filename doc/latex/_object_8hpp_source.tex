@@ -1,0 +1,38 @@
+\doxysection{Object.\+hpp}
+\hypertarget{_object_8hpp_source}{}\label{_object_8hpp_source}\index{include/Old3DEngine/Objects/Object.hpp@{include/Old3DEngine/Objects/Object.hpp}}
+\mbox{\hyperlink{_object_8hpp}{Go to the documentation of this file.}}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{preprocessor}{\#pragma\ once}}
+\DoxyCodeLine{00002\ \textcolor{preprocessor}{\#include\ <glm/vec3.hpp>}}
+\DoxyCodeLine{00003\ }
+\DoxyCodeLine{00004\ \textcolor{keyword}{namespace\ }\mbox{\hyperlink{namespace_old3_d_engine}{Old3DEngine}}\ \{}
+\DoxyCodeLine{00005\ \ \ \ \ \textcolor{keyword}{class\ }\mbox{\hyperlink{class_old3_d_engine_1_1_object}{Object}}\ \{}
+\DoxyCodeLine{00006\ \ \ \ \ \textcolor{keyword}{protected}:}
+\DoxyCodeLine{00007\ \ \ \ \ \ \ \ \ glm::vec3\ \mbox{\hyperlink{class_old3_d_engine_1_1_object_a5f1efeb618b02954c9860200c709340c}{position}}\ =\ \{0,\ 0,\ 0\};}
+\DoxyCodeLine{00008\ \ \ \ \ \ \ \ \ glm::vec3\ \mbox{\hyperlink{class_old3_d_engine_1_1_object_a002ecf14d5991352c6ff6dcd2fc11beb}{rotation}}\ =\ \{0,\ 0,\ 0\};}
+\DoxyCodeLine{00009\ \ \ \ \ \ \ \ \ glm::vec3\ \mbox{\hyperlink{class_old3_d_engine_1_1_object_ae49b061b89b8128e940533b3048f76be}{scale}}\ \ \ \ =\ \{1.0,\ 1.0,\ 1.0\};}
+\DoxyCodeLine{00010\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{bool}\ \mbox{\hyperlink{class_old3_d_engine_1_1_object_a86642682bce935c50f27798aaa8b9a1e}{visible}}\ =\ \textcolor{keyword}{true};}
+\DoxyCodeLine{00011\ }
+\DoxyCodeLine{00012\ \ \ \ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00013\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{class_old3_d_engine_1_1_object_a8ae5488a490b7408be73fbb74f6640e3}{setPosition}}(glm::vec3\ pos);}
+\DoxyCodeLine{00014\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{class_old3_d_engine_1_1_object_a5df5951f685246e79356b2902787a56e}{setPosition}}(\textcolor{keywordtype}{float}\ x,\ \textcolor{keywordtype}{float}\ y,\ \textcolor{keywordtype}{float}\ z);}
+\DoxyCodeLine{00015\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{class_old3_d_engine_1_1_object_a1a8e22a0ea8ecf7ae17b867cf9d31aeb}{setRotation}}(glm::vec3\ pos);}
+\DoxyCodeLine{00016\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{class_old3_d_engine_1_1_object_a58d850b9e705b1b106b7238c3e2c1c3a}{setRotation}}(\textcolor{keywordtype}{float}\ x,\ \textcolor{keywordtype}{float}\ y,\ \textcolor{keywordtype}{float}\ z);}
+\DoxyCodeLine{00017\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{class_old3_d_engine_1_1_object_a6c747e68e66e6949364b150365edcb8e}{setScale}}(glm::vec3\ pos);}
+\DoxyCodeLine{00018\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{class_old3_d_engine_1_1_object_ad2ab1817107fd65aa49f1bf82894087b}{setScale}}(\textcolor{keywordtype}{float}\ x,\ \textcolor{keywordtype}{float}\ y,\ \textcolor{keywordtype}{float}\ z);}
+\DoxyCodeLine{00019\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{class_old3_d_engine_1_1_object_a56bb1dbd04ede53f4ccc616220689338}{setVisible}}(\textcolor{keywordtype}{bool});}
+\DoxyCodeLine{00020\ }
+\DoxyCodeLine{00021\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{class_old3_d_engine_1_1_object_a78925966a3b5b402fb04b60cbd0acc69}{offset}}(\textcolor{keywordtype}{float}\ x,\ \textcolor{keywordtype}{float}\ y,\ \textcolor{keywordtype}{float}\ z);}
+\DoxyCodeLine{00022\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{class_old3_d_engine_1_1_object_a905f433ac769b2feb044ee6f12bd89c6}{offset}}(glm::vec3\ vec);}
+\DoxyCodeLine{00023\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{class_old3_d_engine_1_1_object_ab20f2db850e7976dc99e72f73e249c3c}{rotate}}(\textcolor{keywordtype}{float}\ x,\ \textcolor{keywordtype}{float}\ y,\ \textcolor{keywordtype}{float}\ z);}
+\DoxyCodeLine{00024\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{class_old3_d_engine_1_1_object_ab1e0854425b40f8cc6d904798881a5ec}{rotate}}(glm::vec3\ vec);}
+\DoxyCodeLine{00025\ }
+\DoxyCodeLine{00026\ }
+\DoxyCodeLine{00027\ \ \ \ \ \ \ \ \ glm::vec3\ \mbox{\hyperlink{class_old3_d_engine_1_1_object_a473ea6f6c38c42e8b2b6331881e0ca1e}{getPosition}}();}
+\DoxyCodeLine{00028\ \ \ \ \ \ \ \ \ glm::vec3\ \mbox{\hyperlink{class_old3_d_engine_1_1_object_a98aae2914322b850e0f4edc9f4e567d1}{getRotation}}();}
+\DoxyCodeLine{00029\ \ \ \ \ \ \ \ \ glm::vec3\ \mbox{\hyperlink{class_old3_d_engine_1_1_object_a01c310d556159622577a50d2807b6d45}{getScale}}();}
+\DoxyCodeLine{00030\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{bool}\ \mbox{\hyperlink{class_old3_d_engine_1_1_object_acac7d0a2d5f894f9eb3681a562533456}{getVisible}}();}
+\DoxyCodeLine{00031\ \ \ \ \ \};}
+\DoxyCodeLine{00032\ \}}
+
+\end{DoxyCode}

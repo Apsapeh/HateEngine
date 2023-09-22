@@ -1,0 +1,47 @@
+\doxysection{Physical\+Body.\+hpp}
+\hypertarget{_physical_body_8hpp_source}{}\label{_physical_body_8hpp_source}\index{include/Old3DEngine/Objects/Physics/PhysicalBody.hpp@{include/Old3DEngine/Objects/Physics/PhysicalBody.hpp}}
+\mbox{\hyperlink{_physical_body_8hpp}{Go to the documentation of this file.}}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{preprocessor}{\#pragma\ once}}
+\DoxyCodeLine{00002\ \textcolor{preprocessor}{\#include\ <cstdint>}}
+\DoxyCodeLine{00003\ \textcolor{preprocessor}{\#include\ <vector>}}
+\DoxyCodeLine{00004\ \textcolor{preprocessor}{\#include\ "{}../../Utilities/UUID\_Generator.hpp"{}}}
+\DoxyCodeLine{00005\ \textcolor{preprocessor}{\#include\ "{}../Object.hpp"{}}}
+\DoxyCodeLine{00006\ \textcolor{preprocessor}{\#include\ "{}\mbox{\hyperlink{_collision_shape_8hpp}{CollisionShape.hpp}}"{}}}
+\DoxyCodeLine{00007\ }
+\DoxyCodeLine{00008\ \textcolor{keyword}{namespace\ }\mbox{\hyperlink{namespace_old3_d_engine}{Old3DEngine}}\ \{}
+\DoxyCodeLine{00009\ \ \ \ \ \textcolor{keyword}{class\ }\mbox{\hyperlink{class_old3_d_engine_1_1_physical_body}{PhysicalBody}}\ :\ \textcolor{keyword}{public}\ \mbox{\hyperlink{class_old3_d_engine_1_1_object}{Object}}\ \{}
+\DoxyCodeLine{00010\ \ \ \ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00011\ \ \ \ \ \ \ \ \ \textcolor{keyword}{enum}\ \mbox{\hyperlink{class_old3_d_engine_1_1_physical_body_a82671267f4bdf758ab004b806fe2bef5}{BodyType}}\ \{}
+\DoxyCodeLine{00012\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{class_old3_d_engine_1_1_physical_body_a82671267f4bdf758ab004b806fe2bef5a71c82297643471f922db453c29dfc0d5}{StaticBody}},}
+\DoxyCodeLine{00013\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{class_old3_d_engine_1_1_rigid_body}{RigidBody}}}
+\DoxyCodeLine{00014\ \ \ \ \ \ \ \ \ \};}
+\DoxyCodeLine{00015\ }
+\DoxyCodeLine{00016\ \ \ \ \ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00017\ \ \ \ \ \ \ \ \ \textcolor{keyword}{struct\ }ShapeObject\ \{}
+\DoxyCodeLine{00018\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{class_old3_d_engine_1_1_collision_shape}{CollisionShape}}\ *shape;}
+\DoxyCodeLine{00019\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_old3_d_engine_1_1_u_u_i_d___generator_1_1_u_u_i_d}{UUID\_Generator::UUID}}\ id;}
+\DoxyCodeLine{00020\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{bool}\ is\_ref;}
+\DoxyCodeLine{00021\ \ \ \ \ \ \ \ \ \};}
+\DoxyCodeLine{00022\ }
+\DoxyCodeLine{00023\ \ \ \ \ \ \ \ \ UUID\_Generator\ uuidGenerator;}
+\DoxyCodeLine{00024\ \ \ \ \ \ \ \ \ std::vector<ShapeObject>\ shapes;}
+\DoxyCodeLine{00025\ }
+\DoxyCodeLine{00026\ \ \ \ \ \textcolor{keyword}{protected}:}
+\DoxyCodeLine{00027\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{class_old3_d_engine_1_1_physical_body_a82671267f4bdf758ab004b806fe2bef5}{BodyType}}\ \mbox{\hyperlink{class_old3_d_engine_1_1_physical_body_a6b88553e669ef4d54ede60af69b90fe1}{bodyType}};}
+\DoxyCodeLine{00028\ }
+\DoxyCodeLine{00029\ \ \ \ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00030\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{class_old3_d_engine_1_1_physical_body_a4290f2a93e5ee2a157b068d07b5efb40}{\string~PhysicalBody}}();}
+\DoxyCodeLine{00031\ }
+\DoxyCodeLine{00032\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{class_old3_d_engine_1_1_physical_body_a82671267f4bdf758ab004b806fe2bef5}{BodyType}}\ \mbox{\hyperlink{class_old3_d_engine_1_1_physical_body_a1dec36c5a4f39672f3054902385d84c7}{getBodyType}}();}
+\DoxyCodeLine{00033\ }
+\DoxyCodeLine{00039\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_old3_d_engine_1_1_u_u_i_d___generator_1_1_u_u_i_d}{UUID\_Generator::UUID}}\ \mbox{\hyperlink{class_old3_d_engine_1_1_physical_body_aee0ff70df07a4e20b079d61fca6c31fb}{addCollisionShapeClone}}(\mbox{\hyperlink{class_old3_d_engine_1_1_collision_shape}{CollisionShape}}\ shape);}
+\DoxyCodeLine{00040\ }
+\DoxyCodeLine{00046\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_old3_d_engine_1_1_u_u_i_d___generator_1_1_u_u_i_d}{UUID\_Generator::UUID}}\ \mbox{\hyperlink{class_old3_d_engine_1_1_physical_body_adc80754ffc288c59a20c212789ec3c57}{addCollisionShapeRef}}(\mbox{\hyperlink{class_old3_d_engine_1_1_collision_shape}{CollisionShape}}*\ shape);}
+\DoxyCodeLine{00047\ }
+\DoxyCodeLine{00054\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{bool}\ \mbox{\hyperlink{class_old3_d_engine_1_1_physical_body_a87f8ac8f8e510e888ab30a1463273b89}{delCollisionShape}}(\mbox{\hyperlink{struct_old3_d_engine_1_1_u_u_i_d___generator_1_1_u_u_i_d}{UUID\_Generator::UUID}}\ uuid);}
+\DoxyCodeLine{00055\ \ \ \ \ \};}
+\DoxyCodeLine{00056\ }
+\DoxyCodeLine{00057\ \}}
+
+\end{DoxyCode}

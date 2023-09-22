@@ -4,6 +4,7 @@
 #include "../../Utilities/UUID_Generator.hpp"
 #include "../Object.hpp"
 #include "CollisionShape.hpp"
+#include <reactphysics3d/reactphysics3d.h>
 
 namespace Old3DEngine {
     class PhysicalBody : public Object {
@@ -16,6 +17,9 @@ namespace Old3DEngine {
         struct CoordStruct {
             float x, y, z;
         };
+
+        bool is_initialized = false;
+
 
     private:
         struct ShapeObject {
@@ -34,6 +38,7 @@ namespace Old3DEngine {
         UUID_Generator uuidGenerator_bindObj;
         std::vector<ShapeObject> shapes;
         std::vector<ControlledObject> binded_objects;
+        const reactphysics3d::PhysicsCommon* parentPhysCommon = nullptr;
 
     protected:
         BodyType bodyType;
@@ -84,6 +89,12 @@ namespace Old3DEngine {
          * @return True if deleted successfully, False if the object is not found
          */
         bool unbindObj(UUID_Generator::UUID uuid);
+
+        /**
+         * Returns a pointer to the PhysicsCommon that created it, if the object is initialized
+         * @return
+         */
+        const reactphysics3d::PhysicsCommon* getParentPhysCommon();
     };
 
 }
