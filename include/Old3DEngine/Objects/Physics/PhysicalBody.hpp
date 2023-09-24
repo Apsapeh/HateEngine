@@ -38,7 +38,8 @@ namespace Old3DEngine {
         UUID_Generator uuidGenerator_bindObj;
         std::vector<ShapeObject> shapes;
         std::vector<ControlledObject> binded_objects;
-        const reactphysics3d::PhysicsCommon* parentPhysCommon = nullptr;
+        reactphysics3d::RigidBody* reactRigidBody = nullptr;
+        const reactphysics3d::PhysicsWorld* reactParentPhysWorld = nullptr;
 
     protected:
         BodyType bodyType;
@@ -47,10 +48,28 @@ namespace Old3DEngine {
         ~PhysicalBody();
 
         /**
+         * Preserves the initialised physical body and physical world
+         * @param parrent_world A pointer to the physical world that created the body
+         * @param body A pointer to the physical body
+         */
+        void Init(reactphysics3d::PhysicsWorld* parrent_world, reactphysics3d::RigidBody* body);
+
+        /**
          * Updates the position of linked objects taking into account the offset
          */
         void UpdateBindsPos();
+
         BodyType getBodyType();
+
+        void setPosition(glm::vec3 vec);
+        void setPosition(float x, float y, float z);
+        void setRotation(glm::vec3 vec);
+        void setRotation(float x, float y, float z);
+
+        void offset(float x, float y, float z);
+        void offset(glm::vec3 vec);
+        void rotate(float x, float y, float z);
+        void rotate(glm::vec3 vec);
 
         /**
          * Adds a collision shape to the body by copying the object
@@ -94,7 +113,7 @@ namespace Old3DEngine {
          * Returns a pointer to the PhysicsCommon that created it, if the object is initialized
          * @return
          */
-        const reactphysics3d::PhysicsCommon* getParentPhysCommon();
+        const reactphysics3d::PhysicsWorld* getParentPhysCommon();
     };
 
 }

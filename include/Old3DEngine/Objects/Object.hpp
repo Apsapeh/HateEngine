@@ -10,11 +10,11 @@ namespace Old3DEngine {
         bool visible = true;
 
     public:
-        void setPosition(glm::vec3 pos);
+        void setPosition(glm::vec3 vec);
         void setPosition(float x, float y, float z);
-        void setRotation(glm::vec3 pos);
+        void setRotation(glm::vec3 vec);
         void setRotation(float x, float y, float z);
-        void setScale(glm::vec3 pos);
+        void setScale(glm::vec3 vec);
         void setScale(float x, float y, float z);
         void setVisible(bool);
 

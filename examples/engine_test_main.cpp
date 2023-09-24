@@ -6,6 +6,7 @@
 #include <Old3DEngine/Objects/Camera.hpp>
 #include <Old3DEngine/Objects/Light/DirectionalLight.hpp>
 #include <Old3DEngine/Resources/Texture.hpp>
+#include <Old3DEngine/Objects/Physics/PhysicalBody.hpp>
 
 #include <reactphysics3d/reactphysics3d.h>
 
@@ -22,20 +23,30 @@ PhysicsCommon physicsCommon;
 PhysicsWorld* physicsWorld = physicsCommon.createPhysicsWorld();
 Vector3 posvec3(0.0, -6.0, 0.0);
 Quaternion quaternion = Quaternion::identity();
+
 Transform transform(posvec3, quaternion);
 RigidBody* floor_col = physicsWorld->createRigidBody(transform);
 BoxShape* boxShape = physicsCommon.createBoxShape({50.0f, 0.5f, 50.0f});
-Transform box_transform = Transform::identity();
-Collider* collider_box = floor_col->addCollider(boxShape, transform);
+//Transform box_transform = Transform::identity();
+Vector3 box_posvec3(0.0, -6.0, 0.0);
+Quaternion box_quaternion = Quaternion::fromEulerAngles(0.1, 0, 0);
+
+Transform box_transform(box_posvec3, box_quaternion);
+Collider* collider_box = floor_col->addCollider(boxShape, box_transform);
 
 Vector3 rbodypos3(0, 0, 0);
-Quaternion rbodyQuat = Quaternion::identity();
+Quaternion rbodyQuat = Quaternion::fromEulerAngles(0.5, 0, 0);
 Transform rbodyTrans(rbodypos3, rbodyQuat);
 RigidBody* rbody = physicsWorld->createRigidBody(rbodyTrans);
 
 
 BoxShape* sphereShape = physicsCommon.createBoxShape({1, 1, 1});
+//SphereShape* sphereShape = physicsCommon.createSphereShape(1);
 Transform sphere_transform = Transform::identity();
+Vector3 sp_posvec3(0.0, 0.0, 0.0);
+Quaternion sp_quaternion = Quaternion::fromEulerAngles(0, 0, 0);
+
+Transform sp_transform(sp_posvec3, sp_quaternion);
 Collider* collider = rbody->addCollider(sphereShape, rbodyTrans);
 
 
@@ -44,12 +55,18 @@ Old3DEngine::CubeMesh mesh1;
 Old3DEngine::Camera camera(800.0/600.0, 60, 60);
 Old3DEngine::Light sun(Old3DEngine::Light::DirectionalLight);
 int main() {
+    //collider_box.
     //physicsWorld->setGravity({0, -0.01, 0});
     floor_col->setType(BodyType::STATIC);
+    floor_col->setIsAllowedToSleep(false);
+    floor_col->setIsSleeping(false);
+    rbody->setIsAllowedToSleep(false);
+    rbody->setIsSleeping(false);
+
 
     camera.setPosition(0, 0, 3);
     camera.setRotation(0, -90, 0);
-    mesh1.setRotation(0, 0, 0);
+    mesh1.setRotation(0, 10, 0);
     mesh1.setSize(2, 2, 2);
 
     Old3DEngine::CubeMesh floor;
@@ -58,6 +75,11 @@ int main() {
 
 //    sun.setPosition(camera.getPosition());
     sun.setPosition({1.0, 1.0, 1.0});
+
+    Old3DEngine::PhysicalBody physicalBody;
+    std::cout << physicalBody.getRotation().x << "\n";
+    //physicalBody.rotate({70, 7, 7});
+    std::cout << physicalBody.getRotation().x << "\n";
 
 
     Old3DEngine::Texture tex("examples/Assets/brick.png", Old3DEngine::Texture::Repeat, Old3DEngine::Texture::Nearest);
@@ -117,7 +139,7 @@ void _process(Old3DEngine::Engine* engine, double delta) {
         del += delta;
     }
     else {
-        //std::cout << "FPS: " << (float)count / del << std::endl;
+        std::cout << "FPS: " << (float)count / del << std::endl;
         count = 0;
         del = 0.0;
     }
@@ -128,8 +150,18 @@ void _process(Old3DEngine::Engine* engine, double delta) {
 bool t = true;
 void _physics_process(Old3DEngine::Engine* engine, double delta) {
     physicsWorld->update((float)delta);
+
+    decimal dec;
+    Vector3 vec;
+    //rbody->getLocalToWorldTransform().getOrientation().getRotationAngleAxis(dec, vec);
+    rbody->getTransform().getOrientation().getRotationAngleAxis(dec, vec);
+    std::cout << vec.x * dec * 180 / M_PI << " | " << vec.y * dec * 180 / M_PI << " | " << vec.z * dec<< " | " << dec << "\n";
+
     Vector3 rbodyPosVect = rbody->getTransform().getPosition();
     mesh1.setPosition(rbodyPosVect.x, rbodyPosVect.y, rbodyPosVect.z);
+    mesh1.setRotation(vec.x * dec * 180 / M_PI,
+                      vec.y * dec * 180 / M_PI,
+                      vec.z * dec * 180 / M_PI);
     //std::cout << rbodyPosVect.y << "\n";
 
 
@@ -194,7 +226,7 @@ void _physics_process(Old3DEngine::Engine* engine, double delta) {
         dir.y * 0.1 * direction.z + dir.x * 0.1 * direction.x
     });
 
-    std::cout << "Fixed FPS: " << 1.0 / delta <<  delta<< std::endl;
+    //std::cout << "Fixed FPS: " << 1.0 / delta <<  delta<< std::endl;
 }
 
 float lastX = 400;
