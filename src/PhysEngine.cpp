@@ -10,7 +10,7 @@ PhysEngine::PhysEngine() {
 
 // Get a reference to the debug renderer
     reactphysics3d::DebugRenderer& debugRenderer = physicsWorld->getDebugRenderer();
-    debugRenderer.
+
 }
 
 void PhysEngine::IteratePhysics(float delta) {
