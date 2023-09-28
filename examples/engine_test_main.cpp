@@ -6,7 +6,6 @@
 #include <Old3DEngine/Objects/Camera.hpp>
 #include <Old3DEngine/Objects/Light/DirectionalLight.hpp>
 #include <Old3DEngine/Resources/Texture.hpp>
-#include <Old3DEngine/Objects/Physics/PhysicalBody.hpp>
 
 #include <reactphysics3d/reactphysics3d.h>
 
@@ -27,7 +26,7 @@ Quaternion floor_body_quat = Quaternion::fromEulerAngles(0, 0, 0);
 Transform floor_body_trans(floor_body_vec, floor_body_quat);
 RigidBody* floor_body = physicsWorld->createRigidBody(floor_body_trans);
 
-BoxShape* floor_col_shape = physicsCommon.createBoxShape({50.0f, 0.5f, 50.0f});
+BoxShape* floor_col_shape = physicsCommon.createBoxShape({12.5f, 0.5f, 12.5f});
 Collider* floor_col = floor_body->addCollider(floor_col_shape, Transform::identity());
 
 
@@ -48,34 +47,28 @@ int main() {
     rbody_body->updateMassPropertiesFromColliders();
     floor_body->setType(BodyType::STATIC);
 
-
     camera.setPosition(0, 6, 3);
     camera.setRotation(0, -90, 0);
     mesh1.setRotation(0, 10, 0);
-    mesh1.setSize(2, 2, 2);
+    mesh1.setSize(1, 1, 1);
 
     Old3DEngine::CubeMesh floor;
     floor.setPosition(0, 0, 0);
-    floor.setSize(25, 0.5, 25);
+    floor.setSize(25, 1, 25);
 
-//    sun.setPosition(camera.getPosition());
     sun.setPosition({1.0, 1.0, 1.0});
 
-    Old3DEngine::PhysicalBody physicalBody;
-    std::cout << physicalBody.getRotation().x << "\n";
-    //physicalBody.rotate({70, 7, 7});
-    std::cout << physicalBody.getRotation().x << "\n";
-
-
+    // Setting textures for the cube and floor meshes
+    Old3DEngine::Texture tex_floor("examples/Assets/ground.png", Old3DEngine::Texture::Repeat, Old3DEngine::Texture::Linear);
     Old3DEngine::Texture tex("examples/Assets/brick.png", Old3DEngine::Texture::Repeat, Old3DEngine::Texture::Nearest);
     Old3DEngine::Engine game("Old3DE Test", 800, 600);
-    floor.addTexture(&tex, {
-            0, 0, 10, 0, 10, 10, 10, 10, 0, 10, 0, 0,
-            0, 0, 10, 0, 10, 10, 10, 10, 0, 10, 0, 0,
-            0, 0, 10, 0, 10, 10, 10, 10, 0, 10, 0, 0,
-            0, 0, 10, 0, 10, 10, 10, 10, 0, 10, 0, 0,
-            0, 0, 10, 0, 10, 10, 10, 10, 0, 10, 0, 0,
-            0, 0, 10, 0, 10, 10, 10, 10, 0, 10, 0, 0,
+    floor.addTexture(&tex_floor, {
+            0, 0, 3, 0, 3, 3, 3, 3, 0, 3, 0, 0,
+            0, 0, 3, 0, 3, 3, 3, 3, 0, 3, 0, 0,
+            0, 0, 3, 0, 3, 3, 3, 3, 0, 3, 0, 0,
+            0, 0, 3, 0, 3, 3, 3, 3, 0, 3, 0, 0,
+            0, 0, 3, 0, 3, 3, 3, 3, 0, 3, 0, 0,
+            0, 0, 3, 0, 3, 3, 3, 3, 0, 3, 0, 0,
     });
     mesh1.addTexture(&tex, {
             0, 0, 1, 0, 1, 1, 1, 1, 0, 1, 0, 0,
@@ -131,19 +124,22 @@ void _process(Old3DEngine::Engine* engine, double delta) {
 }
 
 
-
-bool t = true;
 void _physics_process(Old3DEngine::Engine* engine, double delta) {
-    physicsWorld->update((float)delta);
+    std::cout << "Process delta: " << (float) delta << "\n";
+    physicsWorld->update((float) delta);
 
     decimal dec;
     Vector3 vec;
     rbody_body->getTransform().getOrientation().getRotationAngleAxis(dec, vec);
-    std::cout << dec * vec.x * 180.0 / M_PI << " | " << vec.y * dec * 180 / M_PI << " | " << vec.z * dec * 180 / M_PI<< " | " << dec << "\n";
+    std::cout << dec * vec.x * 180.0 / M_PI << " | "
+              << vec.y * dec * 180.0 / M_PI << " | "
+              << vec.z * dec * 180.0 / M_PI << " | "
+              << dec << "\n";
 
     Vector3 rbodyPosVect = rbody_body->getTransform().getPosition();
     std::cout << "Rbody Y pos: " << rbodyPosVect.y << "\n";
     mesh1.setPosition(rbodyPosVect.x, rbodyPosVect.y, rbodyPosVect.z);
+    // Set rigid cube mesh rotate
     mesh1.setRotation(vec.x * dec * 180.0f / M_PI,
                       vec.y * dec * 180.0f / M_PI,
                       vec.z * dec * 180.0f / M_PI);
@@ -165,24 +161,11 @@ void _physics_process(Old3DEngine::Engine* engine, double delta) {
     if (engine->Input.isKeyPressed(GLFW_KEY_E))
         camera.rotate(0, 0, .1);
 
-    if (engine->Input.isKeyPressed(GLFW_KEY_R) and t) {
-        Vector3 newPos = rbodyPosVect;
-        newPos.y += 10;
-        Transform newTrans = Transform(newPos, rbody_body->getTransform().getOrientation());
-        rbody_body->setTransform(newTrans);
-        t = false;
-    }
-
-    if (not engine->Input.isKeyPressed(GLFW_KEY_R))
-        t = true;
-
 
     if (engine->Input.isKeyPressed(GLFW_KEY_F11)) {
         GLFWmonitor *monitor = glfwGetPrimaryMonitor();
         glfwSetWindowMonitor(engine->getWindow(), monitor, 0, 0, 3440, 1440, 144);
     }
-
-    //mesh1.rotate({1, 2, 3});
 
     glm::vec2 dir = engine->Input.getVector(GLFW_KEY_A, GLFW_KEY_D, GLFW_KEY_W, GLFW_KEY_S);
     glm::vec3 direction;
