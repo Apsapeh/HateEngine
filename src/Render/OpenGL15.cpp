@@ -1,5 +1,6 @@
 #include <algorithm>
 #include <glm/glm.hpp>
+#include <glm/gtc/type_ptr.hpp>
 #include <glad/gl.h>
 #include <Old3DEngine/Render/OpenGL15.hpp>
 
@@ -9,7 +10,13 @@ GLfloat color[] = {
         0.7608, 0.9333, 0.051, 0.6549, 0.6235, 0.1647, 0.7255, 0.0157, 0.8471, 0.5098, 0.8314, 0.8627, 0.4078, 0.3216, 0.8863, 0.9098, 0.7294, 0.1804, 0.8314, 0.451, 0.5412, 0.5647, 0.4235, 0.4196
 };
 
-#include <iostream>
+/*std::vector<float> glm_mat_to_arr(glm::mat4 const &mat) {
+    std::vector<float> arr(16);
+    for (char line=0; line < mat.length(); ++line)
+        for (char column=0; column < mat.length(); ++column)
+            arr[column*4 + line] = mat[line][column];
+    return arr;
+}*/
 
 OpenGL15::OpenGL15(std::vector<Engine::SceneObject> *m, std::vector<Engine::SceneObject> *l) {
     meshes = m;
@@ -28,9 +35,13 @@ void OpenGL15::Draw() {
 
             glPushMatrix();
             glTranslatef(pos.x, pos.y, pos.z);
-            glRotatef(mesh->getRotation().x, 1, 0, 0);
-            glRotatef(mesh->getRotation().y, 0, 1, 0);
-            glRotatef(mesh->getRotation().z, 0, 0, 1);
+
+            //glRotatef(mesh->getRotationEuler().x, 1, 0, 0);
+            //glRotatef(mesh->getRotationEuler().y, 0, 1, 0);
+            //glRotatef(mesh->getRotationEuler().z, 0, 0, 1);
+            //std::vector<float> trans_matrix = glm_mat_to_arr(mesh->getRotationMatrix());
+            //glMultMatrixf(trans_matrix.data());
+            glMultMatrixf(glm::value_ptr(mesh->getRotationMatrix()));
 
             // Render Textures
             const std::vector<Mesh::TextureObject>* textures = mesh->getTextures();
@@ -43,6 +54,7 @@ void OpenGL15::Draw() {
             glNormalPointer(GL_FLOAT, 0, mesh->getNormals()->data());
             //glColorPointer(3, GL_FLOAT, 0, color);
             glDrawElements(GL_TRIANGLES, mesh->getIndicies()->size(), GL_UNSIGNED_INT, mesh->getIndicies()->data());
+            glBindTexture(GL_TEXTURE_2D, 0);
             glPopMatrix();
             for (int i = 0; i < light_indicies.size(); ++i)
                 glDisable(GL_LIGHT0 + i);

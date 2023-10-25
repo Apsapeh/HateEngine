@@ -8,7 +8,7 @@ Mesh::Mesh() {}
 // FIXME: DIRTY HACK
 Mesh::Mesh(Mesh &mesh) {
     position = mesh.position;
-    rotation = mesh.rotation;
+    rotation_matrix = mesh.rotation_matrix;
     scale = mesh.scale;
     visible = mesh.visible;
     verticies = mesh.verticies;

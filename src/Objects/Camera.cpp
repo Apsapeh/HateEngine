@@ -11,6 +11,15 @@ Camera::Camera(float view_aspect, float fov, float render_dist) {
     this->renderDist = render_dist;
 }
 
+#include <vector>
+std::vector<float> glm_mat_to_arr_cam(glm::mat4 const &mat) {
+    std::vector<float> arr(16);
+    for (char line=0; line < mat.length(); ++line)
+        for (char column=0; column < mat.length(); ++column)
+            arr[column*4 + line] = mat[line][column];
+    return arr;
+}
+
 void Camera::renderOpenGL15() {
     glm::mat4 Mp = glm::perspective(glm::radians(FOV), viewAspect, 0.1f, renderDist);
 
@@ -18,6 +27,7 @@ void Camera::renderOpenGL15() {
     glLoadMatrixf(glm::value_ptr(Mp));
 
     glm::vec3 direction;
+    glm::vec3 rotation = getRotationEuler();
     direction.x = cos(glm::radians(rotation.y)) * cos(glm::radians(rotation.x));
     direction.y = sin(glm::radians(rotation.x));
     direction.z = sin(glm::radians(rotation.y)) * cos(glm::radians(rotation.x));
@@ -31,10 +41,16 @@ void Camera::renderOpenGL15() {
     //std::cout << this->rotation.x << " | " << this->rotation.y << "\n";
     //std::cout << cameraFront.x << " | " << cameraFront.y << " | " << cameraFront.z << "\n";
 
-    glm::mat4 M = glm::lookAt(this->position, this->position + cameraFront, up);
+    glm::mat4 mat = getRotationMatrix();
+    glm::quat quat(mat);
+    glm::vec3 look = axis(quat);
+    glm::mat4 M = glm::lookAt(this->position, this->position + look, up);
+    mat = glm::translate(mat, {-position.x, -position.y, -position.z} ) ;
 
     glMatrixMode(GL_MODELVIEW);
-    glLoadMatrixf(glm::value_ptr(M));
+    std::vector<float> vm = glm_mat_to_arr_cam(mat);
+    //glLoadMatrixf(vm.data());
+    glLoadMatrixf(glm::value_ptr(mat));
 }
 
 void Camera::setViewAspect(float view_aspect) {

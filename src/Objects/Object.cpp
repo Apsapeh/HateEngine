@@ -1,4 +1,7 @@
 #include <Old3DEngine/Objects/Object.hpp>
+//#include <cmath>
+
+//TODO: Добавить дочерние Object, которые наследуют перемещение, вращение и подобное
 
 using namespace Old3DEngine;
 
@@ -11,11 +14,18 @@ void Object::setPosition(float x, float y, float z) {
 }
 
 void Object::setRotation(glm::vec3 value) {
-    this->rotation = value;
+    //this->rotation = value;
+    value = glm::radians(value);
+    rotation_matrix = glm::eulerAngleXYZ(value.x, value.y, value.z);
 }
 
 void Object::setRotation(float x, float y, float z) {
-    this->rotation = glm::vec3(x, y, z);
+    //this->rotation = glm::vec3(x, y, z);
+    setRotation({x, y, z});
+}
+
+void Object::setRotationMatrix(glm::mat4 mat) {
+    rotation_matrix = mat;
 }
 
 void Object::setScale(glm::vec3 value) {
@@ -36,19 +46,45 @@ void Object::offset(float x, float y, float z) {
 void Object::offset(glm::vec3 vec) {
     position += vec;
 }
-void Object::rotate(float x, float y, float z) {
-    rotation += glm::vec3(x, y, z);
+void Object::rotate(float x, float y, float z, bool global) {
+    rotate({x, y, z}, global);
 }
-void Object::rotate(glm::vec3 vec) {
-    rotation += vec;
+void Object::rotate(glm::vec3 vec, bool global) {
+    vec = -glm::radians(vec);
+    if (global) {
+        rotation_matrix = glm::rotate(rotation_matrix, vec.y, {0, 1, 0});
+        rotation_matrix = glm::rotate(rotation_matrix, vec.x, {1, 0, 0});
+        rotation_matrix = glm::rotate(rotation_matrix, vec.z, {0, 0, 1});
+    }
+    else {
+        glm::mat4 m(1);
+        m = glm::rotate(m, vec.y, {0, 1, 0});
+        m = glm::rotate(m, vec.x, {1, 0, 0});
+        m = glm::rotate(m, vec.z, {0, 0, 1});
+        rotation_matrix = m * rotation_matrix;
+    }
 }
 
 glm::vec3 Object::getPosition() {
     return this->position;
 }
+#include <glm/ext.hpp>
+glm::vec3 Object::getRotationEuler() {
+    glm::vec3 rot;
+    glm::extractEulerAngleXYZ(rotation_matrix, rot.x, rot.y, rot.z);
+    rot *= -1;
 
-glm::vec3 Object::getRotation() {
-    return this->rotation;
+    // Changes the Y rotation detection limit from [-PI/2, PI/2] to [-P, P]
+    bool bad = rotation_matrix[0][0] == 0 and rotation_matrix[0][2] == 0;
+    if (not bad)
+        rot.y = atan2(rotation_matrix[0][0], -rotation_matrix[0][2]);
+    else
+        rot.y = atan2(rotation_matrix[1][0], -rotation_matrix[1][2]);
+    return glm::degrees(rot);
+}
+
+glm::mat4 Object::getRotationMatrix() {
+    return this->rotation_matrix;
 }
 
 glm::vec3 Object::getScale() {

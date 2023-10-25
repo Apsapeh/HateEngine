@@ -84,6 +84,8 @@ namespace Old3DEngine {
         void setFixedProcessLoop(void (*func)(Engine*, double));
         void setInputEvent(void (*func)(Engine*, InputEventInfo));
 
+        PhysEngine* const getPhysEngine();
+
         void setCameraRef(Camera *cam);
         UUID_Generator::UUID addObjectClone(Object object);
         UUID_Generator::UUID addObjectClone(Mesh object);

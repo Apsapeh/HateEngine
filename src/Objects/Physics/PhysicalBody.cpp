@@ -17,7 +17,7 @@ void PhysicalBody::Init(reactphysics3d::PhysicsWorld *parrent_world, reactphysic
   this->reactRigidBody = body;
 
   // TODO: Add set pref
-};
+}
 
 void PhysicalBody::UpdateBindsPos() {
     for (ControlledObject& obj: binded_objects) {
@@ -101,6 +101,7 @@ void offset(glm::vec3 vec) {
 void PhysicalBody::rotate(float x, float y, float z) {
     Object::rotate(x, y, z);
     if (is_initialized) {
+        glm::vec3 rotation = getRotationEuler();
         reactphysics3d::Vector3 pos(position.x, position.y, position.z);
         reactphysics3d::Quaternion quaternion = reactphysics3d::Quaternion::fromEulerAngles(
                 rotation.x, rotation.y, rotation.z

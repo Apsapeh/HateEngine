@@ -5,8 +5,14 @@
 #include <Old3DEngine/Old3DEngine.hpp>
 #include <Old3DEngine/Render/OpenGL15.hpp>
 #include <Old3DEngine/Error.hpp>
-#include <sched.h>
 #include "globalStaticParams.hpp"
+
+#ifdef __linux__
+#elif __APPLE__
+#include <sched.h>
+#elif _WIN32
+#include <Windows.h>
+#endif
 
 
 bool glad_is_initialized = false;
@@ -62,12 +68,13 @@ Engine::Engine(std::string window_lbl, int width, int height) : Input(this){
     #elif __APPLE__
         sched_param sch_params;
         sch_params.sched_priority = 99;
-        pthread_t this_thread = pthread_self();
         pthread_setschedparam(pthread_self(), SCHED_RR, &sch_params);
 
-        int64_t fixDelay = 1000000/fixedLoopRefreshRate;
-        int64_t physDelay = 1000000/physicsEngineIterateLoopRefreshRate;
+        int64_t fixDelay = 1000000 / fixedLoopRefreshRate;
+        int64_t physDelay = 1000000 / physicsEngineIterateLoopRefreshRate;
 
+        // FIXME: Добавить условие проверки на идентичность обновления физики и фикса
+        //        Изменить назавания переменных
         std::chrono::high_resolution_clock::time_point t1 = std::chrono::high_resolution_clock::now();
         for (int o = 0; o < 10; ++o)
             std::this_thread::sleep_for(std::chrono::microseconds(fixDelay));
@@ -213,7 +220,7 @@ void Engine::threadPhysicsEngineIterateLoop() {
 #endif
 
     double oldTime = glfwGetTime();
-    double delta = (float)this->physicsEngineIterateDelayMCS / 1000000;
+    double delta = (double)this->physicsEngineIterateDelayMCS / 1000000;
     double func_delta = 0.0;
 
     while (not glfwWindowShouldClose(this->window)) {
@@ -249,12 +256,13 @@ void Engine::setInputEvent(void (*func)(Engine *, InputEventInfo)) {
     this->inputEventFunc = func;
 }
 
+PhysEngine* const Engine::getPhysEngine() {
+    return &physEngine;
+}
+
 void Engine::setCameraRef(Camera *cam) {
     this->cameraObject = cam;
 }
-
-
-
 
 UUID_Generator::UUID Engine::addObjectClone(Object object) {
     UUID_Generator::UUID id = uuidGenerator.gen();

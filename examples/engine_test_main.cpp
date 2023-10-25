@@ -1,6 +1,8 @@
 #include <iostream>
 #include <cmath>
 #include <glm/glm.hpp>
+#include <glm/ext.hpp>
+#include <glm/gtx/quaternion.hpp>
 #include <Old3DEngine/Old3DEngine.hpp>
 #include <Old3DEngine/Objects/CubeMesh.hpp>
 #include <Old3DEngine/Objects/Camera.hpp>
@@ -31,7 +33,7 @@ Collider* floor_col = floor_body->addCollider(floor_col_shape, Transform::identi
 
 
 Vector3 rbody_body_vec(0, 6, 0);
-Quaternion rbody_body_quat = Quaternion::fromEulerAngles(1, 0, 3.9);
+Quaternion rbody_body_quat = Quaternion::fromEulerAngles(0, 2, 2);
 Transform rbody_body_trans(rbody_body_vec, rbody_body_quat);
 RigidBody* rbody_body = physicsWorld->createRigidBody(rbody_body_trans);
 
@@ -40,15 +42,26 @@ Collider* rbody_col = rbody_body->addCollider(rbody_col_shape, Transform::identi
 
 
 Old3DEngine::CubeMesh mesh1;
+Old3DEngine::CubeMesh mesh2;
+Old3DEngine::CubeMesh xAxMesh;
+
+
 //Old3DEngine::CubeMesh meshes[22500];
 Old3DEngine::Camera camera(800.0/600.0, 60, 60);
 Old3DEngine::Light sun(Old3DEngine::Light::DirectionalLight);
 int main() {
-    rbody_body->updateMassPropertiesFromColliders();
+    //rbody_body->updateMassPropertiesFromColliders();
+    rbody_col->getMaterial().setBounciness(0);
+    rbody_col->getMaterial().setFrictionCoefficient(1);
     floor_body->setType(BodyType::STATIC);
+    floor_col->getMaterial().setBounciness(0);
+    floor_col->getMaterial().setFrictionCoefficient(1);
+
+    xAxMesh.setSize(1, 0.1, 0.1);
+    xAxMesh.offset(0, 6, 0);
 
     camera.setPosition(0, 6, 3);
-    camera.setRotation(0, -90, 0);
+    camera.setRotation(0, 0, 0);
     mesh1.setRotation(0, 10, 0);
     mesh1.setSize(1, 1, 1);
 
@@ -56,7 +69,18 @@ int main() {
     floor.setPosition(0, 0, 0);
     floor.setSize(25, 1, 25);
 
+
+    Quaternion qufloor = floor_body->getTransform().getOrientation();
+    glm::quat qefloor(qufloor.w, qufloor.z, qufloor.y, qufloor.x);
+    glm::mat4 matfloor = glm::toMat4(qefloor);
+    floor.setRotationMatrix(matfloor);
+    //floor.matrix
+
+
     sun.setPosition({1.0, 1.0, 1.0});
+
+    mesh2.setPosition(0, 1, 10);
+
 
     // Setting textures for the cube and floor meshes
     Old3DEngine::Texture tex_floor("examples/Assets/ground.png", Old3DEngine::Texture::Repeat, Old3DEngine::Texture::Linear);
@@ -78,28 +102,46 @@ int main() {
             0, 0, 1, 0, 1, 1, 1, 1, 0, 1, 0, 0,
             0, 0, 1, 0, 1, 1, 1, 1, 0, 1, 0, 0,
     });
+    mesh2.addTexture(&tex, {
+            0, 0, 1, 0, 1, 1, 1, 1, 0, 1, 0, 0,
+            0, 0, 1, 0, 1, 1, 1, 1, 0, 1, 0, 0,
+            0, 0, 1, 0, 1, 1, 1, 1, 0, 1, 0, 0,
+            0, 0, 1, 0, 1, 1, 1, 1, 0, 1, 0, 0,
+            0, 0, 1, 0, 1, 1, 1, 1, 0, 1, 0, 0,
+            0, 0, 1, 0, 1, 1, 1, 1, 0, 1, 0, 0,
+    });
     game.addObjectRef(&mesh1);
+    game.addObjectRef(&mesh2);
+    game.addObjectRef(&xAxMesh);
     game.addObjectClone(floor);
     game.addObjectRef(&sun);
     std::cout << sizeof(Old3DEngine::Mesh) << "\n";
 
-    /*int n = 150;
-    for (int a = 0; a < n; ++a) {
-        for (int b = 0; b < n; ++b) {
-            Old3DEngine::CubeMesh m;
-            m.addTexture(&tex, {
-                    0, 0, 1, 0, 1, 1, 1, 1, 0, 1, 0, 0,
-                    0, 0, 1, 0, 1, 1, 1, 1, 0, 1, 0, 0,
-                    0, 0, 1, 0, 1, 1, 1, 1, 0, 1, 0, 0,
-                    0, 0, 1, 0, 1, 1, 1, 1, 0, 1, 0, 0,
-                    0, 0, 1, 0, 1, 1, 1, 1, 0, 1, 0, 0,
-                    0, 0, 1, 0, 1, 1, 1, 1, 0, 1, 0, 0,
-            });
-            m.setPosition(-(n / 2) + b, -(n / 2) + a, 0.0);
-            meshes[a*n + b] = m;
-            game.addObjectRef(&meshes[a*n + b]);
-        }
-    }*/
+
+    Old3DEngine::PhysicalBody rigidBody;
+    Old3DEngine::PhysEngine* ph_w = game.getPhysEngine();
+    ph_w->addObjectRef(&rigidBody);
+
+
+
+
+            /*int n = 150;
+            for (int a = 0; a < n; ++a) {
+                for (int b = 0; b < n; ++b) {
+                    Old3DEngine::CubeMesh m;
+                    m.addTexture(&tex, {
+                            0, 0, 1, 0, 1, 1, 1, 1, 0, 1, 0, 0,
+                            0, 0, 1, 0, 1, 1, 1, 1, 0, 1, 0, 0,
+                            0, 0, 1, 0, 1, 1, 1, 1, 0, 1, 0, 0,
+                            0, 0, 1, 0, 1, 1, 1, 1, 0, 1, 0, 0,
+                            0, 0, 1, 0, 1, 1, 1, 1, 0, 1, 0, 0,
+                            0, 0, 1, 0, 1, 1, 1, 1, 0, 1, 0, 0,
+                    });
+                    m.setPosition(-(n / 2) + b, -(n / 2) + a, 0.0);
+                    meshes[a*n + b] = m;
+                    game.addObjectRef(&meshes[a*n + b]);
+                }
+            }*/
 
 
     game.setProcessLoop(_process);
@@ -123,43 +165,58 @@ void _process(Old3DEngine::Engine* engine, double delta) {
     }
 }
 
+float Matrix4ToEuler(glm::mat4 InMatrix4) {
+    bool bad = InMatrix4[0][0] == 0 and InMatrix4[0][2] == 0;
+    if (not bad)
+        return atan2(InMatrix4[0][0], -InMatrix4[0][2]);
+    else
+        return atan2(InMatrix4[1][0], -InMatrix4[1][2]);
+}
 
 void _physics_process(Old3DEngine::Engine* engine, double delta) {
-    std::cout << "Process delta: " << (float) delta << "\n";
-    physicsWorld->update((float) delta);
+    //std::cout << "Process delta: " << (float) delta << "\n";
+    physicsWorld->update((float) delta / 1.0f);
 
     decimal dec;
     Vector3 vec;
     rbody_body->getTransform().getOrientation().getRotationAngleAxis(dec, vec);
-    std::cout << dec * vec.x * 180.0 / M_PI << " | "
-              << vec.y * dec * 180.0 / M_PI << " | "
-              << vec.z * dec * 180.0 / M_PI << " | "
-              << dec << "\n";
+    Quaternion qu = rbody_body->getTransform().getOrientation();
+    //glm::quat qe(qu.w, qu.z, qu.y, qu.x);
+    glm::quat qe(qu.w, -qu.z, -qu.y, -qu.x);
+
+    //glm::quat qe(dec, vec.z, vec.y, vec.x);
+    glm::mat4 mat = glm::toMat4(qe);
+    mesh1.setRotationMatrix(mat);
+    //exit(0);
+
+
+
+    glm::vec3 result = glm::degrees(glm::eulerAngles(qe));
+    //std::cout << qu.x << " | " << qu.y << " | " << qu.z << " | " << qu.w <<  "\n";
 
     Vector3 rbodyPosVect = rbody_body->getTransform().getPosition();
-    std::cout << "Rbody Y pos: " << rbodyPosVect.y << "\n";
-    mesh1.setPosition(rbodyPosVect.x, rbodyPosVect.y, rbodyPosVect.z);
-    // Set rigid cube mesh rotate
-    mesh1.setRotation(vec.x * dec * 180.0f / M_PI,
-                      vec.y * dec * 180.0f / M_PI,
-                      vec.z * dec * 180.0f / M_PI);
-
-
+    //std::cout << "Rbody Y pos: " << rbodyPosVect.y << "\n";
+    mesh1.setPosition(rbodyPosVect.z, rbodyPosVect.y, rbodyPosVect.x);
 
     if (glfwGetKey(engine->getWindow(), GLFW_KEY_ESCAPE) == GLFW_PRESS)
         glfwSetWindowShouldClose(engine->getWindow(), true);
 
     if (engine->Input.isKeyPressed(GLFW_KEY_LEFT_SHIFT))
         rbody_body->setLinearVelocity({0, 10, 0});
+    if (engine->Input.isKeyPressed(GLFW_KEY_UP))
+        rbody_body->setLinearVelocity({0, -1, 0});
 
     else if (engine->Input.isKeyPressed(GLFW_KEY_LEFT_CONTROL))
         mesh1.offset({0, -0.1, 0});
 
     if (engine->Input.isKeyPressed(GLFW_KEY_Q))
-        mesh1.rotate({0, 0.5, 0});
+        mesh2.rotate({0.0, 1, 0.0});
 
     if (engine->Input.isKeyPressed(GLFW_KEY_E))
-        camera.rotate(0, 0, .1);
+        camera.rotate(0, 0.5, 0);
+
+    if (engine->Input.isKeyPressed(GLFW_KEY_T))
+        xAxMesh.rotate(0, 0, 0);
 
 
     if (engine->Input.isKeyPressed(GLFW_KEY_F11)) {
@@ -168,43 +225,72 @@ void _physics_process(Old3DEngine::Engine* engine, double delta) {
     }
 
     glm::vec2 dir = engine->Input.getVector(GLFW_KEY_A, GLFW_KEY_D, GLFW_KEY_W, GLFW_KEY_S);
-    glm::vec3 direction;
-    direction.x = cos(glm::radians(camera.getRotation().y)) * cos(glm::radians(camera.getRotation().x));
-    direction.y = sin(glm::radians(camera.getRotation().x));
-    direction.z = sin(glm::radians(camera.getRotation().y)) * cos(glm::radians(camera.getRotation().x));
+    glm::vec3 cam_rot = glm::radians(camera.getRotationEuler());
+    /*glm::vec3 direction;
+    direction.x = cos(glm::radians(camera.getRotationEuler().y)) * cos(glm::radians(camera.getRotationEuler().x));
+    direction.y = sin(glm::radians(camera.getRotationEuler().x));
+    direction.z = sin(glm::radians(camera.getRotationEuler().y)) * cos(glm::radians(camera.getRotationEuler().x));
     glm::vec3 cameraFront = glm::normalize(direction);
     camera.setPosition(camera.getPosition() + glm::vec3 {
-        dir.y * 0.1 * direction.x / cos(glm::radians(camera.getRotation().x)) + dir.x * 0.1 * direction.z * -1 / cos(glm::radians(camera.getRotation().x)),
+        dir.y * 0.1 * direction.x / cos(glm::radians(camera.getRotationEuler().x)) + dir.x * 0.1 * direction.z * -1 / cos(glm::radians(
+                camera.getRotationEuler().x)),
         direction.y * 0.1 * dir.y,
         dir.y * 0.1 * direction.z + dir.x * 0.1 * direction.x
-    });
+    });*/
+    //camera.offset(cos(cam_rot.y) * dir.y * 0.1 * dir.x, 0, sin(cam_rot.y) * dir.y * dir.x * 0.1);
+    //std::cout << dir.x << " | " << dir.y << "\n";
+    //std::cout << cos(cam_rot.y) * dir.y * 0.1 << "\n";
+    //std::cout << cos(M_PI) << "\n";
+    //cam_rot.y = Matrix4ToEuler(camera.getRotationMatrix());
+    //std::cout << cos(cam_rot.y) * dir.y << '\n';
+    //camera.offset(cos(cam_rot.y), 0, 0);
+    std::cout << cam_rot.y << '\n';
+    camera.offset(cos(cam_rot.y) * dir.y * 0.1,
+                  0,
+                  -sin(cam_rot.y) * dir.y * 0.1);
+    //std::cout << camera.getPosition().z << '\n';
+
+    //std::cout << "CAM POS:" << camera.getPosition().z << "\n";
 
     //std::cout << "Fixed FPS: " << 1.0 / delta <<  delta<< std::endl;
 }
 
-float lastX = 400;
-float lastY = 300;
+float lastX = 0;
+float lastY = 0;
 float sensitivity = 0.05;
+bool is_first_iter = true;
 void _input_event(Old3DEngine::Engine* engine, Old3DEngine::Engine::InputEventInfo event) {
     if (event.type == Old3DEngine::Engine::InputEventType::InputEventMouseMove) {
         float xoffset = event.position.x - lastX;
-        float yoffset = lastY - event.position.y;
+        float yoffset = event.position.y - lastY;
         lastX = event.position.x;
         lastY = event.position.y;
 
         xoffset *= sensitivity;
         yoffset *= sensitivity;
 
-        //camera.setRotation(30, -90, 0);
-        float rotX = camera.getRotation().x + yoffset;
-        if (rotX > 89)
-            rotX = 89;
-        if (rotX < -89)
-            rotX = -89;
-        camera.setRotation(rotX, camera.getRotation().y + xoffset, camera.getRotation().z);
+        if (is_first_iter) {
+            xoffset = 0;
+            yoffset = 0;
+            is_first_iter = false;
+        }
 
-        //camera.yaw += xoffset;
-        //camera.pitch += yoffset;
+        //camera.setRotation(30, -90, 0);
+        /*if (abs(camera.getRotationEuler().x) < 90) {
+            float rotX = camera.getRotationEuler().x + yoffset;
+            //std::cout << rotX << "\n";
+            if (rotX > 90)
+                yoffset -= rotX - 90;
+            if (rotX < -90)
+                yoffset -= rotX + 90;
+        }
+        if (abs(camera.getRotationEuler().x) >= 90) {
+            yoffset = 0;
+        }*/
+
+        //std::cout << camera.getRotationEuler().y << "\n";
+        camera.rotate(0, -xoffset, 0);
+        camera.rotate(-yoffset, 0, 0, false);
     }
     float posit[4] = {camera.getPosition().x, camera.getPosition().y,camera.getPosition().z,1.0};
     //glLightfv(GL_LIGHT0, GL_POSITION, posit);

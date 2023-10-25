@@ -7,10 +7,6 @@ PhysEngine::PhysEngine() {
     //this->physBodies = phys_bodies_vec;
     physicsWorld = physicsCommon.createPhysicsWorld();
     physicsWorld->setIsDebugRenderingEnabled(true);
-
-// Get a reference to the debug renderer
-    reactphysics3d::DebugRenderer& debugRenderer = physicsWorld->getDebugRenderer();
-
 }
 
 void PhysEngine::IteratePhysics(float delta) {
@@ -23,7 +19,7 @@ void PhysEngine::IteratePhysics(float delta) {
         else if (not body.obj->is_initialized) {
             // INIT
             glm::vec3 obj_pos = body.obj->getPosition();
-            glm::vec3 obj_rot = glm::radians(body.obj->getRotation());
+            glm::vec3 obj_rot = glm::radians(body.obj->getRotationEuler());
             reactphysics3d::Vector3 position(obj_pos.x, obj_pos.y, obj_pos.z);
             reactphysics3d::Quaternion quaternion = reactphysics3d::Quaternion::fromEulerAngles(
                     obj_rot.x, obj_rot.y, obj_rot.z
