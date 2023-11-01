@@ -5,6 +5,7 @@
 #include <Old3DEngine/Old3DEngine.hpp>
 #include <Old3DEngine/Render/OpenGL15.hpp>
 #include <Old3DEngine/Error.hpp>
+#include <utility>
 #include "globalStaticParams.hpp"
 
 #ifdef __linux__
@@ -151,7 +152,7 @@ void Engine::Run() {
     //glEnableClientState(GL_COLOR_ARRAY);
     glEnable(GL_DEPTH_TEST);
 
-    OpenGL15 ogl(&meshes, &lights);
+    OpenGL15 ogl(&meshes, &particles, &lights);
 
     glfwSwapBuffers(this->window);
     double oldTime = glfwGetTime();
@@ -169,6 +170,10 @@ void Engine::Run() {
             this->cameraObject->renderOpenGL15();
 
         //meshesMutex.lock();
+        for (Engine::SceneObject &s : particles) {
+            Particles* p = (Old3DEngine::Particles*)s.obj;
+            p->update(delta);
+        }
         ogl.Draw();
         meshesMutex.unlock();
 
@@ -280,6 +285,17 @@ UUID_Generator::UUID Engine::addObjectClone(Mesh object) {
     //delete new_mesh;
     //*new_mesh = std::move(object);
     meshes.push_back({new_mesh, id, false});
+    return id;
+}
+
+UUID_Generator::UUID Engine::addObjectClone(Particles object) {
+    std::lock_guard<std::mutex> guard(meshesMutex);
+    UUID_Generator::UUID id = uuidGenerator.gen();
+    Particles *new_particles = new Particles(std::move(object));
+
+    //delete new_mesh;
+    //*new_mesh = std::move(object);
+    particles.push_back({new_particles, id, false});
     return id;
 }
 

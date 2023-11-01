@@ -6,7 +6,7 @@ using namespace Old3DEngine;
 Mesh::Mesh() {}
 
 // FIXME: DIRTY HACK
-Mesh::Mesh(Mesh &mesh) {
+Mesh::Mesh(const Mesh &mesh) {
     position = mesh.position;
     rotation_matrix = mesh.rotation_matrix;
     scale = mesh.scale;

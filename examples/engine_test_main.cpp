@@ -5,9 +5,11 @@
 #include <glm/gtx/quaternion.hpp>
 #include <Old3DEngine/Old3DEngine.hpp>
 #include <Old3DEngine/Objects/CubeMesh.hpp>
+#include <Old3DEngine/Objects/Mesh.hpp>
 #include <Old3DEngine/Objects/Camera.hpp>
 #include <Old3DEngine/Objects/Light/DirectionalLight.hpp>
 #include <Old3DEngine/Resources/Texture.hpp>
+#include <Old3DEngine/Objects/Particles.hpp>
 
 #include <reactphysics3d/reactphysics3d.h>
 
@@ -49,6 +51,7 @@ Old3DEngine::CubeMesh xAxMesh;
 //Old3DEngine::CubeMesh meshes[22500];
 Old3DEngine::Camera camera(800.0/600.0, 60, 60);
 Old3DEngine::Light sun(Old3DEngine::Light::DirectionalLight);
+Old3DEngine::Particles *part;
 int main() {
     //rbody_body->updateMassPropertiesFromColliders();
     rbody_col->getMaterial().setBounciness(0);
@@ -115,7 +118,11 @@ int main() {
     game.addObjectRef(&xAxMesh);
     game.addObjectClone(floor);
     game.addObjectRef(&sun);
-    std::cout << sizeof(Old3DEngine::Mesh) << "\n";
+    std::cout << sizeof(Old3DEngine::Particles) << "\n";
+    Old3DEngine::Particles cube_part((Old3DEngine::Mesh)mesh1, 10000, Old3DEngine::Particle::ParticleSettings());
+    cube_part.setPosition(3, 5, -5);
+    //std::cout << part->getPosition().z << "\n";
+    game.addObjectClone(cube_part);
 
 
     Old3DEngine::PhysicalBody rigidBody;
@@ -154,7 +161,7 @@ int main() {
 int count = 0;
 double del = 0.0;
 void _process(Old3DEngine::Engine* engine, double delta) {
-    if (count < 1000) {
+    if (count < 10) {
         ++count;
         del += delta;
     }
@@ -174,6 +181,7 @@ float Matrix4ToEuler(glm::mat4 InMatrix4) {
 }
 
 void _physics_process(Old3DEngine::Engine* engine, double delta) {
+    //part->update(delta);
     //std::cout << "Process delta: " << (float) delta << "\n";
     physicsWorld->update((float) delta / 1.0f);
 
@@ -244,7 +252,7 @@ void _physics_process(Old3DEngine::Engine* engine, double delta) {
     //cam_rot.y = Matrix4ToEuler(camera.getRotationMatrix());
     //std::cout << cos(cam_rot.y) * dir.y << '\n';
     //camera.offset(cos(cam_rot.y), 0, 0);
-    std::cout << cam_rot.y << '\n';
+    //std::cout << cam_rot.y << '\n';
     camera.offset(cos(cam_rot.y) * dir.y * 0.1,
                   0,
                   -sin(cam_rot.y) * dir.y * 0.1);

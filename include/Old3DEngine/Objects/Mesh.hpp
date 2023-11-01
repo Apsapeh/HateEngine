@@ -28,7 +28,7 @@ namespace Old3DEngine {
     public:
         ~Mesh();
         Mesh();
-        Mesh(Mesh& mesh);
+        Mesh(const Mesh& mesh);
 
         void setVertices(std::vector<float> vec);
         void setIndicies(std::vector<uint32_t> vec);
