@@ -2,7 +2,10 @@
 #include "Object.hpp"
 #include "Mesh.hpp"
 #include <vector>
+#include <map>
 #include <cstdint>
+#include <iostream>
+
 
 namespace Old3DEngine {
     class Particles;
@@ -11,20 +14,33 @@ namespace Old3DEngine {
     class Particle : public Mesh {
         friend class Particles;
 
+    public:
         float lifetime = 0;
         bool deleteOnEndOfLife = true;
         float lostLifetime = 0;
-        u_int32_t index;
+        uint32_t index;
+
 
     public:
         struct ParticleSettings {
+            ParticleSettings(
+                    float min_lifetime, float max_liftime, bool del_on_end,
+                    glm::vec3 min_offset, glm::vec3 max_offset
+            );
+
+            ParticleSettings();
+
             float min_lifetime = 0.0;
             float max_lifetime = 1.0;
-            float delete_on_end_of_life = true;
+            bool delete_on_end_of_life = true;
+            glm::vec3 min_offset = {0, 0, 0};
+            glm::vec3 max_offset = {0, 0, 0};
         };
 
+        std::map<std::string, void*> data;
+
         Particle(
-                const Mesh& mesh, glm::vec3 pos, u_int32_t index,
+                uint32_t index, const Mesh& mesh, glm::vec3 pos,
                 float lifetime = 1.0, bool del_on_time = true
         );
         Particle(const Particle& particle);
@@ -34,18 +50,20 @@ namespace Old3DEngine {
         }
     };
 
-
     class Particles : public Object {
         friend Particle;
     public:
         std::vector<Particle> particlesVector;
+        Particle::ParticleSettings set;
+        bool pause = true;
         void (*calculateFunc)(Particle*, double) = [] (Particle* p, double d) {
-            p->offset(0, -9.8f * (float)d, 0);
+            //p->offset(0, -9.8f * (float)d, 0);
+            //std::cout <<
         };
 
     public:
         Particles(
-                const Mesh& mesh, u_int32_t particles_count,
+                const Mesh& mesh, uint32_t particles_count,
                 Particle::ParticleSettings settings
         );
 

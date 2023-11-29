@@ -119,8 +119,46 @@ int main() {
     game.addObjectClone(floor);
     game.addObjectRef(&sun);
     std::cout << sizeof(Old3DEngine::Particles) << "\n";
-    Old3DEngine::Particles cube_part((Old3DEngine::Mesh)mesh1, 10000, Old3DEngine::Particle::ParticleSettings());
-    cube_part.setPosition(3, 5, -5);
+    Old3DEngine::Particle::ParticleSettings pa_set = {
+            2.0f, 6.0f, true,
+            {0, 4, 0}, {4, 4, 4}
+    };
+
+    Old3DEngine::Texture snow_tex("examples/Assets/snow.png", Old3DEngine::Texture::Clamp, Old3DEngine::Texture::Linear);
+    Old3DEngine::CubeMesh snow_mesh;
+    snow_mesh.setSize(0.01, 0.01, 0.01);
+
+    snow_mesh.addTexture(&snow_tex, {
+            0, 0, 1, 0, 1, 1, 1, 1, 0, 1, 0, 0,
+            0, 0, 1, 0, 1, 1, 1, 1, 0, 1, 0, 0,
+            0, 0, 1, 0, 1, 1, 1, 1, 0, 1, 0, 0,
+            0, 0, 1, 0, 1, 1, 1, 1, 0, 1, 0, 0,
+            0, 0, 1, 0, 1, 1, 1, 1, 0, 1, 0, 0,
+            0, 0, 1, 0, 1, 1, 1, 1, 0, 1, 0, 0,
+    });
+    //snow_mesh.setSize(0.8, 0.8, 0.8);
+    snow_mesh.setPosition(0, 5, 0);
+    game.addObjectRef(&snow_mesh);
+    Old3DEngine::Particles cube_part((Old3DEngine::Mesh)snow_mesh, 100000, pa_set);
+    cube_part.calculateFunc =  [] (Old3DEngine::Particle* p, double delta) {
+        if (p->data.count("vel") == 0)
+            p->data["vel"] = (void*) new glm::vec3(0, 0, 0);
+        //((glm::vec3*)(p->data["vel"]))->y += delta * -9.8;
+        ((glm::vec3*)(p->data["vel"]))->y -= delta * 9.8;
+        //if (p->index == 0)
+            //std::cout << ((glm::vec3*)(p->data["vel"]))->y << "\n";
+            //std::cout << float(delta * 9.8) << "\n";
+        //std::cout << ((glm::vec3*)(p->data["vel"]))->y << "\n";
+        glm::vec3 off = *((glm::vec3*)(p->data["vel"])) * glm::vec3(delta);
+        //std::cout << off << "\n";
+        //p->offset(off);
+        p->offset({0, -0.25 * delta, 0});
+
+        //std::cout <<
+    };
+
+    cube_part.setPosition(0, 3, 0);
+    cube_part.pause = false;
     //std::cout << part->getPosition().z << "\n";
     game.addObjectClone(cube_part);
 
@@ -161,7 +199,7 @@ int main() {
 int count = 0;
 double del = 0.0;
 void _process(Old3DEngine::Engine* engine, double delta) {
-    if (count < 10) {
+    if (count < 1000) {
         ++count;
         del += delta;
     }
@@ -181,6 +219,7 @@ float Matrix4ToEuler(glm::mat4 InMatrix4) {
 }
 
 void _physics_process(Old3DEngine::Engine* engine, double delta) {
+    //std::cout << "EOUU\n";
     //part->update(delta);
     //std::cout << "Process delta: " << (float) delta << "\n";
     physicsWorld->update((float) delta / 1.0f);

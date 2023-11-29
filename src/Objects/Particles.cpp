@@ -1,11 +1,14 @@
 #include "Old3DEngine/Objects/Particles.hpp"
+#include <random>
+#include <reactphysics3d/constraint/BallAndSocketJoint.h>
 
 using namespace Old3DEngine;
 
 Particle::Particle(
-        const Mesh& mesh, glm::vec3 pos, u_int32_t index,
+        uint32_t index, const Mesh& mesh, glm::vec3 pos,
         float lifetime, bool del_on_time
 ) : Mesh(mesh) {
+    //std::cout << pos.x << " | " << pos.y << " | " << pos.z << "\n";
     this->position = pos;
     this->index = index;
     this->lifetime = lifetime;
@@ -21,13 +24,28 @@ Particle::Particle(const Particle &particle) : Mesh(particle) {
 }
 
 
+
 Particles::Particles(
-        const Mesh& mesh, u_int32_t particles_count,
+        const Mesh& mesh, uint32_t particles_count,
         Particle::ParticleSettings settings
 ) {
+    std::random_device rand_dev;
+    std::mt19937 gen(rand_dev());
+    std::uniform_real_distribution<float> life_dist(settings.min_lifetime, settings.max_lifetime);
+    std::uniform_real_distribution<float> posX_dist(settings.min_offset.x, settings.max_offset.x);
+    std::uniform_real_distribution<float> posY_dist(settings.min_offset.y, settings.max_offset.y);
+    std::uniform_real_distribution<float> posZ_dist(settings.min_offset.z, settings.max_offset.z);
+    this->set = settings;
     particlesVector.reserve(particles_count);
-    for (u_int32_t i = 0; i < particles_count; ++i) {
-        particlesVector.push_back(Particle(mesh, this->position + glm::vec3{0, 2*i, 0}, i));
+    for (uint32_t i = 0; i < particles_count; ++i) {
+        particlesVector.push_back(
+            Particle(
+                i, mesh,
+                this->position + glm::vec3{posX_dist(gen), posY_dist(gen), posZ_dist(gen)},
+                life_dist(gen),
+                settings.delete_on_end_of_life
+            )
+        );
     }
 }
 
@@ -39,12 +57,27 @@ void Particles::update(double delta) {
         calculateFunc(p, delta);
         if (p->lostLifetime >= 0) {
             p->lostLifetime -= (float)delta;
-            if (p->lostLifetime <= 0 and p->deleteOnEndOfLife) {
+            if (p->lostLifetime <= 0 and p->deleteOnEndOfLife and p->visible == true) {
                 p->lostLifetime = 0;
-                //std::cout << p->index << " -- deleted\n";
+                #ifdef _OLD3D_DEBUG
+                std::cout << p->index << " -- deleted\n";
+                #endif
 
-                particlesVector.erase(it);
-                --it;
+                //p->visible = false;
+
+                //particlesVector.erase(it);
+
+                std::random_device rand_dev;
+                std::mt19937 gen(rand_dev());
+                std::uniform_real_distribution<float> life_dist(set.min_lifetime, set.max_lifetime);
+                std::uniform_real_distribution<float> posX_dist(set.min_offset.x, set.max_offset.x);
+                std::uniform_real_distribution<float> posY_dist(set.min_offset.y, set.max_offset.y);
+                std::uniform_real_distribution<float> posZ_dist(set.min_offset.z, set.max_offset.z);
+
+                p->position = this->position + glm::vec3{posX_dist(gen), posY_dist(gen), posZ_dist(gen)};
+                //std::cout << "POS: " << p->position.x << " | " << p->position.y << " | " << p->position.z << "\n";
+                p->lostLifetime = p->lifetime;
+                //--it;
             }
         }
     }
@@ -60,3 +93,17 @@ void Particles::setPosition(glm::vec3 vec) {
         p.offset(vec);
     }
 }
+
+Particle::ParticleSettings::ParticleSettings(float min_lifetime, float max_liftime, bool del_on_end,
+                                             glm::vec3 min_offset, glm::vec3 max_offset) {
+    this->min_lifetime = min_lifetime;
+    this->max_lifetime = max_liftime;
+    this->delete_on_end_of_life = del_on_end;
+    this->min_offset = min_offset;
+    this->max_offset = max_offset;
+}
+
+Particle::ParticleSettings::ParticleSettings() {
+
+}
+

@@ -172,7 +172,8 @@ void Engine::Run() {
         //meshesMutex.lock();
         for (Engine::SceneObject &s : particles) {
             Particles* p = (Old3DEngine::Particles*)s.obj;
-            p->update(delta);
+            if (not p->pause)
+                p->update(delta);
         }
         ogl.Draw();
         meshesMutex.unlock();
