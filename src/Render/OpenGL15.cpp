@@ -30,14 +30,16 @@ void OpenGL15::render(Mesh *mesh) {
 
         glPushMatrix();
         glTranslatef(pos.x, pos.y, pos.z);
+        auto scale = mesh->getScale();
+        glScalef(scale.x, scale.y, scale.z);
 
         glMultMatrixf(glm::value_ptr(mesh->getRotationMatrix()));
 
         // Render Textures
-        const std::vector<Mesh::TextureObject>* textures = mesh->getTextures();
-        for (const Mesh::TextureObject &tex : *textures) {
-            glBindTexture(GL_TEXTURE_2D, tex.texture->getTextureID());
-            glTexCoordPointer(2, GL_FLOAT, 0, tex.UV.data());
+        //const Mesh::TextureObject* texture = mesh->getTexture();
+        if (mesh->getTexture() != nullptr) {
+            glBindTexture(GL_TEXTURE_2D, mesh->getTexture()->getTextureID());
+            glTexCoordPointer(2, GL_FLOAT, 0, mesh->getUV()->data());
         }
 
         glVertexPointer(3, GL_FLOAT, 0, mesh->getVertices()->data());

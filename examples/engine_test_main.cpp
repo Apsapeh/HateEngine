@@ -17,6 +17,16 @@ using namespace reactphysics3d;
 
 
 
+// Define these only in *one* .cc file.
+#define TINYGLTF_IMPLEMENTATION
+#define STB_IMAGE_WRITE_IMPLEMENTATION
+// #define TINYGLTF_NOEXCEPTION // optional. disable exception handling.
+#include <tiny_gltf.h>
+
+using namespace tinygltf;
+
+
+
 void _process(Old3DEngine::Engine*, double);
 void _physics_process(Old3DEngine::Engine*, double);
 void _input_event(Old3DEngine::Engine*, Old3DEngine::Engine::InputEventInfo);
@@ -73,6 +83,148 @@ int main() {
     floor.setSize(25, 1, 25);
 
 
+
+
+
+
+    Model model;
+    TinyGLTF loader;
+    std::string err;
+    std::string warn;
+
+    //bool ret = loader.LoadASCIIFromFile(&model, &err, &warn, argv[1]);
+    bool ret = loader.LoadBinaryFromFile(&model, &err, &warn, "examples/Assets/tomat.glb"); // for binary glTF(.glb)
+
+    if (!warn.empty()) {
+        printf("Warn: %s\n", warn.c_str());
+    }
+
+    if (!err.empty()) {
+        printf("Err: %s\n", err.c_str());
+    }
+
+    if (!ret) {
+        printf("Failed to parse glTF\n");
+        return -1;
+    }
+
+    std::vector<std::vector<float>> i_v;
+    std::vector<std::vector<uint32_t>> ix_v;
+    std::vector<std::vector<float>> in_v;
+    // Итерируем по всем mesh-ам модели
+    for (const auto& mesh : model.meshes) {
+        // Итерируем по всем primitive-ам в mesh
+        for (const auto& primitive : mesh.primitives) {
+            // Получаем доступ к атрибутам вершин
+            const auto& attributes = primitive.attributes;
+
+            // Получаем данные о вершинах
+            const auto& position_accessor = model.accessors[attributes.find("POSITION")->second];
+            const auto& position_view = model.bufferViews[position_accessor.bufferView];
+            const auto& position_buffer = model.buffers[position_view.buffer];
+
+            // Получаем указатель на данные о вершинах
+            const float* positions = reinterpret_cast<const float*>(&(position_buffer.data[position_view.byteOffset + position_accessor.byteOffset]));
+
+            // Получаем количество вершин
+            int num_vertices = static_cast<int>(position_accessor.count);
+
+            // Выводим координаты вершин
+            std::vector<float> v;
+
+            for (int i = 0; i < num_vertices; ++i) {
+                float x = positions[i * 3];
+                float y = positions[i * 3 + 1];
+                float z = positions[i * 3 + 2];
+                v.push_back(x);
+                v.push_back(y);
+                v.push_back(z);
+
+                std::cout << "Vertex " << i << ": (" << x << ", " << y << ", " << z << ")" << std::endl;
+            }
+            i_v.push_back(v);
+
+            int mode = primitive.mode;
+
+
+            const auto& indices_accessor = model.accessors[primitive.indices];
+            const auto& indices_view = model.bufferViews[indices_accessor.bufferView];
+            const auto& indices_buffer = model.buffers[indices_view.buffer];
+
+            // Получаем указатель на данные о индексах
+            const uint32_t* indices = reinterpret_cast<const uint32_t*>(&(indices_buffer.data[indices_view.byteOffset + indices_accessor.byteOffset]));
+
+            // Получаем количество индексов
+            int num_indices = static_cast<int>(indices_accessor.count);
+
+            std::vector<uint32_t> ix;
+            // Выводим индексы вершин
+            for (int i = 0; i < num_indices; ++i) {
+                ix.push_back(indices[i]);
+                std::cout << "Index " << i << ": " << indices[i] << std::endl;
+
+            }
+            ix_v.push_back(ix);
+            std::cout << mode << '\n';
+
+            std::vector<float> n;
+
+            const auto& normal_accessor = model.accessors[attributes.find("NORMAL")->second];
+            const auto& normal_view = model.bufferViews[normal_accessor.bufferView];
+            const auto& normal_buffer = model.buffers[normal_view.buffer];
+
+            // Получаем указатель на данные о нормалях
+            const float* normals = reinterpret_cast<const float*>(&(normal_buffer.data[normal_view.byteOffset + normal_accessor.byteOffset]));
+
+            // Получаем количество нормалей
+            int num_normals = static_cast<int>(normal_accessor.count);
+
+            // Выводим нормали
+            for (int i = 0; i < num_normals; ++i) {
+                float nx = normals[i * 3];
+                float ny = normals[i * 3 + 1];
+                float nz = normals[i * 3 + 2];
+
+                n.push_back(nx);
+                n.push_back(ny);
+                n.push_back(nz);
+
+                std::cout << "Normal " << i << ": (" << nx << ", " << ny << ", " << nz << ")" << std::endl;
+            }
+            in_v.push_back(n);
+        }
+    }
+
+
+
+    /*std::vector<float> tomat_v, tomat_n;
+    std::vector<uint32_t> tomat_i;
+    tomat_v.insert(tomat_v.end(), i_v[0].begin(), i_v[0].end());
+    tomat_v.insert(tomat_v.end(), i_v[1].begin(), i_v[1].end());
+    tomat_n.insert(tomat_n.end(), in_v[0].begin(), in_v[0].end());
+    tomat_n.insert(tomat_n.end(), in_v[1].begin(), in_v[1].end());
+
+    tomat_i.insert(tomat_i.end(), ix_v[0].begin(), ix_v[0].end());
+
+    for (auto i : ix_v[1]) {
+        tomat_i.push_back(i + i_v[0].size());
+    }
+    //tomat_i.insert(tomat_i.end(), ix_v[1].begin(), ix_v[1].end());
+
+
+    Old3DEngine::Mesh tomato(tomat_v, tomat_i, tomat_n);*/
+
+    Old3DEngine::Mesh tomato_leaf(i_v[0], ix_v[0], in_v[0]);
+    Old3DEngine::Mesh tomato(i_v[1], ix_v[1], in_v[1]);
+    tomato.setScale(0.1, 0.1, 0.1);
+    tomato_leaf.setScale(tomato.getScale());
+
+
+
+
+
+
+
     Quaternion qufloor = floor_body->getTransform().getOrientation();
     glm::quat qefloor(qufloor.w, qufloor.z, qufloor.y, qufloor.x);
     glm::mat4 matfloor = glm::toMat4(qefloor);
@@ -89,7 +241,8 @@ int main() {
     Old3DEngine::Texture tex_floor("examples/Assets/ground.png", Old3DEngine::Texture::Repeat, Old3DEngine::Texture::Linear);
     Old3DEngine::Texture tex("examples/Assets/brick.png", Old3DEngine::Texture::Repeat, Old3DEngine::Texture::Nearest);
     Old3DEngine::Engine game("Old3DE Test", 800, 600);
-    floor.addTexture(&tex_floor, {
+    floor.setTexture(&tex_floor);
+    floor.setUV({
             0, 0, 3, 0, 3, 3, 3, 3, 0, 3, 0, 0,
             0, 0, 3, 0, 3, 3, 3, 3, 0, 3, 0, 0,
             0, 0, 3, 0, 3, 3, 3, 3, 0, 3, 0, 0,
@@ -97,30 +250,19 @@ int main() {
             0, 0, 3, 0, 3, 3, 3, 3, 0, 3, 0, 0,
             0, 0, 3, 0, 3, 3, 3, 3, 0, 3, 0, 0,
     });
-    mesh1.addTexture(&tex, {
-            0, 0, 1, 0, 1, 1, 1, 1, 0, 1, 0, 0,
-            0, 0, 1, 0, 1, 1, 1, 1, 0, 1, 0, 0,
-            0, 0, 1, 0, 1, 1, 1, 1, 0, 1, 0, 0,
-            0, 0, 1, 0, 1, 1, 1, 1, 0, 1, 0, 0,
-            0, 0, 1, 0, 1, 1, 1, 1, 0, 1, 0, 0,
-            0, 0, 1, 0, 1, 1, 1, 1, 0, 1, 0, 0,
-    });
-    mesh2.addTexture(&tex, {
-            0, 0, 1, 0, 1, 1, 1, 1, 0, 1, 0, 0,
-            0, 0, 1, 0, 1, 1, 1, 1, 0, 1, 0, 0,
-            0, 0, 1, 0, 1, 1, 1, 1, 0, 1, 0, 0,
-            0, 0, 1, 0, 1, 1, 1, 1, 0, 1, 0, 0,
-            0, 0, 1, 0, 1, 1, 1, 1, 0, 1, 0, 0,
-            0, 0, 1, 0, 1, 1, 1, 1, 0, 1, 0, 0,
-    });
+    mesh1.setTexture(&tex);
+    mesh2.setTexture(&tex);
     game.addObjectRef(&mesh1);
     game.addObjectRef(&mesh2);
     game.addObjectRef(&xAxMesh);
     game.addObjectClone(floor);
     game.addObjectRef(&sun);
+    game.addObjectRef(&tomato);
+    game.addObjectRef(&tomato_leaf);
+    //game.addObjectRef(&tomato2);
     std::cout << sizeof(Old3DEngine::Particles) << "\n";
     Old3DEngine::Particle::ParticleSettings pa_set = {
-            2.0f, 6.0f, true,
+            6.0f, 6.0f, true,
             {0, 4, 0}, {4, 4, 4}
     };
 
@@ -128,18 +270,11 @@ int main() {
     Old3DEngine::CubeMesh snow_mesh;
     snow_mesh.setSize(0.01, 0.01, 0.01);
 
-    snow_mesh.addTexture(&snow_tex, {
-            0, 0, 1, 0, 1, 1, 1, 1, 0, 1, 0, 0,
-            0, 0, 1, 0, 1, 1, 1, 1, 0, 1, 0, 0,
-            0, 0, 1, 0, 1, 1, 1, 1, 0, 1, 0, 0,
-            0, 0, 1, 0, 1, 1, 1, 1, 0, 1, 0, 0,
-            0, 0, 1, 0, 1, 1, 1, 1, 0, 1, 0, 0,
-            0, 0, 1, 0, 1, 1, 1, 1, 0, 1, 0, 0,
-    });
+    snow_mesh.setTexture(&snow_tex);
     //snow_mesh.setSize(0.8, 0.8, 0.8);
     snow_mesh.setPosition(0, 5, 0);
     game.addObjectRef(&snow_mesh);
-    Old3DEngine::Particles cube_part((Old3DEngine::Mesh)snow_mesh, 100000, pa_set);
+    Old3DEngine::Particles cube_part((Old3DEngine::Mesh)snow_mesh, 1000, pa_set);
     cube_part.calculateFunc =  [] (Old3DEngine::Particle* p, double delta) {
         if (p->data.count("vel") == 0)
             p->data["vel"] = (void*) new glm::vec3(0, 0, 0);
@@ -204,7 +339,7 @@ void _process(Old3DEngine::Engine* engine, double delta) {
         del += delta;
     }
     else {
-        std::cout << "FPS: " << (float)count / del << std::endl;
+        //std::cout << "FPS: " << (float)count / del << std::endl;
         count = 0;
         del = 0.0;
     }
@@ -253,8 +388,10 @@ void _physics_process(Old3DEngine::Engine* engine, double delta) {
     if (engine->Input.isKeyPressed(GLFW_KEY_UP))
         rbody_body->setLinearVelocity({0, -1, 0});
 
-    else if (engine->Input.isKeyPressed(GLFW_KEY_LEFT_CONTROL))
-        mesh1.offset({0, -0.1, 0});
+    if (engine->Input.isKeyPressed(GLFW_KEY_LEFT_CONTROL))
+        camera.offset(0, -0.1, 0);
+    if (engine->Input.isKeyPressed(GLFW_KEY_SPACE))
+        camera.offset(0, 0.1, 0);
 
     if (engine->Input.isKeyPressed(GLFW_KEY_Q))
         mesh2.rotate({0.0, 1, 0.0});

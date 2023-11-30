@@ -1,4 +1,4 @@
-add_requires("glfw", "glm")
+add_requires("glfw", "glm", "tinygltf")
 
 add_rules("mode.debug", "mode.release")
 
@@ -29,7 +29,7 @@ target("Old3DE")
     add_files(
         "src/*.c", "src/**.cpp"
     )
-    add_packages("glfw", "glm")
+    add_packages("glfw", "glm", "tinygltf")
     add_deps("reactphysics3d")
 
     if is_mode("debug") then
@@ -53,7 +53,7 @@ target("Old3DEngine")
     add_includedirs("deps", "include", "lib/reactphysics3d/include")
 
     add_deps("Old3DE")
-    add_packages("glfw", "glm")
+    add_packages("glfw", "glm", "tinygltf")
 
     if is_mode("debug") then
         set_symbols("debug")

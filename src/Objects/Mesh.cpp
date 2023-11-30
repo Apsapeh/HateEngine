@@ -1,9 +1,16 @@
 #include <Old3DEngine/Objects/Mesh.hpp>
 #include <algorithm>
+#include <utility>
 
 using namespace Old3DEngine;
 
 Mesh::Mesh() {}
+
+Mesh::Mesh(std::vector<float> vert, std::vector<uint32_t> ind, std::vector<float> norm) {
+    this->verticies = std::move(vert);
+    this->indicies = std::move(ind);
+    this->normals = std::move(norm);
+}
 
 // FIXME: DIRTY HACK
 Mesh::Mesh(const Mesh &mesh) {
@@ -14,7 +21,8 @@ Mesh::Mesh(const Mesh &mesh) {
     verticies = mesh.verticies;
     indicies = mesh.indicies;
     normals = mesh.normals;
-    textures = mesh.textures;
+    texture = mesh.texture;
+    UV = mesh.UV;
 }
 
 Mesh::~Mesh() {
@@ -35,24 +43,12 @@ void Mesh::setNormals(std::vector<float> vec) {
 
 
 
-UUID_Generator::UUID Mesh::addTexture(Texture *tex, std::vector<float> uv) {
-    UUID_Generator::UUID uuid = tex_uuid_generator.gen();
-    /*if (this->textures.size() > 0)
-        return false;*/
-    this->textures.push_back({tex, uv, uuid});
-    return uuid;
+void Mesh::setTexture(Texture *tex) {
+    this->texture = tex;
 }
 
-bool Mesh::delTexture(UUID_Generator::UUID uuid) {
-    std::vector<TextureObject>::iterator iter = std::find_if(
-            textures.begin(), textures.end(),
-            [&uuid] (TextureObject &obj) -> bool {return obj.id == uuid;}
-    );
-    if (iter != textures.end() and iter->id == uuid) {
-        textures.erase(iter);
-        return true;
-    }
-    return false;
+void Mesh::setUV(std::vector<float> uv) {
+    this->UV = uv;
 }
 
 const std::vector<float>* Mesh::getVertices() {
@@ -67,8 +63,12 @@ const std::vector<float>* Mesh::getNormals() {
     return &normals;
 }
 
-const std::vector<Mesh::TextureObject> *Mesh::getTextures() {
-    return &textures;
+Texture* Mesh::getTexture() {
+    return this->texture;
+}
+
+const std::vector<float>* Mesh::getUV() {
+    return &this->UV;
 }
 
 
