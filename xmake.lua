@@ -27,7 +27,7 @@ target("Old3DE")
         "lib/reactphysics3d/include"
     )
     add_files(
-        "src/*.c", "src/**.cpp"
+        "lib/gl/gl.c", "src/**.cpp"
     )
     add_packages("glfw", "glm", "tinygltf")
     add_deps("reactphysics3d")

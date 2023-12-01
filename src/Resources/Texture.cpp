@@ -7,8 +7,27 @@
 
 using namespace Old3DEngine;
 
-Texture::Texture(std::string file_name, Texture::TexWrap tex_wrap, Texture::TexFiltering tex_filtering, bool autoload) {
+Texture::Texture(
+    std::string file_name, Texture::TexWrap tex_wrap,
+    Texture::TexFiltering tex_filtering, bool autoload
+) {
     this->fileName = file_name;
+    this->texWrap = tex_wrap;
+    this->texFiltering = tex_filtering;
+    this->autoload = autoload;
+    if (autoload)
+        Load();
+}
+
+Texture::Texture(
+    std::vector<uint8_t> data, int width, int height,
+    Texture::TexType tex_type, Texture::TexWrap tex_wrap,
+    Texture::TexFiltering tex_filtering, bool autoload
+) {
+    this->data = std::move(data);
+    this->width = width;
+    this->height = height;
+    this->textureFormat = tex_type;
     this->texWrap = tex_wrap;
     this->texFiltering = tex_filtering;
     this->autoload = autoload;
@@ -20,6 +39,22 @@ Texture::~Texture() {
     Unload();
 }
 
+#include <iostream>
+bool Texture::loadFromFile() {
+    int n;
+    unsigned char *s_data = stbi_load(this->fileName.c_str(), &this->width, &this->height, &n, 0);
+    if (s_data == nullptr) {
+        Error::throwWarning("Error: Texture \"" + this->fileName + "\" was not found");
+        return false;
+    }
+    if (n == 4) this->textureFormat = GL_RGBA;
+    std::cout << "N: " << n << '\n';
+    this->data = std::vector<uint8_t>(s_data,  s_data + this->width * this->height * n);
+    stbi_image_free(s_data);
+    return true;
+}
+
+
 bool Texture::Load() {
     if (textureGL_ID != 0)
         return true;
@@ -27,14 +62,8 @@ bool Texture::Load() {
     if (!glad_is_initialized)
         return false;
 
-    int width, height, n;
-    unsigned char *data = stbi_load(this->fileName.c_str(), &width, &height, &n, 0);
-    if (data == nullptr) {
-        Error::throwWarning("Error: Texture \"" + this->fileName + "\" was not found");
+    if (!this->fileName.empty() and not loadFromFile())
         return false;
-    }
-
-    int tex_format = n == 4 ? GL_RGBA : GL_RGB;
 
     glGenTextures(1, &this->textureGL_ID);
     glBindTexture(GL_TEXTURE_2D, this->textureGL_ID);
@@ -42,10 +71,11 @@ bool Texture::Load() {
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, this->texWrap);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, this->texFiltering);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, this->texFiltering);
-    glTexImage2D(GL_TEXTURE_2D, 0, tex_format, width, height, 0, tex_format, GL_UNSIGNED_BYTE, data);
+    glTexImage2D(GL_TEXTURE_2D, 0, this->textureFormat, width, height, 0, this->textureFormat, GL_UNSIGNED_BYTE, data.data());
     glBindTexture(GL_TEXTURE_2D, 0);
 
-    stbi_image_free(data);
+    this->data.clear();
+    this->data.shrink_to_fit();
     return true;
 }
 

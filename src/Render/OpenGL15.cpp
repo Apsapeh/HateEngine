@@ -30,7 +30,7 @@ void OpenGL15::render(Mesh *mesh) {
 
         glPushMatrix();
         glTranslatef(pos.x, pos.y, pos.z);
-        auto scale = mesh->getScale();
+        glm::vec3 scale = mesh->getScale() * mesh->getRelativScale();
         glScalef(scale.x, scale.y, scale.z);
 
         glMultMatrixf(glm::value_ptr(mesh->getRotationMatrix()));
@@ -82,7 +82,7 @@ inline void OpenGL15::renderLight(std::vector<int> indicies) {
         glEnable(light_num);
         glLightfv(light_num,GL_DIFFUSE,light->getColor().data());
         glLightfv(light_num,GL_POSITION, l_position);
-        glLightf(light_num, GL_CONSTANT_ATTENUATION, 1.0);
+        glLightf(light_num, GL_CONSTANT_ATTENUATION, 0.2);
         glLightf(light_num, GL_LINEAR_ATTENUATION, 0.2);
         glLightf(light_num, GL_QUADRATIC_ATTENUATION, 0.5);
     }

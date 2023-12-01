@@ -144,6 +144,7 @@ void Engine::Run() {
     //glLightfv(GL_LIGHT0,GL_SPECULAR,white_light);
     //glEnable(GL_LIGHTING);
     glEnable(GL_TEXTURE_2D);
+    //glLightModelf(GL_LIGHT_MODEL_TWO_SIDE, GL_TRUE);
 
     glEnableClientState(GL_VERTEX_ARRAY);
     glEnableClientState(GL_NORMAL_ARRAY);

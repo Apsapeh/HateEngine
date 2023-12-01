@@ -1,6 +1,7 @@
 #include "Old3DEngine/Objects/Particles.hpp"
 #include <random>
-#include <reactphysics3d/constraint/BallAndSocketJoint.h>
+
+
 
 using namespace Old3DEngine;
 
@@ -24,7 +25,7 @@ Particle::Particle(const Particle &particle) : Mesh(particle) {
 }
 
 
-
+// Pretty this function
 Particles::Particles(
         const Mesh& mesh, uint32_t particles_count,
         Particle::ParticleSettings settings
@@ -36,6 +37,7 @@ Particles::Particles(
     std::uniform_real_distribution<float> posY_dist(settings.min_offset.y, settings.max_offset.y);
     std::uniform_real_distribution<float> posZ_dist(settings.min_offset.z, settings.max_offset.z);
     this->set = settings;
+
     particlesVector.reserve(particles_count);
     for (uint32_t i = 0; i < particles_count; ++i) {
         particlesVector.push_back(

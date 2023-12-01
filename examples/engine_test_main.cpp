@@ -3,6 +3,7 @@
 #include <glm/glm.hpp>
 #include <glm/ext.hpp>
 #include <glm/gtx/quaternion.hpp>
+#include <Old3DEngine/Error.hpp>
 #include <Old3DEngine/Old3DEngine.hpp>
 #include <Old3DEngine/Objects/CubeMesh.hpp>
 #include <Old3DEngine/Objects/Mesh.hpp>
@@ -111,6 +112,7 @@ int main() {
     std::vector<std::vector<float>> i_v;
     std::vector<std::vector<uint32_t>> ix_v;
     std::vector<std::vector<float>> in_v;
+    std::vector<std::vector<float>> uv_v;
     // Итерируем по всем mesh-ам модели
     for (const auto& mesh : model.meshes) {
         // Итерируем по всем primitive-ам в mesh
@@ -140,7 +142,7 @@ int main() {
                 v.push_back(y);
                 v.push_back(z);
 
-                std::cout << "Vertex " << i << ": (" << x << ", " << y << ", " << z << ")" << std::endl;
+                //std::cout << "Vertex " << i << ": (" << x << ", " << y << ", " << z << ")" << std::endl;
             }
             i_v.push_back(v);
 
@@ -161,7 +163,7 @@ int main() {
             // Выводим индексы вершин
             for (int i = 0; i < num_indices; ++i) {
                 ix.push_back(indices[i]);
-                std::cout << "Index " << i << ": " << indices[i] << std::endl;
+                //std::cout << "Index " << i << ": " << indices[i] << std::endl;
 
             }
             ix_v.push_back(ix);
@@ -189,13 +191,83 @@ int main() {
                 n.push_back(ny);
                 n.push_back(nz);
 
-                std::cout << "Normal " << i << ": (" << nx << ", " << ny << ", " << nz << ")" << std::endl;
+                //std::cout << "Normal " << i << ": (" << nx << ", " << ny << ", " << nz << ")" << std::endl;
             }
             in_v.push_back(n);
+
+
+            /*GLuint textureID = loadTexture(model.images[model.textures[model.materials[model.meshes[0].primitives[0].material].values["baseColorTexture"].TextureIndex()].source].uri);
+            const auto& material_index = primitive.material;
+            const auto& material = model.materials[material_index];
+            // Проверяем наличие атрибута "baseColorTexture"
+            if (material.values.find("baseColorTexture") != material.values.end()) {
+                const auto& texture_index = material.values["baseColorTexture"].TextureIndex();
+                const auto& texture = model.textures[texture_index];
+
+                // Выводим информацию о текстуре
+                std::cout << "Texture Index: " << texture_index << std::endl;
+                std::cout << "Texture Path: " << model.images[texture.source].uri << std::endl;
+                // Другие свойства текстуры, такие как сжатие, формат, могут быть получены из model.images[texture.source]
+
+            } else {
+                std::cout << "Mesh does not have a base color texture." << std::endl;
+            }*/
+
+            // Проверяем наличие атрибута "TEXCOORD_0" (первый набор текстурных координат)
+            if (attributes.find("TEXCOORD_0") != attributes.end()) {
+                const auto& texcoord_accessor = model.accessors[attributes.find("TEXCOORD_0")->second];
+                const auto& texcoord_view = model.bufferViews[texcoord_accessor.bufferView];
+                const auto& texcoord_buffer = model.buffers[texcoord_view.buffer];
+
+                // Получаем указатель на данные о текстурных координатах
+                const float* texcoords = reinterpret_cast<const float*>(&(texcoord_buffer.data[texcoord_view.byteOffset + texcoord_accessor.byteOffset]));
+
+                // Получаем количество текстурных координат
+                int num_texcoords = static_cast<int>(texcoord_accessor.count);
+
+                std::vector<float> uv;
+                // Выводим текстурные координаты
+                for (int i = 0; i < num_texcoords; ++i) {
+                    float u = texcoords[i * 2];
+                    float v = texcoords[i * 2 + 1];
+                    uv.push_back(u);
+                    uv.push_back(v);
+
+                    //std::cout << "Texcoord " << i << ": (" << u << ", " << v << ")" << std::endl;
+                }
+                uv_v.push_back(uv);
+            }
+            else {
+                std::cout << "Mesh does not have texture coordinates." << std::endl;
+            }
         }
     }
 
+    std::vector<Old3DEngine::Texture> textures;
+    for (auto m : model.textures) {
+        int textureIndex = m.source;
+        const tinygltf::Image& image = model.images[textureIndex];
 
+        // Access image data
+        const std::vector<unsigned char>& imageData = image.image;
+
+        Old3DEngine::Texture::TexType t_form;
+        if (image.component == 3)
+            t_form = Old3DEngine::Texture::TexType::RGB;
+        else if (image.component == 4)
+            t_form = Old3DEngine::Texture::TexType::RGBA;
+        else {
+            Old3DEngine::Error::throwWarning("Неизвестный формат");
+            continue;
+        }
+        std::cout << "Format: " << image.image.size() << "\n";
+
+
+        textures.push_back(Old3DEngine::Texture(
+            image.image, image.width, image.height, t_form,
+            Old3DEngine::Texture::Repeat, Old3DEngine::Texture::Linear
+        ));
+    }
 
     /*std::vector<float> tomat_v, tomat_n;
     std::vector<uint32_t> tomat_i;
@@ -216,6 +288,10 @@ int main() {
 
     Old3DEngine::Mesh tomato_leaf(i_v[0], ix_v[0], in_v[0]);
     Old3DEngine::Mesh tomato(i_v[1], ix_v[1], in_v[1]);
+    tomato.setTexture(&textures[0]);
+    tomato.setUV(uv_v[1]);
+    tomato_leaf.setTexture(&textures[0]);
+    tomato_leaf.setUV(uv_v[0]);
     tomato.setScale(0.1, 0.1, 0.1);
     tomato_leaf.setScale(tomato.getScale());
 
@@ -274,7 +350,7 @@ int main() {
     //snow_mesh.setSize(0.8, 0.8, 0.8);
     snow_mesh.setPosition(0, 5, 0);
     game.addObjectRef(&snow_mesh);
-    Old3DEngine::Particles cube_part((Old3DEngine::Mesh)snow_mesh, 1000, pa_set);
+    Old3DEngine::Particles cube_part((Old3DEngine::Mesh)tomato, 1000, pa_set);
     cube_part.calculateFunc =  [] (Old3DEngine::Particle* p, double delta) {
         if (p->data.count("vel") == 0)
             p->data["vel"] = (void*) new glm::vec3(0, 0, 0);
@@ -334,12 +410,12 @@ int main() {
 int count = 0;
 double del = 0.0;
 void _process(Old3DEngine::Engine* engine, double delta) {
-    if (count < 1000) {
+    if (count < 100) {
         ++count;
         del += delta;
     }
     else {
-        //std::cout << "FPS: " << (float)count / del << std::endl;
+        std::cout << "FPS: " << (float)count / del << std::endl;
         count = 0;
         del = 0.0;
     }

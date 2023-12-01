@@ -36,6 +36,14 @@ void Object::setScale(float x, float y, float z) {
     this->scale = glm::vec3(x, y, z);
 }
 
+void Object::setRelativScale(glm::vec3 value) {
+    this->relativ_scale = value;
+}
+
+void Object::setRelativScale(float x, float y, float z) {
+    this->relativ_scale = glm::vec3(x, y, z);
+}
+
 void Object::setVisible(bool vis) {
     this->visible = vis;
 }
@@ -90,6 +98,11 @@ glm::mat4 Object::getRotationMatrix() {
 glm::vec3 Object::getScale() {
     return this->scale;
 }
+
+glm::vec3 Object::getRelativScale() {
+    return relativ_scale;
+}
+
 
 
 bool Object::getVisible() {

@@ -6,10 +6,17 @@
 
 namespace Old3DEngine {
     class Object {
+    public:
+        enum ObjectType {
+            OBJECT, CAMERA,
+            MESH, PARTICLES, LIGHT
+        };
+
     protected:
         glm::vec3 position = {0, 0, 0};
         //glm::vec3 rotation = {0, 0, 0};
         glm::vec3 scale    = {1.0, 1.0, 1.0};
+        glm::vec3 relativ_scale = {1.0, 1.0, 1.0};
         glm::mat4 rotation_matrix = {
                 1.0, 0.0, 0.0, 0.0,
                 0.0, 1.0, 0.0, 0.0,
@@ -27,6 +34,8 @@ namespace Old3DEngine {
         void setRotationMatrix(glm::mat4 mat);
         void setScale(glm::vec3 vec);
         void setScale(float x, float y, float z);
+        void setRelativScale(glm::vec3 vec);
+        void setRelativScale(float x, float y, float z);
         void setVisible(bool);
 
         void offset(float x, float y, float z);
@@ -42,6 +51,7 @@ namespace Old3DEngine {
         glm::vec3 getRotationEuler();
         glm::mat4 getRotationMatrix();
         glm::vec3 getScale();
+        glm::vec3 getRelativScale();
         bool getVisible();
     };
 }
