@@ -17,6 +17,7 @@
 
 
 bool glad_is_initialized = false;
+UUID_Generator uuid_generator;
 
 using namespace Old3DEngine;
 Engine::Engine(std::string window_lbl, int width, int height) : Input(this){

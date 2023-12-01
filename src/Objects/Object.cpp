@@ -1,4 +1,5 @@
 #include <Old3DEngine/Objects/Object.hpp>
+#include "../globalStaticParams.hpp"
 //#include <cmath>
 
 //TODO: Добавить дочерние Object, которые наследуют перемещение, вращение и подобное
@@ -107,4 +108,25 @@ glm::vec3 Object::getRelativScale() {
 
 bool Object::getVisible() {
     return this->visible;
+}
+
+
+
+UUID_Generator::UUID Object::addKind(Object obj) {
+    UUID_Generator::UUID uuid = global_uuid_generator.gen();
+    kinds[uuid] = std::move(obj);
+    return uuid;
+}
+
+bool Object::delKind(UUID_Generator::UUID uuid) {
+    auto it = kinds.find(uuid);
+    if (it != kinds.end()) {
+        kinds.erase(it);
+        return true;
+    }
+    return false;
+}
+
+Object& Object::getKind(UUID_Generator::UUID uuid) {
+    return kinds[uuid];
 }

@@ -1,8 +1,11 @@
 #pragma once
+#include <vector>
+#include <unordered_map>
 #include <glm/vec3.hpp>
 #include <glm/matrix.hpp>
 #include <glm/gtx/euler_angles.hpp>
 #include <glm/gtc/matrix_transform.hpp>
+#include "../Utilities/UUID_Generator.hpp"
 
 namespace Old3DEngine {
     class Object {
@@ -24,6 +27,7 @@ namespace Old3DEngine {
                 0.0, 0.0, 0.0, 1.0,
         };
         bool visible = true;
+        std::unordered_map<UUID_Generator::UUID, Object> kinds;
 
     public:
         glm::vec3 prev_rot = {0, 0, 0};
@@ -43,15 +47,32 @@ namespace Old3DEngine {
         void rotate(float x, float y, float z, bool global=true);
         void rotate(glm::vec3 vec, bool global=true);
 
-
-
-
-
         glm::vec3 getPosition();
         glm::vec3 getRotationEuler();
         glm::mat4 getRotationMatrix();
         glm::vec3 getScale();
         glm::vec3 getRelativScale();
         bool getVisible();
+
+        /**
+         * Copy object and add as kind
+         * \param obj Object to copy
+         * \return UUID of new kind
+         */
+        UUID_Generator::UUID addKind(Object obj);
+
+        /**
+         * Recursively delete kind by UUID
+         * \param uuid UUID of kind
+         * \return True if deleted successfully, False if the object is not found
+         */
+        bool delKind(UUID_Generator::UUID uuid);
+
+        /**
+         * Get kind by UUID
+         * \param uuid UUID of kind
+         * \return Reference to kind
+         */
+        Object& getKind(UUID_Generator::UUID uuid);
     };
 }

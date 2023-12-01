@@ -2,6 +2,7 @@
 #include <chrono>
 #include <cstdint>
 #include <mutex>
+#include <functional>
 
 namespace Old3DEngine {
     class UUID_Generator {
@@ -21,5 +22,24 @@ namespace Old3DEngine {
         };
 
         UUID gen();
+
+
     };
 }
+
+// Hash function for UUID
+template <> struct std::hash<Old3DEngine::UUID_Generator::UUID>
+{
+    std::size_t operator()(const Old3DEngine::UUID_Generator::UUID& k) const
+    {
+        using std::size_t;
+        using std::hash;
+        using std::string;
+
+        // Compute individual hash values for first,
+        // second and third and combine them using XOR
+        // and bit shifting:
+
+        return (hash<uint64_t>()(k.body) ^ (hash<uint32_t>()(k.counter) << 1)) >> 1;
+    }
+};
