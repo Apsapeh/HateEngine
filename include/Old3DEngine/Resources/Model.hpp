@@ -11,5 +11,6 @@ namespace Old3DEngine {
 
     public:
         std::vector<Mesh*> getMeshes();
+        ~Model();
     };
 }

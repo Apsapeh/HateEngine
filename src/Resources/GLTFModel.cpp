@@ -40,6 +40,7 @@ static void Load(tgModel& model, std::vector<Mesh*>* meshes, std::vector<Texture
         meshes_size += model_mesh.primitives.size();
     meshes->reserve(meshes_size);
 
+    // Load Textures only with Base Color
     std::unordered_map<size_t, size_t> t_id;
     for (const auto& material : model.materials) {
         if (material.values.find("baseColorTexture") != material.values.end()) {
@@ -68,11 +69,10 @@ static void Load(tgModel& model, std::vector<Mesh*>* meshes, std::vector<Texture
 
 
     for (const auto& model_mesh : model.meshes) {
-        // Итерируем по всем primitive-ам в mesh
         for (const auto& primitive : model_mesh.primitives) {
             Mesh* mesh = new Mesh();
             meshes->push_back(mesh);
-            // Получаем доступ к атрибутам вершин
+
             const auto& attributes = primitive.attributes;
 
             // =====> Get Verticies <=====
@@ -127,11 +127,9 @@ static void Load(tgModel& model, std::vector<Mesh*>* meshes, std::vector<Texture
             }
 
 
-            // Получаем доступ к атрибутам материала
+            // =====> Get Base Color <=====
             const auto& material_index = primitive.material;
             const auto& material = model.materials[material_index];
-
-            // Проверяем наличие атрибута "baseColorTexture"
             if (material.values.find("baseColorTexture") != material.values.end()) {
                 const auto& texture_index = material.values.at("baseColorTexture").TextureIndex();
                 if (t_id.count(texture_index) != 0)
@@ -208,7 +206,3 @@ GLTFModel::GLTFModel(const uint8_t* data, uint32_t size, std::string dir) {
         bindObj((Object*)m);
 }
 
-
-GLTFModel::~GLTFModel() {
-
-}

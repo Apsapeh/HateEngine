@@ -68,6 +68,10 @@ int main() {
     //glmodel.setScale({0.1, 0.1, 0.1});
     //glmodel.setScale({10, 10, 10});
 
+    {
+        Old3DEngine::GLTFModel glmodel("examples/Assets/ignore/tree.glb");
+    }
+
 
     std::string path = "examples/Assets";
     //rbody_body->updateMassPropertiesFromColliders();

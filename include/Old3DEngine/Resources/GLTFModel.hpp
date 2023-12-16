@@ -32,9 +32,5 @@ namespace Old3DEngine {
          * @param data 
          */
         GLTFModel(const uint8_t* data, uint32_t size, std::string dir = "");
-
-        ~GLTFModel();
-
-
     };
 }
