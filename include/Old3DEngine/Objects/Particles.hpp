@@ -2,7 +2,7 @@
 #include "Object.hpp"
 #include "Mesh.hpp"
 #include <vector>
-#include <map>
+#include <unordered_map>
 #include <cstdint>
 #include <iostream>
 
@@ -37,7 +37,7 @@ namespace Old3DEngine {
             glm::vec3 max_offset = {0, 0, 0};
         };
 
-        std::map<std::string, void*> data;
+        std::unordered_map<std::string, void*> data;
 
         Particle(
                 uint32_t index, const Mesh& mesh, glm::vec3 pos,

@@ -3,6 +3,7 @@
 #include <cstdint>
 #include <mutex>
 #include <functional>
+#include <string>
 
 namespace Old3DEngine {
     class UUID_Generator {

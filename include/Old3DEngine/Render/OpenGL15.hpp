@@ -2,6 +2,7 @@
 #include <vector>
 #include <cstdint>
 #include "../Old3DEngine.hpp"
+#include "../Objects/Mesh.hpp"
 
 namespace Old3DEngine {
     class OpenGL15 {
@@ -12,7 +13,6 @@ namespace Old3DEngine {
                 std::vector<Engine::SceneObject>* lights
         );
         void Draw();
-        //void eraseObjects();
 
     private:
         std::vector<Engine::SceneObject> *meshes;

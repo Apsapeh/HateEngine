@@ -14,6 +14,9 @@ Mesh::Mesh(std::vector<float> vert, std::vector<uint32_t> ind, std::vector<float
 
 // FIXME: DIRTY HACK
 Mesh::Mesh(const Mesh &mesh) {
+    parent_position = mesh.parent_position;
+    parent_rotation_matrix = mesh.parent_rotation_matrix;
+    parent_scale = mesh.parent_scale;
     position = mesh.position;
     rotation_matrix = mesh.rotation_matrix;
     scale = mesh.scale;
@@ -30,15 +33,15 @@ Mesh::~Mesh() {
 }
 
 void Mesh::setVertices(std::vector<float> vec) {
-    this->verticies = vec;
+    this->verticies = std::move(vec);
 }
 
 void Mesh::setIndicies(std::vector<uint32_t> vec) {
-    this->indicies = vec;
+    this->indicies = std::move(vec);
 }
 
 void Mesh::setNormals(std::vector<float> vec) {
-    this->normals = vec;
+    this->normals = std::move(vec);
 }
 
 
@@ -48,7 +51,7 @@ void Mesh::setTexture(Texture *tex) {
 }
 
 void Mesh::setUV(std::vector<float> uv) {
-    this->UV = uv;
+    this->UV = std::move(uv);
 }
 
 const std::vector<float>* Mesh::getVertices() {

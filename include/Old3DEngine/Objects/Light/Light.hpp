@@ -12,7 +12,7 @@ namespace Old3DEngine {
         };
 
         Light(LightTypeEnum type);
-        LightTypeEnum getType();
+        LightTypeEnum getLightType();
         std::vector<float> getColor();
     protected:
         LightTypeEnum lightType;

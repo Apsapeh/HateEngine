@@ -6,11 +6,6 @@
 
 using namespace Old3DEngine;
 
-GLfloat color[] = {
-        0.7608, 0.9333, 0.051, 0.6549, 0.6235, 0.1647, 0.7255, 0.0157, 0.8471, 0.5098, 0.8314, 0.8627, 0.4078, 0.3216, 0.8863, 0.9098, 0.7294, 0.1804, 0.8314, 0.451, 0.5412, 0.5647, 0.4235, 0.4196
-};
-
-
 OpenGL15::OpenGL15(
         std::vector<Engine::SceneObject> *m,
         std::vector<Engine::SceneObject> *p,
@@ -23,20 +18,22 @@ OpenGL15::OpenGL15(
 
 void OpenGL15::render(Mesh *mesh) {
     if (mesh->getVisible()){
-        glm::vec3 pos = mesh->getPosition();
-
-        std::vector<int> light_indicies = getNearestLights(pos);
+        std::vector<int> light_indicies = getNearestLights(mesh->getGlobalPosition());
         renderLight(light_indicies);
 
         glPushMatrix();
-        glTranslatef(pos.x, pos.y, pos.z);
-        glm::vec3 scale = mesh->getScale() * mesh->getRelativScale();
+        glm::vec3 scale = mesh->getGlobalScale();
         glScalef(scale.x, scale.y, scale.z);
 
-        glMultMatrixf(glm::value_ptr(mesh->getRotationMatrix()));
+        glm::vec3 par_pos = mesh->parent_position;
+        glTranslatef(par_pos.x, par_pos.y, par_pos.z);
+        glMultMatrixf(glm::value_ptr(mesh->parent_rotation_matrix));
 
+        glm::vec3 own_pos = mesh->position;
+        glTranslatef(own_pos.x, own_pos.y, own_pos.z);
+        glMultMatrixf(glm::value_ptr(mesh->rotation_matrix));
+        
         // Render Textures
-        //const Mesh::TextureObject* texture = mesh->getTexture();
         if (mesh->getTexture() != nullptr) {
             glBindTexture(GL_TEXTURE_2D, mesh->getTexture()->getTextureID());
             glTexCoordPointer(2, GL_FLOAT, 0, mesh->getUV()->data());
@@ -73,10 +70,10 @@ inline void OpenGL15::renderLight(std::vector<int> indicies) {
         int index = indicies[i];
         int light_num = GL_LIGHT0 + i;
         Light *light = (Light*)(*lights)[index].obj;
-        glm::vec3 pos = light->getPosition();
+        glm::vec3 pos = light->getGlobalPosition();
         float l_position[4] = {pos.x, pos.y, pos.z, 1.0};
 
-        if (light->getType() == Light::LightTypeEnum::DirectionalLight)
+        if (light->getLightType() == Light::LightTypeEnum::DirectionalLight)
             l_position[3] = 0.0;
 
         glEnable(light_num);
@@ -102,10 +99,10 @@ inline std::vector<int> OpenGL15::getNearestLights(glm::vec3 position) {
         Light *light = (Light*)(*lights)[i].obj;
         if (!light->getVisible())
             continue;
-        if (light->getType() == Light::LightTypeEnum::DirectionalLight)
+        if (light->getLightType() == Light::LightTypeEnum::DirectionalLight)
             result.push_back(i);
         else
-            light_dist.push_back({glm::length(position - light->getPosition()), i});
+            light_dist.push_back({glm::length(position - light->getGlobalPosition()), i});
     }
     std::sort(light_dist.begin(), light_dist.end(), [] (LightDistSt &a, LightDistSt &b) {
         return a.length < b.length;
@@ -116,15 +113,3 @@ inline std::vector<int> OpenGL15::getNearestLights(glm::vec3 position) {
     }
     return result;
 }
-
-
-/*void OpenGL15::eraseObjects() {
-    std::lock_guard<std::mutex> guard(meshesVecMutex);
-    for (OGLObject &mesh : meshes) {
-        if (not mesh.is_ref)
-            delete mesh.mesh;
-    }
-    meshes.clear();
-}*/
-
-

@@ -2,6 +2,8 @@
 /cmake-build-debug
 /.idea/
 /.xmake
+/.vscode
 /build
 /lib/reactphysics3d
 /lib/doxygen-awesome-css
+/examples/Assets/ignore/

@@ -6,6 +6,7 @@
 #include <Old3DEngine/Render/OpenGL15.hpp>
 #include <Old3DEngine/Error.hpp>
 #include <utility>
+
 #include "globalStaticParams.hpp"
 
 #ifdef __linux__
@@ -17,7 +18,7 @@
 
 
 bool glad_is_initialized = false;
-UUID_Generator uuid_generator;
+UUID_Generator global_uuid_generator;
 
 using namespace Old3DEngine;
 Engine::Engine(std::string window_lbl, int width, int height) : Input(this){
@@ -168,6 +169,7 @@ void Engine::Run() {
             this->processLoop(this, delta);
         //meshesMutex.unlock();
 
+
         if (this->renderApi == RenderAPI::OpenGL_1_5)
             this->cameraObject->renderOpenGL15();
 
@@ -210,7 +212,7 @@ void Engine::threadFixedProcessLoop() {
         delta = glfwGetTime() - oldTime;
         oldTime = glfwGetTime();
         //physicsWorld->update((float)delta);
-        //std::cout << rbody->getTransform().getPosition().y << "\n";
+        //std::cout << rbody->getTransform().getGlobalPosition().y << "\n";
 
         meshesMutex.lock();
         fixedProcessLoop(this, delta);
@@ -237,18 +239,9 @@ void Engine::threadPhysicsEngineIterateLoop() {
                 std::chrono::microseconds(a)
         );
 
-        //std::cout << d / 10<< "\n";
         delta = glfwGetTime() - oldTime;
         physEngine.IteratePhysics((float)delta);
-        //std::cout << "Phys FPS: " << (float)1 / delta << "\n";
         oldTime = glfwGetTime();
-        //physicsWorld->update((float)delta);
-        //std::cout << rbody->getTransform().getPosition().y << "\n";
-
-
-        /*meshesMutex.lock();
-        fixedProcessLoop(this, delta);
-        meshesMutex.unlock();*/
         func_delta = glfwGetTime() - oldTime;
     }
 }
@@ -305,7 +298,7 @@ UUID_Generator::UUID Engine::addObjectClone(Particles object) {
 UUID_Generator::UUID Engine::addObjectClone(Light object) {
     std::lock_guard<std::mutex> guard(meshesMutex);
     UUID_Generator::UUID id = uuidGenerator.gen();
-    Light *new_mesh = new Light(object.getType());
+    Light *new_mesh = new Light(object.getLightType());
     *new_mesh = object;
     lights.push_back({new_mesh, id, false});
     return id;

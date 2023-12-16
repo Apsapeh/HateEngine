@@ -7,7 +7,7 @@ Light::Light(Light::LightTypeEnum type) {
     color = {1.0, 1.0, 1.0, 1.0};
 }
 
-Light::LightTypeEnum Light::getType() {
+Light::LightTypeEnum Light::getLightType() {
     return lightType;
 }
 

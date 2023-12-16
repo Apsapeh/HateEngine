@@ -2,7 +2,9 @@ add_requires("glfw", "glm", "tinygltf")
 
 add_rules("mode.debug", "mode.release")
 
+
 target("reactphysics3d")
+    --add_ldflags("-static-libgcc -static-libstdc++", {force = true})
     set_kind("static")
     set_languages("cxx11")
     add_includedirs("lib/reactphysics3d/include")
@@ -31,6 +33,7 @@ target("Old3DE")
     )
     add_packages("glfw", "glm", "tinygltf")
     add_deps("reactphysics3d")
+    --add_ldflags("--static", {force = true})
 
     if is_mode("debug") then
         set_symbols("debug")
@@ -43,7 +46,7 @@ target("Old3DE")
         set_optimize("aggressive")
     end
 
---
+
 target("Old3DEngine")
     set_kind("binary")
     add_files(
@@ -53,7 +56,13 @@ target("Old3DEngine")
     add_includedirs("deps", "include", "lib/reactphysics3d/include")
 
     add_deps("Old3DE")
-    add_packages("glfw", "glm", "tinygltf")
+    add_packages("glfw", "glm")
+
+
+    if is_plat("mingw") then 
+        add_ldflags("--static", {force = true})
+    end
+
 
     if is_mode("debug") then
         set_symbols("debug")

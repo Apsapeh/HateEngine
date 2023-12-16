@@ -1,4 +1,5 @@
 #define STB_IMAGE_IMPLEMENTATION
+#include <vector>
 #include <stb_image.h>
 #include <glad/gl.h>
 #include <Old3DEngine/Error.hpp>
@@ -48,7 +49,6 @@ bool Texture::loadFromFile() {
         return false;
     }
     if (n == 4) this->textureFormat = GL_RGBA;
-    std::cout << "N: " << n << '\n';
     this->data = std::vector<uint8_t>(s_data,  s_data + this->width * this->height * n);
     stbi_image_free(s_data);
     return true;

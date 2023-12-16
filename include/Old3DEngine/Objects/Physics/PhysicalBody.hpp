@@ -35,9 +35,7 @@ namespace Old3DEngine {
         };
 
         UUID_Generator uuidGenerator_shapes;
-        UUID_Generator uuidGenerator_bindObj;
         std::vector<ShapeObject> shapes;
-        std::vector<ControlledObject> binded_objects;
         reactphysics3d::RigidBody* reactRigidBody = nullptr;
         const reactphysics3d::PhysicsWorld* reactParentPhysWorld = nullptr;
 
@@ -57,7 +55,7 @@ namespace Old3DEngine {
         /**
          * Updates the position of linked objects taking into account the offset
          */
-        void UpdateBindsPos();
+        void UpdateBinds();
 
         BodyType getBodyType();
 
@@ -93,21 +91,6 @@ namespace Old3DEngine {
          */
         bool delCollisionShape(UUID_Generator::UUID uuid);
 
-
-        /**
-         * Binds the object to be moved along with the PhysicalBody
-         * @param obj Pointer to Object
-         * @param offset Displacement relative to the PhysicsBody position (x, y, z)
-         * @return Object ID
-         */
-        UUID_Generator::UUID bindObjRef(Object* obj, CoordStruct offset = {0.0f, 0.0f, 0.0f});
-
-        /**
-         * Unbinds the object from moving with PhysicalBody
-         * @param id Object ID
-         * @return True if deleted successfully, False if the object is not found
-         */
-        bool unbindObj(UUID_Generator::UUID uuid);
 
         /**
          * Returns a pointer to the PhysicsCommon that created it, if the object is initialized

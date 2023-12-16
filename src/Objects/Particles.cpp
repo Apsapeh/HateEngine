@@ -10,7 +10,7 @@ Particle::Particle(
         float lifetime, bool del_on_time
 ) : Mesh(mesh) {
     //std::cout << pos.x << " | " << pos.y << " | " << pos.z << "\n";
-    this->position = pos;
+    this->parent_position = pos;
     this->index = index;
     this->lifetime = lifetime;
     this->lostLifetime = lifetime;
@@ -43,7 +43,7 @@ Particles::Particles(
         particlesVector.push_back(
             Particle(
                 i, mesh,
-                this->position + glm::vec3{posX_dist(gen), posY_dist(gen), posZ_dist(gen)},
+                this->parent_position + glm::vec3{posX_dist(gen), posY_dist(gen), posZ_dist(gen)},
                 life_dist(gen),
                 settings.delete_on_end_of_life
             )
@@ -76,7 +76,7 @@ void Particles::update(double delta) {
                 std::uniform_real_distribution<float> posY_dist(set.min_offset.y, set.max_offset.y);
                 std::uniform_real_distribution<float> posZ_dist(set.min_offset.z, set.max_offset.z);
 
-                p->position = this->position + glm::vec3{posX_dist(gen), posY_dist(gen), posZ_dist(gen)};
+                p->parent_position = this->parent_position + glm::vec3{posX_dist(gen), posY_dist(gen), posZ_dist(gen)};
                 //std::cout << "POS: " << p->position.x << " | " << p->position.y << " | " << p->position.z << "\n";
                 p->lostLifetime = p->lifetime;
                 //--it;
