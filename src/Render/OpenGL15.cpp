@@ -22,8 +22,7 @@ void OpenGL15::render(Mesh *mesh) {
         renderLight(light_indicies);
 
         glPushMatrix();
-        glm::vec3 scale = mesh->getGlobalScale();
-        glScalef(scale.x, scale.y, scale.z);
+        
 
         glm::vec3 par_pos = mesh->parent_position;
         glTranslatef(par_pos.x, par_pos.y, par_pos.z);
@@ -32,6 +31,9 @@ void OpenGL15::render(Mesh *mesh) {
         glm::vec3 own_pos = mesh->position;
         glTranslatef(own_pos.x, own_pos.y, own_pos.z);
         glMultMatrixf(glm::value_ptr(mesh->rotation_matrix));
+
+        glm::vec3 scale = mesh->getGlobalScale();
+        glScalef(scale.x, scale.y, scale.z);
         
         // Render Textures
         if (mesh->getTexture() != nullptr) {
