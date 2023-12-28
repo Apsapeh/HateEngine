@@ -40,7 +40,6 @@ Texture::~Texture() {
     Unload();
 }
 
-#include <iostream>
 bool Texture::loadFromFile() {
     int n;
     unsigned char *s_data = stbi_load(this->fileName.c_str(), &this->width, &this->height, &n, 0);
@@ -53,7 +52,6 @@ bool Texture::loadFromFile() {
     stbi_image_free(s_data);
     return true;
 }
-
 
 bool Texture::Load() {
     if (textureGL_ID != 0)

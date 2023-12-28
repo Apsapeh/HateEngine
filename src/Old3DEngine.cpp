@@ -50,6 +50,19 @@ Engine::Engine(std::string window_lbl, int width, int height) : Input(this){
         }
     });
 
+    glfwSetKeyCallback(window, [] (GLFWwindow *win, int key, int scancode, int action, int mods) {
+        Engine *th = static_cast<Engine*>(glfwGetWindowUserPointer(win));
+        if (th->inputEventFunc != nullptr) {
+            InputEventInfo info;
+            info.type = InputEventType::InputEventKey;
+            info.key = key;
+            info.scancode = scancode;
+            info.action = action;
+            info.mods = mods;
+            th->inputEventFunc(th, info);
+        }
+    });
+
     // Load Glad
     int version = gladLoadGL(glfwGetProcAddress);
     if (not version) {

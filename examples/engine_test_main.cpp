@@ -59,20 +59,12 @@ Old3DEngine::Particles *part;
 int main() {
     std::string popusk = "file.gltf";
     //Old3DEngine::GLTFModel glmodel("examples/Assets/employee.glb");
-    //Old3DEngine::GLTFModel glmodel("examples/Assets/tomat.glb");
-    Old3DEngine::GLTFModel glmodel("examples/Assets/pivozavr.glb");
     //Old3DEngine::GLTFModel glmodel("examples/Assets/ignore/bolg.glb");
     //Old3DEngine::GLTFModel glmodel("examples/Assets/ignore/tree.glb");
     //glmodel.setScale({1, -1, 1});
     //glmodel.rotate(180, 0, 0);
     // Old3DEngine::GLTFModel glmodel("examples/Assets/ignore/dodge.glb");
-    glmodel.offset(0, 1, 0);
-    glmodel.setScale({0.001, 0.001, 0.001});
-    //glmodel.setScale({10, 10, 10});
 
-    {
-        Old3DEngine::GLTFModel glmodel("examples/Assets/ignore/tree.glb");
-    }
 
 
     std::string path = "examples/Assets";
@@ -113,9 +105,13 @@ int main() {
 
 
     // Setting textures for the cube and floor meshes
+
     Old3DEngine::Texture tex_floor("examples/Assets/ground.png", Old3DEngine::Texture::Repeat, Old3DEngine::Texture::Linear);
-    Old3DEngine::Texture tex("examples/Assets/brick.png", Old3DEngine::Texture::Repeat, Old3DEngine::Texture::Nearest);
     Old3DEngine::Engine game("Old3DE Test", 800, 600);
+    Old3DEngine::GLTFModel glmodel("examples/Assets/tomat.glb");
+    Old3DEngine::Texture tex("examples/Assets/brick.png", Old3DEngine::Texture::Repeat, Old3DEngine::Texture::Nearest);
+
+
 
 
 
@@ -132,7 +128,7 @@ int main() {
     mesh1.setTexture(&tex);
     mesh2.setTexture(&tex);
     mesh1.bindObj(&mesh2);
-    mesh1.bindObj(&glmodel);
+    //mesh1.bindObj(&glmodel);
     game.addObjectRef(&mesh1);
     game.addObjectRef(&mesh2);
     game.addObjectRef(&xAxMesh);

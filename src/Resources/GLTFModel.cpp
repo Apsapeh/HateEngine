@@ -61,11 +61,16 @@ static void Load(tgModel& model, std::vector<Mesh*>* meshes, std::vector<Texture
 
             textures->push_back(Texture(
                 image.image, image.width, image.height, t_form,
-                Texture::Repeat, Texture::Linear
+                Texture::Repeat, Texture::Linear, false
             ));
             t_id[texture_index] = textures->size()-1;
         }
     }
+
+    // Bug fix, when vector reallocate, textures unload
+    for (auto &t : *textures)
+        t.setAutoload(true);
+
 
 
     for (const auto& model_mesh : model.meshes) {
