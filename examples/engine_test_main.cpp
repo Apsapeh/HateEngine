@@ -58,14 +58,16 @@ Old3DEngine::Particles *part;
 
 int main() {
     std::string popusk = "file.gltf";
-    // Old3DEngine::GLTFModel glmodel("examples/Assets/employee.glb");
-    // Old3DEngine::GLTFModel glmodel("examples/Assets/ignore/ahouse.glb");
-    Old3DEngine::GLTFModel glmodel("examples/Assets/ignore/tree.glb");
+    //Old3DEngine::GLTFModel glmodel("examples/Assets/employee.glb");
+    //Old3DEngine::GLTFModel glmodel("examples/Assets/tomat.glb");
+    Old3DEngine::GLTFModel glmodel("examples/Assets/pivozavr.glb");
+    //Old3DEngine::GLTFModel glmodel("examples/Assets/ignore/bolg.glb");
+    //Old3DEngine::GLTFModel glmodel("examples/Assets/ignore/tree.glb");
     //glmodel.setScale({1, -1, 1});
-    glmodel.rotate(180, 0, 0);
+    //glmodel.rotate(180, 0, 0);
     // Old3DEngine::GLTFModel glmodel("examples/Assets/ignore/dodge.glb");
     glmodel.offset(0, 1, 0);
-    //glmodel.setScale({0.1, 0.1, 0.1});
+    glmodel.setScale({0.001, 0.001, 0.001});
     //glmodel.setScale({10, 10, 10});
 
     {
@@ -130,6 +132,7 @@ int main() {
     mesh1.setTexture(&tex);
     mesh2.setTexture(&tex);
     mesh1.bindObj(&mesh2);
+    mesh1.bindObj(&glmodel);
     game.addObjectRef(&mesh1);
     game.addObjectRef(&mesh2);
     game.addObjectRef(&xAxMesh);
