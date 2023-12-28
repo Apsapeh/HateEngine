@@ -1,11 +1,13 @@
 add_repositories("apsapeh-repo https://github.com/Apsapeh/xmake-repo.git")
 add_requires("glfw", "glm", "tinygltf", "reactphysics3d")
-add_requireconfs("reactphysics3d", {configs={fast_math=true, opt_level = "a"}})
 
 add_rules("mode.debug", "mode.release")
 
+option("build_examples")
+option_end()
+
 target("Old3DE")
-    set_kind("static")
+    set_kind("$(kind)")
     set_languages("cxx11")
     add_includedirs(
         "deps","include"
@@ -29,6 +31,7 @@ target("Old3DE")
 
 
 target("Old3DEngine")
+    set_enabled(has_config("build_examples") == true)
     set_kind("binary")
     add_files(
         "examples/*.cpp"
