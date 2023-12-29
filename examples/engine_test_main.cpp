@@ -52,7 +52,7 @@ Old3DEngine::CubeMesh xAxMesh;
 
 
 //Old3DEngine::CubeMesh meshes[22500];
-Old3DEngine::Camera camera(800.0/600.0, 60, 60);
+Old3DEngine::Camera camera(800.0/600.0, 60, 600);
 Old3DEngine::Light sun(Old3DEngine::Light::DirectionalLight);
 Old3DEngine::Particles *part;
 
@@ -108,7 +108,7 @@ int main() {
 
     Old3DEngine::Texture tex_floor("examples/Assets/ground.png", Old3DEngine::Texture::Repeat, Old3DEngine::Texture::Linear);
     Old3DEngine::Engine game("Old3DE Test", 800, 600);
-    Old3DEngine::GLTFModel glmodel("examples/Assets/tomat.glb");
+    Old3DEngine::GLTFModel glmodel("examples/Assets/employee.glb");
     Old3DEngine::Texture tex("examples/Assets/brick.png", Old3DEngine::Texture::Repeat, Old3DEngine::Texture::Nearest);
 
 

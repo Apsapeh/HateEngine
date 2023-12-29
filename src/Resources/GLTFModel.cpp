@@ -2,6 +2,7 @@
 #include <Old3DEngine/Error.hpp>
 #include <unordered_map>
 #include <iostream>
+#include <malloc.h>
 
 #define TINYGLTF_IMPLEMENTATION
 #define STB_IMAGE_WRITE_IMPLEMENTATION
@@ -76,7 +77,6 @@ static void Load(tgModel& model, std::vector<Mesh*>* meshes, std::vector<Texture
     for (const auto& model_mesh : model.meshes) {
         for (const auto& primitive : model_mesh.primitives) {
             Mesh* mesh = new Mesh();
-            meshes->push_back(mesh);
 
             const auto& attributes = primitive.attributes;
 
@@ -97,13 +97,24 @@ static void Load(tgModel& model, std::vector<Mesh*>* meshes, std::vector<Texture
             const auto& indices_view = model.bufferViews[indices_accessor.bufferView];
             const auto& indices_buffer = model.buffers[indices_view.buffer];
             // Get indicies pointer
-            const uint32_t* indices_data = (const uint32_t*)&(indices_buffer.data[
+            const uint8_t* indices_data = &(indices_buffer.data[
                 indices_view.byteOffset + indices_accessor.byteOffset
             ]);
-            data_size = indices_accessor.count;
-            mesh->setIndicies(std::vector<uint32_t> (indices_data, indices_data+data_size));
             //FIXME: ADD other modes
             int mode = primitive.mode;
+            data_size = indices_accessor.count;
+            int ind_type = indices_accessor.componentType;
+
+            // I don't know other way
+#define addIndiciesToVec(type) mesh->setIndicies(std::vector<uint32_t> ((const type*)indices_data, (const type*)indices_data+data_size))
+            if (ind_type == 5120) addIndiciesToVec(int8_t);
+            else if (ind_type == 5121) addIndiciesToVec(uint8_t);
+            else if (ind_type == 5122) addIndiciesToVec(int16_t);
+            else if (ind_type == 5123) addIndiciesToVec(uint16_t);
+            else if (ind_type == 5125) addIndiciesToVec(uint32_t);
+            else if (ind_type == 5126) addIndiciesToVec(float);
+#undef addIndiciesToVec
+
 
 
             // =====> Get Normals <=====
@@ -140,6 +151,8 @@ static void Load(tgModel& model, std::vector<Mesh*>* meshes, std::vector<Texture
                 if (t_id.count(texture_index) != 0)
                     mesh->setTexture(&(*textures)[t_id[texture_index]]);
             }
+
+            meshes->push_back(mesh);
         }
     }
 }
@@ -171,6 +184,7 @@ GLTFModel::GLTFModel(std::string file_name) {
 
     // Load model
     Load(model, &this->meshes, &this->textures);
+
     // Bind meshes
     bindedObjects.reserve(this->meshes.size());
     for (auto& m : this->meshes)
