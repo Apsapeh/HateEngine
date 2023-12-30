@@ -7,7 +7,9 @@ option("build_examples")
 option_end()
 
 target("Old3DE")
-    add_defines("and=&&", "or=||", "not=!")
+    if is_plat("windows") then
+        add_defines("and=&&", "or=||", "not=!")
+    end
     set_kind("$(kind)")
     set_languages("cxx11")
     add_includedirs(
@@ -32,7 +34,9 @@ target("Old3DE")
 
 
 target("Old3DEngine")
-    add_defines("and=&&", "or=||", "not=!")
+    if is_plat("windows") then
+        add_defines("and=&&", "or=||", "not=!")
+    end
     set_enabled(has_config("build_examples") == true)
     set_kind("binary")
     add_files(
