@@ -7,3 +7,6 @@
 /lib/reactphysics3d
 /lib/doxygen-awesome-css
 /examples/Assets/ignore/
+/.lapce/
+/.cache/
+compile_commands.json

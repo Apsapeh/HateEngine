@@ -1,5 +1,5 @@
 add_repositories("apsapeh-repo https://github.com/Apsapeh/xmake-repo.git")
-add_requires("glfw", "glm", "tinygltf", "reactphysics3d")
+add_requires("glfw", "glm", "tinygltf", "reactphysics3d", "nuklear")
 
 add_rules("mode.debug", "mode.release")
 
@@ -18,7 +18,7 @@ target("Old3DE")
     add_files(
         "lib/gl/gl.c", "src/**.cpp"
     )
-    add_packages("glfw", "glm", "tinygltf", "reactphysics3d")
+    add_packages("glfw", "glm", "tinygltf", "reactphysics3d", "nuklear")
     --add_ldflags("--static", {force = true})
 
     if is_mode("debug") then
@@ -37,6 +37,9 @@ target("Old3DEngine")
     if is_plat("windows") then
         add_defines("and=&&", "or=||", "not=!")
     end
+    if is_plat("linux") then
+        add_ldflags("-static-libstdc++ -static-libgcc")
+    end
     set_enabled(has_config("build_examples") == true)
     set_kind("binary")
     add_files(
@@ -46,7 +49,7 @@ target("Old3DEngine")
     add_includedirs("deps", "include")
 
     add_deps("Old3DE")
-    add_packages("glfw", "glm", "reactphysics3d")
+    add_packages("glfw", "glm", "reactphysics3d", "nuklear")
 
 
     if is_plat("mingw") then 

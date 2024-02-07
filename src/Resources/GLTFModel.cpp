@@ -2,7 +2,6 @@
 #include <Old3DEngine/Error.hpp>
 #include <unordered_map>
 #include <iostream>
-#include <malloc.h>
 
 #define TINYGLTF_IMPLEMENTATION
 #define STB_IMAGE_WRITE_IMPLEMENTATION
