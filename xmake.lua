@@ -1,5 +1,5 @@
 add_repositories("apsapeh-repo https://github.com/Apsapeh/xmake-repo.git")
-add_requires("glfw", "glm", "tinygltf", "reactphysics3d", "nuklear")
+add_requires("glfw 3.3.9", "glm 0.9.9.8", "tinygltf 2.8.13", "reactphysics3d", "nuklear")
 
 add_rules("mode.debug", "mode.release")
 
