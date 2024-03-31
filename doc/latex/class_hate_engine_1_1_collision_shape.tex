@@ -1,0 +1,269 @@
+\doxysection{Hate\+Engine\+::Collision\+Shape Class Reference}
+\hypertarget{class_hate_engine_1_1_collision_shape}{}\label{class_hate_engine_1_1_collision_shape}\index{HateEngine::CollisionShape@{HateEngine::CollisionShape}}
+
+
+{\ttfamily \#include $<$Collision\+Shape.\+hpp$>$}
+
+Inheritance diagram for Hate\+Engine\+::Collision\+Shape\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{class_hate_engine_1_1_collision_shape}
+\end{center}
+\end{figure}
+\doxysubsubsection*{Public Types}
+\begin{DoxyCompactItemize}
+\item 
+enum \mbox{\hyperlink{class_hate_engine_1_1_collision_shape_a15c987cbfa66569f335df9c7d4393453}{Shape\+Enum}} \{ \mbox{\hyperlink{class_hate_engine_1_1_collision_shape_a15c987cbfa66569f335df9c7d4393453a888ec42e8fd166272aaf4ac8ffc89e0a}{Sphere}}
+, \mbox{\hyperlink{class_hate_engine_1_1_collision_shape_a15c987cbfa66569f335df9c7d4393453afd53d269a7076d968e62bda77b03aaf8}{Capsule}}
+, \mbox{\hyperlink{class_hate_engine_1_1_collision_shape_a15c987cbfa66569f335df9c7d4393453ae2614159ec37dde712745351b829b42e}{Box}}
+ \}
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{class_hate_engine_1_1_collision_shape_af8156a63f8240a692e7da76ed2d1809c}{Collision\+Shape}} (\mbox{\hyperlink{class_hate_engine_1_1_collision_shape_a15c987cbfa66569f335df9c7d4393453}{Shape\+Enum}} shape, float \mbox{\hyperlink{class_hate_engine_1_1_collision_shape_a2af3eb5823850c087006f734729d5c2e}{param1}}, float \mbox{\hyperlink{class_hate_engine_1_1_collision_shape_a0460689f2874ce58d14bc77184952703}{param2}}=0.\+0, float \mbox{\hyperlink{class_hate_engine_1_1_collision_shape_aea9ce4dc86497b701e09c225da5ff5c1}{param3}}=0.\+0)
+\item 
+\mbox{\hyperlink{class_hate_engine_1_1_collision_shape_a561f46bbfc0420d8ab233d136c84ca3d}{Collision\+Shape}} (float radius)
+\item 
+\mbox{\hyperlink{class_hate_engine_1_1_collision_shape_a39d6fb129c6e94090f863586c8fc20f3}{Collision\+Shape}} (float radius, float height)
+\item 
+\mbox{\hyperlink{class_hate_engine_1_1_collision_shape_ae6821e68477cb24430a62e74cf4c9f4b}{Collision\+Shape}} (float width, float height, float length)
+\item 
+void \mbox{\hyperlink{class_hate_engine_1_1_collision_shape_ae5330f424b79685bd479ebe35210a784}{set\+Collision\+Layers}} (std\+::vector$<$ uint8\+\_\+t $>$ \&layers, std\+::vector$<$ bool $>$ state)
+\item 
+void \mbox{\hyperlink{class_hate_engine_1_1_collision_shape_ab5ed7ad2bc858642d95f7034b2500657}{set\+Collision\+Masks}} (std\+::vector$<$ uint8\+\_\+t $>$ \&masks, std\+::vector$<$ bool $>$ state)
+\end{DoxyCompactItemize}
+\doxysubsection*{Public Member Functions inherited from \mbox{\hyperlink{class_hate_engine_1_1_object}{Hate\+Engine\+::\+Object}}}
+\begin{DoxyCompactItemize}
+\item 
+void \mbox{\hyperlink{class_hate_engine_1_1_object_aa2812ba347a3e1e92a4674df4062c1a7}{set\+Position}} (glm\+::vec3 vec)
+\item 
+void \mbox{\hyperlink{class_hate_engine_1_1_object_a194df3f90da31a7e38a8fbe69e7444ef}{set\+Position}} (float x, float y, float z)
+\item 
+void \mbox{\hyperlink{class_hate_engine_1_1_object_acfacf87de317fea17ba623367cbf7eb0}{set\+Rotation}} (glm\+::vec3 vec)
+\item 
+void \mbox{\hyperlink{class_hate_engine_1_1_object_a743be293843017811d998fe3cafe6398}{set\+Rotation}} (float x, float y, float z)
+\item 
+void \mbox{\hyperlink{class_hate_engine_1_1_object_ad3d8516223031ec052de491666c5322d}{set\+Rotation\+Matrix}} (glm\+::mat4 mat)
+\item 
+void \mbox{\hyperlink{class_hate_engine_1_1_object_a70e4f1b0b28def9644f5344e2a7a0649}{set\+Scale}} (glm\+::vec3 vec)
+\item 
+void \mbox{\hyperlink{class_hate_engine_1_1_object_a2e00db46a7a69c248915949d5120bb6e}{set\+Scale}} (float x, float y, float z)
+\item 
+void \mbox{\hyperlink{class_hate_engine_1_1_object_a7d5db89c30a47c592c5ec458b44865e1}{set\+Visible}} (bool)
+\item 
+void \mbox{\hyperlink{class_hate_engine_1_1_object_a9b961af74d959fc56d519bc7c04d3c63}{offset}} (glm\+::vec3 vec)
+\item 
+void \mbox{\hyperlink{class_hate_engine_1_1_object_aa23f1263b617971897db82391a574370}{offset}} (float x, float y, float z)
+\item 
+void \mbox{\hyperlink{class_hate_engine_1_1_object_a81bb5b1bf9ee53407f893f0c125b5d21}{rotate}} (glm\+::vec3 vec, bool global=true)
+\item 
+void \mbox{\hyperlink{class_hate_engine_1_1_object_a5c78a1a409c80823f4933b6d0be93ee6}{rotate}} (float x, float y, float z, bool global=true)
+\item 
+glm\+::vec3 \mbox{\hyperlink{class_hate_engine_1_1_object_a029899410cf142b7edc95355014dfbef}{get\+Position}} () const
+\item 
+glm\+::vec3 \mbox{\hyperlink{class_hate_engine_1_1_object_a9bf0488d8c051e767d817f139a03b7c9}{get\+Rotation\+Euler}} () const
+\item 
+glm\+::mat4 \mbox{\hyperlink{class_hate_engine_1_1_object_a15a018bad3c93f5ae23bbf9aab9d6ec2}{get\+Rotation\+Matrix}} () const
+\item 
+glm\+::vec3 \mbox{\hyperlink{class_hate_engine_1_1_object_a37f702c0bcdbd7b9740eb2eb2530e257}{get\+Scale}} () const
+\item 
+glm\+::vec3 \mbox{\hyperlink{class_hate_engine_1_1_object_a0c0aea020e41e407b366adc871f36abb}{get\+Global\+Position}} () const
+\item 
+glm\+::vec3 \mbox{\hyperlink{class_hate_engine_1_1_object_a0613721b8f749ba6ca142ee50a930520}{get\+Global\+Rotation\+Euler}} () const
+\item 
+glm\+::mat4 \mbox{\hyperlink{class_hate_engine_1_1_object_a33e972313611f50ed1225a2c47f6ccff}{get\+Global\+Rotation\+Matrix}} () const
+\item 
+glm\+::vec3 \mbox{\hyperlink{class_hate_engine_1_1_object_ae6b995859a699fce22433265ad5e0bcd}{get\+Global\+Scale}} () const
+\item 
+bool \mbox{\hyperlink{class_hate_engine_1_1_object_adcc3cdd0949dd56e8abb11a1d7dee04b}{get\+Visible}} () const
+\item 
+\mbox{\hyperlink{struct_hate_engine_1_1_u_u_i_d___generator_1_1_u_u_i_d}{UUID\+\_\+\+Generator\+::\+UUID}} \mbox{\hyperlink{class_hate_engine_1_1_object_a9b40a0898974859c690b2ae6ca312459}{bind\+Obj}} (\mbox{\hyperlink{class_hate_engine_1_1_object}{Object}} \texorpdfstring{$\ast$}{*}obj)
+\item 
+bool \mbox{\hyperlink{class_hate_engine_1_1_object_a071f74000999f694efc30da45605e2c0}{unbind\+Obj}} (\mbox{\hyperlink{struct_hate_engine_1_1_u_u_i_d___generator_1_1_u_u_i_d}{UUID\+\_\+\+Generator\+::\+UUID}} uuid)
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+float \mbox{\hyperlink{class_hate_engine_1_1_collision_shape_a2af3eb5823850c087006f734729d5c2e}{param1}}
+\item 
+float \mbox{\hyperlink{class_hate_engine_1_1_collision_shape_a0460689f2874ce58d14bc77184952703}{param2}}
+\item 
+float \mbox{\hyperlink{class_hate_engine_1_1_collision_shape_aea9ce4dc86497b701e09c225da5ff5c1}{param3}}
+\item 
+\mbox{\hyperlink{class_hate_engine_1_1_collision_shape_a15c987cbfa66569f335df9c7d4393453}{Shape\+Enum}} \mbox{\hyperlink{class_hate_engine_1_1_collision_shape_a4c7a21d9bce9c316bead32e0890bce97}{shape\+Type}}
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Additional Inherited Members}
+\doxysubsection*{Protected Member Functions inherited from \mbox{\hyperlink{class_hate_engine_1_1_object}{Hate\+Engine\+::\+Object}}}
+\begin{DoxyCompactItemize}
+\item 
+void \mbox{\hyperlink{class_hate_engine_1_1_object_add8d4e9bde99fb7cddd4a9983816b074}{set\+Parent\+Position}} (glm\+::vec3 vec)
+\item 
+void \mbox{\hyperlink{class_hate_engine_1_1_object_a09722b03a13531e0e9f901c4093d127d}{set\+Parent\+Scale}} (glm\+::vec3 vec)
+\item 
+void \mbox{\hyperlink{class_hate_engine_1_1_object_a8a8cdeb5fd410a45c73c5136355cee9a}{set\+Parent\+Rotation\+Matrix}} (const glm\+::mat4 \&mat)
+\end{DoxyCompactItemize}
+\doxysubsection*{Protected Attributes inherited from \mbox{\hyperlink{class_hate_engine_1_1_object}{Hate\+Engine\+::\+Object}}}
+\begin{DoxyCompactItemize}
+\item 
+bool \mbox{\hyperlink{class_hate_engine_1_1_object_a54bb604d9bc2824d371fc4dd3908a8f3}{visible}} = true
+\item 
+std\+::unordered\+\_\+map$<$ \mbox{\hyperlink{struct_hate_engine_1_1_u_u_i_d___generator_1_1_u_u_i_d}{UUID\+\_\+\+Generator\+::\+UUID}}, \mbox{\hyperlink{class_hate_engine_1_1_object}{Object}} \texorpdfstring{$\ast$}{*} $>$ \mbox{\hyperlink{class_hate_engine_1_1_object_ab0ae1afd3739f246d8c71f785f6581dd}{binded\+Objects}}
+\item 
+glm\+::vec3 \mbox{\hyperlink{class_hate_engine_1_1_object_a73ec41c66533599490e4e7d1442c51b7}{parent\+\_\+position}} = \{0, 0, 0\}
+\item 
+glm\+::vec3 \mbox{\hyperlink{class_hate_engine_1_1_object_a4ae8df362cd5b3b12e84d1ef46a37cb6}{parent\+\_\+scale}} = \{1.\+0, 1.\+0, 1.\+0\}
+\item 
+glm\+::mat4 \mbox{\hyperlink{class_hate_engine_1_1_object_a6425805d5873f7934b9e57cb4434b8c9}{parent\+\_\+rotation\+\_\+matrix}}
+\item 
+glm\+::vec3 \mbox{\hyperlink{class_hate_engine_1_1_object_aac6dca692896ce50098af21642c5cd8c}{position}} = \{0, 0, 0\}
+\item 
+glm\+::vec3 \mbox{\hyperlink{class_hate_engine_1_1_object_aceb06ba29106c4cbc9918399fed397cc}{scale}} = \{1.\+0, 1.\+0, 1.\+0\}
+\item 
+glm\+::mat4 \mbox{\hyperlink{class_hate_engine_1_1_object_a4e618bd13929e169dabd4ca1f42b5052}{rotation\+\_\+matrix}}
+\item 
+bool \mbox{\hyperlink{class_hate_engine_1_1_object_ab1f31abb8627bc131658f724cc0959e2}{binded}} = false
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Member Enumeration Documentation}
+\Hypertarget{class_hate_engine_1_1_collision_shape_a15c987cbfa66569f335df9c7d4393453}\label{class_hate_engine_1_1_collision_shape_a15c987cbfa66569f335df9c7d4393453} 
+\index{HateEngine::CollisionShape@{HateEngine::CollisionShape}!ShapeEnum@{ShapeEnum}}
+\index{ShapeEnum@{ShapeEnum}!HateEngine::CollisionShape@{HateEngine::CollisionShape}}
+\doxysubsubsection{\texorpdfstring{ShapeEnum}{ShapeEnum}}
+{\footnotesize\ttfamily enum \mbox{\hyperlink{class_hate_engine_1_1_collision_shape_a15c987cbfa66569f335df9c7d4393453}{Hate\+Engine\+::\+Collision\+Shape\+::\+Shape\+Enum}}}
+
+\begin{DoxyEnumFields}{Enumerator}
+\raisebox{\heightof{T}}[0pt][0pt]{\index{Sphere@{Sphere}!HateEngine::CollisionShape@{HateEngine::CollisionShape}}\index{HateEngine::CollisionShape@{HateEngine::CollisionShape}!Sphere@{Sphere}}}\Hypertarget{class_hate_engine_1_1_collision_shape_a15c987cbfa66569f335df9c7d4393453a888ec42e8fd166272aaf4ac8ffc89e0a}\label{class_hate_engine_1_1_collision_shape_a15c987cbfa66569f335df9c7d4393453a888ec42e8fd166272aaf4ac8ffc89e0a} 
+Sphere&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{Capsule@{Capsule}!HateEngine::CollisionShape@{HateEngine::CollisionShape}}\index{HateEngine::CollisionShape@{HateEngine::CollisionShape}!Capsule@{Capsule}}}\Hypertarget{class_hate_engine_1_1_collision_shape_a15c987cbfa66569f335df9c7d4393453afd53d269a7076d968e62bda77b03aaf8}\label{class_hate_engine_1_1_collision_shape_a15c987cbfa66569f335df9c7d4393453afd53d269a7076d968e62bda77b03aaf8} 
+Capsule&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{Box@{Box}!HateEngine::CollisionShape@{HateEngine::CollisionShape}}\index{HateEngine::CollisionShape@{HateEngine::CollisionShape}!Box@{Box}}}\Hypertarget{class_hate_engine_1_1_collision_shape_a15c987cbfa66569f335df9c7d4393453ae2614159ec37dde712745351b829b42e}\label{class_hate_engine_1_1_collision_shape_a15c987cbfa66569f335df9c7d4393453ae2614159ec37dde712745351b829b42e} 
+Box&\\
+\hline
+
+\end{DoxyEnumFields}
+
+
+\doxysubsection{Constructor \& Destructor Documentation}
+\Hypertarget{class_hate_engine_1_1_collision_shape_af8156a63f8240a692e7da76ed2d1809c}\label{class_hate_engine_1_1_collision_shape_af8156a63f8240a692e7da76ed2d1809c} 
+\index{HateEngine::CollisionShape@{HateEngine::CollisionShape}!CollisionShape@{CollisionShape}}
+\index{CollisionShape@{CollisionShape}!HateEngine::CollisionShape@{HateEngine::CollisionShape}}
+\doxysubsubsection{\texorpdfstring{CollisionShape()}{CollisionShape()}\hspace{0.1cm}{\footnotesize\ttfamily [1/4]}}
+{\footnotesize\ttfamily Hate\+Engine\+::\+Collision\+Shape\+::\+Collision\+Shape (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{class_hate_engine_1_1_collision_shape_a15c987cbfa66569f335df9c7d4393453}{Shape\+Enum}}}]{shape,  }\item[{float}]{param1,  }\item[{float}]{param2 = {\ttfamily 0.0},  }\item[{float}]{param3 = {\ttfamily 0.0} }\end{DoxyParamCaption})}
+
+Creating a collision shape with a specific shape 
+\begin{DoxyParams}{Parameters}
+{\em shape} & Type of collision shape \\
+\hline
+{\em param1} & Radius (Capsule, Sphere) or Width (Box) \\
+\hline
+{\em param2} & Height (Capsule, Box) \\
+\hline
+{\em param3} & Length (Box) \\
+\hline
+\end{DoxyParams}
+\Hypertarget{class_hate_engine_1_1_collision_shape_a561f46bbfc0420d8ab233d136c84ca3d}\label{class_hate_engine_1_1_collision_shape_a561f46bbfc0420d8ab233d136c84ca3d} 
+\index{HateEngine::CollisionShape@{HateEngine::CollisionShape}!CollisionShape@{CollisionShape}}
+\index{CollisionShape@{CollisionShape}!HateEngine::CollisionShape@{HateEngine::CollisionShape}}
+\doxysubsubsection{\texorpdfstring{CollisionShape()}{CollisionShape()}\hspace{0.1cm}{\footnotesize\ttfamily [2/4]}}
+{\footnotesize\ttfamily Hate\+Engine\+::\+Collision\+Shape\+::\+Collision\+Shape (\begin{DoxyParamCaption}\item[{float}]{radius }\end{DoxyParamCaption})}
+
+Syntactic sugar to create a SPHERE collision shape 
+\begin{DoxyParams}{Parameters}
+{\em param1} & Radius \\
+\hline
+\end{DoxyParams}
+\Hypertarget{class_hate_engine_1_1_collision_shape_a39d6fb129c6e94090f863586c8fc20f3}\label{class_hate_engine_1_1_collision_shape_a39d6fb129c6e94090f863586c8fc20f3} 
+\index{HateEngine::CollisionShape@{HateEngine::CollisionShape}!CollisionShape@{CollisionShape}}
+\index{CollisionShape@{CollisionShape}!HateEngine::CollisionShape@{HateEngine::CollisionShape}}
+\doxysubsubsection{\texorpdfstring{CollisionShape()}{CollisionShape()}\hspace{0.1cm}{\footnotesize\ttfamily [3/4]}}
+{\footnotesize\ttfamily Hate\+Engine\+::\+Collision\+Shape\+::\+Collision\+Shape (\begin{DoxyParamCaption}\item[{float}]{radius,  }\item[{float}]{height }\end{DoxyParamCaption})}
+
+Syntactic sugar to create a CAPSULE collision shape 
+\begin{DoxyParams}{Parameters}
+{\em param1} & Radius \\
+\hline
+{\em param2} & Height \\
+\hline
+\end{DoxyParams}
+\Hypertarget{class_hate_engine_1_1_collision_shape_ae6821e68477cb24430a62e74cf4c9f4b}\label{class_hate_engine_1_1_collision_shape_ae6821e68477cb24430a62e74cf4c9f4b} 
+\index{HateEngine::CollisionShape@{HateEngine::CollisionShape}!CollisionShape@{CollisionShape}}
+\index{CollisionShape@{CollisionShape}!HateEngine::CollisionShape@{HateEngine::CollisionShape}}
+\doxysubsubsection{\texorpdfstring{CollisionShape()}{CollisionShape()}\hspace{0.1cm}{\footnotesize\ttfamily [4/4]}}
+{\footnotesize\ttfamily Hate\+Engine\+::\+Collision\+Shape\+::\+Collision\+Shape (\begin{DoxyParamCaption}\item[{float}]{width,  }\item[{float}]{height,  }\item[{float}]{length }\end{DoxyParamCaption})}
+
+Syntactic sugar to create a BOX collision shape 
+\begin{DoxyParams}{Parameters}
+{\em param1} & Width \\
+\hline
+{\em param2} & Height \\
+\hline
+{\em param3} & Length \\
+\hline
+\end{DoxyParams}
+
+
+\doxysubsection{Member Function Documentation}
+\Hypertarget{class_hate_engine_1_1_collision_shape_ae5330f424b79685bd479ebe35210a784}\label{class_hate_engine_1_1_collision_shape_ae5330f424b79685bd479ebe35210a784} 
+\index{HateEngine::CollisionShape@{HateEngine::CollisionShape}!setCollisionLayers@{setCollisionLayers}}
+\index{setCollisionLayers@{setCollisionLayers}!HateEngine::CollisionShape@{HateEngine::CollisionShape}}
+\doxysubsubsection{\texorpdfstring{setCollisionLayers()}{setCollisionLayers()}}
+{\footnotesize\ttfamily void Hate\+Engine\+::\+Collision\+Shape\+::set\+Collision\+Layers (\begin{DoxyParamCaption}\item[{std\+::vector$<$ uint8\+\_\+t $>$ \&}]{layers,  }\item[{std\+::vector$<$ bool $>$}]{state }\end{DoxyParamCaption})}
+
+Sets the collision layer on which a body can collide with other bodies 
+\begin{DoxyParams}{Parameters}
+{\em layers} & Array of layer numbers (0..15) \\
+\hline
+{\em state} & Layer state array (true, false) \\
+\hline
+\end{DoxyParams}
+\Hypertarget{class_hate_engine_1_1_collision_shape_ab5ed7ad2bc858642d95f7034b2500657}\label{class_hate_engine_1_1_collision_shape_ab5ed7ad2bc858642d95f7034b2500657} 
+\index{HateEngine::CollisionShape@{HateEngine::CollisionShape}!setCollisionMasks@{setCollisionMasks}}
+\index{setCollisionMasks@{setCollisionMasks}!HateEngine::CollisionShape@{HateEngine::CollisionShape}}
+\doxysubsubsection{\texorpdfstring{setCollisionMasks()}{setCollisionMasks()}}
+{\footnotesize\ttfamily void Hate\+Engine\+::\+Collision\+Shape\+::set\+Collision\+Masks (\begin{DoxyParamCaption}\item[{std\+::vector$<$ uint8\+\_\+t $>$ \&}]{masks,  }\item[{std\+::vector$<$ bool $>$}]{state }\end{DoxyParamCaption})}
+
+Sets the collision layer on which other bodies can collide with the body 
+\begin{DoxyParams}{Parameters}
+{\em masks} & Array of layer numbers (0..15) \\
+\hline
+{\em state} & Layer state array (true, false) \\
+\hline
+\end{DoxyParams}
+
+
+\doxysubsection{Member Data Documentation}
+\Hypertarget{class_hate_engine_1_1_collision_shape_a2af3eb5823850c087006f734729d5c2e}\label{class_hate_engine_1_1_collision_shape_a2af3eb5823850c087006f734729d5c2e} 
+\index{HateEngine::CollisionShape@{HateEngine::CollisionShape}!param1@{param1}}
+\index{param1@{param1}!HateEngine::CollisionShape@{HateEngine::CollisionShape}}
+\doxysubsubsection{\texorpdfstring{param1}{param1}}
+{\footnotesize\ttfamily float Hate\+Engine\+::\+Collision\+Shape\+::param1}
+
+\Hypertarget{class_hate_engine_1_1_collision_shape_a0460689f2874ce58d14bc77184952703}\label{class_hate_engine_1_1_collision_shape_a0460689f2874ce58d14bc77184952703} 
+\index{HateEngine::CollisionShape@{HateEngine::CollisionShape}!param2@{param2}}
+\index{param2@{param2}!HateEngine::CollisionShape@{HateEngine::CollisionShape}}
+\doxysubsubsection{\texorpdfstring{param2}{param2}}
+{\footnotesize\ttfamily float Hate\+Engine\+::\+Collision\+Shape\+::param2}
+
+\Hypertarget{class_hate_engine_1_1_collision_shape_aea9ce4dc86497b701e09c225da5ff5c1}\label{class_hate_engine_1_1_collision_shape_aea9ce4dc86497b701e09c225da5ff5c1} 
+\index{HateEngine::CollisionShape@{HateEngine::CollisionShape}!param3@{param3}}
+\index{param3@{param3}!HateEngine::CollisionShape@{HateEngine::CollisionShape}}
+\doxysubsubsection{\texorpdfstring{param3}{param3}}
+{\footnotesize\ttfamily float Hate\+Engine\+::\+Collision\+Shape\+::param3}
+
+\Hypertarget{class_hate_engine_1_1_collision_shape_a4c7a21d9bce9c316bead32e0890bce97}\label{class_hate_engine_1_1_collision_shape_a4c7a21d9bce9c316bead32e0890bce97} 
+\index{HateEngine::CollisionShape@{HateEngine::CollisionShape}!shapeType@{shapeType}}
+\index{shapeType@{shapeType}!HateEngine::CollisionShape@{HateEngine::CollisionShape}}
+\doxysubsubsection{\texorpdfstring{shapeType}{shapeType}}
+{\footnotesize\ttfamily \mbox{\hyperlink{class_hate_engine_1_1_collision_shape_a15c987cbfa66569f335df9c7d4393453}{Shape\+Enum}} Hate\+Engine\+::\+Collision\+Shape\+::shape\+Type}
+
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+include/\+Hate\+Engine/\+Objects/\+Physics/\mbox{\hyperlink{_collision_shape_8hpp}{Collision\+Shape.\+hpp}}\end{DoxyCompactItemize}

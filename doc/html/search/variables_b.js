@@ -1,5 +1,4 @@
 var searchData=
 [
-  ['renderapi_0',['renderApi',['../class_old3_d_engine_1_1_engine.html#a664ad43a93db0002545557171002bec8',1,'Old3DEngine::Engine']]],
-  ['rotation_1',['rotation',['../class_old3_d_engine_1_1_object.html#a002ecf14d5991352c6ff6dcd2fc11beb',1,'Old3DEngine::Object']]]
+  ['rotation_5fmatrix_0',['rotation_matrix',['../class_hate_engine_1_1_object.html#a4e618bd13929e169dabd4ca1f42b5052',1,'HateEngine::Object']]]
 ];

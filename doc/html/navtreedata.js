@@ -24,7 +24,7 @@
 */
 var NAVTREE =
 [
-  [ "Old3DEngine", "index.html", [
+  [ "Hate Engine", "index.html", [
     [ "Namespaces", "namespaces.html", [
       [ "Namespace List", "namespaces.html", "namespaces_dup" ],
       [ "Namespace Members", "namespacemembers.html", [
@@ -37,7 +37,7 @@ var NAVTREE =
       [ "Class Index", "classes.html", null ],
       [ "Class Hierarchy", "hierarchy.html", "hierarchy" ],
       [ "Class Members", "functions.html", [
-        [ "All", "functions.html", null ],
+        [ "All", "functions.html", "functions_dup" ],
         [ "Functions", "functions_func.html", null ],
         [ "Variables", "functions_vars.html", null ],
         [ "Enumerations", "functions_enum.html", null ],
@@ -54,7 +54,8 @@ var NAVTREE =
 var NAVTREEINDEX =
 [
 "_camera_8hpp.html",
-"class_old3_d_engine_1_1_object.html#a78925966a3b5b402fb04b60cbd0acc69"
+"class_hate_engine_1_1_model.html#adf7ba344903ffe3bdd4c2d9c3698973a",
+"functions_func.html"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';

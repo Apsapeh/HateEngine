@@ -1,10 +1,10 @@
-#include <Old3DEngine/Objects/Object.hpp>
+#include <HateEngine/Objects/Object.hpp>
 #include "../globalStaticParams.hpp"
 //#include <cmath>
 
 //TODO: Добавить дочерние Object, которые наследуют перемещение, вращение и подобное
 
-using namespace Old3DEngine;
+using namespace HateEngine;
 
 void Object::setParentPosition(const glm::vec3 vec) {
     this->parent_position = vec;
@@ -26,7 +26,7 @@ void Object::setParentRotationMatrix(const glm::mat4& mat) {
 
 void Object::setPosition(const glm::vec3 value) {
     for (auto& obj : bindedObjects)
-        obj.second->setParentPosition(value);
+        obj.second->setParentPosition(getGlobalPosition());
     this->position = value;
 }
 void Object::setPosition(float x, float y, float z) {
@@ -37,7 +37,7 @@ void Object::setRotation(glm::vec3 value) {
     value = glm::radians(value);
     rotation_matrix = glm::eulerAngleXYZ(value.x, value.y, value.z);
     for (auto& obj : bindedObjects)
-        obj.second->setParentRotationMatrix(rotation_matrix);
+        obj.second->setParentRotationMatrix(getGlobalRotationMatrix());
 
 }
 void Object::setRotation(float x, float y, float z) {
@@ -93,11 +93,11 @@ void Object::rotate(float x, float y, float z, bool global) {
     rotate({x, y, z}, global);
 }
 
-glm::vec3 Object::getPosition() {
+glm::vec3 Object::getPosition() const {
     return this->position;
 }
 
-glm::vec3 Object::getRotationEuler() {
+glm::vec3 Object::getRotationEuler() const {
     glm::vec3 rot;
     glm::extractEulerAngleXYZ(rotation_matrix, rot.x, rot.y, rot.z);
     rot *= -1;
@@ -111,34 +111,57 @@ glm::vec3 Object::getRotationEuler() {
     return glm::degrees(rot);
 }
 
-glm::mat4 Object::getRotationMatrix() {
+glm::mat4 Object::getRotationMatrix() const {
     return this->rotation_matrix;
 }
 
-glm::vec3 Object::getScale() {
+glm::vec3 Object::getScale() const {
     return this->scale;
 }
 
 
-glm::vec3 Object::getGlobalPosition() {
-    return this->position + this->parent_position;
+glm::vec3 Object::getGlobalPosition() const {
+    if (not binded)
+        return this->position;
+
+    // Создаем матрицу трансформации
+    glm::mat4 transform = glm::mat4(1.0f);
+
+    // Смещаем объект на расстояние от точки вращения
+    transform = glm::translate(transform,  this->position + this->parent_position);
+
+    // Вращаем объект вокруг начала координат
+    //transform = glm::rotate(transform, glm::radians(this->rotation.x), glm::vec3(1.0f, 0.0f, 0.0f));
+    //transform = glm::rotate(transform, glm::radians(rotation.y), glm::vec3(0.0f, 1.0f, 0.0f));
+    //transform = glm::rotate(transform, glm::radians(rotation.z), glm::vec3(0.0f, 0.0f, 1.0f));
+    transform = transform * parent_rotation_matrix;
+
+    // Смещаем объект обратно
+    transform = glm::translate(transform, -(this->position + this->parent_position));
+
+    // Применяем трансформацию к точке
+    glm::vec4 transformedPoint = transform * glm::vec4(this->parent_position, 1.0f);
+
+    return glm::vec3(transformedPoint);
+
+    //return this->position + this->parent_position;
 }
 
-glm::vec3 Object::getGlobalRotationEuler() {
+glm::vec3 Object::getGlobalRotationEuler() const {
     return getRotationEuler();
 }
 
-glm::mat4 Object::getGlobalRotationMatrix() {
+glm::mat4 Object::getGlobalRotationMatrix() const {
     return this->parent_rotation_matrix * this->rotation_matrix;
 }
 
-glm::vec3 Object::getGlobalScale() {
+glm::vec3 Object::getGlobalScale() const {
     return this->scale * this->parent_scale;
 }
 
 
 
-bool Object::getVisible() {
+bool Object::getVisible() const{
     return this->visible;
 }
 
@@ -146,6 +169,7 @@ bool Object::getVisible() {
 UUID_Generator::UUID Object::bindObj(Object* obj) {
     UUID_Generator::UUID uuid = global_uuid_generator.gen();
     bindedObjects[uuid] = obj;
+    obj->binded = true;
     obj->setParentScale(this->scale);
     obj->setParentPosition(this->position);
     obj->setParentRotationMatrix(this->rotation_matrix);
@@ -155,6 +179,7 @@ UUID_Generator::UUID Object::bindObj(Object* obj) {
 bool Object::unbindObj(UUID_Generator::UUID uuid) {
     auto it = bindedObjects.find(uuid);
     if (it != bindedObjects.end()) {
+        bindedObjects[uuid]->binded = false;
         bindedObjects.erase(it);
         return true;
     }

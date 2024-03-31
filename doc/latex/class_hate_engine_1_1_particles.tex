@@ -1,0 +1,184 @@
+\doxysection{Hate\+Engine\+::Particles Class Reference}
+\hypertarget{class_hate_engine_1_1_particles}{}\label{class_hate_engine_1_1_particles}\index{HateEngine::Particles@{HateEngine::Particles}}
+
+
+{\ttfamily \#include $<$Particles.\+hpp$>$}
+
+Inheritance diagram for Hate\+Engine\+::Particles\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{class_hate_engine_1_1_particles}
+\end{center}
+\end{figure}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{class_hate_engine_1_1_particles_a0c235c0bdeb1e07be42342cd37263608}{Particles}} (const \mbox{\hyperlink{class_hate_engine_1_1_mesh}{Mesh}} \&mesh, uint32\+\_\+t particles\+\_\+count, \mbox{\hyperlink{struct_hate_engine_1_1_particle_1_1_particle_settings}{Particle\+::\+Particle\+Settings}} settings)
+\item 
+void \mbox{\hyperlink{class_hate_engine_1_1_particles_a1584bd168ad734561e2dcc32ec55676e}{update}} (double delta)
+\item 
+void \mbox{\hyperlink{class_hate_engine_1_1_particles_ab2ca8dc497ab256f37783b36b2a7e8ba}{set\+Position}} (float x, float y, float z)
+\item 
+void \mbox{\hyperlink{class_hate_engine_1_1_particles_add5c3f43be42d82e896d6b414dde6e64}{set\+Position}} (glm\+::vec3)
+\end{DoxyCompactItemize}
+\doxysubsection*{Public Member Functions inherited from \mbox{\hyperlink{class_hate_engine_1_1_object}{Hate\+Engine\+::\+Object}}}
+\begin{DoxyCompactItemize}
+\item 
+void \mbox{\hyperlink{class_hate_engine_1_1_object_aa2812ba347a3e1e92a4674df4062c1a7}{set\+Position}} (glm\+::vec3 vec)
+\item 
+void \mbox{\hyperlink{class_hate_engine_1_1_object_a194df3f90da31a7e38a8fbe69e7444ef}{set\+Position}} (float x, float y, float z)
+\item 
+void \mbox{\hyperlink{class_hate_engine_1_1_object_acfacf87de317fea17ba623367cbf7eb0}{set\+Rotation}} (glm\+::vec3 vec)
+\item 
+void \mbox{\hyperlink{class_hate_engine_1_1_object_a743be293843017811d998fe3cafe6398}{set\+Rotation}} (float x, float y, float z)
+\item 
+void \mbox{\hyperlink{class_hate_engine_1_1_object_ad3d8516223031ec052de491666c5322d}{set\+Rotation\+Matrix}} (glm\+::mat4 mat)
+\item 
+void \mbox{\hyperlink{class_hate_engine_1_1_object_a70e4f1b0b28def9644f5344e2a7a0649}{set\+Scale}} (glm\+::vec3 vec)
+\item 
+void \mbox{\hyperlink{class_hate_engine_1_1_object_a2e00db46a7a69c248915949d5120bb6e}{set\+Scale}} (float x, float y, float z)
+\item 
+void \mbox{\hyperlink{class_hate_engine_1_1_object_a7d5db89c30a47c592c5ec458b44865e1}{set\+Visible}} (bool)
+\item 
+void \mbox{\hyperlink{class_hate_engine_1_1_object_a9b961af74d959fc56d519bc7c04d3c63}{offset}} (glm\+::vec3 vec)
+\item 
+void \mbox{\hyperlink{class_hate_engine_1_1_object_aa23f1263b617971897db82391a574370}{offset}} (float x, float y, float z)
+\item 
+void \mbox{\hyperlink{class_hate_engine_1_1_object_a81bb5b1bf9ee53407f893f0c125b5d21}{rotate}} (glm\+::vec3 vec, bool global=true)
+\item 
+void \mbox{\hyperlink{class_hate_engine_1_1_object_a5c78a1a409c80823f4933b6d0be93ee6}{rotate}} (float x, float y, float z, bool global=true)
+\item 
+glm\+::vec3 \mbox{\hyperlink{class_hate_engine_1_1_object_a029899410cf142b7edc95355014dfbef}{get\+Position}} () const
+\item 
+glm\+::vec3 \mbox{\hyperlink{class_hate_engine_1_1_object_a9bf0488d8c051e767d817f139a03b7c9}{get\+Rotation\+Euler}} () const
+\item 
+glm\+::mat4 \mbox{\hyperlink{class_hate_engine_1_1_object_a15a018bad3c93f5ae23bbf9aab9d6ec2}{get\+Rotation\+Matrix}} () const
+\item 
+glm\+::vec3 \mbox{\hyperlink{class_hate_engine_1_1_object_a37f702c0bcdbd7b9740eb2eb2530e257}{get\+Scale}} () const
+\item 
+glm\+::vec3 \mbox{\hyperlink{class_hate_engine_1_1_object_a0c0aea020e41e407b366adc871f36abb}{get\+Global\+Position}} () const
+\item 
+glm\+::vec3 \mbox{\hyperlink{class_hate_engine_1_1_object_a0613721b8f749ba6ca142ee50a930520}{get\+Global\+Rotation\+Euler}} () const
+\item 
+glm\+::mat4 \mbox{\hyperlink{class_hate_engine_1_1_object_a33e972313611f50ed1225a2c47f6ccff}{get\+Global\+Rotation\+Matrix}} () const
+\item 
+glm\+::vec3 \mbox{\hyperlink{class_hate_engine_1_1_object_ae6b995859a699fce22433265ad5e0bcd}{get\+Global\+Scale}} () const
+\item 
+bool \mbox{\hyperlink{class_hate_engine_1_1_object_adcc3cdd0949dd56e8abb11a1d7dee04b}{get\+Visible}} () const
+\item 
+\mbox{\hyperlink{struct_hate_engine_1_1_u_u_i_d___generator_1_1_u_u_i_d}{UUID\+\_\+\+Generator\+::\+UUID}} \mbox{\hyperlink{class_hate_engine_1_1_object_a9b40a0898974859c690b2ae6ca312459}{bind\+Obj}} (\mbox{\hyperlink{class_hate_engine_1_1_object}{Object}} \texorpdfstring{$\ast$}{*}obj)
+\item 
+bool \mbox{\hyperlink{class_hate_engine_1_1_object_a071f74000999f694efc30da45605e2c0}{unbind\+Obj}} (\mbox{\hyperlink{struct_hate_engine_1_1_u_u_i_d___generator_1_1_u_u_i_d}{UUID\+\_\+\+Generator\+::\+UUID}} uuid)
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+std\+::vector$<$ \mbox{\hyperlink{class_hate_engine_1_1_particle}{Particle}} $>$ \mbox{\hyperlink{class_hate_engine_1_1_particles_a6b8fcb8e0955dbe647d9279c7299cfb0}{particles\+Vector}}
+\item 
+\mbox{\hyperlink{struct_hate_engine_1_1_particle_1_1_particle_settings}{Particle\+::\+Particle\+Settings}} \mbox{\hyperlink{class_hate_engine_1_1_particles_a472c728eb6b0a21de03f31edfdce8961}{set}}
+\item 
+bool \mbox{\hyperlink{class_hate_engine_1_1_particles_af58f234fbb4fefbf8f14e906cd296030}{pause}} = true
+\item 
+void(\texorpdfstring{$\ast$}{*} \mbox{\hyperlink{class_hate_engine_1_1_particles_a89fce2f6a364c580055f8794e5c14404}{calculate\+Func}} )(\mbox{\hyperlink{class_hate_engine_1_1_particle}{Particle}} \texorpdfstring{$\ast$}{*}, double)
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Additional Inherited Members}
+\doxysubsection*{Protected Member Functions inherited from \mbox{\hyperlink{class_hate_engine_1_1_object}{Hate\+Engine\+::\+Object}}}
+\begin{DoxyCompactItemize}
+\item 
+void \mbox{\hyperlink{class_hate_engine_1_1_object_add8d4e9bde99fb7cddd4a9983816b074}{set\+Parent\+Position}} (glm\+::vec3 vec)
+\item 
+void \mbox{\hyperlink{class_hate_engine_1_1_object_a09722b03a13531e0e9f901c4093d127d}{set\+Parent\+Scale}} (glm\+::vec3 vec)
+\item 
+void \mbox{\hyperlink{class_hate_engine_1_1_object_a8a8cdeb5fd410a45c73c5136355cee9a}{set\+Parent\+Rotation\+Matrix}} (const glm\+::mat4 \&mat)
+\end{DoxyCompactItemize}
+\doxysubsection*{Protected Attributes inherited from \mbox{\hyperlink{class_hate_engine_1_1_object}{Hate\+Engine\+::\+Object}}}
+\begin{DoxyCompactItemize}
+\item 
+bool \mbox{\hyperlink{class_hate_engine_1_1_object_a54bb604d9bc2824d371fc4dd3908a8f3}{visible}} = true
+\item 
+std\+::unordered\+\_\+map$<$ \mbox{\hyperlink{struct_hate_engine_1_1_u_u_i_d___generator_1_1_u_u_i_d}{UUID\+\_\+\+Generator\+::\+UUID}}, \mbox{\hyperlink{class_hate_engine_1_1_object}{Object}} \texorpdfstring{$\ast$}{*} $>$ \mbox{\hyperlink{class_hate_engine_1_1_object_ab0ae1afd3739f246d8c71f785f6581dd}{binded\+Objects}}
+\item 
+glm\+::vec3 \mbox{\hyperlink{class_hate_engine_1_1_object_a73ec41c66533599490e4e7d1442c51b7}{parent\+\_\+position}} = \{0, 0, 0\}
+\item 
+glm\+::vec3 \mbox{\hyperlink{class_hate_engine_1_1_object_a4ae8df362cd5b3b12e84d1ef46a37cb6}{parent\+\_\+scale}} = \{1.\+0, 1.\+0, 1.\+0\}
+\item 
+glm\+::mat4 \mbox{\hyperlink{class_hate_engine_1_1_object_a6425805d5873f7934b9e57cb4434b8c9}{parent\+\_\+rotation\+\_\+matrix}}
+\item 
+glm\+::vec3 \mbox{\hyperlink{class_hate_engine_1_1_object_aac6dca692896ce50098af21642c5cd8c}{position}} = \{0, 0, 0\}
+\item 
+glm\+::vec3 \mbox{\hyperlink{class_hate_engine_1_1_object_aceb06ba29106c4cbc9918399fed397cc}{scale}} = \{1.\+0, 1.\+0, 1.\+0\}
+\item 
+glm\+::mat4 \mbox{\hyperlink{class_hate_engine_1_1_object_a4e618bd13929e169dabd4ca1f42b5052}{rotation\+\_\+matrix}}
+\item 
+bool \mbox{\hyperlink{class_hate_engine_1_1_object_ab1f31abb8627bc131658f724cc0959e2}{binded}} = false
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Constructor \& Destructor Documentation}
+\Hypertarget{class_hate_engine_1_1_particles_a0c235c0bdeb1e07be42342cd37263608}\label{class_hate_engine_1_1_particles_a0c235c0bdeb1e07be42342cd37263608} 
+\index{HateEngine::Particles@{HateEngine::Particles}!Particles@{Particles}}
+\index{Particles@{Particles}!HateEngine::Particles@{HateEngine::Particles}}
+\doxysubsubsection{\texorpdfstring{Particles()}{Particles()}}
+{\footnotesize\ttfamily Hate\+Engine\+::\+Particles\+::\+Particles (\begin{DoxyParamCaption}\item[{const \mbox{\hyperlink{class_hate_engine_1_1_mesh}{Mesh}} \&}]{mesh,  }\item[{uint32\+\_\+t}]{particles\+\_\+count,  }\item[{\mbox{\hyperlink{struct_hate_engine_1_1_particle_1_1_particle_settings}{Particle\+::\+Particle\+Settings}}}]{settings }\end{DoxyParamCaption})}
+
+
+
+\doxysubsection{Member Function Documentation}
+\Hypertarget{class_hate_engine_1_1_particles_ab2ca8dc497ab256f37783b36b2a7e8ba}\label{class_hate_engine_1_1_particles_ab2ca8dc497ab256f37783b36b2a7e8ba} 
+\index{HateEngine::Particles@{HateEngine::Particles}!setPosition@{setPosition}}
+\index{setPosition@{setPosition}!HateEngine::Particles@{HateEngine::Particles}}
+\doxysubsubsection{\texorpdfstring{setPosition()}{setPosition()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily void Hate\+Engine\+::\+Particles\+::set\+Position (\begin{DoxyParamCaption}\item[{float}]{x,  }\item[{float}]{y,  }\item[{float}]{z }\end{DoxyParamCaption})}
+
+\Hypertarget{class_hate_engine_1_1_particles_add5c3f43be42d82e896d6b414dde6e64}\label{class_hate_engine_1_1_particles_add5c3f43be42d82e896d6b414dde6e64} 
+\index{HateEngine::Particles@{HateEngine::Particles}!setPosition@{setPosition}}
+\index{setPosition@{setPosition}!HateEngine::Particles@{HateEngine::Particles}}
+\doxysubsubsection{\texorpdfstring{setPosition()}{setPosition()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily void Hate\+Engine\+::\+Particles\+::set\+Position (\begin{DoxyParamCaption}\item[{glm\+::vec3}]{ }\end{DoxyParamCaption})}
+
+\Hypertarget{class_hate_engine_1_1_particles_a1584bd168ad734561e2dcc32ec55676e}\label{class_hate_engine_1_1_particles_a1584bd168ad734561e2dcc32ec55676e} 
+\index{HateEngine::Particles@{HateEngine::Particles}!update@{update}}
+\index{update@{update}!HateEngine::Particles@{HateEngine::Particles}}
+\doxysubsubsection{\texorpdfstring{update()}{update()}}
+{\footnotesize\ttfamily void Hate\+Engine\+::\+Particles\+::update (\begin{DoxyParamCaption}\item[{double}]{delta }\end{DoxyParamCaption})}
+
+
+
+\doxysubsection{Member Data Documentation}
+\Hypertarget{class_hate_engine_1_1_particles_a89fce2f6a364c580055f8794e5c14404}\label{class_hate_engine_1_1_particles_a89fce2f6a364c580055f8794e5c14404} 
+\index{HateEngine::Particles@{HateEngine::Particles}!calculateFunc@{calculateFunc}}
+\index{calculateFunc@{calculateFunc}!HateEngine::Particles@{HateEngine::Particles}}
+\doxysubsubsection{\texorpdfstring{calculateFunc}{calculateFunc}}
+{\footnotesize\ttfamily void(\texorpdfstring{$\ast$}{*} Hate\+Engine\+::\+Particles\+::calculate\+Func) (\mbox{\hyperlink{class_hate_engine_1_1_particle}{Particle}} \texorpdfstring{$\ast$}{*}, double)}
+
+{\bfseries Initial value\+:}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{=\ []\ (Particle*\ p,\ \textcolor{keywordtype}{double}\ d)\ \{}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \}}
+
+\end{DoxyCode}
+\Hypertarget{class_hate_engine_1_1_particles_a6b8fcb8e0955dbe647d9279c7299cfb0}\label{class_hate_engine_1_1_particles_a6b8fcb8e0955dbe647d9279c7299cfb0} 
+\index{HateEngine::Particles@{HateEngine::Particles}!particlesVector@{particlesVector}}
+\index{particlesVector@{particlesVector}!HateEngine::Particles@{HateEngine::Particles}}
+\doxysubsubsection{\texorpdfstring{particlesVector}{particlesVector}}
+{\footnotesize\ttfamily std\+::vector$<$\mbox{\hyperlink{class_hate_engine_1_1_particle}{Particle}}$>$ Hate\+Engine\+::\+Particles\+::particles\+Vector}
+
+\Hypertarget{class_hate_engine_1_1_particles_af58f234fbb4fefbf8f14e906cd296030}\label{class_hate_engine_1_1_particles_af58f234fbb4fefbf8f14e906cd296030} 
+\index{HateEngine::Particles@{HateEngine::Particles}!pause@{pause}}
+\index{pause@{pause}!HateEngine::Particles@{HateEngine::Particles}}
+\doxysubsubsection{\texorpdfstring{pause}{pause}}
+{\footnotesize\ttfamily bool Hate\+Engine\+::\+Particles\+::pause = true}
+
+\Hypertarget{class_hate_engine_1_1_particles_a472c728eb6b0a21de03f31edfdce8961}\label{class_hate_engine_1_1_particles_a472c728eb6b0a21de03f31edfdce8961} 
+\index{HateEngine::Particles@{HateEngine::Particles}!set@{set}}
+\index{set@{set}!HateEngine::Particles@{HateEngine::Particles}}
+\doxysubsubsection{\texorpdfstring{set}{set}}
+{\footnotesize\ttfamily \mbox{\hyperlink{struct_hate_engine_1_1_particle_1_1_particle_settings}{Particle\+::\+Particle\+Settings}} Hate\+Engine\+::\+Particles\+::set}
+
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+include/\+Hate\+Engine/\+Objects/\mbox{\hyperlink{_particles_8hpp}{Particles.\+hpp}}\end{DoxyCompactItemize}

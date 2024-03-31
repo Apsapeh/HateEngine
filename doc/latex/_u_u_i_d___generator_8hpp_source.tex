@@ -1,31 +1,52 @@
 \doxysection{UUID\+\_\+\+Generator.\+hpp}
-\hypertarget{_u_u_i_d___generator_8hpp_source}{}\label{_u_u_i_d___generator_8hpp_source}\index{include/Old3DEngine/Utilities/UUID\_Generator.hpp@{include/Old3DEngine/Utilities/UUID\_Generator.hpp}}
+\hypertarget{_u_u_i_d___generator_8hpp_source}{}\label{_u_u_i_d___generator_8hpp_source}\index{include/HateEngine/Utilities/UUID\_Generator.hpp@{include/HateEngine/Utilities/UUID\_Generator.hpp}}
 \mbox{\hyperlink{_u_u_i_d___generator_8hpp}{Go to the documentation of this file.}}
 \begin{DoxyCode}{0}
 \DoxyCodeLine{00001\ \textcolor{preprocessor}{\#pragma\ once}}
 \DoxyCodeLine{00002\ \textcolor{preprocessor}{\#include\ <chrono>}}
 \DoxyCodeLine{00003\ \textcolor{preprocessor}{\#include\ <cstdint>}}
 \DoxyCodeLine{00004\ \textcolor{preprocessor}{\#include\ <mutex>}}
-\DoxyCodeLine{00005\ }
-\DoxyCodeLine{00006\ \textcolor{keyword}{namespace\ }\mbox{\hyperlink{namespace_old3_d_engine}{Old3DEngine}}\ \{}
-\DoxyCodeLine{00007\ \ \ \ \ \textcolor{keyword}{class\ }\mbox{\hyperlink{class_old3_d_engine_1_1_u_u_i_d___generator}{UUID\_Generator}}\ \{}
-\DoxyCodeLine{00008\ \ \ \ \ \textcolor{keyword}{private}:}
-\DoxyCodeLine{00009\ \ \ \ \ \ \ \ \ uint64\_t\ prevTime\ =\ 0;}
-\DoxyCodeLine{00010\ \ \ \ \ \ \ \ \ uint32\_t\ idTimeAdder\ =\ 0;}
-\DoxyCodeLine{00011\ \ \ \ \ \ \ \ \ std::mutex\ getMutex;}
-\DoxyCodeLine{00012\ }
-\DoxyCodeLine{00013\ \ \ \ \ \textcolor{keyword}{public}:}
-\DoxyCodeLine{00014\ \ \ \ \ \ \ \ \ \textcolor{keyword}{struct\ }\mbox{\hyperlink{struct_old3_d_engine_1_1_u_u_i_d___generator_1_1_u_u_i_d}{UUID}}\ \{}
-\DoxyCodeLine{00015\ \ \ \ \ \ \ \ \ \ \ \ \ uint64\_t\ \mbox{\hyperlink{struct_old3_d_engine_1_1_u_u_i_d___generator_1_1_u_u_i_d_a3cb3042eae9b14f6ab6e885b8ad31a2d}{body}};}
-\DoxyCodeLine{00016\ \ \ \ \ \ \ \ \ \ \ \ \ uint32\_t\ \mbox{\hyperlink{struct_old3_d_engine_1_1_u_u_i_d___generator_1_1_u_u_i_d_a6cdc62bdcad7a1a935f340c4fb62c7d3}{counter}};}
-\DoxyCodeLine{00017\ }
-\DoxyCodeLine{00018\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{bool}\ \mbox{\hyperlink{struct_old3_d_engine_1_1_u_u_i_d___generator_1_1_u_u_i_d_a8ce28ed2c6a6d8e293be7f34cd796767}{operator==}}(\mbox{\hyperlink{struct_old3_d_engine_1_1_u_u_i_d___generator_1_1_u_u_i_d}{UUID}}\ other\_id)\textcolor{keyword}{\ const\ }\{}
-\DoxyCodeLine{00019\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ (other\_id.\mbox{\hyperlink{struct_old3_d_engine_1_1_u_u_i_d___generator_1_1_u_u_i_d_a3cb3042eae9b14f6ab6e885b8ad31a2d}{body}}\ ==\ \mbox{\hyperlink{struct_old3_d_engine_1_1_u_u_i_d___generator_1_1_u_u_i_d_a3cb3042eae9b14f6ab6e885b8ad31a2d}{body}})\ and\ (other\_id.\mbox{\hyperlink{struct_old3_d_engine_1_1_u_u_i_d___generator_1_1_u_u_i_d_a6cdc62bdcad7a1a935f340c4fb62c7d3}{counter}}\ ==\ \mbox{\hyperlink{struct_old3_d_engine_1_1_u_u_i_d___generator_1_1_u_u_i_d_a6cdc62bdcad7a1a935f340c4fb62c7d3}{counter}});}
-\DoxyCodeLine{00020\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
-\DoxyCodeLine{00021\ \ \ \ \ \ \ \ \ \};}
-\DoxyCodeLine{00022\ }
-\DoxyCodeLine{00023\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_old3_d_engine_1_1_u_u_i_d___generator_1_1_u_u_i_d}{UUID}}\ \mbox{\hyperlink{class_old3_d_engine_1_1_u_u_i_d___generator_a0dc7aac3310eb48495c950051939f809}{gen}}();}
-\DoxyCodeLine{00024\ \ \ \ \ \};}
-\DoxyCodeLine{00025\ \}}
+\DoxyCodeLine{00005\ \textcolor{preprocessor}{\#include\ <functional>}}
+\DoxyCodeLine{00006\ \textcolor{preprocessor}{\#include\ <string>}}
+\DoxyCodeLine{00007\ }
+\DoxyCodeLine{00008\ \textcolor{keyword}{namespace\ }\mbox{\hyperlink{namespace_hate_engine}{HateEngine}}\ \{}
+\DoxyCodeLine{00009\ \ \ \ \ \textcolor{keyword}{class\ }\mbox{\hyperlink{class_hate_engine_1_1_u_u_i_d___generator}{UUID\_Generator}}\ \{}
+\DoxyCodeLine{00010\ \ \ \ \ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00011\ \ \ \ \ \ \ \ \ uint64\_t\ prevTime\ =\ 0;}
+\DoxyCodeLine{00012\ \ \ \ \ \ \ \ \ uint32\_t\ idTimeAdder\ =\ 0;}
+\DoxyCodeLine{00013\ \ \ \ \ \ \ \ \ std::mutex\ getMutex;}
+\DoxyCodeLine{00014\ }
+\DoxyCodeLine{00015\ \ \ \ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00016\ \ \ \ \ \ \ \ \ \textcolor{keyword}{struct\ }\mbox{\hyperlink{struct_hate_engine_1_1_u_u_i_d___generator_1_1_u_u_i_d}{UUID}}\ \{}
+\DoxyCodeLine{00017\ \ \ \ \ \ \ \ \ \ \ \ \ uint64\_t\ \mbox{\hyperlink{struct_hate_engine_1_1_u_u_i_d___generator_1_1_u_u_i_d_aa1f0d808de6e135b05a48e220fb4d1a2}{body}};}
+\DoxyCodeLine{00018\ \ \ \ \ \ \ \ \ \ \ \ \ uint32\_t\ \mbox{\hyperlink{struct_hate_engine_1_1_u_u_i_d___generator_1_1_u_u_i_d_a6dd6b83f014731356ac673ebf20efea0}{counter}};}
+\DoxyCodeLine{00019\ }
+\DoxyCodeLine{00020\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{bool}\ \mbox{\hyperlink{struct_hate_engine_1_1_u_u_i_d___generator_1_1_u_u_i_d_a0575ddfeb3754b2af64d4dcbf92ec71e}{operator==}}(\mbox{\hyperlink{struct_hate_engine_1_1_u_u_i_d___generator_1_1_u_u_i_d}{UUID}}\ other\_id)\textcolor{keyword}{\ const\ }\{}
+\DoxyCodeLine{00021\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ (other\_id.\mbox{\hyperlink{struct_hate_engine_1_1_u_u_i_d___generator_1_1_u_u_i_d_aa1f0d808de6e135b05a48e220fb4d1a2}{body}}\ ==\ \mbox{\hyperlink{struct_hate_engine_1_1_u_u_i_d___generator_1_1_u_u_i_d_aa1f0d808de6e135b05a48e220fb4d1a2}{body}})\ and\ (other\_id.\mbox{\hyperlink{struct_hate_engine_1_1_u_u_i_d___generator_1_1_u_u_i_d_a6dd6b83f014731356ac673ebf20efea0}{counter}}\ ==\ \mbox{\hyperlink{struct_hate_engine_1_1_u_u_i_d___generator_1_1_u_u_i_d_a6dd6b83f014731356ac673ebf20efea0}{counter}});}
+\DoxyCodeLine{00022\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00023\ \ \ \ \ \ \ \ \ \};}
+\DoxyCodeLine{00024\ }
+\DoxyCodeLine{00025\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_hate_engine_1_1_u_u_i_d___generator_1_1_u_u_i_d}{UUID}}\ \mbox{\hyperlink{class_hate_engine_1_1_u_u_i_d___generator_a2473f3c99be8c27d2f40604f8a533db3}{gen}}();}
+\DoxyCodeLine{00026\ }
+\DoxyCodeLine{00027\ }
+\DoxyCodeLine{00028\ \ \ \ \ \};}
+\DoxyCodeLine{00029\ \}}
+\DoxyCodeLine{00030\ }
+\DoxyCodeLine{00031\ \textcolor{comment}{//\ Hash\ function\ for\ UUID}}
+\DoxyCodeLine{00032\ \textcolor{keyword}{template}\ <>\ \textcolor{keyword}{struct\ }std::hash<\mbox{\hyperlink{namespace_hate_engine}{HateEngine}}::UUID\_Generator::UUID>}
+\DoxyCodeLine{00033\ \{}
+\DoxyCodeLine{00034\ \ \ \ \ std::size\_t\ \mbox{\hyperlink{structstd_1_1hash_3_01_hate_engine_1_1_u_u_i_d___generator_1_1_u_u_i_d_01_4_abd6c8a42ac7631ab655ee1a5bf683977}{operator()}}(\textcolor{keyword}{const}\ \mbox{\hyperlink{struct_hate_engine_1_1_u_u_i_d___generator_1_1_u_u_i_d}{HateEngine::UUID\_Generator::UUID}}\&\ k)\textcolor{keyword}{\ const}}
+\DoxyCodeLine{00035\ \textcolor{keyword}{\ \ \ \ }\{}
+\DoxyCodeLine{00036\ \ \ \ \ \ \ \ \ \textcolor{keyword}{using\ }std::size\_t;}
+\DoxyCodeLine{00037\ \ \ \ \ \ \ \ \ \textcolor{keyword}{using\ }std::hash;}
+\DoxyCodeLine{00038\ \ \ \ \ \ \ \ \ \textcolor{keyword}{using\ }std::string;}
+\DoxyCodeLine{00039\ }
+\DoxyCodeLine{00040\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ Compute\ individual\ hash\ values\ for\ first,}}
+\DoxyCodeLine{00041\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ second\ and\ third\ and\ combine\ them\ using\ XOR}}
+\DoxyCodeLine{00042\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ and\ bit\ shifting:}}
+\DoxyCodeLine{00043\ }
+\DoxyCodeLine{00044\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ (hash<uint64\_t>()(k.\mbox{\hyperlink{struct_hate_engine_1_1_u_u_i_d___generator_1_1_u_u_i_d_aa1f0d808de6e135b05a48e220fb4d1a2}{body}})\ \string^\ (hash<uint32\_t>()(k.\mbox{\hyperlink{struct_hate_engine_1_1_u_u_i_d___generator_1_1_u_u_i_d_a6dd6b83f014731356ac673ebf20efea0}{counter}})\ <<\ 1))\ >>\ 1;}
+\DoxyCodeLine{00045\ \ \ \ \ \}}
+\DoxyCodeLine{00046\ \};}
 
 \end{DoxyCode}

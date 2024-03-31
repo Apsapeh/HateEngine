@@ -1,0 +1,165 @@
+\doxysection{Hate\+Engine\+::Engine Class Reference}
+\hypertarget{class_hate_engine_1_1_engine}{}\label{class_hate_engine_1_1_engine}\index{HateEngine::Engine@{HateEngine::Engine}}
+
+
+{\ttfamily \#include $<$Hate\+Engine.\+hpp$>$}
+
+\doxysubsubsection*{Classes}
+\begin{DoxyCompactItemize}
+\item 
+struct \mbox{\hyperlink{struct_hate_engine_1_1_engine_1_1_input_event_info}{Input\+Event\+Info}}
+\item 
+struct \mbox{\hyperlink{struct_hate_engine_1_1_engine_1_1_scene_object}{Scene\+Object}}
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Public Types}
+\begin{DoxyCompactItemize}
+\item 
+enum \mbox{\hyperlink{class_hate_engine_1_1_engine_adcb521f2d34705733987d6768ddd0a35}{Render\+API}} \{ \mbox{\hyperlink{class_hate_engine_1_1_engine_adcb521f2d34705733987d6768ddd0a35a7d27e0a85126bae8ae2b4f8492af437c}{Open\+GL\+\_\+1\+\_\+5}}
+ \}
+\item 
+enum \mbox{\hyperlink{class_hate_engine_1_1_engine_a29983706e5290065d5cf57e9ca6c3c07}{Input\+Event\+Type}} \{ \mbox{\hyperlink{class_hate_engine_1_1_engine_a29983706e5290065d5cf57e9ca6c3c07a2428d220233b7cbb2bf993d89954335e}{Input\+Event\+Key}}
+, \mbox{\hyperlink{class_hate_engine_1_1_engine_a29983706e5290065d5cf57e9ca6c3c07a1b21972af56e361e4c88ea4d79cfefd9}{Input\+Event\+Mouse\+Move}}
+, \mbox{\hyperlink{class_hate_engine_1_1_engine_a29983706e5290065d5cf57e9ca6c3c07aae5a0ce06f91039d96442a4f7208e9e6}{Input\+Event\+Mouse\+Scroll}}
+ \}
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{class_hate_engine_1_1_engine_ad25fd843c4a424021ba3336482151784}{Engine}} (std\+::string window\+\_\+lbl, int width, int height)
+\item 
+void \mbox{\hyperlink{class_hate_engine_1_1_engine_a2cb0dd5722737053db99f62f5bd86e61}{Run}} ()
+\item 
+void \mbox{\hyperlink{class_hate_engine_1_1_engine_a164f73a8a2206f5c28afde5deba0152e}{set\+Process\+Loop}} (void(\texorpdfstring{$\ast$}{*}func)(\mbox{\hyperlink{class_hate_engine_1_1_engine}{Engine}} \texorpdfstring{$\ast$}{*}, double))
+\item 
+void \mbox{\hyperlink{class_hate_engine_1_1_engine_a78c0349067b9562f8f6cf02289473c08}{set\+Fixed\+Process\+Loop}} (void(\texorpdfstring{$\ast$}{*}func)(\mbox{\hyperlink{class_hate_engine_1_1_engine}{Engine}} \texorpdfstring{$\ast$}{*}, double))
+\item 
+void \mbox{\hyperlink{class_hate_engine_1_1_engine_a51ad9b857715ad00e9e243e9a36ced0f}{set\+Input\+Event}} (void(\texorpdfstring{$\ast$}{*}func)(\mbox{\hyperlink{class_hate_engine_1_1_engine}{Engine}} \texorpdfstring{$\ast$}{*}, \mbox{\hyperlink{struct_hate_engine_1_1_engine_1_1_input_event_info}{Input\+Event\+Info}}))
+\item 
+\mbox{\hyperlink{class_hate_engine_1_1_phys_engine}{Phys\+Engine}} \texorpdfstring{$\ast$}{*}const \mbox{\hyperlink{class_hate_engine_1_1_engine_aa356ac0783fa141e42a12fb79c74e975}{get\+Phys\+Engine}} ()
+\item 
+void \mbox{\hyperlink{class_hate_engine_1_1_engine_a0ee0d49a5b771bd574d48c1f139a3001}{set\+Level\+Ref}} (\mbox{\hyperlink{class_hate_engine_1_1_level}{Level}} \texorpdfstring{$\ast$}{*}lvl)
+\item 
+GLFWwindow \texorpdfstring{$\ast$}{*} \mbox{\hyperlink{class_hate_engine_1_1_engine_a1510efe3d96bfb6e23173dda51fef631}{get\+Window}} ()
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+Input\+Class \mbox{\hyperlink{class_hate_engine_1_1_engine_a7be8c54b9bacffb0cb45e40e013ec3fc}{Input}}
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Friends}
+\begin{DoxyCompactItemize}
+\item 
+class \mbox{\hyperlink{class_hate_engine_1_1_engine_abc0326b946eced80bb9eb6f580200a6d}{Input\+Class}}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Member Enumeration Documentation}
+\Hypertarget{class_hate_engine_1_1_engine_a29983706e5290065d5cf57e9ca6c3c07}\label{class_hate_engine_1_1_engine_a29983706e5290065d5cf57e9ca6c3c07} 
+\index{HateEngine::Engine@{HateEngine::Engine}!InputEventType@{InputEventType}}
+\index{InputEventType@{InputEventType}!HateEngine::Engine@{HateEngine::Engine}}
+\doxysubsubsection{\texorpdfstring{InputEventType}{InputEventType}}
+{\footnotesize\ttfamily enum \mbox{\hyperlink{class_hate_engine_1_1_engine_a29983706e5290065d5cf57e9ca6c3c07}{Hate\+Engine\+::\+Engine\+::\+Input\+Event\+Type}}}
+
+\begin{DoxyEnumFields}{Enumerator}
+\raisebox{\heightof{T}}[0pt][0pt]{\index{InputEventKey@{InputEventKey}!HateEngine::Engine@{HateEngine::Engine}}\index{HateEngine::Engine@{HateEngine::Engine}!InputEventKey@{InputEventKey}}}\Hypertarget{class_hate_engine_1_1_engine_a29983706e5290065d5cf57e9ca6c3c07a2428d220233b7cbb2bf993d89954335e}\label{class_hate_engine_1_1_engine_a29983706e5290065d5cf57e9ca6c3c07a2428d220233b7cbb2bf993d89954335e} 
+Input\+Event\+Key&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{InputEventMouseMove@{InputEventMouseMove}!HateEngine::Engine@{HateEngine::Engine}}\index{HateEngine::Engine@{HateEngine::Engine}!InputEventMouseMove@{InputEventMouseMove}}}\Hypertarget{class_hate_engine_1_1_engine_a29983706e5290065d5cf57e9ca6c3c07a1b21972af56e361e4c88ea4d79cfefd9}\label{class_hate_engine_1_1_engine_a29983706e5290065d5cf57e9ca6c3c07a1b21972af56e361e4c88ea4d79cfefd9} 
+Input\+Event\+Mouse\+Move&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{InputEventMouseScroll@{InputEventMouseScroll}!HateEngine::Engine@{HateEngine::Engine}}\index{HateEngine::Engine@{HateEngine::Engine}!InputEventMouseScroll@{InputEventMouseScroll}}}\Hypertarget{class_hate_engine_1_1_engine_a29983706e5290065d5cf57e9ca6c3c07aae5a0ce06f91039d96442a4f7208e9e6}\label{class_hate_engine_1_1_engine_a29983706e5290065d5cf57e9ca6c3c07aae5a0ce06f91039d96442a4f7208e9e6} 
+Input\+Event\+Mouse\+Scroll&\\
+\hline
+
+\end{DoxyEnumFields}
+\Hypertarget{class_hate_engine_1_1_engine_adcb521f2d34705733987d6768ddd0a35}\label{class_hate_engine_1_1_engine_adcb521f2d34705733987d6768ddd0a35} 
+\index{HateEngine::Engine@{HateEngine::Engine}!RenderAPI@{RenderAPI}}
+\index{RenderAPI@{RenderAPI}!HateEngine::Engine@{HateEngine::Engine}}
+\doxysubsubsection{\texorpdfstring{RenderAPI}{RenderAPI}}
+{\footnotesize\ttfamily enum \mbox{\hyperlink{class_hate_engine_1_1_engine_adcb521f2d34705733987d6768ddd0a35}{Hate\+Engine\+::\+Engine\+::\+Render\+API}}}
+
+\begin{DoxyEnumFields}{Enumerator}
+\raisebox{\heightof{T}}[0pt][0pt]{\index{OpenGL\_1\_5@{OpenGL\_1\_5}!HateEngine::Engine@{HateEngine::Engine}}\index{HateEngine::Engine@{HateEngine::Engine}!OpenGL\_1\_5@{OpenGL\_1\_5}}}\Hypertarget{class_hate_engine_1_1_engine_adcb521f2d34705733987d6768ddd0a35a7d27e0a85126bae8ae2b4f8492af437c}\label{class_hate_engine_1_1_engine_adcb521f2d34705733987d6768ddd0a35a7d27e0a85126bae8ae2b4f8492af437c} 
+Open\+GL\+\_\+1\+\_\+5&\\
+\hline
+
+\end{DoxyEnumFields}
+
+
+\doxysubsection{Constructor \& Destructor Documentation}
+\Hypertarget{class_hate_engine_1_1_engine_ad25fd843c4a424021ba3336482151784}\label{class_hate_engine_1_1_engine_ad25fd843c4a424021ba3336482151784} 
+\index{HateEngine::Engine@{HateEngine::Engine}!Engine@{Engine}}
+\index{Engine@{Engine}!HateEngine::Engine@{HateEngine::Engine}}
+\doxysubsubsection{\texorpdfstring{Engine()}{Engine()}}
+{\footnotesize\ttfamily Hate\+Engine\+::\+Engine\+::\+Engine (\begin{DoxyParamCaption}\item[{std\+::string}]{window\+\_\+lbl,  }\item[{int}]{width,  }\item[{int}]{height }\end{DoxyParamCaption})}
+
+
+
+\doxysubsection{Member Function Documentation}
+\Hypertarget{class_hate_engine_1_1_engine_aa356ac0783fa141e42a12fb79c74e975}\label{class_hate_engine_1_1_engine_aa356ac0783fa141e42a12fb79c74e975} 
+\index{HateEngine::Engine@{HateEngine::Engine}!getPhysEngine@{getPhysEngine}}
+\index{getPhysEngine@{getPhysEngine}!HateEngine::Engine@{HateEngine::Engine}}
+\doxysubsubsection{\texorpdfstring{getPhysEngine()}{getPhysEngine()}}
+{\footnotesize\ttfamily \mbox{\hyperlink{class_hate_engine_1_1_phys_engine}{Phys\+Engine}} \texorpdfstring{$\ast$}{*}const Hate\+Engine\+::\+Engine\+::get\+Phys\+Engine (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+\Hypertarget{class_hate_engine_1_1_engine_a1510efe3d96bfb6e23173dda51fef631}\label{class_hate_engine_1_1_engine_a1510efe3d96bfb6e23173dda51fef631} 
+\index{HateEngine::Engine@{HateEngine::Engine}!getWindow@{getWindow}}
+\index{getWindow@{getWindow}!HateEngine::Engine@{HateEngine::Engine}}
+\doxysubsubsection{\texorpdfstring{getWindow()}{getWindow()}}
+{\footnotesize\ttfamily GLFWwindow \texorpdfstring{$\ast$}{*} Hate\+Engine\+::\+Engine\+::get\+Window (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+\Hypertarget{class_hate_engine_1_1_engine_a2cb0dd5722737053db99f62f5bd86e61}\label{class_hate_engine_1_1_engine_a2cb0dd5722737053db99f62f5bd86e61} 
+\index{HateEngine::Engine@{HateEngine::Engine}!Run@{Run}}
+\index{Run@{Run}!HateEngine::Engine@{HateEngine::Engine}}
+\doxysubsubsection{\texorpdfstring{Run()}{Run()}}
+{\footnotesize\ttfamily void Hate\+Engine\+::\+Engine\+::\+Run (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+\Hypertarget{class_hate_engine_1_1_engine_a78c0349067b9562f8f6cf02289473c08}\label{class_hate_engine_1_1_engine_a78c0349067b9562f8f6cf02289473c08} 
+\index{HateEngine::Engine@{HateEngine::Engine}!setFixedProcessLoop@{setFixedProcessLoop}}
+\index{setFixedProcessLoop@{setFixedProcessLoop}!HateEngine::Engine@{HateEngine::Engine}}
+\doxysubsubsection{\texorpdfstring{setFixedProcessLoop()}{setFixedProcessLoop()}}
+{\footnotesize\ttfamily void Hate\+Engine\+::\+Engine\+::set\+Fixed\+Process\+Loop (\begin{DoxyParamCaption}\item[{void(\texorpdfstring{$\ast$}{*})(\mbox{\hyperlink{class_hate_engine_1_1_engine}{Engine}} \texorpdfstring{$\ast$}{*}, double)}]{func }\end{DoxyParamCaption})}
+
+\Hypertarget{class_hate_engine_1_1_engine_a51ad9b857715ad00e9e243e9a36ced0f}\label{class_hate_engine_1_1_engine_a51ad9b857715ad00e9e243e9a36ced0f} 
+\index{HateEngine::Engine@{HateEngine::Engine}!setInputEvent@{setInputEvent}}
+\index{setInputEvent@{setInputEvent}!HateEngine::Engine@{HateEngine::Engine}}
+\doxysubsubsection{\texorpdfstring{setInputEvent()}{setInputEvent()}}
+{\footnotesize\ttfamily void Hate\+Engine\+::\+Engine\+::set\+Input\+Event (\begin{DoxyParamCaption}\item[{void(\texorpdfstring{$\ast$}{*})(\mbox{\hyperlink{class_hate_engine_1_1_engine}{Engine}} \texorpdfstring{$\ast$}{*}, \mbox{\hyperlink{struct_hate_engine_1_1_engine_1_1_input_event_info}{Input\+Event\+Info}})}]{func }\end{DoxyParamCaption})}
+
+\Hypertarget{class_hate_engine_1_1_engine_a0ee0d49a5b771bd574d48c1f139a3001}\label{class_hate_engine_1_1_engine_a0ee0d49a5b771bd574d48c1f139a3001} 
+\index{HateEngine::Engine@{HateEngine::Engine}!setLevelRef@{setLevelRef}}
+\index{setLevelRef@{setLevelRef}!HateEngine::Engine@{HateEngine::Engine}}
+\doxysubsubsection{\texorpdfstring{setLevelRef()}{setLevelRef()}}
+{\footnotesize\ttfamily void Hate\+Engine\+::\+Engine\+::set\+Level\+Ref (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{class_hate_engine_1_1_level}{Level}} \texorpdfstring{$\ast$}{*}}]{lvl }\end{DoxyParamCaption})}
+
+\Hypertarget{class_hate_engine_1_1_engine_a164f73a8a2206f5c28afde5deba0152e}\label{class_hate_engine_1_1_engine_a164f73a8a2206f5c28afde5deba0152e} 
+\index{HateEngine::Engine@{HateEngine::Engine}!setProcessLoop@{setProcessLoop}}
+\index{setProcessLoop@{setProcessLoop}!HateEngine::Engine@{HateEngine::Engine}}
+\doxysubsubsection{\texorpdfstring{setProcessLoop()}{setProcessLoop()}}
+{\footnotesize\ttfamily void Hate\+Engine\+::\+Engine\+::set\+Process\+Loop (\begin{DoxyParamCaption}\item[{void(\texorpdfstring{$\ast$}{*})(\mbox{\hyperlink{class_hate_engine_1_1_engine}{Engine}} \texorpdfstring{$\ast$}{*}, double)}]{func }\end{DoxyParamCaption})}
+
+
+
+\doxysubsection{Friends And Related Symbol Documentation}
+\Hypertarget{class_hate_engine_1_1_engine_abc0326b946eced80bb9eb6f580200a6d}\label{class_hate_engine_1_1_engine_abc0326b946eced80bb9eb6f580200a6d} 
+\index{HateEngine::Engine@{HateEngine::Engine}!InputClass@{InputClass}}
+\index{InputClass@{InputClass}!HateEngine::Engine@{HateEngine::Engine}}
+\doxysubsubsection{\texorpdfstring{InputClass}{InputClass}}
+{\footnotesize\ttfamily friend class Input\+Class\hspace{0.3cm}{\ttfamily [friend]}}
+
+
+
+\doxysubsection{Member Data Documentation}
+\Hypertarget{class_hate_engine_1_1_engine_a7be8c54b9bacffb0cb45e40e013ec3fc}\label{class_hate_engine_1_1_engine_a7be8c54b9bacffb0cb45e40e013ec3fc} 
+\index{HateEngine::Engine@{HateEngine::Engine}!Input@{Input}}
+\index{Input@{Input}!HateEngine::Engine@{HateEngine::Engine}}
+\doxysubsubsection{\texorpdfstring{Input}{Input}}
+{\footnotesize\ttfamily Input\+Class Hate\+Engine\+::\+Engine\+::\+Input}
+
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+include/\+Hate\+Engine/\mbox{\hyperlink{_hate_engine_8hpp}{Hate\+Engine.\+hpp}}\end{DoxyCompactItemize}

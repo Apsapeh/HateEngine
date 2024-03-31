@@ -1,0 +1,591 @@
+cppcheck: unusedFunction check can't be used with '-j' option. Disabling unusedFunction check.
+src/Error.cpp:1:0: information: Include file: <iostream> not found. Please note: Cppcheck does not need standard library headers to get proper results. [missingIncludeSystem]
+#include <iostream>
+^
+include/HateEngine/Error.hpp:2:0: information: Include file: <string> not found. Please note: Cppcheck does not need standard library headers to get proper results. [missingIncludeSystem]
+#include <string>
+^
+src/Error.cpp:5:36: performance: Function parameter 'msg' should be passed by const reference. [passedByValue]
+void Error::throwError(std::string msg, bool terminate) {
+                                   ^
+src/Error.cpp:11:38: performance: Function parameter 'msg' should be passed by const reference. [passedByValue]
+void Error::throwWarning(std::string msg) {
+                                     ^
+src/Objects/Camera.cpp:1:0: information: Include file: <glm/glm.hpp> not found. Please note: Cppcheck does not need standard library headers to get proper results. [missingIncludeSystem]
+#include <glm/glm.hpp>
+^
+include/HateEngine/Objects/Mesh.hpp:2:0: information: Include file: <cstdint> not found. Please note: Cppcheck does not need standard library headers to get proper results. [missingIncludeSystem]
+#include <cstdint>
+^
+include/HateEngine/Objects/Object.hpp:2:0: information: Include file: <vector> not found. Please note: Cppcheck does not need standard library headers to get proper results. [missingIncludeSystem]
+#include <vector>
+^
+src/Objects/Camera.cpp:2:0: information: Include file: <glm/ext.hpp> not found. Please note: Cppcheck does not need standard library headers to get proper results. [missingIncludeSystem]
+#include <glm/ext.hpp>
+^
+include/HateEngine/Objects/Mesh.hpp:3:0: information: Include file: <vector> not found. Please note: Cppcheck does not need standard library headers to get proper results. [missingIncludeSystem]
+#include <vector>
+^
+include/HateEngine/Objects/Object.hpp:3:0: information: Include file: <unordered_map> not found. Please note: Cppcheck does not need standard library headers to get proper results. [missingIncludeSystem]
+#include <unordered_map>
+^
+include/HateEngine/Objects/Object.hpp:4:0: information: Include file: <glm/vec3.hpp> not found. Please note: Cppcheck does not need standard library headers to get proper results. [missingIncludeSystem]
+#include <glm/vec3.hpp>
+^
+include/HateEngine/Objects/Object.hpp:5:0: information: Include file: <glm/matrix.hpp> not found. Please note: Cppcheck does not need standard library headers to get proper results. [missingIncludeSystem]
+#include <glm/matrix.hpp>
+^
+include/HateEngine/Objects/Object.hpp:6:0: information: Include file: <glm/gtx/euler_angles.hpp> not found. Please note: Cppcheck does not need standard library headers to get proper results. [missingIncludeSystem]
+#include <glm/gtx/euler_angles.hpp>
+^
+include/HateEngine/Utilities/UUID_Generator.hpp:2:0: information: Include file: <chrono> not found. Please note: Cppcheck does not need standard library headers to get proper results. [missingIncludeSystem]
+#include <chrono>
+^
+include/HateEngine/Utilities/UUID_Generator.hpp:3:0: information: Include file: <cstdint> not found. Please note: Cppcheck does not need standard library headers to get proper results. [missingIncludeSystem]
+#include <cstdint>
+^
+include/HateEngine/Utilities/UUID_Generator.hpp:4:0: information: Include file: <mutex> not found. Please note: Cppcheck does not need standard library headers to get proper results. [missingIncludeSystem]
+#include <mutex>
+^
+include/HateEngine/Utilities/UUID_Generator.hpp:5:0: information: Include file: <functional> not found. Please note: Cppcheck does not need standard library headers to get proper results. [missingIncludeSystem]
+#include <functional>
+^
+include/HateEngine/Utilities/UUID_Generator.hpp:6:0: information: Include file: <string> not found. Please note: Cppcheck does not need standard library headers to get proper results. [missingIncludeSystem]
+#include <string>
+^
+include/HateEngine/HateEngine.hpp:2:0: information: Include file: <string> not found. Please note: Cppcheck does not need standard library headers to get proper results. [missingIncludeSystem]
+#include <string>
+^
+include/HateEngine/Objects/Light/Light.hpp:3:0: information: Include file: <vector> not found. Please note: Cppcheck does not need standard library headers to get proper results. [missingIncludeSystem]
+#include <vector>
+^
+include/HateEngine/HateEngine.hpp:3:0: information: Include file: <unordered_map> not found. Please note: Cppcheck does not need standard library headers to get proper results. [missingIncludeSystem]
+#include <unordered_map>
+^
+include/HateEngine/HateEngine.hpp:4:0: information: Include file: <cstdint> not found. Please note: Cppcheck does not need standard library headers to get proper results. [missingIncludeSystem]
+#include <cstdint>
+^
+include/HateEngine/Resources/Texture.hpp:2:0: information: Include file: <string> not found. Please note: Cppcheck does not need standard library headers to get proper results. [missingIncludeSystem]
+#include <string>
+^
+include/HateEngine/HateEngine.hpp:5:0: information: Include file: <mutex> not found. Please note: Cppcheck does not need standard library headers to get proper results. [missingIncludeSystem]
+#include <mutex>
+^
+include/HateEngine/HateEngine.hpp:6:0: information: Include file: <GLFW/glfw3.h> not found. Please note: Cppcheck does not need standard library headers to get proper results. [missingIncludeSystem]
+#include <GLFW/glfw3.h>
+^
+src/HateEngine.cpp:1:0: information: Include file: <thread> not found. Please note: Cppcheck does not need standard library headers to get proper results. [missingIncludeSystem]
+#include <thread>
+^
+src/HateEngine.cpp:2:0: information: Include file: <algorithm> not found. Please note: Cppcheck does not need standard library headers to get proper results. [missingIncludeSystem]
+#include <algorithm>
+^
+src/HateEngine.cpp:3:0: information: Include file: <glad/gl.h> not found. Please note: Cppcheck does not need standard library headers to get proper results. [missingIncludeSystem]
+#include <glad/gl.h>
+^
+include/HateEngine/Objects/Particles.hpp:4:0: information: Include file: <vector> not found. Please note: Cppcheck does not need standard library headers to get proper results. [missingIncludeSystem]
+#include <vector>
+^
+include/HateEngine/Objects/Particles.hpp:5:0: information: Include file: <unordered_map> not found. Please note: Cppcheck does not need standard library headers to get proper results. [missingIncludeSystem]
+#include <unordered_map>
+^
+include/HateEngine/Objects/Particles.hpp:6:0: information: Include file: <cstdint> not found. Please note: Cppcheck does not need standard library headers to get proper results. [missingIncludeSystem]
+#include <cstdint>
+^
+include/HateEngine/Objects/Particles.hpp:7:0: information: Include file: <iostream> not found. Please note: Cppcheck does not need standard library headers to get proper results. [missingIncludeSystem]
+#include <iostream>
+^
+include/HateEngine/PhysEngine.hpp:2:0: information: Include file: <vector> not found. Please note: Cppcheck does not need standard library headers to get proper results. [missingIncludeSystem]
+#include <vector>
+^
+include/HateEngine/PhysEngine.hpp:3:0: information: Include file: <unordered_map> not found. Please note: Cppcheck does not need standard library headers to get proper results. [missingIncludeSystem]
+#include <unordered_map>
+^
+include/HateEngine/PhysEngine.hpp:4:0: information: Include file: <reactphysics3d/reactphysics3d.h> not found. Please note: Cppcheck does not need standard library headers to get proper results. [missingIncludeSystem]
+#include <reactphysics3d/reactphysics3d.h>
+^
+include/HateEngine/Objects/Physics/PhysicalBody.hpp:2:0: information: Include file: <cstdint> not found. Please note: Cppcheck does not need standard library headers to get proper results. [missingIncludeSystem]
+#include <cstdint>
+^
+include/HateEngine/Objects/Physics/PhysicalBody.hpp:3:0: information: Include file: <vector> not found. Please note: Cppcheck does not need standard library headers to get proper results. [missingIncludeSystem]
+#include <vector>
+^
+include/HateEngine/Objects/Physics/CollisionShape.hpp:2:0: information: Include file: <vector> not found. Please note: Cppcheck does not need standard library headers to get proper results. [missingIncludeSystem]
+#include <vector>
+^
+include/HateEngine/Objects/Physics/PhysicalBody.hpp:7:0: information: Include file: <reactphysics3d/reactphysics3d.h> not found. Please note: Cppcheck does not need standard library headers to get proper results. [missingIncludeSystem]
+#include <reactphysics3d/reactphysics3d.h>
+^
+include/HateEngine/HateEngine.hpp:14:0: information: Include file: "glm/vec2.hpp" not found. [missingInclude]
+#include "glm/vec2.hpp"
+^
+src/Objects/Mesh.cpp:2:0: information: Include file: <algorithm> not found. Please note: Cppcheck does not need standard library headers to get proper results. [missingIncludeSystem]
+#include <algorithm>
+^
+src/Objects/Mesh.cpp:3:0: information: Include file: <utility> not found. Please note: Cppcheck does not need standard library headers to get proper results. [missingIncludeSystem]
+#include <utility>
+^
+include/HateEngine/Render/OpenGL15.hpp:2:0: information: Include file: <vector> not found. Please note: Cppcheck does not need standard library headers to get proper results. [missingIncludeSystem]
+#include <vector>
+^
+include/HateEngine/Render/OpenGL15.hpp:3:0: information: Include file: <cstdint> not found. Please note: Cppcheck does not need standard library headers to get proper results. [missingIncludeSystem]
+#include <cstdint>
+^
+src/Objects/Particles.cpp:2:0: information: Include file: <random> not found. Please note: Cppcheck does not need standard library headers to get proper results. [missingIncludeSystem]
+#include <random>
+^
+src/Objects/Light/Light.cpp:7:5: performance: Variable 'color' is assigned in constructor body. Consider performing initialization in initialization list. [useInitializationList]
+    color = {1.0, 1.0, 1.0, 1.0};
+    ^
+include/HateEngine/Objects/Light/Light.hpp:14:9: style: Class 'Light' has a constructor with 1 argument that is not explicit. [noExplicitConstructor]
+        Light(LightTypeEnum type);
+        ^
+src/Render/OpenGL15.cpp:1:0: information: Include file: <algorithm> not found. Please note: Cppcheck does not need standard library headers to get proper results. [missingIncludeSystem]
+#include <algorithm>
+^
+include/HateEngine/Resources/Texture.hpp:43:9: style: Class 'Texture' has a constructor with 1 argument that is not explicit. [noExplicitConstructor]
+        Texture(
+        ^
+src/Render/OpenGL15.cpp:2:0: information: Include file: <glm/glm.hpp> not found. Please note: Cppcheck does not need standard library headers to get proper results. [missingIncludeSystem]
+#include <glm/glm.hpp>
+^
+src/Render/OpenGL15.cpp:3:0: information: Include file: <glm/gtc/type_ptr.hpp> not found. Please note: Cppcheck does not need standard library headers to get proper results. [missingIncludeSystem]
+#include <glm/gtc/type_ptr.hpp>
+^
+include/HateEngine/Objects/Particles.hpp:47:19: style: 'operator=' should return reference to 'this' instance. [operatorEqRetRefThis]
+        Particle& operator=(Particle &&other) {
+                  ^
+src/Objects/Model.cpp:7:8: warning: inconclusive: Member variable 'Model::meshes' is not assigned in the copy constructor. Should it be copied? [missingMemberCopy]
+Model::Model(const Model& model, bool copy_textures)  : Object(model) {
+       ^
+src/Render/OpenGL15.cpp:4:0: information: Include file: <glad/gl.h> not found. Please note: Cppcheck does not need standard library headers to get proper results. [missingIncludeSystem]
+#include <glad/gl.h>
+^
+src/Objects/Mesh.cpp:16:7: warning: inconclusive: Member variable 'Object::bindedObjects' is not assigned in the copy constructor. Should it be copied? [missingMemberCopy]
+Mesh::Mesh(const Mesh &mesh, bool copy_texture) {
+      ^
+src/Objects/Mesh.cpp:16:7: warning: inconclusive: Member variable 'Object::binded' is not assigned in the copy constructor. Should it be copied? [missingMemberCopy]
+Mesh::Mesh(const Mesh &mesh, bool copy_texture) {
+      ^
+src/Objects/Physics/PhysicalBody.cpp:2:0: information: Include file: <glm/gtx/quaternion.hpp> not found. Please note: Cppcheck does not need standard library headers to get proper results. [missingIncludeSystem]
+#include <glm/gtx/quaternion.hpp>
+^
+src/Objects/Physics/PhysicalBody.cpp:3:0: information: Include file: <algorithm> not found. Please note: Cppcheck does not need standard library headers to get proper results. [missingIncludeSystem]
+#include <algorithm>
+^
+src/Objects/Mesh.cpp:24:5: performance: Variable 'verticies' is assigned in constructor body. Consider performing initialization in initialization list. [useInitializationList]
+    verticies = mesh.verticies;
+    ^
+include/HateEngine/Objects/Physics/PhysicalBody.hpp:62:14: warning: The class 'PhysicalBody' defines member function with name 'setPosition' also defined in its parent class 'Object'. [duplInheritedMember]
+        void setPosition(glm::vec3 vec);
+             ^
+include/HateEngine/Objects/Object.hpp:45:14: note: Parent function 'Object::setPosition'
+        void setPosition(glm::vec3 vec);
+             ^
+include/HateEngine/Objects/Physics/PhysicalBody.hpp:62:14: note: Derived function 'PhysicalBody::setPosition'
+        void setPosition(glm::vec3 vec);
+             ^
+src/Objects/Mesh.cpp:25:5: performance: Variable 'indicies' is assigned in constructor body. Consider performing initialization in initialization list. [useInitializationList]
+    indicies = mesh.indicies;
+    ^
+include/HateEngine/Objects/Physics/PhysicalBody.hpp:63:14: warning: The class 'PhysicalBody' defines member function with name 'setPosition' also defined in its parent class 'Object'. [duplInheritedMember]
+        void setPosition(float x, float y, float z);
+             ^
+include/HateEngine/Objects/Object.hpp:46:14: note: Parent function 'Object::setPosition'
+        void setPosition(float x, float y, float z);
+             ^
+include/HateEngine/Objects/Physics/PhysicalBody.hpp:63:14: note: Derived function 'PhysicalBody::setPosition'
+        void setPosition(float x, float y, float z);
+             ^
+src/Objects/Mesh.cpp:26:5: performance: Variable 'normals' is assigned in constructor body. Consider performing initialization in initialization list. [useInitializationList]
+    normals = mesh.normals;
+    ^
+include/HateEngine/Objects/Physics/PhysicalBody.hpp:64:14: warning: The class 'PhysicalBody' defines member function with name 'setRotation' also defined in its parent class 'Object'. [duplInheritedMember]
+        void setRotation(glm::vec3 vec);
+             ^
+include/HateEngine/Objects/Object.hpp:47:14: note: Parent function 'Object::setRotation'
+        void setRotation(glm::vec3 vec);
+             ^
+include/HateEngine/Objects/Physics/PhysicalBody.hpp:64:14: note: Derived function 'PhysicalBody::setRotation'
+        void setRotation(glm::vec3 vec);
+             ^
+src/Objects/Mesh.cpp:28:5: performance: Variable 'UV' is assigned in constructor body. Consider performing initialization in initialization list. [useInitializationList]
+    UV = mesh.UV;
+    ^
+include/HateEngine/Objects/Physics/PhysicalBody.hpp:65:14: warning: The class 'PhysicalBody' defines member function with name 'setRotation' also defined in its parent class 'Object'. [duplInheritedMember]
+        void setRotation(float x, float y, float z);
+             ^
+include/HateEngine/Objects/Object.hpp:48:14: note: Parent function 'Object::setRotation'
+        void setRotation(float x, float y, float z);
+             ^
+include/HateEngine/Objects/Physics/PhysicalBody.hpp:65:14: note: Derived function 'PhysicalBody::setRotation'
+        void setRotation(float x, float y, float z);
+             ^
+include/HateEngine/Objects/Physics/PhysicalBody.hpp:67:14: warning: The class 'PhysicalBody' defines member function with name 'offset' also defined in its parent class 'Object'. [duplInheritedMember]
+        void offset(float x, float y, float z);
+             ^
+include/HateEngine/Objects/Object.hpp:55:14: note: Parent function 'Object::offset'
+        void offset(float x, float y, float z);
+             ^
+include/HateEngine/Objects/Physics/PhysicalBody.hpp:67:14: note: Derived function 'PhysicalBody::offset'
+        void offset(float x, float y, float z);
+             ^
+include/HateEngine/Objects/Physics/PhysicalBody.hpp:68:14: warning: The class 'PhysicalBody' defines member function with name 'offset' also defined in its parent class 'Object'. [duplInheritedMember]
+        void offset(glm::vec3 vec);
+             ^
+include/HateEngine/Objects/Object.hpp:54:14: note: Parent function 'Object::offset'
+        void offset(glm::vec3 vec);
+             ^
+include/HateEngine/Objects/Physics/PhysicalBody.hpp:68:14: note: Derived function 'PhysicalBody::offset'
+        void offset(glm::vec3 vec);
+             ^
+include/HateEngine/Objects/Particles.hpp:72:14: warning: The class 'Particles' defines member function with name 'setPosition' also defined in its parent class 'Object'. [duplInheritedMember]
+        void setPosition(float x, float y, float z);
+             ^
+include/HateEngine/Objects/Object.hpp:46:14: note: Parent function 'Object::setPosition'
+        void setPosition(float x, float y, float z);
+             ^
+include/HateEngine/Objects/Particles.hpp:72:14: note: Derived function 'Particles::setPosition'
+        void setPosition(float x, float y, float z);
+             ^
+include/HateEngine/Objects/Particles.hpp:73:14: warning: The class 'Particles' defines member function with name 'setPosition' also defined in its parent class 'Object'. [duplInheritedMember]
+        void setPosition(glm::vec3);
+             ^
+include/HateEngine/Objects/Object.hpp:45:14: note: Parent function 'Object::setPosition'
+        void setPosition(glm::vec3 vec);
+             ^
+include/HateEngine/Objects/Particles.hpp:73:14: note: Derived function 'Particles::setPosition'
+        void setPosition(glm::vec3);
+             ^
+include/HateEngine/Objects/Physics/CollisionShape.hpp:44:9: style: Class 'CollisionShape' has a constructor with 1 argument that is not explicit. [noExplicitConstructor]
+        CollisionShape(float radius);
+        ^
+include/HateEngine/HateEngine.hpp:23:13: style: Class 'InputClass' has a constructor with 1 argument that is not explicit. [noExplicitConstructor]
+            InputClass(Engine*);
+            ^
+src/Objects/Physics/CollisionShape.cpp:12:17: warning: Member variable 'CollisionShape::param2' is not initialized in the constructor. [uninitMemberVar]
+CollisionShape::CollisionShape(float radius) {
+                ^
+src/Objects/Physics/CollisionShape.cpp:12:17: warning: Member variable 'CollisionShape::param3' is not initialized in the constructor. [uninitMemberVar]
+CollisionShape::CollisionShape(float radius) {
+                ^
+src/Objects/Physics/CollisionShape.cpp:17:17: warning: Member variable 'CollisionShape::param3' is not initialized in the constructor. [uninitMemberVar]
+CollisionShape::CollisionShape(float radius, float height) {
+                ^
+src/PhysEngine.cpp:2:0: information: Include file: <glm/ext.hpp> not found. Please note: Cppcheck does not need standard library headers to get proper results. [missingIncludeSystem]
+#include <glm/ext.hpp>
+^
+include/HateEngine/Resources/GLTFModel.hpp:2:0: information: Include file: <vector> not found. Please note: Cppcheck does not need standard library headers to get proper results. [missingIncludeSystem]
+#include <vector>
+^
+include/HateEngine/Resources/GLTFModel.hpp:3:0: information: Include file: <cstdint> not found. Please note: Cppcheck does not need standard library headers to get proper results. [missingIncludeSystem]
+#include <cstdint>
+^
+include/HateEngine/Resources/GLTFModel.hpp:4:0: information: Include file: <string> not found. Please note: Cppcheck does not need standard library headers to get proper results. [missingIncludeSystem]
+#include <string>
+^
+include/HateEngine/Objects/Mesh.hpp:15:18: style: Class 'Mesh' is unsafe, 'Mesh::texture' can leak by wrong usage. [unsafeClassCanLeak]
+        Texture* texture = nullptr;
+                 ^
+src/Resources/GLTFModel.cpp:3:0: information: Include file: <unordered_map> not found. Please note: Cppcheck does not need standard library headers to get proper results. [missingIncludeSystem]
+#include <unordered_map>
+^
+src/Resources/GLTFModel.cpp:4:0: information: Include file: <iostream> not found. Please note: Cppcheck does not need standard library headers to get proper results. [missingIncludeSystem]
+#include <iostream>
+^
+src/Resources/GLTFModel.cpp:8:0: information: Include file: <tiny_gltf.h> not found. Please note: Cppcheck does not need standard library headers to get proper results. [missingIncludeSystem]
+#include <tiny_gltf.h>
+^
+src/Objects/Object.cpp:27:42: style: inconclusive: Function 'setPosition' argument 1 names different: declaration 'vec' definition 'value'. [funcArgNamesDifferent]
+void Object::setPosition(const glm::vec3 value) {
+                                         ^
+include/HateEngine/Objects/Object.hpp:45:36: note: Function 'setPosition' argument 1 names different: declaration 'vec' definition 'value'.
+        void setPosition(glm::vec3 vec);
+                                   ^
+src/Objects/Object.cpp:27:42: note: Function 'setPosition' argument 1 names different: declaration 'vec' definition 'value'.
+void Object::setPosition(const glm::vec3 value) {
+                                         ^
+src/Objects/Object.cpp:36:36: style: inconclusive: Function 'setRotation' argument 1 names different: declaration 'vec' definition 'value'. [funcArgNamesDifferent]
+void Object::setRotation(glm::vec3 value) {
+                                   ^
+include/HateEngine/Objects/Object.hpp:47:36: note: Function 'setRotation' argument 1 names different: declaration 'vec' definition 'value'.
+        void setRotation(glm::vec3 vec);
+                                   ^
+src/Objects/Object.cpp:36:36: note: Function 'setRotation' argument 1 names different: declaration 'vec' definition 'value'.
+void Object::setRotation(glm::vec3 value) {
+                                   ^
+src/Objects/Object.cpp:53:33: style: inconclusive: Function 'setScale' argument 1 names different: declaration 'vec' definition 'value'. [funcArgNamesDifferent]
+void Object::setScale(glm::vec3 value) {
+                                ^
+include/HateEngine/Objects/Object.hpp:50:33: note: Function 'setScale' argument 1 names different: declaration 'vec' definition 'value'.
+        void setScale(glm::vec3 vec);
+                                ^
+src/Objects/Object.cpp:53:33: note: Function 'setScale' argument 1 names different: declaration 'vec' definition 'value'.
+void Object::setScale(glm::vec3 value) {
+                                ^
+include/HateEngine/Resources/QMapModel.hpp:3:0: information: Include file: <string> not found. Please note: Cppcheck does not need standard library headers to get proper results. [missingIncludeSystem]
+#include <string>
+^
+src/Objects/Mesh.cpp:56:37: style: inconclusive: Function 'setUV' argument 1 names different: declaration 'UV' definition 'uv'. [funcArgNamesDifferent]
+void Mesh::setUV(std::vector<float> uv) {
+                                    ^
+include/HateEngine/Objects/Mesh.hpp:28:39: note: Function 'setUV' argument 1 names different: declaration 'UV' definition 'uv'.
+        void setUV(std::vector<float> UV);
+                                      ^
+src/Objects/Mesh.cpp:56:37: note: Function 'setUV' argument 1 names different: declaration 'UV' definition 'uv'.
+void Mesh::setUV(std::vector<float> uv) {
+                                    ^
+src/HateEngine.cpp:23:28: performance: Function parameter 'window_lbl' should be passed by const reference. [passedByValue]
+Engine::Engine(std::string window_lbl, int width, int height) : Input(this){
+                           ^
+src/Objects/Physics/CollisionShape.cpp:31:89: performance: Function parameter 'state' should be passed by const reference. [passedByValue]
+void CollisionShape::setCollisionLayers(std::vector<uint8_t>& layers, std::vector<bool> state) {
+                                                                                        ^
+src/Objects/Physics/CollisionShape.cpp:38:87: performance: Function parameter 'state' should be passed by const reference. [passedByValue]
+void CollisionShape::setCollisionMasks(std::vector<uint8_t>& masks, std::vector<bool> state) {
+                                                                                      ^
+src/Objects/Physics/CollisionShape.cpp:31:63: style: Parameter 'layers' can be declared as reference to const [constParameterReference]
+void CollisionShape::setCollisionLayers(std::vector<uint8_t>& layers, std::vector<bool> state) {
+                                                              ^
+src/Objects/Physics/CollisionShape.cpp:38:62: style: Parameter 'masks' can be declared as reference to const [constParameterReference]
+void CollisionShape::setCollisionMasks(std::vector<uint8_t>& masks, std::vector<bool> state) {
+                                                             ^
+src/Objects/CubeMesh.cpp:127:23: style: Variable 'tex_coord_x' is assigned a value that is never used. [unreadVariable]
+    float tex_coord_x = 0;
+                      ^
+src/Objects/CubeMesh.cpp:128:23: style: Variable 'tex_coord_y' is assigned a value that is never used. [unreadVariable]
+    float tex_coord_y = 0;
+                      ^
+src/Objects/Physics/PhysicalBody.cpp:8:23: style: Variable 'obj' can be declared as reference to const [constVariableReference]
+    for (ShapeObject &obj : shapes) {
+                      ^
+src/Objects/Physics/PhysicalBody.cpp:60:65: style: Parameter 'obj' can be declared as reference to const [constParameterReference]
+            shapes.begin(), shapes.end(), [&uuid] (ShapeObject &obj) -> bool {return obj.id == uuid;}
+                                                                ^
+src/HateEngine.cpp:212:18: style: Variable 'delta' is assigned a value that is never used. [unreadVariable]
+    double delta = (float)this->fixedProcessDelayMCS / 1000000;
+                 ^
+src/HateEngine.cpp:243:18: style: Variable 'delta' is assigned a value that is never used. [unreadVariable]
+    double delta = (double)this->physicsEngineIterateDelayMCS / 1000000;
+                 ^
+src/HateEngine.cpp:14:0: information: Include file: <Windows.h> not found. Please note: Cppcheck does not need standard library headers to get proper results. [missingIncludeSystem]
+#include <Windows.h>
+^
+src/Resources/Texture.cpp:2:0: information: Include file: <vector> not found. Please note: Cppcheck does not need standard library headers to get proper results. [missingIncludeSystem]
+#include <vector>
+^
+src/Resources/Texture.cpp:3:0: information: Include file: <stb_image.h> not found. Please note: Cppcheck does not need standard library headers to get proper results. [missingIncludeSystem]
+#include <stb_image.h>
+^
+src/Resources/Texture.cpp:4:0: information: Include file: <glad/gl.h> not found. Please note: Cppcheck does not need standard library headers to get proper results. [missingIncludeSystem]
+#include <glad/gl.h>
+^
+include/HateEngine/Resources/QMapModel.hpp:13:9: style: Class 'QMapModel' has a constructor with 1 argument that is not explicit. [noExplicitConstructor]
+        QMapModel(std::string file_name);
+        ^
+src/Objects/Particles.cpp:20:11: warning: inconclusive: Member variable 'Particle::data' is not assigned in the copy constructor. Should it be copied? [missingMemberCopy]
+Particle::Particle(const Particle &particle) : Mesh(particle) {
+          ^
+src/Objects/Particles.cpp:88:17: warning: The class 'Particles' defines member function with name 'setPosition' also defined in its parent class 'Object'. [duplInheritedMember]
+void Particles::setPosition(float x, float y, float z) {
+                ^
+include/HateEngine/Objects/Object.hpp:46:14: note: Parent function 'Object::setPosition'
+        void setPosition(float x, float y, float z);
+             ^
+src/Objects/Particles.cpp:88:17: note: Derived function 'Particles::setPosition'
+void Particles::setPosition(float x, float y, float z) {
+                ^
+src/Objects/Particles.cpp:92:17: warning: The class 'Particles' defines member function with name 'setPosition' also defined in its parent class 'Object'. [duplInheritedMember]
+void Particles::setPosition(glm::vec3 vec) {
+                ^
+include/HateEngine/Objects/Object.hpp:45:14: note: Parent function 'Object::setPosition'
+        void setPosition(glm::vec3 vec);
+             ^
+src/Objects/Particles.cpp:92:17: note: Derived function 'Particles::setPosition'
+void Particles::setPosition(glm::vec3 vec) {
+                ^
+include/HateEngine/Render/OpenGL15.hpp:43:21: performance: inconclusive: Technically the member function 'HateEngine::OpenGL15::renderCamera' can be static (but you may consider moving to unnamed namespace). [functionStatic]
+        inline void renderCamera(Camera* camera);
+                    ^
+src/Render/OpenGL15.cpp:88:23: note: Technically the member function 'HateEngine::OpenGL15::renderCamera' can be static (but you may consider moving to unnamed namespace).
+inline void OpenGL15::renderCamera(Camera* camera) {
+                      ^
+include/HateEngine/Render/OpenGL15.hpp:43:21: note: Technically the member function 'HateEngine::OpenGL15::renderCamera' can be static (but you may consider moving to unnamed namespace).
+        inline void renderCamera(Camera* camera);
+                    ^
+include/HateEngine/Render/OpenGL15.hpp:50:21: performance: inconclusive: Technically the member function 'HateEngine::OpenGL15::renderLight' can be static (but you may consider moving to unnamed namespace). [functionStatic]
+        inline void renderLight(
+                    ^
+src/Render/OpenGL15.cpp:107:23: note: Technically the member function 'HateEngine::OpenGL15::renderLight' can be static (but you may consider moving to unnamed namespace).
+inline void OpenGL15::renderLight(
+                      ^
+include/HateEngine/Render/OpenGL15.hpp:50:21: note: Technically the member function 'HateEngine::OpenGL15::renderLight' can be static (but you may consider moving to unnamed namespace).
+        inline void renderLight(
+                    ^
+include/HateEngine/Render/OpenGL15.hpp:60:33: style: inconclusive: Technically the member function 'HateEngine::OpenGL15::getNearestLights' can be const. [functionConst]
+        inline std::vector<int> getNearestLights(
+                                ^
+src/Render/OpenGL15.cpp:134:35: note: Technically the member function 'HateEngine::OpenGL15::getNearestLights' can be const.
+inline std::vector<int> OpenGL15::getNearestLights(
+                                  ^
+include/HateEngine/Render/OpenGL15.hpp:60:33: note: Technically the member function 'HateEngine::OpenGL15::getNearestLights' can be const.
+        inline std::vector<int> getNearestLights(
+                                ^
+src/Resources/QMapModel.cpp:5:34: style: inconclusive: Function 'QMapModel' argument 1 names different: declaration 'file_name' definition 'filename'. [funcArgNamesDifferent]
+QMapModel::QMapModel(std::string filename){
+                                 ^
+include/HateEngine/Resources/QMapModel.hpp:13:31: note: Function 'QMapModel' argument 1 names different: declaration 'file_name' definition 'filename'.
+        QMapModel(std::string file_name);
+                              ^
+src/Resources/QMapModel.cpp:5:34: note: Function 'QMapModel' argument 1 names different: declaration 'file_name' definition 'filename'.
+QMapModel::QMapModel(std::string filename){
+                                 ^
+src/Resources/QMapModel.cpp:5:34: performance: Function parameter 'filename' should be passed by const reference. [passedByValue]
+QMapModel::QMapModel(std::string filename){
+                                 ^
+src/Resources/QMapModel.cpp:8:67: performance: Function parameter 'dir' should be passed by const reference. [passedByValue]
+QMapModel::QMapModel(const char* data, uint32_t size, std::string dir) {
+                                                                  ^
+src/Resources/Texture.cpp:77:10: warning: Member variable 'Texture::API_unloader' is not initialized in the constructor. [uninitMemberVar]
+Texture::Texture(
+         ^
+src/Render/OpenGL15.cpp:37:21: style: C-style pointer casting [cstyleCast]
+            render((const Mesh*)&particle, lights);
+                    ^
+include/HateEngine/Resources/Texture.hpp:62:18: style: inconclusive: Technically the member function 'HateEngine::Texture::getTextureID' can be const. [functionConst]
+        uint32_t getTextureID();
+                 ^
+src/Resources/Texture.cpp:172:19: note: Technically the member function 'HateEngine::Texture::getTextureID' can be const.
+uint32_t Texture::getTextureID(){
+                  ^
+include/HateEngine/Resources/Texture.hpp:62:18: note: Technically the member function 'HateEngine::Texture::getTextureID' can be const.
+        uint32_t getTextureID();
+                 ^
+src/Resources/Level.cpp:6:8: warning: Member variable 'Level::camera' is not initialized in the constructor. [uninitMemberVar]
+Level::Level() {
+       ^
+src/Render/OpenGL15.cpp:108:55: performance: Function parameter 'indicies' should be passed by const reference. [passedByValue]
+    std::vector<Light*>* lights_vec, std::vector<int> indicies
+                                                      ^
+src/Render/OpenGL15.cpp:150:70: style: Parameter 'a' can be declared as reference to const [constParameterReference]
+    std::sort(light_dist.begin(), light_dist.end(), [] (LightDistSt &a, LightDistSt &b) {
+                                                                     ^
+src/Render/OpenGL15.cpp:150:86: style: Parameter 'b' can be declared as reference to const [constParameterReference]
+    std::sort(light_dist.begin(), light_dist.end(), [] (LightDistSt &a, LightDistSt &b) {
+                                                                                     ^
+src/Render/OpenGL15.cpp:23:29: style: Parameter 'meshes' can be declared as pointer to const [constParameterPointer]
+        std::vector<Mesh*>* meshes,
+                            ^
+src/Render/OpenGL15.cpp:24:34: style: Parameter 'particles' can be declared as pointer to const [constParameterPointer]
+        std::vector<Particles*>* particles,
+                                 ^
+src/Render/OpenGL15.cpp:88:44: style: Parameter 'camera' can be declared as pointer to const [constParameterPointer]
+inline void OpenGL15::renderCamera(Camera* camera) {
+                                           ^
+src/Render/OpenGL15.cpp:142:16: style: Variable 'light' can be declared as pointer to const [constVariablePointer]
+        Light *light = (*lights_vec)[i];
+               ^
+src/Resources/Level.cpp:152:26: style: C-style pointer casting [cstyleCast]
+        meshes.push_back((Mesh*)(obj.second.obj));
+                         ^
+src/Resources/Level.cpp:154:30: style: C-style pointer casting [cstyleCast]
+        auto model_meshes = ((Model*)obj.second.obj)->getMeshes();
+                             ^
+src/Resources/Level.cpp:164:29: style: C-style pointer casting [cstyleCast]
+        particles.push_back((Particles*)obj.second.obj);
+                            ^
+src/Resources/Level.cpp:172:26: style: C-style pointer casting [cstyleCast]
+        lights.push_back((Light*)obj.second.obj);
+                         ^
+src/Resources/Texture.cpp:78:17: performance: Function parameter 'file_name' should be passed by const reference. [passedByValue]
+    std::string file_name, Texture::TexWrap tex_wrap,
+                ^
+src/Render/OpenGL15.cpp:13:0: information: Include file: <windows.h> not found. Please note: Cppcheck does not need standard library headers to get proper results. [missingIncludeSystem]
+    #include <windows.h>
+^
+src/Render/OpenGL15.cpp:14:0: information: Include file: <GL/glu.h> not found. Please note: Cppcheck does not need standard library headers to get proper results. [missingIncludeSystem]
+    #include <GL/glu.h>
+^
+src/Resources/Texture.cpp:15:0: information: Include file: <windows.h> not found. Please note: Cppcheck does not need standard library headers to get proper results. [missingIncludeSystem]
+    #include <windows.h>
+^
+src/Resources/Texture.cpp:16:0: information: Include file: <GL/glu.h> not found. Please note: Cppcheck does not need standard library headers to get proper results. [missingIncludeSystem]
+    #include <GL/glu.h>
+^
+src/Resources/Level.cpp:152:16: style: Consider using std::transform algorithm instead of a raw loop. [useStlAlgorithm]
+        meshes.push_back((Mesh*)(obj.second.obj));
+               ^
+src/Resources/Level.cpp:164:19: style: Consider using std::transform algorithm instead of a raw loop. [useStlAlgorithm]
+        particles.push_back((Particles*)obj.second.obj);
+                  ^
+src/Resources/Level.cpp:172:16: style: Consider using std::transform algorithm instead of a raw loop. [useStlAlgorithm]
+        lights.push_back((Light*)obj.second.obj);
+               ^
+src/Resources/Texture.cpp:13:0: information: Include file: <OpenGL/glu.h> not found. Please note: Cppcheck does not need standard library headers to get proper results. [missingIncludeSystem]
+    #include <OpenGL/glu.h>
+^
+src/HateEngine.cpp:12:0: information: Include file: <sched.h> not found. Please note: Cppcheck does not need standard library headers to get proper results. [missingIncludeSystem]
+#include <sched.h>
+^
+src/Resources/Texture.cpp:11:0: information: Include file: <GL/glu.h> not found. Please note: Cppcheck does not need standard library headers to get proper results. [missingIncludeSystem]
+    #include <GL/glu.h>
+^
+src/Render/OpenGL15.cpp:11:0: information: Include file: <OpenGL/glu.h> not found. Please note: Cppcheck does not need standard library headers to get proper results. [missingIncludeSystem]
+    #include <OpenGL/glu.h>
+^
+src/Render/OpenGL15.cpp:9:0: information: Include file: <GL/glu.h> not found. Please note: Cppcheck does not need standard library headers to get proper results. [missingIncludeSystem]
+    #include <GL/glu.h>
+^
+include/HateEngine/Resources/GLTFModel.hpp:18:9: style: Class 'GLTFModel' has a constructor with 1 argument that is not explicit. [noExplicitConstructor]
+        GLTFModel(std::string file_name);
+        ^
+src/Resources/GLTFModel.cpp:95:44: style: C-style pointer casting [cstyleCast]
+            const float* verticies_data = (const float*)&(position_buffer.data[
+                                           ^
+src/Resources/GLTFModel.cpp:117:35: style: C-style pointer casting [cstyleCast]
+            if (ind_type == 5120) addIndiciesToVec(int8_t);
+                                  ^
+src/Resources/GLTFModel.cpp:118:40: style: C-style pointer casting [cstyleCast]
+            else if (ind_type == 5121) addIndiciesToVec(uint8_t);
+                                       ^
+src/Resources/GLTFModel.cpp:119:40: style: C-style pointer casting [cstyleCast]
+            else if (ind_type == 5122) addIndiciesToVec(int16_t);
+                                       ^
+src/Resources/GLTFModel.cpp:120:40: style: C-style pointer casting [cstyleCast]
+            else if (ind_type == 5123) addIndiciesToVec(uint16_t);
+                                       ^
+src/Resources/GLTFModel.cpp:121:40: style: C-style pointer casting [cstyleCast]
+            else if (ind_type == 5125) addIndiciesToVec(uint32_t);
+                                       ^
+src/Resources/GLTFModel.cpp:122:40: style: C-style pointer casting [cstyleCast]
+            else if (ind_type == 5126) addIndiciesToVec(float);
+                                       ^
+src/Resources/GLTFModel.cpp:132:42: style: C-style pointer casting [cstyleCast]
+            const float* normals_data = (const float*)&(normal_buffer.data[
+                                         ^
+src/Resources/GLTFModel.cpp:145:48: style: C-style pointer casting [cstyleCast]
+                const float* texcoords_data = (const float*)&(texcoord_buffer.data[
+                                               ^
+src/Resources/GLTFModel.cpp:222:17: style: C-style pointer casting [cstyleCast]
+        bindObj((Object*)m);
+                ^
+src/Resources/GLTFModel.cpp:239:17: style: C-style pointer casting [cstyleCast]
+        bindObj((Object*)m);
+                ^
+src/Resources/GLTFModel.cpp:256:17: style: C-style pointer casting [cstyleCast]
+        bindObj((Object*)m);
+                ^
+src/Resources/GLTFModel.cpp:122:40: portability: Casting between const unsigned char * and const float * which have an incompatible binary data representation. [invalidPointerCast]
+            else if (ind_type == 5126) addIndiciesToVec(float);
+                                       ^
+src/Resources/GLTFModel.cpp:40:21: style: Consider using std::accumulate algorithm instead of a raw loop. [useStlAlgorithm]
+        meshes_size += model_mesh.primitives.size();
+                    ^
+src/Resources/GLTFModel.cpp:214:34: error: Uninitialized variable: ret [legacyUninitvar]
+    if (process_error(err, warn, ret)) return;
+                                 ^
+src/Resources/GLTFModel.cpp:111:22: style: Variable 'mode' is assigned a value that is never used. [unreadVariable]
+            int mode = primitive.mode;
+                     ^
+nofile:0:0: information: Active checkers: 168/592 (use --checkers-report=<filename> to see details) [checkersReport]
+

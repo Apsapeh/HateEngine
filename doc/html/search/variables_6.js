@@ -1,5 +1,6 @@
 var searchData=
 [
-  ['lights_0',['lights',['../class_old3_d_engine_1_1_engine.html#aaa5dc8a07da7a1f5e2b9b5df2c69d4e4',1,'Old3DEngine::Engine']]],
-  ['lighttype_1',['lightType',['../class_old3_d_engine_1_1_light.html#aca3a9ebbe0f83441c4e66bee604d3c7b',1,'Old3DEngine::Light']]]
+  ['lifetime_0',['lifetime',['../class_hate_engine_1_1_particle.html#a2b263bc569b54e73f938cd6ee4bca6c7',1,'HateEngine::Particle']]],
+  ['lighttype_1',['lightType',['../class_hate_engine_1_1_light.html#ae135d957a3affa37454bd2c59c0ee956',1,'HateEngine::Light']]],
+  ['lostlifetime_2',['lostLifetime',['../class_hate_engine_1_1_particle.html#ae91a4799de2cf738ab3b7dc903ac1bfd',1,'HateEngine::Particle']]]
 ];

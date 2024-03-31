@@ -1,6 +1,6 @@
-#include <Old3DEngine/Objects/Physics/CollisionShape.hpp>
+#include <HateEngine/Objects/Physics/CollisionShape.hpp>
 
-using namespace Old3DEngine;
+using namespace HateEngine;
 
 CollisionShape::CollisionShape(CollisionShape::ShapeEnum shape, float param1, float param2, float param3) {
     this->shapeType = shape;

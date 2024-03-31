@@ -1,47 +1,80 @@
 \doxysection{Physical\+Body.\+hpp}
-\hypertarget{_physical_body_8hpp_source}{}\label{_physical_body_8hpp_source}\index{include/Old3DEngine/Objects/Physics/PhysicalBody.hpp@{include/Old3DEngine/Objects/Physics/PhysicalBody.hpp}}
+\hypertarget{_physical_body_8hpp_source}{}\label{_physical_body_8hpp_source}\index{include/HateEngine/Objects/Physics/PhysicalBody.hpp@{include/HateEngine/Objects/Physics/PhysicalBody.hpp}}
 \mbox{\hyperlink{_physical_body_8hpp}{Go to the documentation of this file.}}
 \begin{DoxyCode}{0}
 \DoxyCodeLine{00001\ \textcolor{preprocessor}{\#pragma\ once}}
 \DoxyCodeLine{00002\ \textcolor{preprocessor}{\#include\ <cstdint>}}
 \DoxyCodeLine{00003\ \textcolor{preprocessor}{\#include\ <vector>}}
-\DoxyCodeLine{00004\ \textcolor{preprocessor}{\#include\ "{}../../Utilities/UUID\_Generator.hpp"{}}}
-\DoxyCodeLine{00005\ \textcolor{preprocessor}{\#include\ "{}../Object.hpp"{}}}
+\DoxyCodeLine{00004\ \textcolor{preprocessor}{\#include\ "{}\mbox{\hyperlink{_u_u_i_d___generator_8hpp}{../../Utilities/UUID\_Generator.hpp}}"{}}}
+\DoxyCodeLine{00005\ \textcolor{preprocessor}{\#include\ "{}\mbox{\hyperlink{_object_8hpp}{../Object.hpp}}"{}}}
 \DoxyCodeLine{00006\ \textcolor{preprocessor}{\#include\ "{}\mbox{\hyperlink{_collision_shape_8hpp}{CollisionShape.hpp}}"{}}}
-\DoxyCodeLine{00007\ }
-\DoxyCodeLine{00008\ \textcolor{keyword}{namespace\ }\mbox{\hyperlink{namespace_old3_d_engine}{Old3DEngine}}\ \{}
-\DoxyCodeLine{00009\ \ \ \ \ \textcolor{keyword}{class\ }\mbox{\hyperlink{class_old3_d_engine_1_1_physical_body}{PhysicalBody}}\ :\ \textcolor{keyword}{public}\ \mbox{\hyperlink{class_old3_d_engine_1_1_object}{Object}}\ \{}
-\DoxyCodeLine{00010\ \ \ \ \ \textcolor{keyword}{public}:}
-\DoxyCodeLine{00011\ \ \ \ \ \ \ \ \ \textcolor{keyword}{enum}\ \mbox{\hyperlink{class_old3_d_engine_1_1_physical_body_a82671267f4bdf758ab004b806fe2bef5}{BodyType}}\ \{}
-\DoxyCodeLine{00012\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{class_old3_d_engine_1_1_physical_body_a82671267f4bdf758ab004b806fe2bef5a71c82297643471f922db453c29dfc0d5}{StaticBody}},}
-\DoxyCodeLine{00013\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{class_old3_d_engine_1_1_rigid_body}{RigidBody}}}
-\DoxyCodeLine{00014\ \ \ \ \ \ \ \ \ \};}
-\DoxyCodeLine{00015\ }
-\DoxyCodeLine{00016\ \ \ \ \ \textcolor{keyword}{private}:}
-\DoxyCodeLine{00017\ \ \ \ \ \ \ \ \ \textcolor{keyword}{struct\ }ShapeObject\ \{}
-\DoxyCodeLine{00018\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{class_old3_d_engine_1_1_collision_shape}{CollisionShape}}\ *shape;}
-\DoxyCodeLine{00019\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_old3_d_engine_1_1_u_u_i_d___generator_1_1_u_u_i_d}{UUID\_Generator::UUID}}\ id;}
-\DoxyCodeLine{00020\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{bool}\ is\_ref;}
-\DoxyCodeLine{00021\ \ \ \ \ \ \ \ \ \};}
+\DoxyCodeLine{00007\ \textcolor{preprocessor}{\#include\ <reactphysics3d/reactphysics3d.h>}}
+\DoxyCodeLine{00008\ }
+\DoxyCodeLine{00009\ \textcolor{keyword}{namespace\ }\mbox{\hyperlink{namespace_hate_engine}{HateEngine}}\ \{}
+\DoxyCodeLine{00010\ \ \ \ \ \textcolor{keyword}{class\ }\mbox{\hyperlink{class_hate_engine_1_1_physical_body}{PhysicalBody}}\ :\ \textcolor{keyword}{public}\ \mbox{\hyperlink{class_hate_engine_1_1_object}{Object}}\ \{}
+\DoxyCodeLine{00011\ \ \ \ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00012\ \ \ \ \ \ \ \ \ \textcolor{keyword}{enum}\ \mbox{\hyperlink{class_hate_engine_1_1_physical_body_ae58f58138c8387c5aa6240f41c6603f9}{BodyType}}\ \{}
+\DoxyCodeLine{00013\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{class_hate_engine_1_1_physical_body_ae58f58138c8387c5aa6240f41c6603f9a3757800dd9beb938b9d772b755f0f7a0}{StaticBody}},}
+\DoxyCodeLine{00014\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{class_hate_engine_1_1_rigid_body}{RigidBody}}}
+\DoxyCodeLine{00015\ \ \ \ \ \ \ \ \ \};}
+\DoxyCodeLine{00016\ }
+\DoxyCodeLine{00017\ \ \ \ \ \ \ \ \ \textcolor{keyword}{struct\ }\mbox{\hyperlink{struct_hate_engine_1_1_physical_body_1_1_coord_struct}{CoordStruct}}\ \{}
+\DoxyCodeLine{00018\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{float}\ \mbox{\hyperlink{struct_hate_engine_1_1_physical_body_1_1_coord_struct_acc6aac6f9732049ff9c26f77cad534a7}{x}},\ \mbox{\hyperlink{struct_hate_engine_1_1_physical_body_1_1_coord_struct_a9ea491e7ed45788e5110fc1c1022a5fa}{y}},\ \mbox{\hyperlink{struct_hate_engine_1_1_physical_body_1_1_coord_struct_ae44e053376b7d1b9483d35b74499d37c}{z}};}
+\DoxyCodeLine{00019\ \ \ \ \ \ \ \ \ \};}
+\DoxyCodeLine{00020\ }
+\DoxyCodeLine{00021\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{bool}\ \mbox{\hyperlink{class_hate_engine_1_1_physical_body_ac334c721a0dddede2bb60a7a10c17e31}{is\_initialized}}\ =\ \textcolor{keyword}{false};}
 \DoxyCodeLine{00022\ }
-\DoxyCodeLine{00023\ \ \ \ \ \ \ \ \ UUID\_Generator\ uuidGenerator;}
-\DoxyCodeLine{00024\ \ \ \ \ \ \ \ \ std::vector<ShapeObject>\ shapes;}
-\DoxyCodeLine{00025\ }
-\DoxyCodeLine{00026\ \ \ \ \ \textcolor{keyword}{protected}:}
-\DoxyCodeLine{00027\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{class_old3_d_engine_1_1_physical_body_a82671267f4bdf758ab004b806fe2bef5}{BodyType}}\ \mbox{\hyperlink{class_old3_d_engine_1_1_physical_body_a6b88553e669ef4d54ede60af69b90fe1}{bodyType}};}
-\DoxyCodeLine{00028\ }
-\DoxyCodeLine{00029\ \ \ \ \ \textcolor{keyword}{public}:}
-\DoxyCodeLine{00030\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{class_old3_d_engine_1_1_physical_body_a4290f2a93e5ee2a157b068d07b5efb40}{\string~PhysicalBody}}();}
-\DoxyCodeLine{00031\ }
-\DoxyCodeLine{00032\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{class_old3_d_engine_1_1_physical_body_a82671267f4bdf758ab004b806fe2bef5}{BodyType}}\ \mbox{\hyperlink{class_old3_d_engine_1_1_physical_body_a1dec36c5a4f39672f3054902385d84c7}{getBodyType}}();}
-\DoxyCodeLine{00033\ }
-\DoxyCodeLine{00039\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_old3_d_engine_1_1_u_u_i_d___generator_1_1_u_u_i_d}{UUID\_Generator::UUID}}\ \mbox{\hyperlink{class_old3_d_engine_1_1_physical_body_aee0ff70df07a4e20b079d61fca6c31fb}{addCollisionShapeClone}}(\mbox{\hyperlink{class_old3_d_engine_1_1_collision_shape}{CollisionShape}}\ shape);}
-\DoxyCodeLine{00040\ }
-\DoxyCodeLine{00046\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_old3_d_engine_1_1_u_u_i_d___generator_1_1_u_u_i_d}{UUID\_Generator::UUID}}\ \mbox{\hyperlink{class_old3_d_engine_1_1_physical_body_adc80754ffc288c59a20c212789ec3c57}{addCollisionShapeRef}}(\mbox{\hyperlink{class_old3_d_engine_1_1_collision_shape}{CollisionShape}}*\ shape);}
+\DoxyCodeLine{00023\ }
+\DoxyCodeLine{00024\ \ \ \ \ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00025\ \ \ \ \ \ \ \ \ \textcolor{keyword}{struct\ }ShapeObject\ \{}
+\DoxyCodeLine{00026\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{class_hate_engine_1_1_collision_shape}{CollisionShape}}\ *shape;}
+\DoxyCodeLine{00027\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_hate_engine_1_1_u_u_i_d___generator_1_1_u_u_i_d}{UUID\_Generator::UUID}}\ id;}
+\DoxyCodeLine{00028\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{bool}\ is\_ref;}
+\DoxyCodeLine{00029\ \ \ \ \ \ \ \ \ \};}
+\DoxyCodeLine{00030\ }
+\DoxyCodeLine{00031\ \ \ \ \ \ \ \ \ \textcolor{keyword}{struct\ }ControlledObject\ \{}
+\DoxyCodeLine{00032\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{class_hate_engine_1_1_object}{Object}}*\ obj;}
+\DoxyCodeLine{00033\ \ \ \ \ \ \ \ \ \ \ \ \ CoordStruct\ offset;}
+\DoxyCodeLine{00034\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_hate_engine_1_1_u_u_i_d___generator_1_1_u_u_i_d}{UUID\_Generator::UUID}}\ id;}
+\DoxyCodeLine{00035\ \ \ \ \ \ \ \ \ \};}
+\DoxyCodeLine{00036\ }
+\DoxyCodeLine{00037\ \ \ \ \ \ \ \ \ UUID\_Generator\ uuidGenerator\_shapes;}
+\DoxyCodeLine{00038\ \ \ \ \ \ \ \ \ std::vector<ShapeObject>\ shapes;}
+\DoxyCodeLine{00039\ \ \ \ \ \ \ \ \ reactphysics3d::RigidBody*\ reactRigidBody\ =\ \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{00040\ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ reactphysics3d::PhysicsWorld*\ reactParentPhysWorld\ =\ \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{00041\ }
+\DoxyCodeLine{00042\ \ \ \ \ \textcolor{keyword}{protected}:}
+\DoxyCodeLine{00043\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{class_hate_engine_1_1_physical_body_ae58f58138c8387c5aa6240f41c6603f9}{BodyType}}\ \mbox{\hyperlink{class_hate_engine_1_1_physical_body_a22d2d5ef770aadf5d9744dc0b0c5e224}{bodyType}};}
+\DoxyCodeLine{00044\ }
+\DoxyCodeLine{00045\ \ \ \ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00046\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{class_hate_engine_1_1_physical_body_a3b5eacd53fd670205813d7017cfb8864}{\string~PhysicalBody}}();}
 \DoxyCodeLine{00047\ }
-\DoxyCodeLine{00054\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{bool}\ \mbox{\hyperlink{class_old3_d_engine_1_1_physical_body_a87f8ac8f8e510e888ab30a1463273b89}{delCollisionShape}}(\mbox{\hyperlink{struct_old3_d_engine_1_1_u_u_i_d___generator_1_1_u_u_i_d}{UUID\_Generator::UUID}}\ uuid);}
-\DoxyCodeLine{00055\ \ \ \ \ \};}
-\DoxyCodeLine{00056\ }
-\DoxyCodeLine{00057\ \}}
+\DoxyCodeLine{00053\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{class_hate_engine_1_1_physical_body_a7f0766af0f8ac8db3204e5e0dc3f5ab6}{Init}}(reactphysics3d::PhysicsWorld*\ parrent\_world,\ reactphysics3d::RigidBody*\ body);}
+\DoxyCodeLine{00054\ }
+\DoxyCodeLine{00058\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{class_hate_engine_1_1_physical_body_a4e3542596328ea6aa3068fdddd7526e4}{Update}}();}
+\DoxyCodeLine{00059\ }
+\DoxyCodeLine{00060\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{class_hate_engine_1_1_physical_body_ae58f58138c8387c5aa6240f41c6603f9}{BodyType}}\ \mbox{\hyperlink{class_hate_engine_1_1_physical_body_a8d208b0f2b3c65446d8c5105eaeb5ac4}{getBodyType}}()\ \textcolor{keyword}{const};}
+\DoxyCodeLine{00061\ }
+\DoxyCodeLine{00062\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{class_hate_engine_1_1_physical_body_a642053d850ce3fcd2b9931b9b5d24731}{setPosition}}(glm::vec3\ vec);}
+\DoxyCodeLine{00063\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{class_hate_engine_1_1_physical_body_a60ffa68792f16c704106b829529d9f2f}{setPosition}}(\textcolor{keywordtype}{float}\ x,\ \textcolor{keywordtype}{float}\ y,\ \textcolor{keywordtype}{float}\ z);}
+\DoxyCodeLine{00064\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{class_hate_engine_1_1_physical_body_aa91f6dc0541deba1b4c2bb644f9a4f4d}{setRotation}}(glm::vec3\ vec);}
+\DoxyCodeLine{00065\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{class_hate_engine_1_1_physical_body_a52493740a2a3455770086ce8b021e791}{setRotation}}(\textcolor{keywordtype}{float}\ x,\ \textcolor{keywordtype}{float}\ y,\ \textcolor{keywordtype}{float}\ z);}
+\DoxyCodeLine{00066\ }
+\DoxyCodeLine{00067\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{class_hate_engine_1_1_physical_body_aefd14aa435bda8e15fccda770b6501e5}{offset}}(\textcolor{keywordtype}{float}\ x,\ \textcolor{keywordtype}{float}\ y,\ \textcolor{keywordtype}{float}\ z);}
+\DoxyCodeLine{00068\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{class_hate_engine_1_1_physical_body_af6f0bdb3bd74143de525dfd5574b64fb}{offset}}(glm::vec3\ vec);}
+\DoxyCodeLine{00069\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{class_hate_engine_1_1_physical_body_a07ff1b42f287cf7383c6e8de0fbd8c5a}{rotate}}(\textcolor{keywordtype}{float}\ x,\ \textcolor{keywordtype}{float}\ y,\ \textcolor{keywordtype}{float}\ z);}
+\DoxyCodeLine{00070\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{class_hate_engine_1_1_physical_body_a42c76ad8ca16d10b8a3f9170b744e26b}{rotate}}(glm::vec3\ vec);}
+\DoxyCodeLine{00071\ }
+\DoxyCodeLine{00077\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_hate_engine_1_1_u_u_i_d___generator_1_1_u_u_i_d}{UUID\_Generator::UUID}}\ \mbox{\hyperlink{class_hate_engine_1_1_physical_body_ad9d592a1a442f1c807f30781d54cb10e}{addCollisionShapeClone}}(\mbox{\hyperlink{class_hate_engine_1_1_collision_shape}{CollisionShape}}\ shape);}
+\DoxyCodeLine{00078\ }
+\DoxyCodeLine{00084\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_hate_engine_1_1_u_u_i_d___generator_1_1_u_u_i_d}{UUID\_Generator::UUID}}\ \mbox{\hyperlink{class_hate_engine_1_1_physical_body_a94453f00ac3e560af0c79890762a38d2}{addCollisionShapeRef}}(\mbox{\hyperlink{class_hate_engine_1_1_collision_shape}{CollisionShape}}*\ shape);}
+\DoxyCodeLine{00085\ }
+\DoxyCodeLine{00092\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{bool}\ \mbox{\hyperlink{class_hate_engine_1_1_physical_body_a773c0c225377734ac7a7b0a00496f4fb}{delCollisionShape}}(\mbox{\hyperlink{struct_hate_engine_1_1_u_u_i_d___generator_1_1_u_u_i_d}{UUID\_Generator::UUID}}\ uuid);}
+\DoxyCodeLine{00093\ }
+\DoxyCodeLine{00094\ }
+\DoxyCodeLine{00099\ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ reactphysics3d::PhysicsWorld*\ \mbox{\hyperlink{class_hate_engine_1_1_physical_body_abf9f26e7c65bf2034470c3723b26fae8}{getParentPhysCommon}}()\ \textcolor{keyword}{const};}
+\DoxyCodeLine{00100\ \ \ \ \ \};}
+\DoxyCodeLine{00101\ }
+\DoxyCodeLine{00102\ \}}
 
 \end{DoxyCode}

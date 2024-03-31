@@ -1,8 +1,8 @@
-#include <Old3DEngine/Objects/Mesh.hpp>
+#include <HateEngine/Objects/Mesh.hpp>
 #include <algorithm>
 #include <utility>
 
-using namespace Old3DEngine;
+using namespace HateEngine;
 
 Mesh::Mesh() {}
 
@@ -13,7 +13,7 @@ Mesh::Mesh(std::vector<float> vert, std::vector<uint32_t> ind, std::vector<float
 }
 
 // FIXME: DIRTY HACK
-Mesh::Mesh(const Mesh &mesh) {
+Mesh::Mesh(const Mesh &mesh, bool copy_texture) {
     parent_position = mesh.parent_position;
     parent_rotation_matrix = mesh.parent_rotation_matrix;
     parent_scale = mesh.parent_scale;
@@ -26,6 +26,9 @@ Mesh::Mesh(const Mesh &mesh) {
     normals = mesh.normals;
     texture = mesh.texture;
     UV = mesh.UV;
+
+    if (copy_texture and mesh.texture != nullptr)
+        texture = new Texture(*mesh.texture, true);
 }
 
 Mesh::~Mesh() {
@@ -54,23 +57,23 @@ void Mesh::setUV(std::vector<float> uv) {
     this->UV = std::move(uv);
 }
 
-const std::vector<float>* Mesh::getVertices() {
+const std::vector<float>* Mesh::getVertices() const {
     return &verticies;
 }
 
-const std::vector<uint32_t>* Mesh::getIndicies() {
+const std::vector<uint32_t>* Mesh::getIndicies() const {
     return &indicies;
 }
 
-const std::vector<float>* Mesh::getNormals() {
+const std::vector<float>* Mesh::getNormals() const {
     return &normals;
 }
 
-Texture* Mesh::getTexture() {
+Texture* Mesh::getTexture() const {
     return this->texture;
 }
 
-const std::vector<float>* Mesh::getUV() {
+const std::vector<float>* Mesh::getUV() const {
     return &this->UV;
 }
 

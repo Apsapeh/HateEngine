@@ -1,3 +1,3 @@
-#include <Old3DEngine/Objects/Physics/RigidBody.hpp>
+#include <HateEngine/Objects/Physics/RigidBody.hpp>
 
-using namespace Old3DEngine;
+using namespace HateEngine;

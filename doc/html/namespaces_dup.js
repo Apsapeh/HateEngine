@@ -1,4 +1,4 @@
 var namespaces_dup =
 [
-    [ "Old3DEngine", "namespace_old3_d_engine.html", "namespace_old3_d_engine" ]
+    [ "HateEngine", "namespace_hate_engine.html", "namespace_hate_engine" ]
 ];

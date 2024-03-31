@@ -1,8 +1,8 @@
 #pragma once
 
-#include <Old3DEngine/Utilities/UUID_Generator.hpp>
+#include <HateEngine/Utilities/UUID_Generator.hpp>
 
-using namespace Old3DEngine;
+using namespace HateEngine;
 
 // Dirty hack to check if glad is initialized (used in Texture.hpp)
 extern bool glad_is_initialized;

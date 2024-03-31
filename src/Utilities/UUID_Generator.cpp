@@ -1,6 +1,6 @@
-#include <Old3DEngine/Utilities/UUID_Generator.hpp>
+#include <HateEngine/Utilities/UUID_Generator.hpp>
 
-using namespace Old3DEngine;
+using namespace HateEngine;
 
 UUID_Generator::UUID UUID_Generator::gen() {
     std::lock_guard<std::mutex> mut(this->getMutex);

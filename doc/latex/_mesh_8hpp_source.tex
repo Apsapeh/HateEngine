@@ -1,38 +1,43 @@
 \doxysection{Mesh.\+hpp}
-\hypertarget{_mesh_8hpp_source}{}\label{_mesh_8hpp_source}\index{include/Old3DEngine/Objects/Mesh.hpp@{include/Old3DEngine/Objects/Mesh.hpp}}
+\hypertarget{_mesh_8hpp_source}{}\label{_mesh_8hpp_source}\index{include/HateEngine/Objects/Mesh.hpp@{include/HateEngine/Objects/Mesh.hpp}}
 \mbox{\hyperlink{_mesh_8hpp}{Go to the documentation of this file.}}
 \begin{DoxyCode}{0}
 \DoxyCodeLine{00001\ \textcolor{preprocessor}{\#pragma\ once}}
 \DoxyCodeLine{00002\ \textcolor{preprocessor}{\#include\ <cstdint>}}
 \DoxyCodeLine{00003\ \textcolor{preprocessor}{\#include\ <vector>}}
 \DoxyCodeLine{00004\ \textcolor{preprocessor}{\#include\ "{}\mbox{\hyperlink{_object_8hpp}{Object.hpp}}"{}}}
-\DoxyCodeLine{00005\ \textcolor{preprocessor}{\#include\ "{}../Resources/Texture.hpp"{}}}
-\DoxyCodeLine{00006\ }
-\DoxyCodeLine{00007\ \textcolor{keyword}{namespace\ }\mbox{\hyperlink{namespace_old3_d_engine}{Old3DEngine}}\ \{}
-\DoxyCodeLine{00008\ \ \ \ \ \textcolor{comment}{//\ Object\ -\/>\ Mesh}}
-\DoxyCodeLine{00009\ \ \ \ \ \textcolor{keyword}{class\ }\mbox{\hyperlink{class_old3_d_engine_1_1_mesh}{Mesh}}\ :\ \textcolor{keyword}{public}\ \mbox{\hyperlink{class_old3_d_engine_1_1_object}{Object}}\ \{}
-\DoxyCodeLine{00010\ \ \ \ \ \textcolor{keyword}{protected}:}
-\DoxyCodeLine{00011\ \ \ \ \ \ \ \ \ std::vector<float>\ \mbox{\hyperlink{class_old3_d_engine_1_1_mesh_ac108dafc5e195cc5836f2c7521194f42}{verticies}};}
-\DoxyCodeLine{00012\ \ \ \ \ \ \ \ \ std::vector<uint32\_t>\ \mbox{\hyperlink{class_old3_d_engine_1_1_mesh_a79a71b02ef62ddb459d3cd660e39c8d3}{indicies}};}
-\DoxyCodeLine{00013\ \ \ \ \ \ \ \ \ std::vector<float>\ \mbox{\hyperlink{class_old3_d_engine_1_1_mesh_ad2c4263ec04a9a9bee58542064f99b0b}{normals}};}
-\DoxyCodeLine{00014\ \ \ \ \ \ \ \ \ std::vector<Texture*>\ \mbox{\hyperlink{class_old3_d_engine_1_1_mesh_a232b309f44a48b5530938b5cc74bc389}{textures}};}
-\DoxyCodeLine{00015\ \ \ \ \ \ \ \ \ std::vector<std::vector<float>>\ \mbox{\hyperlink{class_old3_d_engine_1_1_mesh_a6d625d0a74781aeb478547d2011427e7}{texturesCoords}};}
-\DoxyCodeLine{00016\ }
-\DoxyCodeLine{00017\ \ \ \ \ \textcolor{keyword}{public}:}
-\DoxyCodeLine{00018\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{class_old3_d_engine_1_1_mesh_aea047b96abd499f645b8412cec6c1345}{\string~Mesh}}();}
-\DoxyCodeLine{00019\ }
-\DoxyCodeLine{00020\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{class_old3_d_engine_1_1_mesh_af20bf5a6e1118e0c9f150faecbdd996e}{setVertices}}(std::vector<float>\ vec);}
-\DoxyCodeLine{00021\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{class_old3_d_engine_1_1_mesh_adddc892c69b702e3d2712aaa216dd1e1}{setIndicies}}(std::vector<uint32\_t>\ vec);}
-\DoxyCodeLine{00022\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{class_old3_d_engine_1_1_mesh_a2c43c16bd40b9e2e7738a3e0ef7b2b93}{setNormals}}(std::vector<float>\ vec);}
-\DoxyCodeLine{00023\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{bool}\ \mbox{\hyperlink{class_old3_d_engine_1_1_mesh_a869ded9315b0ca70919a530c08ece55f}{addTexture}}(\mbox{\hyperlink{class_old3_d_engine_1_1_texture}{Texture}}*\ tex,\ std::vector<float>\ coords);}
-\DoxyCodeLine{00024\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{bool}\ \mbox{\hyperlink{class_old3_d_engine_1_1_mesh_a4dec77d70bb01155ab704f632e5b64f8}{delTexture}}(uint32\_t\ n);}
-\DoxyCodeLine{00025\ }
-\DoxyCodeLine{00026\ \ \ \ \ \ \ \ \ std::vector<float>*\ \ \ \ \ \mbox{\hyperlink{class_old3_d_engine_1_1_mesh_adc2e9b7a7e69544f5aba5f4f80acd02d}{getVertices}}();}
-\DoxyCodeLine{00027\ \ \ \ \ \ \ \ \ std::vector<uint32\_t>*\ \ \mbox{\hyperlink{class_old3_d_engine_1_1_mesh_a510914b38b9893fdc2fda6bfcef6d950}{getIndicies}}();}
-\DoxyCodeLine{00028\ \ \ \ \ \ \ \ \ std::vector<float>*\ \ \ \ \ \mbox{\hyperlink{class_old3_d_engine_1_1_mesh_a60a0b48bd85ef665ebc63c7aa2373b6e}{getNormals}}();}
-\DoxyCodeLine{00029\ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ std::vector<Texture*>*\ \ \mbox{\hyperlink{class_old3_d_engine_1_1_mesh_aa87219be07f42c6f80d54f4af4c3b0b9}{getTextures}}();}
-\DoxyCodeLine{00030\ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ std::vector<std::vector<float>>*\ \mbox{\hyperlink{class_old3_d_engine_1_1_mesh_ae94a0b4f588019b78dcd7ca78b7ddb33}{getTexturesCoords}}();}
-\DoxyCodeLine{00031\ \ \ \ \ \};}
-\DoxyCodeLine{00032\ \}}
+\DoxyCodeLine{00005\ \textcolor{preprocessor}{\#include\ "{}\mbox{\hyperlink{_u_u_i_d___generator_8hpp}{../Utilities/UUID\_Generator.hpp}}"{}}}
+\DoxyCodeLine{00006\ \textcolor{preprocessor}{\#include\ "{}\mbox{\hyperlink{_texture_8hpp}{../Resources/Texture.hpp}}"{}}}
+\DoxyCodeLine{00007\ }
+\DoxyCodeLine{00008\ \textcolor{keyword}{namespace\ }\mbox{\hyperlink{namespace_hate_engine}{HateEngine}}\ \{}
+\DoxyCodeLine{00009\ \ \ \ \ \textcolor{comment}{//\ Object\ -\/>\ Mesh}}
+\DoxyCodeLine{00010\ \ \ \ \ \textcolor{keyword}{class\ }\mbox{\hyperlink{class_hate_engine_1_1_mesh}{Mesh}}\ :\ \textcolor{keyword}{public}\ \mbox{\hyperlink{class_hate_engine_1_1_object}{Object}}\ \{}
+\DoxyCodeLine{00011\ \ \ \ \ \textcolor{keyword}{protected}:}
+\DoxyCodeLine{00012\ \ \ \ \ \ \ \ \ std::vector<float>\ \mbox{\hyperlink{class_hate_engine_1_1_mesh_a91651a9c820b6d9fff42151e58b44462}{verticies}};}
+\DoxyCodeLine{00013\ \ \ \ \ \ \ \ \ std::vector<uint32\_t>\ \mbox{\hyperlink{class_hate_engine_1_1_mesh_aff6f1b23c62c9ca1e5cb90cc4a179ccd}{indicies}};}
+\DoxyCodeLine{00014\ \ \ \ \ \ \ \ \ std::vector<float>\ \mbox{\hyperlink{class_hate_engine_1_1_mesh_a33f167b04c7cd28257a1a2fa86d91cfa}{normals}};}
+\DoxyCodeLine{00015\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{class_hate_engine_1_1_texture}{Texture}}*\ \mbox{\hyperlink{class_hate_engine_1_1_mesh_a5c4ff67d6fbddf8d095bd34858ce712a}{texture}}\ =\ \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{00016\ \ \ \ \ \ \ \ \ std::vector<float>\ \mbox{\hyperlink{class_hate_engine_1_1_mesh_a1289f5bc287024a8fc65bfe839f2ea50}{UV}}\ =\ \{\};}
+\DoxyCodeLine{00017\ }
+\DoxyCodeLine{00018\ \ \ \ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00019\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{class_hate_engine_1_1_mesh_adb8c5bf73644342f156a6744effde64d}{\string~Mesh}}();}
+\DoxyCodeLine{00020\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{class_hate_engine_1_1_mesh_ab47b2e084fed0fb5b1647b7e5cd9abb0}{Mesh}}();}
+\DoxyCodeLine{00021\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{class_hate_engine_1_1_mesh_a7176521dabf88da87037fed8232ffe67}{Mesh}}(std::vector<float>\ vert,\ std::vector<uint32\_t>\ ind,\ std::vector<float>\ norm);}
+\DoxyCodeLine{00022\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{class_hate_engine_1_1_mesh_acb4309daa1488874a59745a1e759a936}{Mesh}}(\textcolor{keyword}{const}\ \mbox{\hyperlink{class_hate_engine_1_1_mesh}{Mesh}}\&\ mesh,\ \textcolor{keywordtype}{bool}\ copy\_texture=\textcolor{keyword}{false});}
+\DoxyCodeLine{00023\ }
+\DoxyCodeLine{00024\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{class_hate_engine_1_1_mesh_a306af71e136f8c3c07bac12f61851e8b}{setVertices}}(std::vector<float>\ vec);}
+\DoxyCodeLine{00025\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{class_hate_engine_1_1_mesh_ac65a2ba1fdb1ea6e1b500f498ba2d1fb}{setIndicies}}(std::vector<uint32\_t>\ vec);}
+\DoxyCodeLine{00026\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{class_hate_engine_1_1_mesh_a754c3945efd318b1536dbb0b0058c353}{setNormals}}(std::vector<float>\ vec);}
+\DoxyCodeLine{00027\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{class_hate_engine_1_1_mesh_a0a903367a8cf99c7333eb36a808f89b3}{setTexture}}(\mbox{\hyperlink{class_hate_engine_1_1_texture}{Texture}}*\ tex);}
+\DoxyCodeLine{00028\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{class_hate_engine_1_1_mesh_a97c2a8e305baa0431ff65bee841ff0d3}{setUV}}(std::vector<float>\ \mbox{\hyperlink{class_hate_engine_1_1_mesh_a1289f5bc287024a8fc65bfe839f2ea50}{UV}});}
+\DoxyCodeLine{00029\ }
+\DoxyCodeLine{00030\ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ std::vector<float>*\ \ \ \ \ \mbox{\hyperlink{class_hate_engine_1_1_mesh_a0bed2dc735a7c9a0905b376698fc64af}{getVertices}}()\ \textcolor{keyword}{const};}
+\DoxyCodeLine{00031\ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ std::vector<uint32\_t>*\ \ \mbox{\hyperlink{class_hate_engine_1_1_mesh_a7dd16928aefb9315e47a4096a5af1dde}{getIndicies}}()\ \textcolor{keyword}{const};}
+\DoxyCodeLine{00032\ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ std::vector<float>*\ \ \ \ \ \mbox{\hyperlink{class_hate_engine_1_1_mesh_a8dbbc26babb8ebf7d50ef26942013f64}{getNormals}}()\ \textcolor{keyword}{const};}
+\DoxyCodeLine{00033\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{class_hate_engine_1_1_texture}{Texture}}*\ \ \mbox{\hyperlink{class_hate_engine_1_1_mesh_aeffb322f9f8b5e62f672b4b834b45704}{getTexture}}()\ \textcolor{keyword}{const};}
+\DoxyCodeLine{00034\ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ std::vector<float>*\ \mbox{\hyperlink{class_hate_engine_1_1_mesh_a1c2f2148b7e5ecef6d37c58284482b92}{getUV}}()\ \textcolor{keyword}{const};}
+\DoxyCodeLine{00035\ \ \ \ \ \ \ \ \ \textcolor{comment}{//const\ std::vector<std::vector<float>>*\ getTexturesCoords();}}
+\DoxyCodeLine{00036\ \ \ \ \ \};}
+\DoxyCodeLine{00037\ \}}
 
 \end{DoxyCode}

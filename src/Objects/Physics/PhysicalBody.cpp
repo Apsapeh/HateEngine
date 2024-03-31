@@ -1,8 +1,8 @@
-#include <Old3DEngine/Objects/Physics/PhysicalBody.hpp>
+#include <HateEngine/Objects/Physics/PhysicalBody.hpp>
 #include <glm/gtx/quaternion.hpp>
 #include <algorithm>
 
-using namespace Old3DEngine;
+using namespace HateEngine;
 
 PhysicalBody::~PhysicalBody() {
     for (ShapeObject &obj : shapes) {
@@ -20,20 +20,23 @@ void PhysicalBody::Init(reactphysics3d::PhysicsWorld *parrent_world, reactphysic
   // TODO: Add set pref
 }
 
-void PhysicalBody::UpdateBinds() {
+void PhysicalBody::Update() {
     reactphysics3d::Quaternion qu = this->reactRigidBody->getTransform().getOrientation();
     // Rotation matrix
     glm::mat4 mat = glm::toMat4(glm::quat(qu.w, -qu.z, -qu.y, -qu.x));
     // Body position Z Y X
     reactphysics3d::Vector3 pos = this->reactRigidBody->getTransform().getPosition();
 
-    for (auto& obj : this->bindedObjects) {
+    this->position = {pos.z, pos.y, pos.x};
+    this->rotation_matrix = mat;
+
+    for (const auto& obj : this->bindedObjects) {
         obj.second->setParentPosition({pos.z, pos.y, pos.x});
         obj.second->setParentRotationMatrix(mat);
     }
 }
 
-PhysicalBody::BodyType PhysicalBody::getBodyType() {
+PhysicalBody::BodyType PhysicalBody::getBodyType() const {
     return bodyType;
 }
 
@@ -66,7 +69,7 @@ bool PhysicalBody::delCollisionShape(UUID_Generator::UUID uuid) {
 }
 
 
-const reactphysics3d::PhysicsWorld* PhysicalBody::getParentPhysCommon() {
+const reactphysics3d::PhysicsWorld* PhysicalBody::getParentPhysCommon() const {
     return this->reactParentPhysWorld;
 }
 
@@ -93,6 +96,7 @@ void offset(float x, float y, float z) {
 }
 
 void PhysicalBody::rotate(float x, float y, float z) {
+    // FIXME: FIX kind rotation
     Object::rotate(x, y, z);
     if (is_initialized) {
         glm::vec3 rotation = getRotationEuler();

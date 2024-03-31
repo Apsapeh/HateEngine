@@ -1,7 +1,9 @@
-#include <Old3DEngine/PhysEngine.hpp>
+#include <HateEngine/PhysEngine.hpp>
 #include <glm/ext.hpp>
 
-using namespace Old3DEngine;
+#include "globalStaticParams.hpp"
+
+using namespace HateEngine;
 
 PhysEngine::PhysEngine() {
     //this->physBodies = phys_bodies_vec;
@@ -12,21 +14,22 @@ PhysEngine::PhysEngine() {
 void PhysEngine::IteratePhysics(float delta) {
     physicsWorld->update(delta);
 
-    for (physBodyStruct &body : physBodies) {
-        if (body.obj->getParentPhysCommon() == this->physicsWorld) {
-            body.obj->UpdateBinds();
+    for (const auto& body_pair : physBodies) {
+        PhysicalBody* body = body_pair.second.obj;
+        if (body->getParentPhysCommon() == this->physicsWorld) {
+            body->Update();
         }
-        else if (not body.obj->is_initialized) {
+        else if (not body->is_initialized) {
             // INIT
-            glm::vec3 obj_pos = body.obj->getGlobalPosition();
-            glm::vec3 obj_rot = glm::radians(body.obj->getRotationEuler());
-            reactphysics3d::Vector3 position(obj_pos.x, obj_pos.y, obj_pos.z);
+            glm::vec3 obj_pos = body->getGlobalPosition();
+            glm::vec3 obj_rot = glm::radians(body->getRotationEuler());
+            reactphysics3d::Vector3 position(obj_pos.z, obj_pos.y, obj_pos.x);
             reactphysics3d::Quaternion quaternion = reactphysics3d::Quaternion::fromEulerAngles(
-                    obj_rot.x, obj_rot.y, obj_rot.z
+                    obj_rot.z, obj_rot.y, obj_rot.x
             );
             reactphysics3d::Transform transform(position, quaternion);
             reactphysics3d::RigidBody *phys_body = physicsWorld->createRigidBody(transform);
-            body.obj->Init(this->physicsWorld, phys_body);
+            body->Init(this->physicsWorld, phys_body);
         }
         else {
             // Warn
@@ -35,21 +38,27 @@ void PhysEngine::IteratePhysics(float delta) {
 
 }
 
-UUID_Generator::UUID PhysEngine::addObjectClone(PhysicalBody object) {
-    UUID_Generator::UUID uuid = uuidGenerator.gen();
+UUID_Generator::UUID PhysEngine::addObjectClone(const PhysicalBody& object) {
+    UUID_Generator::UUID uuid = global_uuid_generator.gen();
+    PhysicalBody* new_obj;
+    // FIX ME: ADD obj copy
+    physBodies[uuid] = {new_obj, false};
     return uuid;
 }
 
 UUID_Generator::UUID PhysEngine::addObjectRef(PhysicalBody *object) {
-    UUID_Generator::UUID uuid = uuidGenerator.gen();
+    UUID_Generator::UUID uuid = global_uuid_generator.gen();
+    physBodies[uuid] = {object, true};
     return uuid;
 }
 
 bool PhysEngine::removeObject(UUID_Generator::UUID uuid) {
+    if (physBodies.count(uuid) == 1) {
+        if (not physBodies[uuid].is_ref)
+            delete physBodies[uuid].obj;
+        physBodies.erase(uuid);
+        return true;
+    }
     return false;
 }
 
-
-void init_body() {
-
-}

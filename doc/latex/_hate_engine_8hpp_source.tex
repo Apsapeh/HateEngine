@@ -1,0 +1,105 @@
+\doxysection{Hate\+Engine.\+hpp}
+\hypertarget{_hate_engine_8hpp_source}{}\label{_hate_engine_8hpp_source}\index{include/HateEngine/HateEngine.hpp@{include/HateEngine/HateEngine.hpp}}
+\mbox{\hyperlink{_hate_engine_8hpp}{Go to the documentation of this file.}}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{preprocessor}{\#pragma\ once}}
+\DoxyCodeLine{00002\ \textcolor{preprocessor}{\#include\ <string>}}
+\DoxyCodeLine{00003\ \textcolor{preprocessor}{\#include\ <unordered\_map>}}
+\DoxyCodeLine{00004\ \textcolor{preprocessor}{\#include\ <cstdint>}}
+\DoxyCodeLine{00005\ \textcolor{preprocessor}{\#include\ <mutex>}}
+\DoxyCodeLine{00006\ \textcolor{preprocessor}{\#include\ <GLFW/glfw3.h>}}
+\DoxyCodeLine{00007\ \textcolor{preprocessor}{\#include\ "{}\mbox{\hyperlink{_camera_8hpp}{Objects/Camera.hpp}}"{}}}
+\DoxyCodeLine{00008\ \textcolor{preprocessor}{\#include\ "{}\mbox{\hyperlink{_u_u_i_d___generator_8hpp}{Utilities/UUID\_Generator.hpp}}"{}}}
+\DoxyCodeLine{00009\ \textcolor{preprocessor}{\#include\ "{}\mbox{\hyperlink{_mesh_8hpp}{Objects/Mesh.hpp}}"{}}}
+\DoxyCodeLine{00010\ \textcolor{preprocessor}{\#include\ "{}\mbox{\hyperlink{_light_8hpp}{Objects/Light/Light.hpp}}"{}}}
+\DoxyCodeLine{00011\ \textcolor{preprocessor}{\#include\ "{}\mbox{\hyperlink{_particles_8hpp}{Objects/Particles.hpp}}"{}}}
+\DoxyCodeLine{00012\ \textcolor{preprocessor}{\#include\ "{}\mbox{\hyperlink{_model_8hpp}{Objects/Model.hpp}}"{}}}
+\DoxyCodeLine{00013\ \textcolor{preprocessor}{\#include\ "{}\mbox{\hyperlink{_phys_engine_8hpp}{PhysEngine.hpp}}"{}}}
+\DoxyCodeLine{00014\ \textcolor{preprocessor}{\#include\ "{}glm/vec2.hpp"{}}}
+\DoxyCodeLine{00015\ \textcolor{preprocessor}{\#include\ "{}\mbox{\hyperlink{_level_8hpp}{Resources/Level.hpp}}"{}}}
+\DoxyCodeLine{00016\ }
+\DoxyCodeLine{00017\ \textcolor{keyword}{namespace\ }\mbox{\hyperlink{namespace_hate_engine}{HateEngine}}\ \{}
+\DoxyCodeLine{00018\ \ \ \ \ \textcolor{keyword}{class\ }\mbox{\hyperlink{class_hate_engine_1_1_engine}{Engine}}\ \{}
+\DoxyCodeLine{00019\ \ \ \ \ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00020\ \ \ \ \ \ \ \ \ \textcolor{keyword}{class\ }InputClass\ \{}
+\DoxyCodeLine{00021\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{class_hate_engine_1_1_engine}{Engine}}\ *engine;}
+\DoxyCodeLine{00022\ \ \ \ \ \ \ \ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00023\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{class_hate_engine_1_1_engine_abc0326b946eced80bb9eb6f580200a6d}{InputClass}}(\mbox{\hyperlink{class_hate_engine_1_1_engine}{Engine}}*);}
+\DoxyCodeLine{00024\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{bool}\ isKeyPressed(\textcolor{keywordtype}{int}\ key);}
+\DoxyCodeLine{00025\ \ \ \ \ \ \ \ \ \ \ \ \ glm::vec2\ getVector(\textcolor{keywordtype}{int}\ left,\ \textcolor{keywordtype}{int}\ right,\ \textcolor{keywordtype}{int}\ up,\ \textcolor{keywordtype}{int}\ down)\ ;}
+\DoxyCodeLine{00026\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//bool\ isKeyPressed(int\ key);}}
+\DoxyCodeLine{00027\ \ \ \ \ \ \ \ \ \};}
+\DoxyCodeLine{00028\ \ \ \ \ \ \ \ \ \textcolor{keyword}{friend}\ \textcolor{keyword}{class\ }InputClass;}
+\DoxyCodeLine{00029\ }
+\DoxyCodeLine{00030\ \ \ \ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00031\ \ \ \ \ \ \ \ \ \textcolor{keyword}{enum}\ \mbox{\hyperlink{class_hate_engine_1_1_engine_adcb521f2d34705733987d6768ddd0a35}{RenderAPI}}\ \{}
+\DoxyCodeLine{00032\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{class_hate_engine_1_1_engine_adcb521f2d34705733987d6768ddd0a35a7d27e0a85126bae8ae2b4f8492af437c}{OpenGL\_1\_5}}}
+\DoxyCodeLine{00033\ \ \ \ \ \ \ \ \ \};}
+\DoxyCodeLine{00034\ }
+\DoxyCodeLine{00035\ \ \ \ \ \ \ \ \ \textcolor{keyword}{enum}\ \mbox{\hyperlink{class_hate_engine_1_1_engine_a29983706e5290065d5cf57e9ca6c3c07}{InputEventType}}\ \{}
+\DoxyCodeLine{00036\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{class_hate_engine_1_1_engine_a29983706e5290065d5cf57e9ca6c3c07a2428d220233b7cbb2bf993d89954335e}{InputEventKey}},}
+\DoxyCodeLine{00037\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{class_hate_engine_1_1_engine_a29983706e5290065d5cf57e9ca6c3c07a1b21972af56e361e4c88ea4d79cfefd9}{InputEventMouseMove}},}
+\DoxyCodeLine{00038\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{class_hate_engine_1_1_engine_a29983706e5290065d5cf57e9ca6c3c07aae5a0ce06f91039d96442a4f7208e9e6}{InputEventMouseScroll}}}
+\DoxyCodeLine{00039\ \ \ \ \ \ \ \ \ \};}
+\DoxyCodeLine{00040\ }
+\DoxyCodeLine{00041\ \ \ \ \ \ \ \ \ \textcolor{keyword}{struct\ }\mbox{\hyperlink{struct_hate_engine_1_1_engine_1_1_scene_object}{SceneObject}}\ \{}
+\DoxyCodeLine{00042\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{class_hate_engine_1_1_object}{Object}}\ *\mbox{\hyperlink{struct_hate_engine_1_1_engine_1_1_scene_object_a94c9778ec098b81308dcbccb52799aca}{obj}};}
+\DoxyCodeLine{00043\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//UUID\_Generator::UUID\ id;}}
+\DoxyCodeLine{00044\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{bool}\ \mbox{\hyperlink{struct_hate_engine_1_1_engine_1_1_scene_object_a4034e00aee49cd505124496028258e94}{is\_ref}};}
+\DoxyCodeLine{00045\ \ \ \ \ \ \ \ \ \};}
+\DoxyCodeLine{00046\ }
+\DoxyCodeLine{00047\ }
+\DoxyCodeLine{00048\ \ \ \ \ \ \ \ \ \textcolor{keyword}{struct\ }\mbox{\hyperlink{struct_hate_engine_1_1_engine_1_1_input_event_info}{InputEventInfo}}\ \{}
+\DoxyCodeLine{00049\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{class_hate_engine_1_1_engine_a29983706e5290065d5cf57e9ca6c3c07}{InputEventType}}\ \mbox{\hyperlink{struct_hate_engine_1_1_engine_1_1_input_event_info_abde585cd8545f75907ca64a033657d98}{type}};}
+\DoxyCodeLine{00050\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{int}\ \mbox{\hyperlink{struct_hate_engine_1_1_engine_1_1_input_event_info_a9fca85a777da98b26b846c5e2732023e}{key}},\ \mbox{\hyperlink{struct_hate_engine_1_1_engine_1_1_input_event_info_a2a0257a49ce2d9e5fd6823d6b6084d2e}{scancode}},\ \mbox{\hyperlink{struct_hate_engine_1_1_engine_1_1_input_event_info_a4122cc5bb0dc87dc16319498c000eb4b}{action}},\ \mbox{\hyperlink{struct_hate_engine_1_1_engine_1_1_input_event_info_a49b21ac3fd1aa9c9b2ae9fb36bdfbd2f}{mods}}\ =\ 0;}
+\DoxyCodeLine{00051\ \ \ \ \ \ \ \ \ \ \ \ \ glm::vec2\ \mbox{\hyperlink{struct_hate_engine_1_1_engine_1_1_input_event_info_a5c1fb89134f9efea24c2aedaa396ec36}{offset}}\ =\ \{0,\ 0\};}
+\DoxyCodeLine{00052\ \ \ \ \ \ \ \ \ \ \ \ \ glm::vec2\ \mbox{\hyperlink{struct_hate_engine_1_1_engine_1_1_input_event_info_adf9ea1d24b1ed6d0e3d167b1a1d82ae4}{position}}\ =\ \{0,\ 0\};}
+\DoxyCodeLine{00053\ \ \ \ \ \ \ \ \ \};}
+\DoxyCodeLine{00054\ }
+\DoxyCodeLine{00055\ \ \ \ \ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00056\ \ \ \ \ \ \ \ \ void\ (*processLoop)(\mbox{\hyperlink{class_hate_engine_1_1_engine}{Engine}}*,\ double)\ =\ \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{00057\ \ \ \ \ \ \ \ \ void\ (*fixedProcessLoop)(\mbox{\hyperlink{class_hate_engine_1_1_engine}{Engine}}*,\ double)\ =\ \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{00058\ \ \ \ \ \ \ \ \ void\ (*inputEventFunc)(\mbox{\hyperlink{class_hate_engine_1_1_engine}{Engine}}*,\ InputEventInfo)\ =\ \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{00059\ }
+\DoxyCodeLine{00060\ \ \ \ \ \ \ \ \ GLFWwindow\ *window;}
+\DoxyCodeLine{00061\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{class_hate_engine_1_1_engine_adcb521f2d34705733987d6768ddd0a35}{RenderAPI}}\ renderApi\ =\ \mbox{\hyperlink{class_hate_engine_1_1_engine_adcb521f2d34705733987d6768ddd0a35a7d27e0a85126bae8ae2b4f8492af437c}{RenderAPI::OpenGL\_1\_5}};}
+\DoxyCodeLine{00062\ \ \ \ \ \ \ \ \ uint16\_t\ fixedLoopRefreshRate\ =\ 60;}
+\DoxyCodeLine{00063\ \ \ \ \ \ \ \ \ int64\_t\ fixedProcessDelayMCS;\ \textcolor{comment}{//\ 1\_000\_000\ /\ fixedLoopRefreshRate}}
+\DoxyCodeLine{00064\ \ \ \ \ \ \ \ \ uint16\_t\ physicsEngineIterateLoopRefreshRate\ =\ 60;}
+\DoxyCodeLine{00065\ \ \ \ \ \ \ \ \ int64\_t\ physicsEngineIterateDelayMCS;}
+\DoxyCodeLine{00066\ }
+\DoxyCodeLine{00067\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{class_hate_engine_1_1_phys_engine}{PhysEngine}}\ physEngine;}
+\DoxyCodeLine{00068\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{class_hate_engine_1_1_level}{Level}}*\ level;}
+\DoxyCodeLine{00069\ }
+\DoxyCodeLine{00070\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ Scene\ objects}}
+\DoxyCodeLine{00071\ \ \ \ \ \ \ \ \ \textcolor{comment}{//std::unordered\_map<UUID\_Generator::UUID,\ SceneObject>\ objects;}}
+\DoxyCodeLine{00072\ }
+\DoxyCodeLine{00073\ }
+\DoxyCodeLine{00074\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ threadFixedProcessLoop();}
+\DoxyCodeLine{00075\ \ \ \ \ \ \ \ \ \textcolor{comment}{//void\ frameBufferSizeChange(GLFWwindow*\ win,\ int\ w,\ int\ h);}}
+\DoxyCodeLine{00076\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ threadPhysicsEngineIterateLoop();}
+\DoxyCodeLine{00077\ }
+\DoxyCodeLine{00078\ }
+\DoxyCodeLine{00079\ }
+\DoxyCodeLine{00080\ \ \ \ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00081\ \ \ \ \ \ \ \ \ InputClass\ \mbox{\hyperlink{class_hate_engine_1_1_engine_a7be8c54b9bacffb0cb45e40e013ec3fc}{Input}};}
+\DoxyCodeLine{00082\ }
+\DoxyCodeLine{00083\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{class_hate_engine_1_1_engine_ad25fd843c4a424021ba3336482151784}{Engine}}(std::string\ window\_lbl,\ \textcolor{keywordtype}{int}\ width,\ \textcolor{keywordtype}{int}\ height);}
+\DoxyCodeLine{00084\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{class_hate_engine_1_1_engine_a2cb0dd5722737053db99f62f5bd86e61}{Run}}();}
+\DoxyCodeLine{00085\ }
+\DoxyCodeLine{00086\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{class_hate_engine_1_1_engine_a164f73a8a2206f5c28afde5deba0152e}{setProcessLoop}}(\textcolor{keywordtype}{void}\ (*func)(\mbox{\hyperlink{class_hate_engine_1_1_engine}{Engine}}*,\ \textcolor{keywordtype}{double}));}
+\DoxyCodeLine{00087\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{class_hate_engine_1_1_engine_a78c0349067b9562f8f6cf02289473c08}{setFixedProcessLoop}}(\textcolor{keywordtype}{void}\ (*func)(\mbox{\hyperlink{class_hate_engine_1_1_engine}{Engine}}*,\ \textcolor{keywordtype}{double}));}
+\DoxyCodeLine{00088\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{class_hate_engine_1_1_engine_a51ad9b857715ad00e9e243e9a36ced0f}{setInputEvent}}(\textcolor{keywordtype}{void}\ (*func)(\mbox{\hyperlink{class_hate_engine_1_1_engine}{Engine}}*,\ \mbox{\hyperlink{struct_hate_engine_1_1_engine_1_1_input_event_info}{InputEventInfo}}));}
+\DoxyCodeLine{00089\ }
+\DoxyCodeLine{00090\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{class_hate_engine_1_1_phys_engine}{PhysEngine}}*\ \textcolor{keyword}{const}\ \mbox{\hyperlink{class_hate_engine_1_1_engine_aa356ac0783fa141e42a12fb79c74e975}{getPhysEngine}}();}
+\DoxyCodeLine{00091\ }
+\DoxyCodeLine{00092\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{class_hate_engine_1_1_engine_a0ee0d49a5b771bd574d48c1f139a3001}{setLevelRef}}(\mbox{\hyperlink{class_hate_engine_1_1_level}{Level}}\ *lvl);}
+\DoxyCodeLine{00093\ \ \ \ \ \ \ \ \ \textcolor{comment}{//UUID\_Generator::UUID\ addObjectClone(Object\ object);}}
+\DoxyCodeLine{00094\ }
+\DoxyCodeLine{00095\ }
+\DoxyCodeLine{00096\ }
+\DoxyCodeLine{00097\ \ \ \ \ \ \ \ \ GLFWwindow*\ \mbox{\hyperlink{class_hate_engine_1_1_engine_a1510efe3d96bfb6e23173dda51fef631}{getWindow}}();}
+\DoxyCodeLine{00098\ \ \ \ \ \};}
+\DoxyCodeLine{00099\ \}}
+
+\end{DoxyCode}

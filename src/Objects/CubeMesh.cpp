@@ -1,6 +1,6 @@
-#include <Old3DEngine/Objects/CubeMesh.hpp>
+#include <HateEngine/Objects/CubeMesh.hpp>
 
-using namespace Old3DEngine;
+using namespace HateEngine;
 
 CubeMesh::CubeMesh() {
     verticies.reserve(24);

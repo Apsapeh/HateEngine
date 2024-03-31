@@ -1,6 +1,6 @@
-#include <Old3DEngine/Objects/Physics/StaticBody.hpp>
+#include <HateEngine/Objects/Physics/StaticBody.hpp>
 
-using namespace Old3DEngine;
+using namespace HateEngine;
 
 StaticBody::StaticBody() {
     bodyType = PhysicalBody::StaticBody;

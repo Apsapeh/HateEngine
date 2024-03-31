@@ -1,3 +1,3 @@
-#include <Old3DEngine/Objects/Light/SpotLight.hpp>
+#include <HateEngine/Objects/Light/SpotLight.hpp>
 
-using namespace Old3DEngine;
+using namespace HateEngine;

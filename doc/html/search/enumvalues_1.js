@@ -1,5 +1,5 @@
 var searchData=
 [
-  ['capsule_0',['Capsule',['../class_old3_d_engine_1_1_collision_shape.html#a6366b530ad6efbc6437aad49bd63c616ab2e24205af06387baf4e3f1bd26aa414',1,'Old3DEngine::CollisionShape']]],
-  ['clamp_1',['Clamp',['../class_old3_d_engine_1_1_texture.html#a853f2884ed869b3cd6b8b65a6d9f9bb1aab60a995eae2122d273e37fc28fef9d7',1,'Old3DEngine::Texture']]]
+  ['capsule_0',['Capsule',['../class_hate_engine_1_1_collision_shape.html#a15c987cbfa66569f335df9c7d4393453afd53d269a7076d968e62bda77b03aaf8',1,'HateEngine::CollisionShape']]],
+  ['clamp_1',['Clamp',['../class_hate_engine_1_1_texture.html#a4e98343d48bd09003e1c6953a9b37a89a48102f8f952a06c2c068eb074075f869',1,'HateEngine::Texture']]]
 ];

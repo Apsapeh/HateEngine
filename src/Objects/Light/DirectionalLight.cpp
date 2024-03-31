@@ -1,3 +1,3 @@
-#include <Old3DEngine/Objects/Light/DirectionalLight.hpp>
+#include <HateEngine/Objects/Light/DirectionalLight.hpp>
 
-using namespace Old3DEngine;
+using namespace HateEngine;

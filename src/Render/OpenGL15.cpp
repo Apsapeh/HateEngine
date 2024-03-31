@@ -2,41 +2,73 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include <glad/gl.h>
-#include <Old3DEngine/Render/OpenGL15.hpp>
+#include <HateEngine/Render/OpenGL15.hpp>
 
-using namespace Old3DEngine;
+// Include OpenGL Utility header (glu.h)
+#ifdef __linux__
+    #include <GL/glu.h>
+#elif __APPLE__
+    #include <OpenGL/glu.h>
+#elif _WIN32
+    #include <windows.h>
+    #include <GL/glu.h>
+#endif
 
-OpenGL15::OpenGL15(
-        std::vector<Engine::SceneObject> *m,
-        std::vector<Engine::SceneObject> *p,
-        std::vector<Engine::SceneObject> *l
+using namespace HateEngine;
+
+OpenGL15::OpenGL15() {}
+
+void OpenGL15::Draw3D(
+        Camera* camera,
+        std::vector<Mesh*>* meshes,
+        std::vector<Particles*>* particles,
+        std::vector<Light*>* lights
 ) {
-    meshes = m;
-    particles = p;
-    lights = l;
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+    if (camera != nullptr)
+        renderCamera(camera);
+
+    for (const auto obj : *meshes)
+        render(obj, lights);
+
+    for (const auto* s : *particles) {
+        for (const auto &particle : s->particlesVector)
+            render((const Mesh*)&particle, lights);
+    }
 }
 
-void OpenGL15::render(Mesh *mesh) {
+void OpenGL15::render(const Mesh *mesh, std::vector<Light*>* lights_vec) {
     if (mesh->getVisible()){
-        std::vector<int> light_indicies = getNearestLights(mesh->getGlobalPosition());
-        renderLight(light_indicies);
+        std::vector<int> light_indicies = getNearestLights(
+            lights_vec, mesh->getGlobalPosition()
+        );
+        renderLight(lights_vec, light_indicies);
 
         glPushMatrix();
-        
 
-        glm::vec3 par_pos = mesh->parent_position;
+
+
+        /*glm::vec3 par_pos = mesh->parent_position;
         glTranslatef(par_pos.x, par_pos.y, par_pos.z);
         glMultMatrixf(glm::value_ptr(mesh->parent_rotation_matrix));
 
         glm::vec3 own_pos = mesh->position;
         glTranslatef(own_pos.x, own_pos.y, own_pos.z);
-        glMultMatrixf(glm::value_ptr(mesh->rotation_matrix));
+        glMultMatrixf(glm::value_ptr(mesh->rotation_matrix));*/
+
+        glm::vec3 par_pos = mesh->getGlobalPosition();
+        glTranslatef(par_pos.x, par_pos.y, par_pos.z);
+        glMultMatrixf(glm::value_ptr(mesh->getGlobalRotationMatrix()));
 
         glm::vec3 scale = mesh->getGlobalScale();
         glScalef(scale.x, scale.y, scale.z);
         
         // Render Textures
         if (mesh->getTexture() != nullptr) {
+            if (not mesh->getTexture()->is_loaded)
+                mesh->getTexture()->Load(loadTexture, unloadTexture);
+
             glBindTexture(GL_TEXTURE_2D, mesh->getTexture()->getTextureID());
             glTexCoordPointer(2, GL_FLOAT, 0, mesh->getUV()->data());
         }
@@ -52,26 +84,33 @@ void OpenGL15::render(Mesh *mesh) {
     }
 }
 
-void OpenGL15::Draw() {
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    for (Engine::SceneObject &obj : *meshes) {
-        render((Mesh*)obj.obj);
-    }
+inline void OpenGL15::renderCamera(Camera* camera) {
+    glm::mat4 Mp = glm::perspective(
+        glm::radians(camera->getFOV()),
+        camera->getViewAspect(),
+        0.1f,
+        camera->getRenderDist()
+    );
 
-    for (Engine::SceneObject &s : *particles) {
-        Particles* p = (Old3DEngine::Particles*)s.obj;
-        for (Particle &particle : p->particlesVector) {
-            render((Mesh*)&particle);
-        }
-    }
+    glMatrixMode(GL_PROJECTION);
+    glLoadMatrixf(glm::value_ptr(Mp));
+
+    glm::mat4 mat = camera->getRotationMatrix();
+    mat = glm::translate(mat, -camera->getGlobalPosition()) ;
+
+    glMatrixMode(GL_MODELVIEW);
+    glLoadMatrixf(glm::value_ptr(mat));
 }
 
-inline void OpenGL15::renderLight(std::vector<int> indicies) {
+
+inline void OpenGL15::renderLight(
+    std::vector<Light*>* lights_vec, const std::vector<int>& indicies
+) {
     for (int i = 0; i < indicies.size(); ++i) {
         int index = indicies[i];
         int light_num = GL_LIGHT0 + i;
-        Light *light = (Light*)(*lights)[index].obj;
+        Light *light = (*lights_vec)[index];
         glm::vec3 pos = light->getGlobalPosition();
         float l_position[4] = {pos.x, pos.y, pos.z, 1.0};
 
@@ -92,13 +131,15 @@ struct LightDistSt {
     int   index;
 };
 
-inline std::vector<int> OpenGL15::getNearestLights(glm::vec3 position) {
+inline std::vector<int> OpenGL15::getNearestLights(
+    std::vector<Light*>* lights_vec, glm::vec3 position
+) {
     std::vector<int> result;
 
     std::vector<LightDistSt> light_dist;
-    light_dist.reserve(lights->size());
-    for (int i = 0; i < lights->size() and result.size() <= maxLightCount; ++i) {
-        Light *light = (Light*)(*lights)[i].obj;
+    light_dist.reserve(lights_vec->size());
+    for (int i = 0; i < lights_vec->size() and result.size() <= maxLightCount; ++i) {
+        Light *light = (*lights_vec)[i];
         if (!light->getVisible())
             continue;
         if (light->getLightType() == Light::LightTypeEnum::DirectionalLight)
@@ -114,4 +155,40 @@ inline std::vector<int> OpenGL15::getNearestLights(glm::vec3 position) {
             result.push_back(light_dist[i].index);
     }
     return result;
+}
+
+
+
+void OpenGL15::loadTexture(Texture* texture_ptr) {
+    glGenTextures(1, &texture_ptr->textureGL_ID);
+    glBindTexture(GL_TEXTURE_2D, texture_ptr->textureGL_ID);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, texture_ptr->texWrap);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, texture_ptr->texWrap);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, texture_ptr->texFiltering);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, texture_ptr->texMipMapFiltering);
+    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_LOD_BIAS, texture_ptr->MipMapLodBias);
+
+    if (texture_ptr->texMipMapFiltering != texture_ptr->texFiltering) // MipMap enabled
+        gluBuild2DMipmaps(
+            GL_TEXTURE_2D, texture_ptr->textureFormat,
+            texture_ptr->width, texture_ptr->height,
+            texture_ptr->textureFormat, GL_UNSIGNED_BYTE,
+            texture_ptr->data.data()
+        );
+    else // MipMad disabled
+        glTexImage2D(
+            GL_TEXTURE_2D, 0, texture_ptr->textureFormat,
+            texture_ptr->width, texture_ptr->height,
+            0, texture_ptr->textureFormat,
+            GL_UNSIGNED_BYTE, texture_ptr->data.data()
+        );
+
+
+    glBindTexture(GL_TEXTURE_2D, 0);
+}
+
+
+void OpenGL15::unloadTexture(Texture* texture_ptr) {
+    glDeleteTextures(1, &texture_ptr->textureGL_ID);
+    texture_ptr->textureGL_ID = 0;
 }

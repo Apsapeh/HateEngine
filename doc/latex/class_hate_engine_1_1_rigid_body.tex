@@ -1,0 +1,149 @@
+\doxysection{Hate\+Engine\+::Rigid\+Body Class Reference}
+\hypertarget{class_hate_engine_1_1_rigid_body}{}\label{class_hate_engine_1_1_rigid_body}\index{HateEngine::RigidBody@{HateEngine::RigidBody}}
+
+
+{\ttfamily \#include $<$Rigid\+Body.\+hpp$>$}
+
+Inheritance diagram for Hate\+Engine\+::Rigid\+Body\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=3.000000cm]{class_hate_engine_1_1_rigid_body}
+\end{center}
+\end{figure}
+\doxysubsubsection*{Additional Inherited Members}
+\doxysubsection*{Public Types inherited from \mbox{\hyperlink{class_hate_engine_1_1_physical_body}{Hate\+Engine\+::\+Physical\+Body}}}
+\begin{DoxyCompactItemize}
+\item 
+enum \mbox{\hyperlink{class_hate_engine_1_1_physical_body_ae58f58138c8387c5aa6240f41c6603f9}{Body\+Type}} \{ \mbox{\hyperlink{class_hate_engine_1_1_physical_body_ae58f58138c8387c5aa6240f41c6603f9a3757800dd9beb938b9d772b755f0f7a0}{Static\+Body}}
+, \mbox{\hyperlink{class_hate_engine_1_1_physical_body_ae58f58138c8387c5aa6240f41c6603f9ab5bc7b06ae98164e2d74e0dc73623f13}{Rigid\+Body}}
+ \}
+\end{DoxyCompactItemize}
+\doxysubsection*{Public Member Functions inherited from \mbox{\hyperlink{class_hate_engine_1_1_physical_body}{Hate\+Engine\+::\+Physical\+Body}}}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{class_hate_engine_1_1_physical_body_a3b5eacd53fd670205813d7017cfb8864}{\texorpdfstring{$\sim$}{\string~}\+Physical\+Body}} ()
+\item 
+void \mbox{\hyperlink{class_hate_engine_1_1_physical_body_a7f0766af0f8ac8db3204e5e0dc3f5ab6}{Init}} (reactphysics3d\+::\+Physics\+World \texorpdfstring{$\ast$}{*}parrent\+\_\+world, reactphysics3d\+::\+Rigid\+Body \texorpdfstring{$\ast$}{*}body)
+\item 
+void \mbox{\hyperlink{class_hate_engine_1_1_physical_body_a4e3542596328ea6aa3068fdddd7526e4}{Update}} ()
+\item 
+\mbox{\hyperlink{class_hate_engine_1_1_physical_body_ae58f58138c8387c5aa6240f41c6603f9}{Body\+Type}} \mbox{\hyperlink{class_hate_engine_1_1_physical_body_a8d208b0f2b3c65446d8c5105eaeb5ac4}{get\+Body\+Type}} () const
+\item 
+void \mbox{\hyperlink{class_hate_engine_1_1_physical_body_a642053d850ce3fcd2b9931b9b5d24731}{set\+Position}} (glm\+::vec3 vec)
+\item 
+void \mbox{\hyperlink{class_hate_engine_1_1_physical_body_a60ffa68792f16c704106b829529d9f2f}{set\+Position}} (float x, float y, float z)
+\item 
+void \mbox{\hyperlink{class_hate_engine_1_1_physical_body_aa91f6dc0541deba1b4c2bb644f9a4f4d}{set\+Rotation}} (glm\+::vec3 vec)
+\item 
+void \mbox{\hyperlink{class_hate_engine_1_1_physical_body_a52493740a2a3455770086ce8b021e791}{set\+Rotation}} (float x, float y, float z)
+\item 
+void \mbox{\hyperlink{class_hate_engine_1_1_physical_body_aefd14aa435bda8e15fccda770b6501e5}{offset}} (float x, float y, float z)
+\item 
+void \mbox{\hyperlink{class_hate_engine_1_1_physical_body_af6f0bdb3bd74143de525dfd5574b64fb}{offset}} (glm\+::vec3 vec)
+\item 
+void \mbox{\hyperlink{class_hate_engine_1_1_physical_body_a07ff1b42f287cf7383c6e8de0fbd8c5a}{rotate}} (float x, float y, float z)
+\item 
+void \mbox{\hyperlink{class_hate_engine_1_1_physical_body_a42c76ad8ca16d10b8a3f9170b744e26b}{rotate}} (glm\+::vec3 vec)
+\item 
+\mbox{\hyperlink{struct_hate_engine_1_1_u_u_i_d___generator_1_1_u_u_i_d}{UUID\+\_\+\+Generator\+::\+UUID}} \mbox{\hyperlink{class_hate_engine_1_1_physical_body_ad9d592a1a442f1c807f30781d54cb10e}{add\+Collision\+Shape\+Clone}} (\mbox{\hyperlink{class_hate_engine_1_1_collision_shape}{Collision\+Shape}} shape)
+\item 
+\mbox{\hyperlink{struct_hate_engine_1_1_u_u_i_d___generator_1_1_u_u_i_d}{UUID\+\_\+\+Generator\+::\+UUID}} \mbox{\hyperlink{class_hate_engine_1_1_physical_body_a94453f00ac3e560af0c79890762a38d2}{add\+Collision\+Shape\+Ref}} (\mbox{\hyperlink{class_hate_engine_1_1_collision_shape}{Collision\+Shape}} \texorpdfstring{$\ast$}{*}shape)
+\item 
+bool \mbox{\hyperlink{class_hate_engine_1_1_physical_body_a773c0c225377734ac7a7b0a00496f4fb}{del\+Collision\+Shape}} (\mbox{\hyperlink{struct_hate_engine_1_1_u_u_i_d___generator_1_1_u_u_i_d}{UUID\+\_\+\+Generator\+::\+UUID}} uuid)
+\item 
+const reactphysics3d\+::\+Physics\+World \texorpdfstring{$\ast$}{*} \mbox{\hyperlink{class_hate_engine_1_1_physical_body_abf9f26e7c65bf2034470c3723b26fae8}{get\+Parent\+Phys\+Common}} () const
+\end{DoxyCompactItemize}
+\doxysubsection*{Public Member Functions inherited from \mbox{\hyperlink{class_hate_engine_1_1_object}{Hate\+Engine\+::\+Object}}}
+\begin{DoxyCompactItemize}
+\item 
+void \mbox{\hyperlink{class_hate_engine_1_1_object_aa2812ba347a3e1e92a4674df4062c1a7}{set\+Position}} (glm\+::vec3 vec)
+\item 
+void \mbox{\hyperlink{class_hate_engine_1_1_object_a194df3f90da31a7e38a8fbe69e7444ef}{set\+Position}} (float x, float y, float z)
+\item 
+void \mbox{\hyperlink{class_hate_engine_1_1_object_acfacf87de317fea17ba623367cbf7eb0}{set\+Rotation}} (glm\+::vec3 vec)
+\item 
+void \mbox{\hyperlink{class_hate_engine_1_1_object_a743be293843017811d998fe3cafe6398}{set\+Rotation}} (float x, float y, float z)
+\item 
+void \mbox{\hyperlink{class_hate_engine_1_1_object_ad3d8516223031ec052de491666c5322d}{set\+Rotation\+Matrix}} (glm\+::mat4 mat)
+\item 
+void \mbox{\hyperlink{class_hate_engine_1_1_object_a70e4f1b0b28def9644f5344e2a7a0649}{set\+Scale}} (glm\+::vec3 vec)
+\item 
+void \mbox{\hyperlink{class_hate_engine_1_1_object_a2e00db46a7a69c248915949d5120bb6e}{set\+Scale}} (float x, float y, float z)
+\item 
+void \mbox{\hyperlink{class_hate_engine_1_1_object_a7d5db89c30a47c592c5ec458b44865e1}{set\+Visible}} (bool)
+\item 
+void \mbox{\hyperlink{class_hate_engine_1_1_object_a9b961af74d959fc56d519bc7c04d3c63}{offset}} (glm\+::vec3 vec)
+\item 
+void \mbox{\hyperlink{class_hate_engine_1_1_object_aa23f1263b617971897db82391a574370}{offset}} (float x, float y, float z)
+\item 
+void \mbox{\hyperlink{class_hate_engine_1_1_object_a81bb5b1bf9ee53407f893f0c125b5d21}{rotate}} (glm\+::vec3 vec, bool global=true)
+\item 
+void \mbox{\hyperlink{class_hate_engine_1_1_object_a5c78a1a409c80823f4933b6d0be93ee6}{rotate}} (float x, float y, float z, bool global=true)
+\item 
+glm\+::vec3 \mbox{\hyperlink{class_hate_engine_1_1_object_a029899410cf142b7edc95355014dfbef}{get\+Position}} () const
+\item 
+glm\+::vec3 \mbox{\hyperlink{class_hate_engine_1_1_object_a9bf0488d8c051e767d817f139a03b7c9}{get\+Rotation\+Euler}} () const
+\item 
+glm\+::mat4 \mbox{\hyperlink{class_hate_engine_1_1_object_a15a018bad3c93f5ae23bbf9aab9d6ec2}{get\+Rotation\+Matrix}} () const
+\item 
+glm\+::vec3 \mbox{\hyperlink{class_hate_engine_1_1_object_a37f702c0bcdbd7b9740eb2eb2530e257}{get\+Scale}} () const
+\item 
+glm\+::vec3 \mbox{\hyperlink{class_hate_engine_1_1_object_a0c0aea020e41e407b366adc871f36abb}{get\+Global\+Position}} () const
+\item 
+glm\+::vec3 \mbox{\hyperlink{class_hate_engine_1_1_object_a0613721b8f749ba6ca142ee50a930520}{get\+Global\+Rotation\+Euler}} () const
+\item 
+glm\+::mat4 \mbox{\hyperlink{class_hate_engine_1_1_object_a33e972313611f50ed1225a2c47f6ccff}{get\+Global\+Rotation\+Matrix}} () const
+\item 
+glm\+::vec3 \mbox{\hyperlink{class_hate_engine_1_1_object_ae6b995859a699fce22433265ad5e0bcd}{get\+Global\+Scale}} () const
+\item 
+bool \mbox{\hyperlink{class_hate_engine_1_1_object_adcc3cdd0949dd56e8abb11a1d7dee04b}{get\+Visible}} () const
+\item 
+\mbox{\hyperlink{struct_hate_engine_1_1_u_u_i_d___generator_1_1_u_u_i_d}{UUID\+\_\+\+Generator\+::\+UUID}} \mbox{\hyperlink{class_hate_engine_1_1_object_a9b40a0898974859c690b2ae6ca312459}{bind\+Obj}} (\mbox{\hyperlink{class_hate_engine_1_1_object}{Object}} \texorpdfstring{$\ast$}{*}obj)
+\item 
+bool \mbox{\hyperlink{class_hate_engine_1_1_object_a071f74000999f694efc30da45605e2c0}{unbind\+Obj}} (\mbox{\hyperlink{struct_hate_engine_1_1_u_u_i_d___generator_1_1_u_u_i_d}{UUID\+\_\+\+Generator\+::\+UUID}} uuid)
+\end{DoxyCompactItemize}
+\doxysubsection*{Public Attributes inherited from \mbox{\hyperlink{class_hate_engine_1_1_physical_body}{Hate\+Engine\+::\+Physical\+Body}}}
+\begin{DoxyCompactItemize}
+\item 
+bool \mbox{\hyperlink{class_hate_engine_1_1_physical_body_ac334c721a0dddede2bb60a7a10c17e31}{is\+\_\+initialized}} = false
+\end{DoxyCompactItemize}
+\doxysubsection*{Protected Member Functions inherited from \mbox{\hyperlink{class_hate_engine_1_1_object}{Hate\+Engine\+::\+Object}}}
+\begin{DoxyCompactItemize}
+\item 
+void \mbox{\hyperlink{class_hate_engine_1_1_object_add8d4e9bde99fb7cddd4a9983816b074}{set\+Parent\+Position}} (glm\+::vec3 vec)
+\item 
+void \mbox{\hyperlink{class_hate_engine_1_1_object_a09722b03a13531e0e9f901c4093d127d}{set\+Parent\+Scale}} (glm\+::vec3 vec)
+\item 
+void \mbox{\hyperlink{class_hate_engine_1_1_object_a8a8cdeb5fd410a45c73c5136355cee9a}{set\+Parent\+Rotation\+Matrix}} (const glm\+::mat4 \&mat)
+\end{DoxyCompactItemize}
+\doxysubsection*{Protected Attributes inherited from \mbox{\hyperlink{class_hate_engine_1_1_physical_body}{Hate\+Engine\+::\+Physical\+Body}}}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{class_hate_engine_1_1_physical_body_ae58f58138c8387c5aa6240f41c6603f9}{Body\+Type}} \mbox{\hyperlink{class_hate_engine_1_1_physical_body_a22d2d5ef770aadf5d9744dc0b0c5e224}{body\+Type}}
+\end{DoxyCompactItemize}
+\doxysubsection*{Protected Attributes inherited from \mbox{\hyperlink{class_hate_engine_1_1_object}{Hate\+Engine\+::\+Object}}}
+\begin{DoxyCompactItemize}
+\item 
+bool \mbox{\hyperlink{class_hate_engine_1_1_object_a54bb604d9bc2824d371fc4dd3908a8f3}{visible}} = true
+\item 
+std\+::unordered\+\_\+map$<$ \mbox{\hyperlink{struct_hate_engine_1_1_u_u_i_d___generator_1_1_u_u_i_d}{UUID\+\_\+\+Generator\+::\+UUID}}, \mbox{\hyperlink{class_hate_engine_1_1_object}{Object}} \texorpdfstring{$\ast$}{*} $>$ \mbox{\hyperlink{class_hate_engine_1_1_object_ab0ae1afd3739f246d8c71f785f6581dd}{binded\+Objects}}
+\item 
+glm\+::vec3 \mbox{\hyperlink{class_hate_engine_1_1_object_a73ec41c66533599490e4e7d1442c51b7}{parent\+\_\+position}} = \{0, 0, 0\}
+\item 
+glm\+::vec3 \mbox{\hyperlink{class_hate_engine_1_1_object_a4ae8df362cd5b3b12e84d1ef46a37cb6}{parent\+\_\+scale}} = \{1.\+0, 1.\+0, 1.\+0\}
+\item 
+glm\+::mat4 \mbox{\hyperlink{class_hate_engine_1_1_object_a6425805d5873f7934b9e57cb4434b8c9}{parent\+\_\+rotation\+\_\+matrix}}
+\item 
+glm\+::vec3 \mbox{\hyperlink{class_hate_engine_1_1_object_aac6dca692896ce50098af21642c5cd8c}{position}} = \{0, 0, 0\}
+\item 
+glm\+::vec3 \mbox{\hyperlink{class_hate_engine_1_1_object_aceb06ba29106c4cbc9918399fed397cc}{scale}} = \{1.\+0, 1.\+0, 1.\+0\}
+\item 
+glm\+::mat4 \mbox{\hyperlink{class_hate_engine_1_1_object_a4e618bd13929e169dabd4ca1f42b5052}{rotation\+\_\+matrix}}
+\item 
+bool \mbox{\hyperlink{class_hate_engine_1_1_object_ab1f31abb8627bc131658f724cc0959e2}{binded}} = false
+\end{DoxyCompactItemize}
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+include/\+Hate\+Engine/\+Objects/\+Physics/\mbox{\hyperlink{_rigid_body_8hpp}{Rigid\+Body.\+hpp}}\end{DoxyCompactItemize}

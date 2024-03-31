@@ -1,5 +1,5 @@
-#include <Old3DEngine/Resources/GLTFModel.hpp>
-#include <Old3DEngine/Error.hpp>
+#include <HateEngine/Resources/GLTFModel.hpp>
+#include <HateEngine/Error.hpp>
 #include <unordered_map>
 #include <iostream>
 
@@ -8,7 +8,7 @@
 #include <tiny_gltf.h>
 
 
-using namespace Old3DEngine;
+using namespace HateEngine;
 using tgModel = tinygltf::Model;
 using tinygltf::TinyGLTF;
 
@@ -61,7 +61,7 @@ static void Load(tgModel& model, std::vector<Mesh*>* meshes, std::vector<Texture
 
             textures->push_back(Texture(
                 image.image, image.width, image.height, t_form,
-                Texture::Repeat, Texture::Linear, false
+                Texture::Repeat, Texture::Linear, true, -1.0, false
             ));
             t_id[texture_index] = textures->size()-1;
         }
@@ -72,7 +72,15 @@ static void Load(tgModel& model, std::vector<Mesh*>* meshes, std::vector<Texture
         t.setAutoload(true);
 
 
+    // Load mesh properties
+    std::unordered_map<int, tinygltf::Node> mesh_properties;
+    for (auto const &node : model.nodes) {
+        if (node.mesh != -1)
+            mesh_properties[node.mesh] = node;
+    }
 
+
+    int model_mesh_counter = 0;
     for (const auto& model_mesh : model.meshes) {
         for (const auto& primitive : model_mesh.primitives) {
             Mesh* mesh = new Mesh();
@@ -151,9 +159,31 @@ static void Load(tgModel& model, std::vector<Mesh*>* meshes, std::vector<Texture
                     mesh->setTexture(&(*textures)[t_id[texture_index]]);
             }
 
+            // TODO: Add scale, rotation, translation
+
+
+            // =====> Set Mesh Properties <=====
+            if (mesh_properties.count(model_mesh_counter) != 0) {
+                std::cout << "Mesh properties: " << model_mesh.name << std::endl;
+                const auto& node = mesh_properties[model_mesh_counter];
+
+                if (node.scale.size() == 3)
+                    mesh->setScale({node.scale[0], node.scale[1], node.scale[2]});
+                if (node.translation.size() == 3)
+                    mesh->setPosition({node.translation[0], node.translation[1], node.translation[2]});
+                //if (node.rotation.size() == 4)
+                    //mesh->setRotationMatrix({node.rotation[0], node.rotation[1], node.rotation[2], node.rotation[3]});
+            }
+
             meshes->push_back(mesh);
         }
+        ++model_mesh_counter;
+
     }
+
+    std::cout << "Size: " << model.nodes.size() << std::endl;
+
+
 }
 
 // ========================================================================
@@ -178,6 +208,8 @@ GLTFModel::GLTFModel(std::string file_name) {
         ret = loader.LoadASCIIFromFile(&model, &err, &warn, file_name);
     else if (file_ext == ".glb")
         ret = loader.LoadBinaryFromFile(&model, &err, &warn, file_name);
+
+
 
     if (process_error(err, warn, ret)) return;
 

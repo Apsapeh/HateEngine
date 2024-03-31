@@ -1,0 +1,74 @@
+\doxysection{Level.\+hpp}
+\hypertarget{_level_8hpp_source}{}\label{_level_8hpp_source}\index{include/HateEngine/Resources/Level.hpp@{include/HateEngine/Resources/Level.hpp}}
+\mbox{\hyperlink{_level_8hpp}{Go to the documentation of this file.}}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{preprocessor}{\#pragma\ once}}
+\DoxyCodeLine{00002\ }
+\DoxyCodeLine{00003\ \textcolor{preprocessor}{\#include\ "{}\mbox{\hyperlink{_phys_engine_8hpp}{../PhysEngine.hpp}}"{}}}
+\DoxyCodeLine{00004\ \textcolor{preprocessor}{\#include\ "{}\mbox{\hyperlink{_object_8hpp}{../Objects/Object.hpp}}"{}}}
+\DoxyCodeLine{00005\ \textcolor{preprocessor}{\#include\ "{}\mbox{\hyperlink{_mesh_8hpp}{../Objects/Mesh.hpp}}"{}}}
+\DoxyCodeLine{00006\ \textcolor{preprocessor}{\#include\ "{}\mbox{\hyperlink{_model_8hpp}{../Objects/Model.hpp}}"{}}}
+\DoxyCodeLine{00007\ \textcolor{preprocessor}{\#include\ "{}\mbox{\hyperlink{_particles_8hpp}{../Objects/Particles.hpp}}"{}}}
+\DoxyCodeLine{00008\ \textcolor{preprocessor}{\#include\ "{}\mbox{\hyperlink{_light_8hpp}{../Objects/Light/Light.hpp}}"{}}}
+\DoxyCodeLine{00009\ \textcolor{preprocessor}{\#include\ "{}\mbox{\hyperlink{_camera_8hpp}{../Objects/Camera.hpp}}"{}}}
+\DoxyCodeLine{00010\ \textcolor{preprocessor}{\#include\ "{}\mbox{\hyperlink{_u_u_i_d___generator_8hpp}{../Utilities/UUID\_Generator.hpp}}"{}}}
+\DoxyCodeLine{00011\ }
+\DoxyCodeLine{00012\ \textcolor{keyword}{namespace\ }\mbox{\hyperlink{namespace_hate_engine}{HateEngine}}\ \{}
+\DoxyCodeLine{00013\ \ \ \ \ \textcolor{keyword}{class\ }\mbox{\hyperlink{class_hate_engine_1_1_level}{Level}}\ \{}
+\DoxyCodeLine{00014\ \ \ \ \ \ \ \ \ \textcolor{keyword}{friend}\ \textcolor{keyword}{class\ }\mbox{\hyperlink{class_hate_engine_1_1_engine}{Engine}};}
+\DoxyCodeLine{00015\ }
+\DoxyCodeLine{00016\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{class_hate_engine_1_1_phys_engine}{PhysEngine}}\ physEngine;}
+\DoxyCodeLine{00017\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{class_hate_engine_1_1_camera}{Camera}}\ *camera;}
+\DoxyCodeLine{00018\ }
+\DoxyCodeLine{00019\ \ \ \ \ \ \ \ \ \textcolor{keyword}{struct\ }SceneObject\ \{}
+\DoxyCodeLine{00020\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{class_hate_engine_1_1_object}{Object}}*\ obj;}
+\DoxyCodeLine{00021\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{bool}\ is\_ref;}
+\DoxyCodeLine{00022\ \ \ \ \ \ \ \ \ \};}
+\DoxyCodeLine{00023\ }
+\DoxyCodeLine{00024\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ 3D\ renderable\ objects}}
+\DoxyCodeLine{00025\ \ \ \ \ \ \ \ \ std::unordered\_map<UUID\_Generator::UUID,\ SceneObject>\ meshes\_obj;}
+\DoxyCodeLine{00026\ \ \ \ \ \ \ \ \ std::unordered\_map<UUID\_Generator::UUID,\ SceneObject>\ models\_obj;}
+\DoxyCodeLine{00027\ \ \ \ \ \ \ \ \ std::unordered\_map<UUID\_Generator::UUID,\ SceneObject>\ particles\_obj;}
+\DoxyCodeLine{00028\ \ \ \ \ \ \ \ \ std::unordered\_map<UUID\_Generator::UUID,\ SceneObject>\ lights\_obj;}
+\DoxyCodeLine{00029\ }
+\DoxyCodeLine{00030\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ This\ vector\ should\ be\ generated\ from\ meshes\_obj,\ models\_obj}}
+\DoxyCodeLine{00031\ \ \ \ \ \ \ \ \ std::vector<Mesh*>\ meshes;}
+\DoxyCodeLine{00032\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ This\ vector\ should\ be\ generated\ from\ particles\_obj}}
+\DoxyCodeLine{00033\ \ \ \ \ \ \ \ \ std::vector<Particles*>\ particles;}
+\DoxyCodeLine{00034\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ This\ vector\ should\ be\ generated\ from\ lights\_obj}}
+\DoxyCodeLine{00035\ \ \ \ \ \ \ \ \ std::vector<Light*>\ lights;}
+\DoxyCodeLine{00036\ }
+\DoxyCodeLine{00037\ \ \ \ \ \ \ \ \ std::mutex\ meshesMutex;}
+\DoxyCodeLine{00038\ \ \ \ \ \ \ \ \ std::mutex\ modelsMutex;}
+\DoxyCodeLine{00039\ \ \ \ \ \ \ \ \ std::mutex\ particlesMutex;}
+\DoxyCodeLine{00040\ \ \ \ \ \ \ \ \ std::mutex\ lightsMutex;}
+\DoxyCodeLine{00041\ }
+\DoxyCodeLine{00042\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ updateMeshesVector();}
+\DoxyCodeLine{00043\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ updateParticlesVector();}
+\DoxyCodeLine{00044\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ updateLightsVector();}
+\DoxyCodeLine{00045\ }
+\DoxyCodeLine{00046\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ 2D\ renderable\ objects}}
+\DoxyCodeLine{00047\ }
+\DoxyCodeLine{00048\ }
+\DoxyCodeLine{00049\ \ \ \ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00050\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{class_hate_engine_1_1_level_a8a0921c49ad9ce8d59c9a251e6b6f7da}{Level}}();}
+\DoxyCodeLine{00051\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{class_hate_engine_1_1_level_a7ffb0972284f9c73d9afaa1e10564c04}{\string~Level}}();}
+\DoxyCodeLine{00052\ }
+\DoxyCodeLine{00053\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{class_hate_engine_1_1_level_a2969985c987782efe4d1dd0c7d83dcf5}{setCameraRef}}(\mbox{\hyperlink{class_hate_engine_1_1_camera}{Camera}}*\ camera);}
+\DoxyCodeLine{00054\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{class_hate_engine_1_1_level_a9aaa90037fb1e61216ab803c33883df9}{removeCameraRef}}();}
+\DoxyCodeLine{00055\ }
+\DoxyCodeLine{00056\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_hate_engine_1_1_u_u_i_d___generator_1_1_u_u_i_d}{UUID\_Generator::UUID}}\ \mbox{\hyperlink{class_hate_engine_1_1_level_a22fa2d2c320e73ace5df07481194ba1e}{addObjectClone}}(\textcolor{keyword}{const}\ \mbox{\hyperlink{class_hate_engine_1_1_mesh}{Mesh}}\&\ \textcolor{keywordtype}{object},\ \textcolor{keywordtype}{bool}\ copy\_tex=\textcolor{keyword}{false});}
+\DoxyCodeLine{00057\ \ \ \ \ \ \ \ \ \textcolor{comment}{//UUID\_Generator::UUID\ addObjectClone(Particles\ object);}}
+\DoxyCodeLine{00058\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_hate_engine_1_1_u_u_i_d___generator_1_1_u_u_i_d}{UUID\_Generator::UUID}}\ \mbox{\hyperlink{class_hate_engine_1_1_level_ae1ab61861a24b3ca8d0b3e8808db65fc}{addObjectClone}}(\textcolor{keyword}{const}\ \mbox{\hyperlink{class_hate_engine_1_1_light}{Light}}\&\ \textcolor{keywordtype}{object});}
+\DoxyCodeLine{00059\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_hate_engine_1_1_u_u_i_d___generator_1_1_u_u_i_d}{UUID\_Generator::UUID}}\ \mbox{\hyperlink{class_hate_engine_1_1_level_ace340e6cca6c42669a53d9a60b34a309}{addObjectClone}}(\textcolor{keyword}{const}\ \mbox{\hyperlink{class_hate_engine_1_1_model}{Model}}\&\ \textcolor{keywordtype}{object},\ \textcolor{keywordtype}{bool}\ copy\_tex=\textcolor{keyword}{false});}
+\DoxyCodeLine{00060\ \ \ \ \ \ \ \ \ \textcolor{comment}{//UUID\_Generator::UUID\ addObjectRef(Object*\ object);}}
+\DoxyCodeLine{00061\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_hate_engine_1_1_u_u_i_d___generator_1_1_u_u_i_d}{UUID\_Generator::UUID}}\ \mbox{\hyperlink{class_hate_engine_1_1_level_a3f42e111d110c2028202b2268487b5fc}{addObjectRef}}(\mbox{\hyperlink{class_hate_engine_1_1_mesh}{Mesh}}*\ \textcolor{keywordtype}{object});}
+\DoxyCodeLine{00062\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_hate_engine_1_1_u_u_i_d___generator_1_1_u_u_i_d}{UUID\_Generator::UUID}}\ \mbox{\hyperlink{class_hate_engine_1_1_level_af8021841ced78be1f3d26e267aab48df}{addObjectRef}}(\mbox{\hyperlink{class_hate_engine_1_1_light}{Light}}*\ \textcolor{keywordtype}{object});}
+\DoxyCodeLine{00063\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_hate_engine_1_1_u_u_i_d___generator_1_1_u_u_i_d}{UUID\_Generator::UUID}}\ \mbox{\hyperlink{class_hate_engine_1_1_level_aaa6d9d7fd485332b8a2f754b220a44b9}{addObjectRef}}(\mbox{\hyperlink{class_hate_engine_1_1_model}{Model}}*\ \textcolor{keywordtype}{object});}
+\DoxyCodeLine{00064\ }
+\DoxyCodeLine{00065\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{bool}\ \mbox{\hyperlink{class_hate_engine_1_1_level_ab3a9dfb403fccaa344cb60b3abb1f0aa}{removeObject}}(\textcolor{keyword}{const}\ \mbox{\hyperlink{struct_hate_engine_1_1_u_u_i_d___generator_1_1_u_u_i_d}{UUID\_Generator::UUID}}\&\ uuid);}
+\DoxyCodeLine{00066\ \ \ \ \ \};}
+\DoxyCodeLine{00067\ \}}
+\DoxyCodeLine{00068\ }
+
+\end{DoxyCode}

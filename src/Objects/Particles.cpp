@@ -1,9 +1,9 @@
-#include "Old3DEngine/Objects/Particles.hpp"
+#include "HateEngine/Objects/Particles.hpp"
 #include <random>
 
 
 
-using namespace Old3DEngine;
+using namespace HateEngine;
 
 Particle::Particle(
         uint32_t index, const Mesh& mesh, glm::vec3 pos,

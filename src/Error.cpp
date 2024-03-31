@@ -1,6 +1,6 @@
 #include <iostream>
-#include <Old3DEngine/Error.hpp>
-using namespace Old3DEngine;
+#include <HateEngine/Error.hpp>
+using namespace HateEngine;
 
 void Error::throwError(std::string msg, bool terminate) {
     std::cerr << msg << "\n";

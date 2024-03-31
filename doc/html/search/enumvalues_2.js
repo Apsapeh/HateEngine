@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['directionallight_0',['DirectionalLight',['../class_old3_d_engine_1_1_light.html#a1c23a0de1614e6cc894b2a19baacb0f6a709fd1eda30d9bde1fa73ac770081375',1,'Old3DEngine::Light']]]
+  ['directionallight_0',['DirectionalLight',['../class_hate_engine_1_1_light.html#a6ca74890f0c998b7b6160e3a4881f110a1814e06bd1b6b7961d4c9bd17770f10d',1,'HateEngine::Light']]]
 ];

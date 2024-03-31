@@ -1,4 +1,5 @@
 var searchData=
 [
-  ['yaw_0',['yaw',['../class_old3_d_engine_1_1_camera.html#a5f974a903c5bc2149872e2915db1d5b7',1,'Old3DEngine::Camera']]]
+  ['y_0',['y',['../struct_hate_engine_1_1_physical_body_1_1_coord_struct.html#a9ea491e7ed45788e5110fc1c1022a5fa',1,'HateEngine::PhysicalBody::CoordStruct']]],
+  ['yaw_1',['yaw',['../class_hate_engine_1_1_camera.html#af8759959d0e063ea53fe2a44974199bb',1,'HateEngine::Camera']]]
 ];

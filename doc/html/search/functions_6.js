@@ -1,4 +1,5 @@
 var searchData=
 [
-  ['iteratephysics_0',['IteratePhysics',['../class_old3_d_engine_1_1_phys_engine.html#a3e386a2253d3fb807d0c2821da1a70c9',1,'Old3DEngine::PhysEngine']]]
+  ['init_0',['Init',['../class_hate_engine_1_1_physical_body.html#a7f0766af0f8ac8db3204e5e0dc3f5ab6',1,'HateEngine::PhysicalBody']]],
+  ['iteratephysics_1',['IteratePhysics',['../class_hate_engine_1_1_phys_engine.html#acc7d8d42c2ea36eb62d8a6a71bad1821',1,'HateEngine::PhysEngine']]]
 ];
