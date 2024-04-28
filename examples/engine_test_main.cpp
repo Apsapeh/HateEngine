@@ -270,8 +270,8 @@ void _process(HateEngine::Engine *engine, double delta) {
 void _physics_process(HateEngine::Engine *engine, double delta) {
     std::cout << "FPS: " << 1.0 / delta << "\n";
 
-    //ncvm_thread thread = ncvm_create_thread(&vm, vm.inst_p, NULL, 0, DefaultThreadSettings, NULL);
-    //ncvm_execute_thread(&thread);
+    ncvm_thread thread = ncvm_create_thread(&vm, vm.inst_p, NULL, 0, DefaultThreadSettings, NULL);
+    ncvm_execute_thread(&thread);
 
 
 
