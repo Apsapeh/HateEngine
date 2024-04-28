@@ -16,7 +16,34 @@
 
 using namespace HateEngine;
 
-OpenGL15::OpenGL15() {}
+OpenGL15::OpenGL15() {
+    GLfloat mat_specular[]={1.0,1.0,1.0,1.0};
+    GLfloat mat_shininess[]={50.0};
+    GLfloat light_position[]={1.0,1.0,1.0,1.0};
+    GLfloat white_light[]={1.0,1.0,1.0,1.0};
+    glClearColor(0.0,0.0,0.0,0.0);
+    glShadeModel(GL_SMOOTH);
+    //glMaterialfv(GL_FRONT,GL_SPECULAR,mat_specular);
+    //glMaterialfv(GL_FRONT,GL_SHININESS,mat_shininess);
+    GLfloat light_ambient[]={1.0,1.0,1.0,1.0};
+    /*glLightfv(GL_LIGHT0,GL_AMBIENT,light_ambient);
+    glLightfv(GL_LIGHT0,GL_POSITION,light_position);
+    glLightf(GL_LIGHT0, GL_CONSTANT_ATTENUATION, 1.0);
+    glLightf(GL_LIGHT0, GL_LINEAR_ATTENUATION, 0.2);
+    glLightf(GL_LIGHT0, GL_QUADRATIC_ATTENUATION, 0.5);*/
+    //glLightfv(GL_LIGHT0,GL_DIFFUSE,white_light);
+    //glLightfv(GL_LIGHT0,GL_SPECULAR,white_light);
+    //glEnable(GL_LIGHTING);
+    glEnable(GL_TEXTURE_2D);
+    //glLightModelf(GL_LIGHT_MODEL_TWO_SIDE, GL_TRUE);
+
+    glEnableClientState(GL_VERTEX_ARRAY);
+    glEnableClientState(GL_NORMAL_ARRAY);
+    glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+
+    //glEnableClientState(GL_COLOR_ARRAY);
+    glEnable(GL_DEPTH_TEST);
+}
 
 void OpenGL15::Draw3D(
         Camera* camera,

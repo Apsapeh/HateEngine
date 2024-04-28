@@ -20,7 +20,7 @@ UUID_Generator global_uuid_generator;
 
 using namespace HateEngine;
 
-Engine::Engine(std::string window_lbl, int width, int height) : Input(this){
+Engine::Engine(std::string window_lbl, int width, int height) : Input(this) {
     glfwInit();
     // Create window
     this->window = glfwCreateWindow(width, height, window_lbl.c_str(), NULL, NULL);
@@ -37,6 +37,7 @@ Engine::Engine(std::string window_lbl, int width, int height) : Input(this){
     glfwSetFramebufferSizeCallback(this->window, [] (GLFWwindow *win, int w, int h) {
         Engine *th = static_cast<Engine*>(glfwGetWindowUserPointer(win));
         //th->frameBufferSizeChange(win, w, h);
+        // FIXME: If will be few render APIs, this code should be in RenderAPI class
         glViewport(0, 0, w, h);
         if (th->level->camera == nullptr) {
             // WARNING
@@ -48,7 +49,7 @@ Engine::Engine(std::string window_lbl, int width, int height) : Input(this){
     });
 
     glfwSetCursorPosCallback(window, [] (GLFWwindow *win, double x, double y) {
-        Engine *th = static_cast<Engine*>(glfwGetWindowUserPointer(win));
+        Engine *th = (Engine*)(glfwGetWindowUserPointer(win));
         if (th->inputEventFunc != nullptr) {
             InputEventInfo info;
             info.type = InputEventType::InputEventMouseMove;
@@ -58,7 +59,7 @@ Engine::Engine(std::string window_lbl, int width, int height) : Input(this){
     });
 
     glfwSetKeyCallback(window, [] (GLFWwindow *win, int key, int scancode, int action, int mods) {
-        Engine *th = static_cast<Engine*>(glfwGetWindowUserPointer(win));
+        Engine *th = (Engine*)(glfwGetWindowUserPointer(win));
         if (th->inputEventFunc != nullptr) {
             InputEventInfo info;
             info.type = InputEventType::InputEventKey;
@@ -78,108 +79,90 @@ Engine::Engine(std::string window_lbl, int width, int height) : Input(this){
     }
     glad_is_initialized = true;
 
+
     // Calculating the delay between FixedProcessLoop iterations
     #ifdef __linux__
-        std::chrono::high_resolution_clock::time_point t1 = std::chrono::high_resolution_clock::now();
-        for (int o = 0; o < 10; ++o)
-            std::this_thread::sleep_for(std::chrono::nanoseconds(1000));
-        std::chrono::high_resolution_clock::time_point t2 = std::chrono::high_resolution_clock::now();
-        // Sleep correction
-        int64_t d = (std::chrono::duration_cast<std::chrono::microseconds>(t2-t1).count() - 10) / 10;
-        this->fixedProcessDelayMCS = 1000000 / (fixedLoopRefreshRate) - d;
-        this->physicsEngineIterateDelayMCS = 1000000 / physicsEngineIterateLoopRefreshRate - d;
+        // TODO: Add Linux
     #elif __APPLE__
         sched_param sch_params;
         sch_params.sched_priority = 99;
         pthread_setschedparam(pthread_self(), SCHED_RR, &sch_params);
-
-        int64_t fixDelay = 1000000 / fixedLoopRefreshRate;
-        int64_t physDelay = 1000000 / physicsEngineIterateLoopRefreshRate;
-
-        // FIXME: Добавить условие проверки на идентичность обновления физики и фикса
-        //        Изменить назавания переменных
-        std::chrono::high_resolution_clock::time_point t1 = std::chrono::high_resolution_clock::now();
-        for (int o = 0; o < 10; ++o)
-            std::this_thread::sleep_for(std::chrono::microseconds(fixDelay));
-        std::chrono::high_resolution_clock::time_point t2 = std::chrono::high_resolution_clock::now();
-        int64_t d_fp = std::chrono::duration_cast<std::chrono::microseconds>(t2-t1).count() / 10 - fixDelay;
-
-        t1 = std::chrono::high_resolution_clock::now();
-        for (int o = 0; o < 10; ++o)
-            std::this_thread::sleep_for(std::chrono::microseconds(physDelay));
-        t2 = std::chrono::high_resolution_clock::now();
-        int64_t d_pp = std::chrono::duration_cast<std::chrono::microseconds>(t2-t1).count() / 10 - physDelay;
-
-        this->fixedProcessDelayMCS = fixDelay - d_fp;
-        this->physicsEngineIterateDelayMCS = physDelay - d_pp;
     #elif _WIN32
-        // TODO: Fix Win
-        this->fixedProcessDelayMCS = 1000000 / fixedLoopRefreshRate;
-        this->physicsEngineIterateDelayMCS = 1000000 / physicsEngineIterateLoopRefreshRate;
+        // TODO: Add Win
     #endif
+
+    int64_t fixDelay = 1000000 / fixedLoopRefreshRate;
+    int64_t physDelay = 1000000 / physicsEngineIterateLoopRefreshRate;
+
+    std::chrono::high_resolution_clock::time_point t1 = std::chrono::high_resolution_clock::now();
+    for (int o = 0; o < 10; ++o)
+        std::this_thread::sleep_for(std::chrono::microseconds(fixDelay));
+    std::chrono::high_resolution_clock::time_point t2 = std::chrono::high_resolution_clock::now();
+    int64_t d_fp = std::chrono::duration_cast<std::chrono::microseconds>(t2-t1).count() / 10 - fixDelay;
+    this->fixedProcessDelayMCS = fixDelay - d_fp;
+
+    if (physicsEngineIterateLoopRefreshRate == fixedLoopRefreshRate) {
+        this->physicsEngineIterateDelayMCS = this->fixedProcessDelayMCS;
+        return;
+    }
+
+    t1 = std::chrono::high_resolution_clock::now();
+    for (int o = 0; o < 10; ++o)
+        std::this_thread::sleep_for(std::chrono::microseconds(physDelay));
+    t2 = std::chrono::high_resolution_clock::now();
+    int64_t d_pp = std::chrono::duration_cast<std::chrono::microseconds>(t2-t1).count() / 10 - physDelay;
+    this->physicsEngineIterateDelayMCS = physDelay - d_pp;
 }
 
 
 void Engine::Run() {
+    bool isOneThread = false;
+
     std::thread *fixedProcessThread = nullptr;
-    if (this->fixedProcessLoop != nullptr)
-        fixedProcessThread = new std::thread(&Engine::threadFixedProcessLoop, this);
+    std::thread *physicsEngineProcessThread = nullptr;
+    if (not isOneThread) {
+        if (this->fixedProcessLoop != nullptr)
+            fixedProcessThread = new std::thread(&Engine::threadFixedProcessLoop, this);
 
-    std::thread physicsEngineProcessThread = std::thread(
-            &Engine::threadPhysicsEngineIterateLoop, this
-    );
-
-
-
-    GLfloat mat_specular[]={1.0,1.0,1.0,1.0};
-    GLfloat mat_shininess[]={50.0};
-    GLfloat light_position[]={1.0,1.0,1.0,1.0};
-    GLfloat white_light[]={1.0,1.0,1.0,1.0};
-    glClearColor(0.0,0.0,0.0,0.0);
-    glShadeModel(GL_SMOOTH);
-    //glMaterialfv(GL_FRONT,GL_SPECULAR,mat_specular);
-    //glMaterialfv(GL_FRONT,GL_SHININESS,mat_shininess);
-    GLfloat light_ambient[]={1.0,1.0,1.0,1.0};
-    /*glLightfv(GL_LIGHT0,GL_AMBIENT,light_ambient);
-    glLightfv(GL_LIGHT0,GL_POSITION,light_position);
-    glLightf(GL_LIGHT0, GL_CONSTANT_ATTENUATION, 1.0);
-    glLightf(GL_LIGHT0, GL_LINEAR_ATTENUATION, 0.2);
-    glLightf(GL_LIGHT0, GL_QUADRATIC_ATTENUATION, 0.5);*/
-    //glLightfv(GL_LIGHT0,GL_DIFFUSE,white_light);
-    //glLightfv(GL_LIGHT0,GL_SPECULAR,white_light);
-    //glEnable(GL_LIGHTING);
-    glEnable(GL_TEXTURE_2D);
-    //glLightModelf(GL_LIGHT_MODEL_TWO_SIDE, GL_TRUE);
-
-    glEnableClientState(GL_VERTEX_ARRAY);
-    glEnableClientState(GL_NORMAL_ARRAY);
-    glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-
-    //glEnableClientState(GL_COLOR_ARRAY);
-    glEnable(GL_DEPTH_TEST);
+        physicsEngineProcessThread = new std::thread(
+                &Engine::threadPhysicsEngineIterateLoop, this
+        );
+    }
 
     OpenGL15 ogl;
 
     glfwSwapBuffers(this->window);
     double oldTime = glfwGetTime();
+    double fixed_process_loop_delta = 0.0;
+    double physics_engine_iterate_loop_delta = 0.0;
+    double delta = 0.0;
+    double fixed_process_loop_delay = 1.0 / this->fixedLoopRefreshRate;
+    double physics_engine_iterate_loop_delay = 1.0 / this->physicsEngineIterateLoopRefreshRate;
     while (not glfwWindowShouldClose(this->window)) {
-        double delta = glfwGetTime() - oldTime;
+        delta = glfwGetTime() - oldTime;
         oldTime = glfwGetTime();
         glfwPollEvents();
+
+        fixed_process_loop_delta += delta;
+        physics_engine_iterate_loop_delta += delta;
 
         //meshesMutex.lock();
         if (this->processLoop != nullptr)
             this->processLoop(this, delta);
+
+        if (isOneThread) {
+            if (this->fixedProcessLoop != nullptr and fixed_process_loop_delta >= fixed_process_loop_delay) {
+                this->fixedProcessLoop(this, fixed_process_loop_delta);
+                fixed_process_loop_delta = 0.0;
+            }
+
+            if (physics_engine_iterate_loop_delta >= physics_engine_iterate_loop_delay) {
+                physEngine.IteratePhysics((float)physics_engine_iterate_loop_delta);
+                physics_engine_iterate_loop_delta = 0.0;
+            }
+        }
         //meshesMutex.unlock();
 
-
-
-        //meshesMutex.lock();
-        /*for (const auto& o : particles_obj) {
-            Particles* p = (HateEngine::Particles*)o.second.obj;
-            if (not p->pause)
-                p->update(delta);
-        }*/
         ogl.Draw3D(
             this->level->camera,
             &this->level->meshes,
@@ -193,8 +176,8 @@ void Engine::Run() {
 
     if (fixedProcessThread != nullptr and fixedProcessThread->joinable())
         fixedProcessThread->join();
-    if (physicsEngineProcessThread.joinable())
-        physicsEngineProcessThread.join();
+    if (physicsEngineProcessThread != nullptr and physicsEngineProcessThread->joinable())
+        physicsEngineProcessThread->join();
 }
 
 

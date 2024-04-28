@@ -1,5 +1,13 @@
 add_repositories("apsapeh-repo https://github.com/Apsapeh/xmake-repo.git")
-add_requires("glfw 3.3.9", "glm 1.0.0", "tinygltf 2.8.13", "reactphysics3d 0.9.0", "nuklear", "glu")
+add_requires(
+    "glfw 3.3.9",
+    "glm 1.0.0", 
+    "tinygltf 2.8.13", 
+    "reactphysics3d 0.9.0", 
+    "nuklear", 
+    "glu",
+    "ncvm 68c940cec9b119268c0ce9a8ee061d91c922dd5b"
+)
 
 add_rules("mode.debug", "mode.release")
 
@@ -52,7 +60,7 @@ target("Example_1")
     add_includedirs("deps", "include")
 
     add_deps("HateEngine")
-    add_packages("glfw", "glm", "reactphysics3d", "nuklear")
+    add_packages("glfw", "glm", "reactphysics3d", "nuklear", "ncvm")
     add_defines("GLM_ENABLE_EXPERIMENTAL")
 
     if is_plat("mingw") then 

@@ -16,6 +16,8 @@
 
 #include <reactphysics3d/reactphysics3d.h>
 
+#include <ncvm.h>
+
 using namespace reactphysics3d;
 
 void _process(HateEngine::Engine *, double);
@@ -54,6 +56,39 @@ const int HEIGHT = 600;
 HateEngine::Camera camera(float(WIDTH) / float(HEIGHT), 60, 600);
 HateEngine::Light sun(HateEngine::Light::DirectionalLight);
 HateEngine::Particles *part;
+
+
+
+//NCVM
+HateEngine::CubeMesh ncvm_mesh;
+#include <fstream>
+std::ifstream file("/Users/ghost/Desktop/Rust Projects/Projects/ncvm_asm/foo.bin", std::ios::binary);
+ncvm vm;
+const unsigned char* get_next_n_bytes(unsigned long long n, void* data_p) {
+    unsigned char* data = new unsigned char[n];
+    file.read((char*)data, n);
+    return data;
+}
+
+NCVM_LIB_FUNCTION(fcos) {
+    thread->f32_registers[0] = cos(thread->f32_registers[0]);
+}
+
+NCVM_LIB_FUNCTION(set_mesh_y) {
+    //std::cout << thread->f32_registers[0] << "\n";
+    ncvm_mesh.setPosition(5, thread->f32_registers[0] + 2.0, 5);
+}
+
+ncvm_lib_function loader(const char* name, void* data_p) {
+    //std::cout << name << "\n";
+    if (strcmp(name, "fcos") == 0)
+        return fcos;
+    else if (strcmp(name, "set_mesh_y") == 0)
+        return set_mesh_y;
+    return NULL;
+}
+
+
 
 int main() {
     std::cout << "Hello\n";
@@ -184,6 +219,33 @@ int main() {
     HateEngine::PhysEngine *ph_w = game.getPhysEngine();
     ph_w->addObjectRef(&rigidBody);
 
+
+
+    //NCVM
+    std::ifstream file("/Users/ghost/Desktop/Rust Projects/Projects/ncvm_asm/foo.bin", std::ios::binary);
+    int ret_code = 0;
+    vm = ncvm_loadBytecodeStream(
+        get_next_n_bytes,
+        nullptr,
+        loader,
+        NULL,
+        &ret_code
+    );
+    file.close();
+
+    ncvm_mesh.setTexture(&tex);
+    lvl.addObjectRef(&ncvm_mesh);
+    //exit(0);
+
+    /*ncvm_thread thread = ncvm_create_thread(&vm, vm.inst_p, NULL, 0, DefaultThreadSettings, NULL);
+    ncvm_execute_thread(&thread);*/
+
+    //ncvm_thread_free(&thread);
+    //ncvm_free(&vm);
+ 
+
+
+
     game.setProcessLoop(_process);
     game.setFixedProcessLoop(_physics_process);
     game.setInputEvent(_input_event);
@@ -198,7 +260,7 @@ void _process(HateEngine::Engine *engine, double delta) {
       ++count;
       del += delta;
     } else {
-      std::cout << "FPS: " << (float)count / del << std::endl;
+      //std::cout << "FPS: " << (float)count / del << std::endl;
 
       count = 0;
       del = 0.0;
@@ -206,6 +268,13 @@ void _process(HateEngine::Engine *engine, double delta) {
 }
 
 void _physics_process(HateEngine::Engine *engine, double delta) {
+    std::cout << "FPS: " << 1.0 / delta << "\n";
+
+    //ncvm_thread thread = ncvm_create_thread(&vm, vm.inst_p, NULL, 0, DefaultThreadSettings, NULL);
+    //ncvm_execute_thread(&thread);
+
+
+
     // std::cout << mesh2.getGlobalPosition().x << " " <<
     // mesh2.getGlobalPosition().y << '\n';
     physicsWorld->update((float)delta / 1.0f);
