@@ -4,7 +4,7 @@
 #include <glm/vec3.hpp>
 #include <glm/matrix.hpp>
 #include <glm/gtx/euler_angles.hpp>
-#include "../Utilities/UUID_Generator.hpp"
+#include "../Utilities/UUID.hpp"
 
 namespace HateEngine {
     class OpenGL15;
@@ -13,10 +13,14 @@ namespace HateEngine {
     class Object {
         friend OpenGL15;
         friend PhysicalBody;
+
+    private:
+        UUID uuid;
+
     protected:
         bool visible = true;
         // FIXME
-        std::unordered_map<UUID_Generator::UUID, Object*> bindedObjects;
+        std::unordered_map<UUID, Object*> bindedObjects;
 
         glm::vec3 parent_position = {0, 0, 0};
         glm::vec3 parent_scale = {1.0, 1.0, 1.0};
@@ -65,20 +69,24 @@ namespace HateEngine {
         glm::vec3 getGlobalRotationEuler() const;
         glm::mat4 getGlobalRotationMatrix() const;
         glm::vec3 getGlobalScale() const;
+        
         bool getVisible() const;
+        UUID getUUID() const;
 
         /**
          * Bind object as kind
          * \param obj Object to bind
          * \return UUID of binded object
          */
-        UUID_Generator::UUID bindObj(Object* obj);
+        UUID bindObj(Object* obj);
 
         /**
          * Unbind object by UUID
          * \param uuid UUID of binded object
          * \return True if unbinded successfully, False if the object is not found
          */
-        bool unbindObj(UUID_Generator::UUID uuid);
+        bool unbindObj(UUID uuid);
+
+
     };
 }

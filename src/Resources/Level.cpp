@@ -20,6 +20,9 @@ void Level::removeCameraRef() {
     this->camera = nullptr;
 }
 
+PhysEngine *Level::getPhysEngine() {
+    return &this->physEngine;
+}
 
 
 
@@ -35,13 +38,12 @@ void Level::removeCameraRef() {
 }*/
 
 
-UUID_Generator::UUID Level::addObjectClone(const Mesh& object, bool copy_tex) {
+UUID Level::addObjectClone(const Mesh& object, bool copy_tex) {
     std::lock_guard<std::mutex> guard(meshesMutex);
-    const UUID_Generator::UUID id = global_uuid_generator.gen();
     Mesh* new_mesh = new Mesh(object, copy_tex);
-    meshes_obj[id] = {new_mesh, false};
+    meshes_obj[new_mesh->getUUID()] = {new_mesh, false};
     updateMeshesVector();
-    return id;
+    return new_mesh->getUUID();
 }
 
 /*UUID_Generator::UUID Level::addObjectClone(Particles object) {
@@ -55,24 +57,22 @@ UUID_Generator::UUID Level::addObjectClone(const Mesh& object, bool copy_tex) {
     return id;
 }*/
 
-UUID_Generator::UUID Level::addObjectClone(const Light& object) {
+UUID Level::addObjectClone(const Light& object) {
     std::lock_guard<std::mutex> guard(lightsMutex);
-    const UUID_Generator::UUID id = global_uuid_generator.gen();
     Light* new_mesh = new Light(object.getLightType());
     *new_mesh = object;
-    lights_obj[id] = {new_mesh, false};
+    lights_obj[new_mesh->getUUID()] = {new_mesh, false};
     updateLightsVector();
-    return id;
+    return new_mesh->getUUID();
 }
 
-// FIX IT: Wrong copy, because meshes are not copied
-UUID_Generator::UUID Level::addObjectClone(const Model& object, bool copy_tex) {
-    std::lock_guard<std::mutex> guard(modelsMutex);
-    const UUID_Generator::UUID id = global_uuid_generator.gen();
+// FIXME: Wrong copy, because meshes are not copied
+UUID Level::addObjectClone(const Model& object, bool copy_tex) {
+    std::lock_guard<std::mutex> guard(modelsMutex);;
     Model* new_mesh = new Model(object, copy_tex);
-    models_obj[id] = {new_mesh, false};
+    models_obj[new_mesh->getUUID()] = {new_mesh, false};
     updateMeshesVector();
-    return id;
+    return new_mesh->getUUID();
 }
 
 /*UUID_Generator::UUID Level::addObjectRef(Object *object) {
@@ -81,31 +81,28 @@ UUID_Generator::UUID Level::addObjectClone(const Model& object, bool copy_tex) {
     return id;
 }*/
 
-UUID_Generator::UUID Level::addObjectRef(Mesh *object) {
+UUID Level::addObjectRef(Mesh *object) {
     std::lock_guard<std::mutex> guard(meshesMutex);
-    const UUID_Generator::UUID id = global_uuid_generator.gen();
-    meshes_obj[id] = {object, false};
+    meshes_obj[object->getUUID()] = {object, false};
     updateMeshesVector();
-    return id;
+    return object->getUUID();
 }
 
-UUID_Generator::UUID Level::addObjectRef(Light *object) {
+UUID Level::addObjectRef(Light *object) {
     std::lock_guard<std::mutex> guard(lightsMutex);
-    UUID_Generator::UUID id = global_uuid_generator.gen();
-    lights_obj[id] = {object, false};
+    lights_obj[object->getUUID()] = {object, false};
     updateLightsVector();
-    return id;
+    return object->getUUID();
 }
 
-UUID_Generator::UUID Level::addObjectRef(Model *object) {
+UUID Level::addObjectRef(Model *object) {
     std::lock_guard<std::mutex> guard(modelsMutex);
-    const UUID_Generator::UUID id = global_uuid_generator.gen();
-    models_obj[id] = {object, false};
+    models_obj[object->getUUID()] = {object, false};
     updateMeshesVector();
-    return id;
+    return object->getUUID();
 }
 
-bool Level::removeObject(const UUID_Generator::UUID& uuid) {
+bool Level::removeObject(const UUID& uuid) {
     std::lock_guard<std::mutex> mesh_guard(meshesMutex);
     std::lock_guard<std::mutex> model_guard(modelsMutex);
     std::lock_guard<std::mutex> particles_guard(particlesMutex);

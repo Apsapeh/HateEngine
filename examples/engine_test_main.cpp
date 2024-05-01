@@ -1,3 +1,5 @@
+#include "HateEngine/Objects/Object.hpp"
+#include "HateEngine/Objects/Physics/BoxShape.hpp"
 #include <HateEngine/Error.hpp>
 #include <HateEngine/HateEngine.hpp>
 #include <HateEngine/Objects/Camera.hpp>
@@ -48,6 +50,7 @@ Collider *rbody_col =
 HateEngine::CubeMesh mesh1;
 HateEngine::CubeMesh mesh2;
 HateEngine::CubeMesh xAxMesh;
+HateEngine::GLTFModel glmodel("examples/Assets/employee.glb");
 
 const int WIDTH = 800;
 const int HEIGHT = 600;
@@ -98,12 +101,15 @@ int main() {
     floor_col->getMaterial().setBounciness(0);
     floor_col->getMaterial().setFrictionCoefficient(1);
 
+    
+
     xAxMesh.setSize(1, 0.1, 0.1);
     xAxMesh.offset(0, 6, 0);
 
     camera.setPosition(0, 6, 3);
+    //camera.setPosition(0, 25, 0);
     camera.setRotation(0, 0, 0);
-    mesh1.setRotation(0, 10, 0);
+    mesh1.setRotation(0, 0, 0);
     mesh1.setSize(1, 1, 1);
 
     HateEngine::CubeMesh floor;
@@ -122,20 +128,13 @@ int main() {
 
     mesh2.setPosition(3, 3, 3);
 
-    HateEngine::Engine engine("Window Name", 800, 600);
-    HateEngine::Level level;
-    level.addObjectRef(&sun);
-    level.addObjectRef(&mesh1);
-    level.setCameraRef(&camera);
-    engine.setLevelRef(&level);
-
+    HateEngine::Engine game("Old3DE Test", WIDTH, HEIGHT);
     // Setting textures for the cube and floor meshes
 
     HateEngine::Texture tex_floor("examples/Assets/ground.png");
     HateEngine::Level lvl;
-    HateEngine::Engine game("Old3DE Test", WIDTH, HEIGHT);
     //    HateEngine::GLTFModel glmodel("examples/Assets/ignore/R.glb");
-    HateEngine::GLTFModel glmodel("examples/Assets/employee.glb");
+    //HateEngine::GLTFModel glmodel("examples/Assets/employee.glb");
     HateEngine::Texture tex("examples/Assets/brick.png",
                             HateEngine::Texture::Repeat,
                             HateEngine::Texture::Nearest);
@@ -155,17 +154,21 @@ int main() {
         0, 0, 3, 0, 3, 3, 3, 3, 0, 3, 0, 0, 0, 0, 3, 0, 3, 3, 3, 3, 0, 3, 0, 0,
     });
     mesh1.setTexture(&tex);
-    mesh2.setTexture(&tex);
-    // mesh1.bindObj(&mesh2);
-    mesh1.bindObj(&glmodel);
-    glmodel.bindObj(&mesh2);
+    //mesh2.setTexture(&tex);
+    //mesh1.bindObj(&mesh2);
+    //mesh1.bindObj(&glmodel);
+
+
+    //glmodel.bindObj(&mesh2);
+    //glmodel.bindObj(&camera);
     // mesh1.bindObj(&glmodel);
+
     lvl.addObjectRef(&mesh1);
-    lvl.addObjectRef(&mesh2);
+    //lvl.addObjectRef(&mesh2);
     lvl.addObjectRef(&xAxMesh);
-    lvl.addObjectClone(floor);
+    lvl.addObjectRef(&floor);
     lvl.addObjectRef(&sun);
-    lvl.addObjectRef(&glmodel);
+    //lvl.addObjectRef(&glmodel);
     //lvl.addObjectClone(glmodel2);
     
     /*int poly_count = 0;
@@ -179,7 +182,8 @@ int main() {
 
     // game.addObjectRef(&tomato2);
     HateEngine::Particle::ParticleSettings pa_set = {
-        6.0f, 6.0f, false, {0, 4, 0}, {4, 4, 4}};
+        6.0f, 6.0f, false, {0, 4, 0}, {4, 4, 4}
+    };
 
     HateEngine::Texture snow_tex("examples/Assets/snow.png",
                                  HateEngine::Texture::Clamp,
@@ -190,7 +194,7 @@ int main() {
     snow_mesh.setTexture(&snow_tex);
     // snow_mesh.setSize(0.8, 0.8, 0.8);
     snow_mesh.setPosition(0, 5, 0);
-    lvl.addObjectRef(&snow_mesh);
+    //lvl.addObjectRef(&snow_mesh);
     // tomato.setScale({0.05, 0.05, 0.05});
     HateEngine::Particles cube_part((HateEngine::Mesh)snow_mesh, 100, pa_set);
     /*cube_part.calculateFunc =  [] (HateEngine::Particle* p, double delta) {
@@ -215,9 +219,25 @@ int main() {
     // std::cout << part->getPosition().z << "\n";
     // game.addObjectClone(cube_part);
 
-    HateEngine::PhysicalBody rigidBody;
-    HateEngine::PhysEngine *ph_w = game.getPhysEngine();
-    ph_w->addObjectRef(&rigidBody);
+    HateEngine::PhysicalBody rigidBody(HateEngine::PhysicalBody::DynamicBody);
+    rigidBody.setPosition(0, 5, 0);
+    rigidBody.rotate(48, 22,36);
+    //rigidBody.setRotation(0, 0, 0);
+    HateEngine::BoxShape   boxShape(1, 1, 1);
+    rigidBody.addCollisionShapeRef(&boxShape);
+    rigidBody.bindObj(&mesh1);
+    //rigidBody.bindObj(&glmodel);
+
+    HateEngine::PhysicalBody floorBody(HateEngine::PhysicalBody::StaticBody);
+    floorBody.setPosition(0, 0, 0);
+    HateEngine::BoxShape floorShape(25, 1, 25);
+    floorBody.addCollisionShapeRef(&floorShape);
+    floorBody.bindObj(&floor);
+
+    lvl.getPhysEngine()->addObjectRef(&rigidBody);
+    lvl.getPhysEngine()->addObjectRef(&floorBody);
+
+
 
 
 
@@ -234,7 +254,7 @@ int main() {
     file.close();
 
     ncvm_mesh.setTexture(&tex);
-    lvl.addObjectRef(&ncvm_mesh);
+    //lvl.addObjectRef(&ncvm_mesh);
     //exit(0);
 
     /*ncvm_thread thread = ncvm_create_thread(&vm, vm.inst_p, NULL, 0, DefaultThreadSettings, NULL);
@@ -260,7 +280,7 @@ void _process(HateEngine::Engine *engine, double delta) {
       ++count;
       del += delta;
     } else {
-      //std::cout << "FPS: " << (float)count / del << std::endl;
+      std::cout << "FPS: " << (float)count / del << std::endl;
 
       count = 0;
       del = 0.0;
@@ -268,16 +288,19 @@ void _process(HateEngine::Engine *engine, double delta) {
 }
 
 void _physics_process(HateEngine::Engine *engine, double delta) {
-    std::cout << "FPS: " << 1.0 / delta << "\n";
+    //std::cout << "FPS: " << 1.0 / delta << "\n";
+    glm::vec3 mesh1_r = mesh1.getGlobalRotationEuler();
+    std::cout << mesh1_r.x << " " << mesh1_r.y << " " << mesh1_r.z << "\n";
 
     ncvm_thread thread = ncvm_create_thread(&vm, vm.inst_p, NULL, 0, DefaultThreadSettings, NULL);
     ncvm_execute_thread(&thread);
 
-
+    if (engine->Input.isKeyPressed(GLFW_KEY_LEFT_SHIFT))
+        rbody_body->setLinearVelocity({0, 10, 0});
 
     // std::cout << mesh2.getGlobalPosition().x << " " <<
     // mesh2.getGlobalPosition().y << '\n';
-    physicsWorld->update((float)delta / 1.0f);
+    //physicsWorld->update((float)delta / 1.0f);
 
     decimal dec;
     Vector3 vec;
@@ -286,37 +309,49 @@ void _physics_process(HateEngine::Engine *engine, double delta) {
     glm::quat qe(qu.w, -qu.z, -qu.y, -qu.x);
 
     glm::mat4 mat = glm::toMat4(qe);
-    mesh1.setRotationMatrix(mat);
+    //mesh1.setRotationMatrix(mat);
 
     Vector3 rbodyPosVect = rbody_body->getTransform().getPosition();
-    mesh1.setPosition(rbodyPosVect.z, rbodyPosVect.y, rbodyPosVect.x);
+    //mesh1.setPosition(rbodyPosVect.z, rbodyPosVect.y, rbodyPosVect.x);
 
- /* if (glfwGetKey(engine->getWindow(), GLFW_KEY_ESCAPE) == GLFW_PRESS)
-      glfwSetWindowShouldClose(engine->getWindow(), true);*/
+    if (engine->Input.isKeyPressed(GLFW_KEY_ESCAPE))
+        glfwSetWindowShouldClose(engine->window, true);
 
-    if (engine->Input.isKeyPressed(GLFW_KEY_LEFT_SHIFT))
-      rbody_body->setLinearVelocity({0, 10, 0});
-    if (engine->Input.isKeyPressed(GLFW_KEY_UP))
-      rbody_body->setLinearVelocity({0, -1, 0});
+
+    /*if (engine->Input.isKeyPressed(GLFW_KEY_UP))
+        rbody_body->setLinearVelocity({0, -1, 0});*/
 
     if (engine->Input.isKeyPressed(GLFW_KEY_LEFT_CONTROL))
-      camera.offset(0, -0.1, 0);
+        camera.offset(0, -0.1, 0);
     if (engine->Input.isKeyPressed(GLFW_KEY_SPACE))
-      camera.offset(0, 0.1, 0);
+        camera.offset(0, 0.1, 0);
 
     if (engine->Input.isKeyPressed(GLFW_KEY_Q))
-      mesh2.rotate({0.0, 1, 0.0});
+        mesh2.rotate({0.0, 1, 0.0});
 
     if (engine->Input.isKeyPressed(GLFW_KEY_E))
-      camera.rotate(0, 0.5, 0);
+        camera.rotate(0, 0.5, 0);
 
     if (engine->Input.isKeyPressed(GLFW_KEY_T))
-      xAxMesh.rotate(0, 0, 0);
+        xAxMesh.rotate(0, 0, 0);
 
     if (engine->Input.isKeyPressed(GLFW_KEY_P)) {
-      GLFWmonitor *monitor = glfwGetPrimaryMonitor();
-      //glfwSetWindowMonitor(engine->getWindow(), monitor, 0, 0, 300, 600, 75);
+        GLFWmonitor *monitor = glfwGetPrimaryMonitor();
+        //glfwSetWindowMonitor(engine->getWindow(), monitor, 0, 0, 300, 600, 75);
     }
+
+    glm::vec2 glmodel_rot = engine->Input.getVector(
+        GLFW_KEY_LEFT, GLFW_KEY_RIGHT, GLFW_KEY_UP, GLFW_KEY_DOWN
+    );
+    glmodel.rotate(0, glmodel_rot.x, 0);
+    glmodel.offset(0, glmodel_rot.y / 10, 0);
+
+
+    /*std::cout << "GLOBAL POS: " << glmodel.getGlobalPosition().x << " " <<
+        glmodel.getGlobalPosition().y << " " <<
+        glmodel.getGlobalPosition().z << '\n';*/
+
+
 
     glm::vec2 dir =
         engine->Input.getVector(GLFW_KEY_A, GLFW_KEY_D, GLFW_KEY_W, GLFW_KEY_S);
@@ -331,21 +366,21 @@ bool is_first_iter = true;
 void _input_event(HateEngine::Engine *engine,
                     HateEngine::Engine::InputEventInfo event) {
     if (event.type == HateEngine::Engine::InputEventType::InputEventMouseMove) {
-      float xoffset = event.position.x - lastX;
-      float yoffset = event.position.y - lastY;
-      lastX = event.position.x;
-      lastY = event.position.y;
+        float xoffset = event.position.x - lastX;
+        float yoffset = event.position.y - lastY;
+        lastX = event.position.x;
+        lastY = event.position.y;
 
-      xoffset *= sensitivity;
-      yoffset *= sensitivity;
+        xoffset *= sensitivity;
+        yoffset *= sensitivity;
 
-      if (is_first_iter) {
-        xoffset = 0;
-        yoffset = 0;
-        is_first_iter = false;
-      }
+        if (is_first_iter) {
+            xoffset = 0;
+            yoffset = 0;
+            is_first_iter = false;
+        }
 
-      camera.rotate(0, -xoffset, 0);
-      camera.rotate(-yoffset, 0, 0, false);
+        camera.rotate(0, -xoffset, 0);
+        camera.rotate(-yoffset, 0, 0, false);
     }
 }

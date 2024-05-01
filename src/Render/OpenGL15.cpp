@@ -63,6 +63,7 @@ void OpenGL15::Draw3D(
         for (const auto &particle : s->particlesVector)
             render((const Mesh*)&particle, lights);
     }
+    //std::cout << "\n\n";
 }
 
 void OpenGL15::render(const Mesh *mesh, std::vector<Light*>* lights_vec) {
@@ -86,6 +87,7 @@ void OpenGL15::render(const Mesh *mesh, std::vector<Light*>* lights_vec) {
 
         glm::vec3 par_pos = mesh->getGlobalPosition();
         glTranslatef(par_pos.x, par_pos.y, par_pos.z);
+        //std::cout << "Render pos: " << par_pos.x << " | " << par_pos.y << " | " << par_pos.z << "\n";
         glMultMatrixf(glm::value_ptr(mesh->getGlobalRotationMatrix()));
 
         glm::vec3 scale = mesh->getGlobalScale();
@@ -123,7 +125,7 @@ inline void OpenGL15::renderCamera(Camera* camera) {
     glMatrixMode(GL_PROJECTION);
     glLoadMatrixf(glm::value_ptr(Mp));
 
-    glm::mat4 mat = camera->getRotationMatrix();
+    glm::mat4 mat = camera->getGlobalRotationMatrix();
     mat = glm::translate(mat, -camera->getGlobalPosition()) ;
 
     glMatrixMode(GL_MODELVIEW);

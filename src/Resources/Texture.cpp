@@ -141,6 +141,11 @@ bool Texture::Load(
     void(*API_load_func)(Texture* texture_ptr),
     void(*API_unloader)(Texture* texture_ptr)
 ) {
+    this->API_unloader = API_unloader;
+    if (this->API_unloader == nullptr) {
+        Error::throwWarning("Error: API_unloader is not set");
+    }
+
     if (this->is_loaded) {
         this->data.clear();
         this->data.shrink_to_fit();

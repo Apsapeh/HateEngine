@@ -1,43 +1,33 @@
+#include "HateEngine/Error.hpp"
+#include "reactphysics3d/collision/shapes/BoxShape.h"
 #include <HateEngine/Objects/Physics/CollisionShape.hpp>
 
 using namespace HateEngine;
 
-CollisionShape::CollisionShape(CollisionShape::ShapeEnum shape, float param1, float param2, float param3) {
-    this->shapeType = shape;
-    this->param1 = param1;
-    this->param2 = param2;
-    this->param3 = param3;
+void CollisionShape::setPosition(glm::vec3 vec) {
+    Error::throwWarning("setPosition is not supported for CollisionShape");
+}
+void CollisionShape::setPosition(float x, float y, float z) {
+    setPosition({x, y, z});
 }
 
-CollisionShape::CollisionShape(float radius) {
-    this->shapeType = Sphere;
-    this->param1 = radius;
+void CollisionShape::setRotation(glm::vec3 vec) {
+    Error::throwWarning("setRotation is not supported for CollisionShape");
+}
+void CollisionShape::setRotation(float x, float y, float z) {
+    setRotation({x, y, z});
 }
 
-CollisionShape::CollisionShape(float radius, float height) {
-    this->shapeType = Capsule;
-    this->param1 = radius;
-    this->param2 = height;
+void CollisionShape::offset(glm::vec3 vec) {
+    Error::throwWarning("offest is not supported for CollisionShape");
+}
+void CollisionShape::offset(float x, float y, float z) {
+    offset({x, y, z});
 }
 
-CollisionShape::CollisionShape(float width, float height, float length) {
-    this->shapeType = Box;
-    this->param1 = width;
-    this->param2 = height;
-    this->param3 = length;
+void CollisionShape::rotate(float x, float y, float z) {
+    Error::throwWarning("rotate is not supported for CollisionShape");
 }
-
-
-void CollisionShape::setCollisionLayers(std::vector<uint8_t>& layers, std::vector<bool> state) {
-    for (uint8_t i : layers) {
-        if (i < 15)
-            collisionLayers[i] = state[i];
-    }
-}
-
-void CollisionShape::setCollisionMasks(std::vector<uint8_t>& masks, std::vector<bool> state) {
-    for (uint8_t i : masks) {
-        if (i < 15)
-            collisionLayers[i] = state[i];
-    }
+void CollisionShape::rotate(glm::vec3 vec) {
+    CollisionShape::rotate(vec.x, vec.y, vec.z);
 }

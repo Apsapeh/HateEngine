@@ -2,6 +2,6 @@
 
 using namespace HateEngine;
 
-StaticBody::StaticBody() {
-    bodyType = PhysicalBody::StaticBody;
+StaticBody::StaticBody() : PhysicalBody(BodyType::StaticBody) {
+
 }

@@ -25,9 +25,9 @@ void Object::setParentRotationMatrix(const glm::mat4& mat) {
 }
 
 void Object::setPosition(const glm::vec3 value) {
+    this->position = value;
     for (auto& obj : bindedObjects)
         obj.second->setParentPosition(getGlobalPosition());
-    this->position = value;
 }
 void Object::setPosition(float x, float y, float z) {
     setPosition({x, y, z});
@@ -124,34 +124,29 @@ glm::vec3 Object::getGlobalPosition() const {
     if (not binded)
         return this->position;
 
-    // Создаем матрицу трансформации
-    glm::mat4 transform = glm::mat4(1.0f);
-
-    // Смещаем объект на расстояние от точки вращения
-    transform = glm::translate(transform,  this->position + this->parent_position);
-
-    // Вращаем объект вокруг начала координат
-    //transform = glm::rotate(transform, glm::radians(this->rotation.x), glm::vec3(1.0f, 0.0f, 0.0f));
-    //transform = glm::rotate(transform, glm::radians(rotation.y), glm::vec3(0.0f, 1.0f, 0.0f));
-    //transform = glm::rotate(transform, glm::radians(rotation.z), glm::vec3(0.0f, 0.0f, 1.0f));
-    transform = transform * parent_rotation_matrix;
-
-    // Смещаем объект обратно
-    transform = glm::translate(transform, -(this->position + this->parent_position));
-
-    // Применяем трансформацию к точке
-    glm::vec4 transformedPoint = transform * glm::vec4(this->parent_position, 1.0f);
-
-    return glm::vec3(transformedPoint);
-
-    //return this->position + this->parent_position;
+    glm::vec4 rotatedOffset = this->parent_rotation_matrix * glm::vec4(this->position, 1.0f);
+    return this->parent_position + glm::vec3(rotatedOffset);
 }
-
+#include <iostream>
 glm::vec3 Object::getGlobalRotationEuler() const {
-    return getRotationEuler();
+    glm::vec3 rot;
+    glm::mat4 global_rotation = getGlobalRotationMatrix();
+    glm::extractEulerAngleXYZ(global_rotation, rot.x, rot.y, rot.z);
+    rot *= -1;
+
+    // Changes the Y rotation detection limit from [-PI/2, PI/2] to [-P, P]
+    bool bad = global_rotation[0][0] == 0 and global_rotation[0][2] == 0;
+    if (not bad)
+        rot.y = atan2(global_rotation[0][0], -global_rotation[0][2]);
+    else
+        rot.y = atan2(global_rotation[1][0], -global_rotation[1][2]);
+
+    return glm::degrees(rot);
 }
 
 glm::mat4 Object::getGlobalRotationMatrix() const {
+    if (not binded)
+        return this->rotation_matrix;
     return this->parent_rotation_matrix * this->rotation_matrix;
 }
 
@@ -165,21 +160,24 @@ bool Object::getVisible() const{
     return this->visible;
 }
 
+UUID Object::getUUID() const {
+    return this->uuid;
+}
 
-UUID_Generator::UUID Object::bindObj(Object* obj) {
-    UUID_Generator::UUID uuid = global_uuid_generator.gen();
-    bindedObjects[uuid] = obj;
+
+UUID Object::bindObj(Object* obj) {
+    bindedObjects[obj->getUUID()] = obj;
     obj->binded = true;
     obj->setParentScale(this->scale);
     obj->setParentPosition(this->position);
     obj->setParentRotationMatrix(this->rotation_matrix);
-    return uuid;
+    return obj->getUUID();
 }
 
-bool Object::unbindObj(UUID_Generator::UUID uuid) {
-    auto it = bindedObjects.find(uuid);
+bool Object::unbindObj(UUID _uuid) {
+    auto it = bindedObjects.find(_uuid);
     if (it != bindedObjects.end()) {
-        bindedObjects[uuid]->binded = false;
+        bindedObjects[_uuid]->binded = false;
         bindedObjects.erase(it);
         return true;
     }

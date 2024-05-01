@@ -16,7 +16,6 @@
 
 
 bool glad_is_initialized = false;
-UUID_Generator global_uuid_generator;
 
 using namespace HateEngine;
 
@@ -37,14 +36,14 @@ Engine::Engine(std::string window_lbl, int width, int height) : Input(this) {
     glfwSetFramebufferSizeCallback(this->window, [] (GLFWwindow *win, int w, int h) {
         Engine *th = static_cast<Engine*>(glfwGetWindowUserPointer(win));
         //th->frameBufferSizeChange(win, w, h);
-        // FIXME: If will be few render APIs, this code should be in RenderAPI class
+        // XXX: If will be few render APIs, this code should be in RenderAPI class
         glViewport(0, 0, w, h);
         if (th->level->camera == nullptr) {
             // WARNING
             return;
         }
 
-        //! FIXME: Camera should't has ViewAspect field
+        // FIXME: Camera should't has ViewAspect field
         th->level->camera->setViewAspect(float(w) / float(h));
     });
 
@@ -116,7 +115,7 @@ Engine::Engine(std::string window_lbl, int width, int height) : Input(this) {
 
 
 void Engine::Run() {
-    bool isOneThread = false;
+    bool isOneThread = true;
 
     std::thread *fixedProcessThread = nullptr;
     std::thread *physicsEngineProcessThread = nullptr;
@@ -157,7 +156,7 @@ void Engine::Run() {
             }
 
             if (physics_engine_iterate_loop_delta >= physics_engine_iterate_loop_delay) {
-                physEngine.IteratePhysics((float)physics_engine_iterate_loop_delta);
+                level->getPhysEngine()->IteratePhysics((float)physics_engine_iterate_loop_delta);
                 physics_engine_iterate_loop_delta = 0.0;
             }
         }
@@ -233,7 +232,7 @@ void Engine::threadPhysicsEngineIterateLoop() {
         );
 
         delta = glfwGetTime() - oldTime;
-        physEngine.IteratePhysics((float)delta);
+        level->getPhysEngine()->IteratePhysics((float)delta);
         oldTime = glfwGetTime();
         func_delta = glfwGetTime() - oldTime;
     }

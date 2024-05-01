@@ -5,7 +5,7 @@
 #include <mutex>
 #include <GLFW/glfw3.h>
 #include "Objects/Camera.hpp"
-#include "Utilities/UUID_Generator.hpp"
+//#include "Utilities/UUID_Generator.hpp"
 #include "Objects/Mesh.hpp"
 #include "Objects/Light/Light.hpp"
 #include "Objects/Particles.hpp"
@@ -52,16 +52,17 @@ namespace HateEngine {
             glm::vec2 position = {0, 0};
         };
 
+        GLFWwindow *window;
+
     private:
         void (*processLoop)(Engine*, double) = nullptr;
         void (*fixedProcessLoop)(Engine*, double) = nullptr;
         void (*inputEventFunc)(Engine*, InputEventInfo) = nullptr;
 
-        GLFWwindow *window;
         RenderAPI renderApi = RenderAPI::OpenGL_1_5;
         uint16_t fixedLoopRefreshRate = 60;
         int64_t fixedProcessDelayMCS; // 1_000_000 / fixedLoopRefreshRate
-        uint16_t physicsEngineIterateLoopRefreshRate = 60;
+        uint16_t physicsEngineIterateLoopRefreshRate = 120;
         int64_t physicsEngineIterateDelayMCS;
 
         PhysEngine physEngine;

@@ -164,7 +164,7 @@ static void Load(tgModel& model, std::vector<Mesh*>* meshes, std::vector<Texture
 
             // =====> Set Mesh Properties <=====
             if (mesh_properties.count(model_mesh_counter) != 0) {
-                std::cout << "Mesh properties: " << model_mesh.name << std::endl;
+                //std::cout << "Mesh properties: " << model_mesh.name << std::endl;
                 const auto& node = mesh_properties[model_mesh_counter];
 
                 if (node.scale.size() == 3)
@@ -181,7 +181,7 @@ static void Load(tgModel& model, std::vector<Mesh*>* meshes, std::vector<Texture
 
     }
 
-    std::cout << "Size: " << model.nodes.size() << std::endl;
+    //std::cout << "Size: " << model.nodes.size() << std::endl;
 
 
 }

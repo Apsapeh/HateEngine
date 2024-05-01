@@ -7,7 +7,7 @@
 #include "../Objects/Particles.hpp"
 #include "../Objects/Light/Light.hpp"
 #include "../Objects/Camera.hpp"
-#include "../Utilities/UUID_Generator.hpp"
+#include "../Utilities/UUID.hpp"
 
 namespace HateEngine {
     class Level {
@@ -22,10 +22,10 @@ namespace HateEngine {
         };
 
         // 3D renderable objects
-        std::unordered_map<UUID_Generator::UUID, SceneObject> meshes_obj;
-        std::unordered_map<UUID_Generator::UUID, SceneObject> models_obj;
-        std::unordered_map<UUID_Generator::UUID, SceneObject> particles_obj;
-        std::unordered_map<UUID_Generator::UUID, SceneObject> lights_obj;
+        std::unordered_map<UUID, SceneObject> meshes_obj;
+        std::unordered_map<UUID, SceneObject> models_obj;
+        std::unordered_map<UUID, SceneObject> particles_obj;
+        std::unordered_map<UUID, SceneObject> lights_obj;
 
         // This vector should be generated from meshes_obj, models_obj
         std::vector<Mesh*> meshes;
@@ -53,16 +53,18 @@ namespace HateEngine {
         void setCameraRef(Camera* camera);
         void removeCameraRef();
 
-        UUID_Generator::UUID addObjectClone(const Mesh& object, bool copy_tex=false);
-        //UUID_Generator::UUID addObjectClone(Particles object);
-        UUID_Generator::UUID addObjectClone(const Light& object);
-        UUID_Generator::UUID addObjectClone(const Model& object, bool copy_tex=false);
-        //UUID_Generator::UUID addObjectRef(Object* object);
-        UUID_Generator::UUID addObjectRef(Mesh* object);
-        UUID_Generator::UUID addObjectRef(Light* object);
-        UUID_Generator::UUID addObjectRef(Model* object);
+        PhysEngine* getPhysEngine();
 
-        bool removeObject(const UUID_Generator::UUID& uuid);
+        UUID addObjectClone(const Mesh& object, bool copy_tex=false);
+        //UUID_Generator::UUID addObjectClone(Particles object);
+        UUID addObjectClone(const Light& object);
+        UUID addObjectClone(const Model& object, bool copy_tex=false);
+        //UUID_Generator::UUID addObjectRef(Object* object);
+        UUID addObjectRef(Mesh* object);
+        UUID addObjectRef(Light* object);
+        UUID addObjectRef(Model* object);
+
+        bool removeObject(const UUID& uuid);
     };
 }
 

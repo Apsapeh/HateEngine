@@ -3,6 +3,7 @@
 
 namespace HateEngine {
     class RigidBody : public PhysicalBody {
-
+    public:
+        RigidBody();
     };
 }
