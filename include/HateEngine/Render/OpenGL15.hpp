@@ -25,6 +25,8 @@ namespace HateEngine {
                 std::vector<Light*>* lights
         );
 
+        void DrawNuklear();
+
     private:
         uint8_t maxLightCount = 8;
         float maxLightRenderDist = 25;

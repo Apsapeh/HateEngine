@@ -5,8 +5,7 @@ add_requires(
     "tinygltf 2.8.13", 
     "reactphysics3d 0.9.0", 
     "nuklear", 
-    "glu",
-    "ncvm 68c940cec9b119268c0ce9a8ee061d91c922dd5b"
+    "glu"
 )
 
 add_rules("mode.debug", "mode.release")

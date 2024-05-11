@@ -25,7 +25,15 @@ namespace HateEngine {
 
         ShapeEnum shapeType;
         reactphysics3d::CollisionShape* reactShape = nullptr;
-        
+        reactphysics3d::Collider*       reactCollider = nullptr;
+
+        CollisionShape(ShapeEnum type, glm::vec3 pos, glm::vec3 rot);
+        CollisionShape(ShapeEnum type, glm::vec3 pos, glm::mat4 rot);
+
+        bool isInitialized();
+
+        const reactphysics3d::CollisionShape* getReactShape();
+        const reactphysics3d::Collider* getReactCollider();
 
         void setPosition(glm::vec3 vec);
         void setPosition(float x, float y, float z);
@@ -36,6 +44,9 @@ namespace HateEngine {
         void offset(glm::vec3 vec);
         void rotate(float x, float y, float z);
         void rotate(glm::vec3 vec);
+
+
+
         /**
          * Sets the collision layer on which a body can collide with other bodies
          * @param layers Array of layer numbers (0..15)

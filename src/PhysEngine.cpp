@@ -4,6 +4,8 @@
 
 #include "HateEngine/Error.hpp"
 #include "HateEngine/Objects/Physics/BoxShape.hpp"
+#include "HateEngine/Objects/Physics/SphereShape.hpp"
+#include "HateEngine/Objects/Physics/CapsuleShape.hpp"
 #include "HateEngine/Objects/Physics/CollisionShape.hpp"
 #include "globalStaticParams.hpp"
 
@@ -13,10 +15,9 @@ reactphysics3d::PhysicsCommon PhysEngine::physicsCommon;
 
 PhysEngine::PhysEngine() {
     this->physicsWorld = physicsCommon.createPhysicsWorld();
-    this->physicsWorld->setNbIterationsVelocitySolver(20); 
  
     // Change the number of iterations of the position solver 
-    this->physicsWorld->setNbIterationsPositionSolver(16);
+    //this->physicsWorld->setNbIterationsPositionSolver(16);
     //physicsWorld->setIsDebugRenderingEnabled(true);
 }
 
@@ -30,6 +31,14 @@ void PhysEngine::IteratePhysics(float delta) {
         body_pair.second.obj->Update();
     }
 }
+
+
+const reactphysics3d::PhysicsWorld *PhysEngine::getPhysicsWorld() const {
+    return physicsWorld;
+}
+
+
+
 
 UUID PhysEngine::addObjectClone(const PhysicalBody& object) {
     PhysicalBody* new_obj;
@@ -57,7 +66,7 @@ UUID PhysEngine::addObjectRef(PhysicalBody *object) {
             obj_rot.z, obj_rot.y, obj_rot.x
     );*/
     reactphysics3d::Quaternion quaternion = reactphysics3d::Quaternion(
-            -obj_rot_mat.z, -obj_rot_mat.y, -obj_rot_mat.x, obj_rot_mat.w
+            obj_rot_mat.z, obj_rot_mat.y, obj_rot_mat.x, obj_rot_mat.w
     );
     reactphysics3d::Transform transform(position, quaternion);
     reactphysics3d::RigidBody *phys_body = physicsWorld->createRigidBody(transform);
@@ -73,8 +82,14 @@ UUID PhysEngine::addObjectRef(PhysicalBody *object) {
             );
             shape->reactShape = react_shape;
         }
+        else if (shape_type == CollisionShape::Sphere) {
+            SphereShape* shape = (SphereShape*)shape_pair.second.shape;
+            react_shape = physicsCommon.createSphereShape(shape->radius);
+            shape->reactShape = react_shape;
+        }
         else {
-            Error::throwError("CollisionShape type is not implemented");
+            Error::throwWarning("CollisionShape [" + std::to_string(shape_pair.second.shape->getUUID().getU64()) + "] type is not implemented");
+            continue;
         }
 
         CollisionShape* shape = shape_pair.second.shape;
@@ -86,9 +101,7 @@ UUID PhysEngine::addObjectRef(PhysicalBody *object) {
             -shape_rot_mat.z, -shape_rot_mat.y, -shape_rot_mat.x, shape_rot_mat.w
         );
         reactphysics3d::Transform transform(position, quaternion);
-        auto* a = phys_body->addCollider(react_shape, transform);
-        //a->getMaterial().setBounciness(0);
-        //a->getMaterial().setFrictionCoefficient(1);
+        shape->reactCollider = phys_body->addCollider(react_shape, transform);
     }
 
     physBodies[object->getUUID()] = {object, true};

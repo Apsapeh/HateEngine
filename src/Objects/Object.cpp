@@ -9,25 +9,29 @@ using namespace HateEngine;
 void Object::setParentPosition(const glm::vec3 vec) {
     this->parent_position = vec;
     for (auto& obj : bindedObjects)
-        obj.second->setParentPosition(getGlobalPosition());
+        if (obj.second.bind_pos)
+            obj.second.obj->setParentPosition(getGlobalPosition());
 }
 
 void Object::setParentScale(const glm::vec3 vec) {
     this->parent_scale = vec;
     for (auto& obj : bindedObjects)
-        obj.second->setParentScale(getGlobalScale());
+        if (obj.second.bind_scale)
+            obj.second.obj->setParentScale(getGlobalScale());
 }
 
 void Object::setParentRotationMatrix(const glm::mat4& mat) {
     this->parent_rotation_matrix = mat;
     for (auto& obj : bindedObjects)
-        obj.second->setParentRotationMatrix(getGlobalRotationMatrix());
+        if (obj.second.bind_rot)
+            obj.second.obj->setParentRotationMatrix(getGlobalRotationMatrix());
 }
 
 void Object::setPosition(const glm::vec3 value) {
     this->position = value;
     for (auto& obj : bindedObjects)
-        obj.second->setParentPosition(getGlobalPosition());
+        if (obj.second.bind_pos)
+            obj.second.obj->setParentPosition(getGlobalPosition());
 }
 void Object::setPosition(float x, float y, float z) {
     setPosition({x, y, z});
@@ -37,7 +41,8 @@ void Object::setRotation(glm::vec3 value) {
     value = glm::radians(value);
     rotation_matrix = glm::eulerAngleXYZ(value.x, value.y, value.z);
     for (auto& obj : bindedObjects)
-        obj.second->setParentRotationMatrix(getGlobalRotationMatrix());
+        if (obj.second.bind_rot)
+            obj.second.obj->setParentRotationMatrix(getGlobalRotationMatrix());
 
 }
 void Object::setRotation(float x, float y, float z) {
@@ -47,13 +52,15 @@ void Object::setRotation(float x, float y, float z) {
 void Object::setRotationMatrix(glm::mat4 mat) {
     rotation_matrix = mat;
     for (auto& obj : bindedObjects)
-        obj.second->setParentRotationMatrix(getGlobalRotationMatrix());
+        if (obj.second.bind_rot)
+            obj.second.obj->setParentRotationMatrix(getGlobalRotationMatrix());
 }
 
 void Object::setScale(glm::vec3 value) {
     this->scale = value;
     for (auto& obj : bindedObjects)
-        obj.second->setParentScale(getGlobalScale());
+        if (obj.second.bind_scale)
+            obj.second.obj->setParentScale(getGlobalScale());
 }
 void Object::setScale(float x, float y, float z) {
     setScale({x, y, z});
@@ -87,7 +94,8 @@ void Object::rotate(glm::vec3 vec, bool global) {
     }
 
     for (auto& obj : bindedObjects)
-        obj.second->setParentRotationMatrix(getGlobalRotationMatrix());
+        if (obj.second.bind_rot)
+            obj.second.obj->setParentRotationMatrix(getGlobalRotationMatrix());
 }
 void Object::rotate(float x, float y, float z, bool global) {
     rotate({x, y, z}, global);
@@ -165,19 +173,22 @@ UUID Object::getUUID() const {
 }
 
 
-UUID Object::bindObj(Object* obj) {
-    bindedObjects[obj->getUUID()] = obj;
+UUID Object::bindObj(Object* obj, bool bind_pos, bool bind_rot, bool bind_scale) {
+    bindedObjects[obj->getUUID()] = {obj, bind_pos, bind_rot, bind_scale};
     obj->binded = true;
-    obj->setParentScale(this->scale);
-    obj->setParentPosition(this->position);
-    obj->setParentRotationMatrix(this->rotation_matrix);
+    if (bind_pos)
+        obj->setParentPosition(this->position);
+    if (bind_rot)
+        obj->setParentRotationMatrix(this->rotation_matrix);
+    if (bind_scale)
+        obj->setParentScale(this->scale);
     return obj->getUUID();
 }
 
 bool Object::unbindObj(UUID _uuid) {
     auto it = bindedObjects.find(_uuid);
     if (it != bindedObjects.end()) {
-        bindedObjects[_uuid]->binded = false;
+        bindedObjects[_uuid].obj->binded = false;
         bindedObjects.erase(it);
         return true;
     }

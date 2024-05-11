@@ -15,37 +15,12 @@
 #include <glm/glm.hpp>
 #include <glm/gtx/quaternion.hpp>
 #include <iostream>
+#include <HateEngine/Objects/Physics/SphereShape.hpp>
 
-#include <reactphysics3d/reactphysics3d.h>
-
-#include <ncvm.h>
-
-using namespace reactphysics3d;
 
 void _process(HateEngine::Engine *, double);
 void _physics_process(HateEngine::Engine *, double);
 void _input_event(HateEngine::Engine *, HateEngine::Engine::InputEventInfo);
-
-PhysicsCommon physicsCommon;
-PhysicsWorld *physicsWorld = physicsCommon.createPhysicsWorld();
-
-Vector3 floor_body_vec(0, 0, 0);
-Quaternion floor_body_quat = Quaternion::fromEulerAngles(0, 0, 0);
-Transform floor_body_trans(floor_body_vec, floor_body_quat);
-RigidBody *floor_body = physicsWorld->createRigidBody(floor_body_trans);
-
-BoxShape *floor_col_shape = physicsCommon.createBoxShape({12.5f, 0.5f, 12.5f});
-Collider *floor_col =
-      floor_body->addCollider(floor_col_shape, Transform::identity());
-
-Vector3 rbody_body_vec(0, 6, 0);
-Quaternion rbody_body_quat = Quaternion::fromEulerAngles(0, 2, 2);
-Transform rbody_body_trans(rbody_body_vec, rbody_body_quat);
-RigidBody *rbody_body = physicsWorld->createRigidBody(rbody_body_trans);
-
-BoxShape *rbody_col_shape = physicsCommon.createBoxShape({0.5f, 0.5f, 0.5f});
-Collider *rbody_col =
-      rbody_body->addCollider(rbody_col_shape, Transform::identity());
 
 HateEngine::CubeMesh mesh1;
 HateEngine::CubeMesh mesh2;
@@ -62,46 +37,8 @@ HateEngine::Particles *part;
 
 
 
-//NCVM
-HateEngine::CubeMesh ncvm_mesh;
-#include <fstream>
-std::ifstream file("/Users/ghost/Desktop/Rust Projects/Projects/ncvm_asm/foo.bin", std::ios::binary);
-ncvm vm;
-const unsigned char* get_next_n_bytes(unsigned long long n, void* data_p) {
-    unsigned char* data = new unsigned char[n];
-    file.read((char*)data, n);
-    return data;
-}
-
-NCVM_LIB_FUNCTION(fcos) {
-    thread->f32_registers[0] = cos(thread->f32_registers[0]);
-}
-
-NCVM_LIB_FUNCTION(set_mesh_y) {
-    //std::cout << thread->f32_registers[0] << "\n";
-    ncvm_mesh.setPosition(5, thread->f32_registers[0] + 2.0, 5);
-}
-
-ncvm_lib_function loader(const char* name, void* data_p) {
-    //std::cout << name << "\n";
-    if (strcmp(name, "fcos") == 0)
-        return fcos;
-    else if (strcmp(name, "set_mesh_y") == 0)
-        return set_mesh_y;
-    return NULL;
-}
-
-
-
 int main() {
     std::cout << "Hello\n";
-    rbody_col->getMaterial().setBounciness(0);
-    rbody_col->getMaterial().setFrictionCoefficient(1);
-    floor_body->setType(BodyType::STATIC);
-    floor_col->getMaterial().setBounciness(0);
-    floor_col->getMaterial().setFrictionCoefficient(1);
-
-    
 
     xAxMesh.setSize(1, 0.1, 0.1);
     xAxMesh.offset(0, 6, 0);
@@ -109,19 +46,18 @@ int main() {
     camera.setPosition(0, 6, 3);
     //camera.setPosition(0, 25, 0);
     camera.setRotation(0, 0, 0);
+    camera.setSkyBoxTexture(new HateEngine::Texture("examples/Assets/skybox.jpg", HateEngine::Texture::ClampToEdge));
     mesh1.setRotation(0, 0, 0);
     mesh1.setSize(1, 1, 1);
 
     HateEngine::CubeMesh floor;
     floor.setPosition(0, 0, 0);
     floor.setSize(25, 1, 25);
+    //floor.setRotation(20, 0, 0);
 
     HateEngine::Camera came2(0, 0, 0);
 
-    Quaternion qufloor = floor_body->getTransform().getOrientation();
-    glm::quat qefloor(qufloor.w, qufloor.z, qufloor.y, qufloor.x);
-    glm::mat4 matfloor = glm::toMat4(qefloor);
-    floor.setRotationMatrix(matfloor);
+    //floor.setRotationMatrix(matfloor);
     // floor.matrix
 
     sun.setPosition({1.0, 1.0, 1.0});
@@ -223,15 +159,18 @@ int main() {
     rigidBody.setPosition(0, 5, 0);
     rigidBody.rotate(48, 22,36);
     //rigidBody.setRotation(0, 0, 0);
-    HateEngine::BoxShape   boxShape(1, 1, 1);
+    HateEngine::BoxShape   boxShape({1, 1, 1});
     rigidBody.addCollisionShapeRef(&boxShape);
+    HateEngine::SphereShape sphereShape(0.5);
+    rigidBody.addCollisionShapeRef(&sphereShape);
     rigidBody.bindObj(&mesh1);
     //rigidBody.bindObj(&glmodel);
 
     HateEngine::PhysicalBody floorBody(HateEngine::PhysicalBody::StaticBody);
     floorBody.setPosition(0, 0, 0);
-    HateEngine::BoxShape floorShape(25, 1, 25);
+    HateEngine::BoxShape floorShape({25, 1, 25}, {0, 0, 0}, {0, 0, 0});
     floorBody.addCollisionShapeRef(&floorShape);
+    //floorBody.rotate(20, 0, 0);
     floorBody.bindObj(&floor);
 
     lvl.getPhysEngine()->addObjectRef(&rigidBody);
@@ -240,29 +179,6 @@ int main() {
 
 
 
-
-    //NCVM
-    std::ifstream file("/Users/ghost/Desktop/Rust Projects/Projects/ncvm_asm/foo.bin", std::ios::binary);
-    int ret_code = 0;
-    vm = ncvm_loadBytecodeStream(
-        get_next_n_bytes,
-        nullptr,
-        loader,
-        NULL,
-        &ret_code
-    );
-    file.close();
-
-    ncvm_mesh.setTexture(&tex);
-    //lvl.addObjectRef(&ncvm_mesh);
-    //exit(0);
-
-    /*ncvm_thread thread = ncvm_create_thread(&vm, vm.inst_p, NULL, 0, DefaultThreadSettings, NULL);
-    ncvm_execute_thread(&thread);*/
-
-    //ncvm_thread_free(&thread);
-    //ncvm_free(&vm);
- 
 
 
 
@@ -290,28 +206,9 @@ void _process(HateEngine::Engine *engine, double delta) {
 void _physics_process(HateEngine::Engine *engine, double delta) {
     //std::cout << "FPS: " << 1.0 / delta << "\n";
     glm::vec3 mesh1_r = mesh1.getGlobalRotationEuler();
-    std::cout << mesh1_r.x << " " << mesh1_r.y << " " << mesh1_r.z << "\n";
+    //std::cout << mesh1_r.x << " " << mesh1_r.y << " " << mesh1_r.z << "\n";
 
-    ncvm_thread thread = ncvm_create_thread(&vm, vm.inst_p, NULL, 0, DefaultThreadSettings, NULL);
-    ncvm_execute_thread(&thread);
 
-    if (engine->Input.isKeyPressed(GLFW_KEY_LEFT_SHIFT))
-        rbody_body->setLinearVelocity({0, 10, 0});
-
-    // std::cout << mesh2.getGlobalPosition().x << " " <<
-    // mesh2.getGlobalPosition().y << '\n';
-    //physicsWorld->update((float)delta / 1.0f);
-
-    decimal dec;
-    Vector3 vec;
-    rbody_body->getTransform().getOrientation().getRotationAngleAxis(dec, vec);
-    Quaternion qu = rbody_body->getTransform().getOrientation();
-    glm::quat qe(qu.w, -qu.z, -qu.y, -qu.x);
-
-    glm::mat4 mat = glm::toMat4(qe);
-    //mesh1.setRotationMatrix(mat);
-
-    Vector3 rbodyPosVect = rbody_body->getTransform().getPosition();
     //mesh1.setPosition(rbodyPosVect.z, rbodyPosVect.y, rbodyPosVect.x);
 
     if (engine->Input.isKeyPressed(GLFW_KEY_ESCAPE))

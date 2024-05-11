@@ -32,6 +32,13 @@ namespace HateEngine {
         void IteratePhysics(float delta);
 
 
+        //!======================> React WorldSettings <======================
+        /**
+         * Gets the physics world
+         * @return A pointer to the physics world
+         */
+        const reactphysics3d::PhysicsWorld* getPhysicsWorld() const;
+
 
         /**
          * Adds a physical body to the scene by copying it

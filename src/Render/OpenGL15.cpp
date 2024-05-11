@@ -4,6 +4,16 @@
 #include <glad/gl.h>
 #include <HateEngine/Render/OpenGL15.hpp>
 
+#define NK_INCLUDE_FIXED_TYPES
+#define NK_INCLUDE_STANDARD_IO
+#define NK_INCLUDE_DEFAULT_ALLOCATOR
+#define NK_INCLUDE_VERTEX_BUFFER_OUTPUT
+
+#define NK_INCLUDE_FONT_BAKING
+#define NK_INCLUDE_DEFAULT_FONT
+#define NK_IMPLEMENTATION
+#include <nuklear.h>
+
 // Include OpenGL Utility header (glu.h)
 #ifdef __linux__
     #include <GL/glu.h>
@@ -34,16 +44,23 @@ OpenGL15::OpenGL15() {
     //glLightfv(GL_LIGHT0,GL_DIFFUSE,white_light);
     //glLightfv(GL_LIGHT0,GL_SPECULAR,white_light);
     //glEnable(GL_LIGHTING);
+    //auto a = GL_CLAMP_TO_EDGE
     glEnable(GL_TEXTURE_2D);
     //glLightModelf(GL_LIGHT_MODEL_TWO_SIDE, GL_TRUE);
+
 
     glEnableClientState(GL_VERTEX_ARRAY);
     glEnableClientState(GL_NORMAL_ARRAY);
     glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 
+
     //glEnableClientState(GL_COLOR_ARRAY);
     glEnable(GL_DEPTH_TEST);
+    glEnable(GL_CULL_FACE);
 }
+
+
+//=======================> 3D <========================
 
 void OpenGL15::Draw3D(
         Camera* camera,
@@ -53,8 +70,11 @@ void OpenGL15::Draw3D(
 ) {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    if (camera != nullptr)
+    if (camera != nullptr) {
         renderCamera(camera);
+        /*std::vector<Light*> n;
+        render(camera->getSkyBox(), &n);*/
+    }
 
     for (const auto obj : *meshes)
         render(obj, lights);
@@ -62,6 +82,11 @@ void OpenGL15::Draw3D(
     for (const auto* s : *particles) {
         for (const auto &particle : s->particlesVector)
             render((const Mesh*)&particle, lights);
+    }
+
+    if (camera != nullptr) {
+        std::vector<Light*> n;
+        render(camera->getSkyBox(), &n);
     }
     //std::cout << "\n\n";
 }
@@ -193,6 +218,7 @@ void OpenGL15::loadTexture(Texture* texture_ptr) {
     glBindTexture(GL_TEXTURE_2D, texture_ptr->textureGL_ID);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, texture_ptr->texWrap);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, texture_ptr->texWrap);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_R, texture_ptr->texWrap);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, texture_ptr->texFiltering);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, texture_ptr->texMipMapFiltering);
     glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_LOD_BIAS, texture_ptr->MipMapLodBias);
@@ -221,3 +247,12 @@ void OpenGL15::unloadTexture(Texture* texture_ptr) {
     glDeleteTextures(1, &texture_ptr->textureGL_ID);
     texture_ptr->textureGL_ID = 0;
 }
+
+//============================ End 3D ============================
+
+
+//============================ 2D (Nuklear) ============================
+
+
+
+//============================ End 2D ============================

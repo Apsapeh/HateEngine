@@ -115,7 +115,7 @@ Engine::Engine(std::string window_lbl, int width, int height) : Input(this) {
 
 
 void Engine::Run() {
-    bool isOneThread = true;
+    bool isOneThread = false;
 
     std::thread *fixedProcessThread = nullptr;
     std::thread *physicsEngineProcessThread = nullptr;
@@ -132,8 +132,8 @@ void Engine::Run() {
 
     glfwSwapBuffers(this->window);
     double oldTime = glfwGetTime();
-    double fixed_process_loop_delta = 0.0;
-    double physics_engine_iterate_loop_delta = 0.0;
+    double fixed_process_loop_delta = -glfwGetTime();
+    double physics_engine_iterate_loop_delta = -glfwGetTime();
     double delta = 0.0;
     double fixed_process_loop_delay = 1.0 / this->fixedLoopRefreshRate;
     double physics_engine_iterate_loop_delay = 1.0 / this->physicsEngineIterateLoopRefreshRate;

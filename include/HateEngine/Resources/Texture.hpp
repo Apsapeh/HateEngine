@@ -31,7 +31,9 @@ namespace HateEngine {
         };
         enum TexWrap {
             Clamp = 0x2900,
-            Repeat = 0x2901
+            Repeat = 0x2901,
+            ClampToEdge = 0x812F,
+            ClampToBorder = 0x812D
         };
         enum TexFiltering {
             Nearest = 0x2600,

@@ -4,6 +4,32 @@
 
 using namespace HateEngine;
 
+
+CollisionShape::CollisionShape(ShapeEnum type, glm::vec3 pos, glm::vec3 rot) {
+    this->shapeType = type;
+    this->position = pos;
+    rot = glm::radians(rot);
+    rotation_matrix = glm::eulerAngleXYZ(rot.x, rot.y, rot.z);
+}
+
+CollisionShape::CollisionShape(ShapeEnum type, glm::vec3 pos, glm::mat4 rot) {
+    this->shapeType = type;
+    this->position = pos;
+    rotation_matrix = rot;
+}
+
+bool CollisionShape::isInitialized() {
+    return this->reactShape != nullptr and this->reactCollider != nullptr;
+}
+
+const reactphysics3d::CollisionShape *CollisionShape::getReactShape() {
+    return this->reactShape;
+}
+const reactphysics3d::Collider *CollisionShape::getReactCollider() {
+    return this->reactCollider;
+}
+
+
 void CollisionShape::setPosition(glm::vec3 vec) {
     Error::throwWarning("setPosition is not supported for CollisionShape");
 }

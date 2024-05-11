@@ -19,8 +19,15 @@ namespace HateEngine {
 
     protected:
         bool visible = true;
+
+        struct BindedObj {
+            Object* obj;
+            bool bind_pos;
+            bool bind_rot;
+            bool bind_scale;
+        };
         // FIXME
-        std::unordered_map<UUID, Object*> bindedObjects;
+        std::unordered_map<UUID, BindedObj> bindedObjects;
 
         glm::vec3 parent_position = {0, 0, 0};
         glm::vec3 parent_scale = {1.0, 1.0, 1.0};
@@ -78,7 +85,7 @@ namespace HateEngine {
          * \param obj Object to bind
          * \return UUID of binded object
          */
-        UUID bindObj(Object* obj);
+        UUID bindObj(Object* obj, bool bind_pos = true, bool bind_rot = true, bool bind_scale = true);
 
         /**
          * Unbind object by UUID
