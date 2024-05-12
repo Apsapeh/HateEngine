@@ -81,32 +81,46 @@ UUID Level::addObjectClone(const Model& object, bool copy_tex) {
     return id;
 }*/
 
+UUID Level::addObjectRef(WidgetUI *object) {
+    std::lock_guard<std::mutex> guard(uiWidgetsMutex);
+    ui_widgets[object->getUUID()] = {object, true};
+    return object->getUUID();
+}
+
 UUID Level::addObjectRef(Mesh *object) {
     std::lock_guard<std::mutex> guard(meshesMutex);
-    meshes_obj[object->getUUID()] = {object, false};
+    meshes_obj[object->getUUID()] = {object, true};
     updateMeshesVector();
     return object->getUUID();
 }
 
 UUID Level::addObjectRef(Light *object) {
     std::lock_guard<std::mutex> guard(lightsMutex);
-    lights_obj[object->getUUID()] = {object, false};
+    lights_obj[object->getUUID()] = {object, true};
     updateLightsVector();
     return object->getUUID();
 }
 
 UUID Level::addObjectRef(Model *object) {
     std::lock_guard<std::mutex> guard(modelsMutex);
-    models_obj[object->getUUID()] = {object, false};
+    models_obj[object->getUUID()] = {object, true};
     updateMeshesVector();
     return object->getUUID();
 }
 
 bool Level::removeObject(const UUID& uuid) {
+    std::lock_guard<std::mutex> ui_guard(uiWidgetsMutex);
     std::lock_guard<std::mutex> mesh_guard(meshesMutex);
     std::lock_guard<std::mutex> model_guard(modelsMutex);
     std::lock_guard<std::mutex> particles_guard(particlesMutex);
     std::lock_guard<std::mutex> lights_guard(lightsMutex);
+
+    if (ui_widgets.count(uuid) == 1) {
+        if (!ui_widgets[uuid].is_ref)
+            delete ui_widgets[uuid].obj;
+        ui_widgets.erase(uuid);
+        return true;
+    }
 
     if (meshes_obj.count(uuid) == 1) {
         if (!meshes_obj[uuid].is_ref)

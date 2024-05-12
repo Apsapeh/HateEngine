@@ -3,11 +3,17 @@
 //
 
 #pragma once
+
+#include "../Utilities/UUID.hpp"
 #include <glm/glm.hpp>
 
 namespace HateEngine {
     class ObjectUI {
-        glm::vec2 position = {0, 0};
+        UUID uuid;
+
     public:
+        glm::vec2 position = {0, 0};
+
+        UUID getUUID() const;
     };
 }

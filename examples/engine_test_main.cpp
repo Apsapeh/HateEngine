@@ -178,7 +178,10 @@ int main() {
 
 
 
-
+    // UI TEST
+    HateEngine::WidgetUI ui;
+    ui.position = {400, 300};
+    lvl.addObjectRef(&ui);
 
 
 

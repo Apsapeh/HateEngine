@@ -161,13 +161,20 @@ void Engine::Run() {
             }
         }
         //meshesMutex.unlock();
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+        glPushMatrix();
         ogl.Draw3D(
             this->level->camera,
             &this->level->meshes,
             &this->level->particles,
             &this->level->lights
         );
+        glPopMatrix();
+
+        ogl.DrawNuklearUI(&this->level->ui_widgets);
+
+
         //meshesMutex.unlock();
 
         glfwSwapBuffers(this->window);

@@ -6,6 +6,7 @@
 #include "../Objects/Light/Light.hpp"
 #include "../Objects/Camera.hpp"
 #include "../Resources/Texture.hpp"
+#include "../Resources/Level.hpp"
 
 namespace HateEngine {
     class OpenGL15 {
@@ -25,11 +26,13 @@ namespace HateEngine {
                 std::vector<Light*>* lights
         );
 
-        void DrawNuklear();
+        void DrawNuklearUI(std::unordered_map<UUID, Level::SceneUIWidget>* widgets);
 
     private:
         uint8_t maxLightCount = 8;
         float maxLightRenderDist = 25;
+
+        void initNuklearUI();
 
         /**
          * \brief Render mesh

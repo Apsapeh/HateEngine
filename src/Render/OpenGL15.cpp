@@ -4,16 +4,6 @@
 #include <glad/gl.h>
 #include <HateEngine/Render/OpenGL15.hpp>
 
-#define NK_INCLUDE_FIXED_TYPES
-#define NK_INCLUDE_STANDARD_IO
-#define NK_INCLUDE_DEFAULT_ALLOCATOR
-#define NK_INCLUDE_VERTEX_BUFFER_OUTPUT
-
-#define NK_INCLUDE_FONT_BAKING
-#define NK_INCLUDE_DEFAULT_FONT
-#define NK_IMPLEMENTATION
-#include <nuklear.h>
-
 // Include OpenGL Utility header (glu.h)
 #ifdef __linux__
     #include <GL/glu.h>
@@ -32,7 +22,7 @@ OpenGL15::OpenGL15() {
     GLfloat light_position[]={1.0,1.0,1.0,1.0};
     GLfloat white_light[]={1.0,1.0,1.0,1.0};
     glClearColor(0.0,0.0,0.0,0.0);
-    glShadeModel(GL_SMOOTH);
+    //glShadeModel(GL_SMOOTH);
     //glMaterialfv(GL_FRONT,GL_SPECULAR,mat_specular);
     //glMaterialfv(GL_FRONT,GL_SHININESS,mat_shininess);
     GLfloat light_ambient[]={1.0,1.0,1.0,1.0};
@@ -46,6 +36,12 @@ OpenGL15::OpenGL15() {
     //glEnable(GL_LIGHTING);
     //auto a = GL_CLAMP_TO_EDGE
     glEnable(GL_TEXTURE_2D);
+
+    //glEnableClientState(GL_COLOR_ARRAY);
+
+    glEnable(GL_BLEND);
+    //glBlendEquation(GL_FUNC_ADD);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     //glLightModelf(GL_LIGHT_MODEL_TWO_SIDE, GL_TRUE);
 
 
@@ -53,10 +49,9 @@ OpenGL15::OpenGL15() {
     glEnableClientState(GL_NORMAL_ARRAY);
     glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 
-
-    //glEnableClientState(GL_COLOR_ARRAY);
-    glEnable(GL_DEPTH_TEST);
-    glEnable(GL_CULL_FACE);
+    //glEnable(GL_DEPTH_TEST);
+    //glEnable(GL_CULL_FACE);
+    initNuklearUI();
 }
 
 
@@ -68,12 +63,14 @@ void OpenGL15::Draw3D(
         std::vector<Particles*>* particles,
         std::vector<Light*>* lights
 ) {
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    glEnable(GL_DEPTH_TEST);
+    glEnable(GL_CULL_FACE);
+    //glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     if (camera != nullptr) {
         renderCamera(camera);
-        /*std::vector<Light*> n;
-        render(camera->getSkyBox(), &n);*/
+        std::vector<Light*> n;
+        render(camera->getSkyBox(), &n);
     }
 
     for (const auto obj : *meshes)
@@ -84,11 +81,13 @@ void OpenGL15::Draw3D(
             render((const Mesh*)&particle, lights);
     }
 
-    if (camera != nullptr) {
+    /*if (camera != nullptr) {
         std::vector<Light*> n;
         render(camera->getSkyBox(), &n);
-    }
+    }*/
     //std::cout << "\n\n";
+    glDisable(GL_DEPTH_TEST);
+    glDisable(GL_CULL_FACE);
 }
 
 void OpenGL15::render(const Mesh *mesh, std::vector<Light*>* lights_vec) {
