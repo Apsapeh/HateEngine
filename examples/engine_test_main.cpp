@@ -50,7 +50,8 @@ int main() {
     camera.setPosition(0, 6, 3);
     //camera.setPosition(0, 25, 0);
     camera.setRotation(0, 0, 0);
-    camera.setSkyBoxTexture(new HateEngine::Texture("examples/Assets/skybox.jpg", HateEngine::Texture::ClampToEdge));
+    //camera.setSkyBoxTexture(new HateEngine::Texture("examples/Assets/skybox.jpg", HateEngine::Texture::ClampToEdge));
+    camera.setSkyBoxEnabled(false);
     mesh1.setRotation(0, 0, 0);
     mesh1.setSize(1, 1, 1);
 

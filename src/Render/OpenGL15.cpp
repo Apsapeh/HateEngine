@@ -71,8 +71,10 @@ void OpenGL15::Draw3D(
 
     if (camera != nullptr) {
         renderCamera(camera);
-        std::vector<Light*> n;
-        render(camera->getSkyBox(), &n);
+        if (camera->isSkyBoxEnabled()) {
+            std::vector<Light*> n;
+            render(camera->getSkyBox(), &n);
+        }
     }
 
     for (const auto obj : *meshes)

@@ -65,6 +65,10 @@ void Camera::setSkyBoxTexture(Texture *tex) {
     this->skybox.setTexture(tex);
 }
 
+void Camera::setSkyBoxEnabled(bool enable) {
+    this->skyboxEnabled = enable;
+}
+
 float Camera::getFOV() const {
     return this->FOV;
 }
@@ -75,4 +79,8 @@ float Camera::getRenderDist() const {
 
 const CubeMesh *Camera::getSkyBox() const {
     return &this->skybox;
+}
+
+bool Camera::isSkyBoxEnabled() const {
+    return this->skyboxEnabled;
 }
