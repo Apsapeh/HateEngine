@@ -5,6 +5,7 @@
 #include <HateEngine/Render/OpenGL15.hpp>
 #include <HateEngine/Error.hpp>
 
+#include "glm/ext/vector_float2.hpp"
 #include "globalStaticParams.hpp"
 
 #ifdef __linux__
@@ -27,6 +28,8 @@ Engine::Engine(std::string window_lbl, int width, int height) : Input(this) {
         Error::throwError("Failed to create GLFW window", false);
         glfwTerminate();
     }
+    
+    this->setResolution(width, height);
 
     glfwSetWindowUserPointer(this->window, this);
     glfwMakeContextCurrent(this->window);
@@ -43,8 +46,7 @@ Engine::Engine(std::string window_lbl, int width, int height) : Input(this) {
             return;
         }
 
-        // FIXME: Camera should't has ViewAspect field
-        th->level->camera->setViewAspect(float(w) / float(h));
+        th->setResolution(w, h);
     });
 
     glfwSetCursorPosCallback(window, [] (GLFWwindow *win, double x, double y) {
@@ -128,7 +130,7 @@ void Engine::Run() {
         );
     }
 
-    OpenGL15 ogl;
+    OpenGL15 ogl(this);
 
     glfwSwapBuffers(this->window);
     double oldTime = glfwGetTime();
@@ -148,10 +150,15 @@ void Engine::Run() {
         //meshesMutex.lock();
         if (this->processLoop != nullptr)
             this->processLoop(this, delta);
+            
+        if (this->level->processLoop != nullptr)
+            this->level->processLoop(this, delta);
 
         if (isOneThread) {
             if (this->fixedProcessLoop != nullptr and fixed_process_loop_delta >= fixed_process_loop_delay) {
                 this->fixedProcessLoop(this, fixed_process_loop_delta);
+                if (this->level->fixedProcessLoop != nullptr)
+                    this->level->fixedProcessLoop(this, delta);
                 fixed_process_loop_delta = 0.0;
             }
 
@@ -188,6 +195,24 @@ void Engine::Run() {
 
 
 
+void Engine::setResolution(int width, int height) {
+    Error::throwWarning("Engine::setResolution not implemented");
+    
+    // FIXME: Implement setResolution
+    this->resolution = glm::ivec2(width, height);
+    this->aspectRatio = (float)width / (float)height;
+}
+
+glm::ivec2 Engine::getResolution() {
+    return this->resolution;
+}
+
+float Engine::getAspectRatio() {
+    return this->aspectRatio;
+}
+
+
+
 
 void Engine::threadFixedProcessLoop() {
 #ifdef __APPLE__
@@ -214,6 +239,8 @@ void Engine::threadFixedProcessLoop() {
 
         //meshesMutex.lock();
         fixedProcessLoop(this, delta);
+        if (this->level->fixedProcessLoop != nullptr)
+            this->level->fixedProcessLoop(this, delta);
         //meshesMutex.unlock();
         func_delta = glfwGetTime() - oldTime;
     }
@@ -257,14 +284,15 @@ void Engine::setInputEvent(void (*func)(Engine *, InputEventInfo)) {
     this->inputEventFunc = func;
 }
 
-PhysEngine* const Engine::getPhysEngine() {
-    return &physEngine;
-}
-
 
 void Engine::setLevelRef(Level* lvl) {
     this->level = lvl;
 }
+
+Level* Engine::getLevel() {
+    return this->level;
+}
+
 
 
 

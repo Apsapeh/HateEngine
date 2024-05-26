@@ -10,6 +10,7 @@
 
 namespace HateEngine {
     class WidgetUI : public ObjectUI {
+        friend class OpenGL15;
         struct Element {
             ObjectUI* obj;
             bool is_ref;
@@ -20,8 +21,19 @@ namespace HateEngine {
     public:
         glm::vec2 size = {100, 100};
         glm::ivec4 color = {0, 0, 0, 125};
-        bool is_movable = true;
-        bool is_resizable = true;
+        std::string title = "Widget";
+        bool has_border = false;
+        bool is_movable = false;
+        bool is_scalable = false;
+        bool is_closable = false;
+        bool is_minimizable = false;
+        bool has_scrollbar = false;
+        bool has_title = false;
+        bool is_scroll_autohide = false;
+        bool has_background = true;
+        bool is_scalable_left = false;
+        bool has_input = true;
+
         bool is_interactive = true;
 
 

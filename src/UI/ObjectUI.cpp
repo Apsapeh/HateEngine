@@ -6,6 +6,10 @@
 
 using namespace HateEngine;
 
+ObjectUI::ObjectUI(Type type) {
+    this->type = type;
+}
+
 UUID ObjectUI::getUUID() const {
     return uuid;
 }

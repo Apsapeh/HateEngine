@@ -1,6 +1,7 @@
 #pragma once
 #include <vector>
 #include <cstdint>
+#include "../HateEngine.hpp"
 #include "../Objects/Mesh.hpp"
 #include "../Objects/Particles.hpp"
 #include "../Objects/Light/Light.hpp"
@@ -11,7 +12,7 @@
 namespace HateEngine {
     class OpenGL15 {
     public:
-        OpenGL15();
+        OpenGL15(Engine* engine);
 
         /**
          * \brief Draw the scene
@@ -29,6 +30,7 @@ namespace HateEngine {
         void DrawNuklearUI(std::unordered_map<UUID, Level::SceneUIWidget>* widgets);
 
     private:
+        Engine* engine = nullptr;
         uint8_t maxLightCount = 8;
         float maxLightRenderDist = 25;
 
@@ -65,6 +67,7 @@ namespace HateEngine {
         inline std::vector<int> getNearestLights(
             std::vector<Light*>* lights_vec, glm::vec3 position
         );
+
 
         static void loadTexture(Texture* texture_ptr);
         static void unloadTexture(Texture* texture_ptr);

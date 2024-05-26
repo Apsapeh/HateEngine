@@ -9,10 +9,22 @@
 namespace HateEngine {
     class LabelUI : public ObjectUI {
     public:
-        glm::vec2 size = {100, 100};
-        glm::vec4 color = {0, 0, 0, 1};
+        enum TextAlign {
+            Left,
+            Center,
+            Right
+        };
+    
+        glm::ivec2 size = {100, 100};
+        glm::ivec3 color = {0, 0, 0};
+        TextAlign text_align = Left;
 
     public:
+        std::string text = "";
+        
         LabelUI();
+
+
+        //LabelUI();
     };
 }

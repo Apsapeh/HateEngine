@@ -20,6 +20,14 @@ void Level::removeCameraRef() {
     this->camera = nullptr;
 }
 
+void Level::setProcessLoop(void (*processLoop)(void*, double)) {
+    this->processLoop = processLoop;
+}
+
+void Level::setFixedProcessLoop(void (*fixedProcessLoop)(void*, double)) {
+    this->fixedProcessLoop = fixedProcessLoop;
+}
+
 PhysEngine *Level::getPhysEngine() {
     return &this->physEngine;
 }

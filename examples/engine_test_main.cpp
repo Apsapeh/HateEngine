@@ -17,6 +17,10 @@
 #include <iostream>
 #include <HateEngine/Objects/Physics/SphereShape.hpp>
 
+#include <HateEngine/UI/WidgetUI.hpp>
+#include <HateEngine/UI/LabelUI.hpp>
+
+
 
 void _process(HateEngine::Engine *, double);
 void _physics_process(HateEngine::Engine *, double);
@@ -31,11 +35,11 @@ const int WIDTH = 800;
 const int HEIGHT = 600;
 
 // HateEngine::CubeMesh meshes[22500];
-HateEngine::Camera camera(float(WIDTH) / float(HEIGHT), 60, 600);
+HateEngine::Camera camera(60, 600);
 HateEngine::Light sun(HateEngine::Light::DirectionalLight);
 HateEngine::Particles *part;
 
-
+HateEngine::LabelUI fps_label;
 
 int main() {
     std::cout << "Hello\n";
@@ -55,7 +59,6 @@ int main() {
     floor.setSize(25, 1, 25);
     //floor.setRotation(20, 0, 0);
 
-    HateEngine::Camera came2(0, 0, 0);
 
     //floor.setRotationMatrix(matfloor);
     // floor.matrix
@@ -104,9 +107,17 @@ int main() {
     lvl.addObjectRef(&xAxMesh);
     lvl.addObjectRef(&floor);
     lvl.addObjectRef(&sun);
+    
+    lvl.setFixedProcessLoop([](void *engine, double delta) {
+        ////TODO: Change engine pointer to struct with Engine*, Level* 
+        HateEngine::Engine *_engine = (HateEngine::Engine *)engine;
+       // _engine->getLevel()->ob
+        std::cout << "Level fixed process loop dealay: " << delta << "\n";
+        //_process(engine, delta);
+    });
     //lvl.addObjectRef(&glmodel);
     //lvl.addObjectClone(glmodel2);
-    
+
     /*int poly_count = 0;
     int mesh_count = 0;
     for (const auto& m : glmodel2.getMeshes()) {
@@ -180,7 +191,25 @@ int main() {
 
     // UI TEST
     HateEngine::WidgetUI ui;
+    ui.has_border = true;
+    ui.has_title = true;
     ui.position = {400, 300};
+
+    //HateEngine::LabelUI label;
+    //label.text = "Hello, World!";
+    HateEngine::WidgetUI fps_widget;
+    fps_widget.position = {0, 0};
+    fps_widget.size = {100, 200};
+    fps_widget.color.w = 0;
+    //fps_widget.has_background = false;
+    
+    fps_label.color = {255, 0, 0};
+    
+    
+
+    fps_widget.addObjectRef(&fps_label);
+
+    lvl.addObjectRef(&fps_widget);
     lvl.addObjectRef(&ui);
 
 
@@ -200,6 +229,7 @@ void _process(HateEngine::Engine *engine, double delta) {
       del += delta;
     } else {
       std::cout << "FPS: " << (float)count / del << std::endl;
+      fps_label.text = "FPS: " + std::to_string((float)count / del);
 
       count = 0;
       del = 0.0;
@@ -245,6 +275,7 @@ void _physics_process(HateEngine::Engine *engine, double delta) {
     );
     glmodel.rotate(0, glmodel_rot.x, 0);
     glmodel.offset(0, glmodel_rot.y / 10, 0);
+
 
 
     /*std::cout << "GLOBAL POS: " << glmodel.getGlobalPosition().x << " " <<

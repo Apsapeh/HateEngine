@@ -4,8 +4,7 @@
 
 using namespace HateEngine;
 
-Camera::Camera(float view_aspect, float fov, float render_dist) {
-    this->setViewAspect(view_aspect);
+Camera::Camera(float fov, float render_dist) {
     this->setFOV(fov);
     this->setRenderDist(render_dist);
 
@@ -51,9 +50,6 @@ Camera::Camera(float view_aspect, float fov, float render_dist) {
     this->bindObj(&this->skybox, true, false, false);
 }
 
-void Camera::setViewAspect(float view_aspect) {
-    this->viewAspect = view_aspect;
-}
 
 void Camera::setFOV(float fov) {
     this->FOV = fov;
@@ -67,10 +63,6 @@ void Camera::setRenderDist(float dist) {
 
 void Camera::setSkyBoxTexture(Texture *tex) {
     this->skybox.setTexture(tex);
-}
-
-float Camera::getViewAspect() const{
-    return this->viewAspect;
 }
 
 float Camera::getFOV() const {

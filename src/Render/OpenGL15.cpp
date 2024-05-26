@@ -16,7 +16,9 @@
 
 using namespace HateEngine;
 
-OpenGL15::OpenGL15() {
+OpenGL15::OpenGL15(Engine* engine) {
+    this->engine = engine;
+    
     GLfloat mat_specular[]={1.0,1.0,1.0,1.0};
     GLfloat mat_shininess[]={50.0};
     GLfloat light_position[]={1.0,1.0,1.0,1.0};
@@ -141,7 +143,7 @@ void OpenGL15::render(const Mesh *mesh, std::vector<Light*>* lights_vec) {
 inline void OpenGL15::renderCamera(Camera* camera) {
     glm::mat4 Mp = glm::perspective(
         glm::radians(camera->getFOV()),
-        camera->getViewAspect(),
+        this->engine->getAspectRatio(),
         0.1f,
         camera->getRenderDist()
     );

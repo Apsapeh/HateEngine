@@ -65,7 +65,8 @@ namespace HateEngine {
         uint16_t physicsEngineIterateLoopRefreshRate = 120;
         int64_t physicsEngineIterateDelayMCS;
 
-        PhysEngine physEngine;
+        glm::ivec2 resolution;
+        float aspectRatio;
         Level* level;
 
         // Scene objects
@@ -83,16 +84,24 @@ namespace HateEngine {
 
         Engine(std::string window_lbl, int width, int height);
         void Run();
-
+        
+        void setResolution(int width, int height);
+        
+        glm::ivec2 getResolution();
+        float getAspectRatio();
+        
         void setProcessLoop(void (*func)(Engine*, double));
         void setFixedProcessLoop(void (*func)(Engine*, double));
         void setInputEvent(void (*func)(Engine*, InputEventInfo));
 
-        PhysEngine* const getPhysEngine();
+        
 
         void setLevelRef(Level *lvl);
+        Level* getLevel();
         //UUID_Generator::UUID addObjectClone(Object object);
-
+        
+        
+        
 
 
         GLFWwindow* getWindow();

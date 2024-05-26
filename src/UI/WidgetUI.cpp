@@ -1,12 +1,14 @@
 //
 // Created by Тимофей Кириченко on 12.05.2024.
 //
+#include "HateEngine/UI/ObjectUI.hpp"
 #include <HateEngine/UI/WidgetUI.hpp>
+#include <string>
 
 using namespace HateEngine;
 
-WidgetUI::WidgetUI() {
-
+WidgetUI::WidgetUI() : ObjectUI(Type::Widget) {
+    this->title += std::to_string(this->getUUID().getU64());
 }
 
 UUID WidgetUI::addObjectRef(ObjectUI *obj) {
@@ -21,5 +23,5 @@ bool WidgetUI::removeObjectRef(const UUID &uuid) {
         elements.erase(uuid);
         return true;
     }
+    return false;
 }
-

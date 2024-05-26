@@ -7,7 +7,12 @@
 #include <GLFW/glfw3.h>
 #include <glm/ext.hpp>
 #include <string>
+#include "HateEngine/UI/ObjectUI.hpp"
 #include "glm/ext/matrix_clip_space.hpp"
+#include "glm/ext/vector_int2.hpp"
+
+#include <HateEngine/UI/WidgetUI.hpp>
+#include <HateEngine/UI/LabelUI.hpp>
 
 #define NK_INCLUDE_FIXED_TYPES
 #define NK_INCLUDE_STANDARD_IO
@@ -23,10 +28,8 @@ using namespace HateEngine;
 
 
 static void device_upload_atlas(const void *image, int width, int height);
-static void draw();
+static void draw(int width, int height);
 
-#define WIDTH 800
-#define HEIGHT 600
 #define MAX_MEMORY 512 * 1024
 //#define MAX_ELEMENT_MEMORY 128 * 1024
 
@@ -75,6 +78,8 @@ static void device_upload_atlas(const void *image, int width, int height)
                 GL_RGBA, GL_UNSIGNED_BYTE, image);
 }
 
+
+
 void OpenGL15::DrawNuklearUI(std::unordered_map<UUID, Level::SceneUIWidget>* widgets) {
     /*if (nk_begin(&ctx, "Show", nk_rect(0, 0, 220, 220),
     NK_WINDOW_NOT_INTERACTIVE|NK_WINDOW_BORDER)) {
@@ -87,37 +92,62 @@ void OpenGL15::DrawNuklearUI(std::unordered_map<UUID, Level::SceneUIWidget>* wid
     nk_end(&ctx);*/
     for (const auto& it : *widgets) {
         const WidgetUI* widget = it.second.obj;
+        nk_flags widget_flags = (widget->has_border ? NK_WINDOW_BORDER : 0)
+                        | (widget->is_movable ? NK_WINDOW_MOVABLE : 0)
+                        | (widget->is_scalable ? NK_WINDOW_SCALABLE : 0)
+                        | (widget->is_closable ? NK_WINDOW_CLOSABLE : 0)
+                        | (widget->is_minimizable ? NK_WINDOW_MINIMIZABLE : 0)
+                        | (!widget->has_scrollbar ? NK_WINDOW_NO_SCROLLBAR : 0)
+                        | (widget->has_title ? NK_WINDOW_TITLE : 0)
+                        | (widget->is_scroll_autohide ? NK_WINDOW_SCROLL_AUTO_HIDE : 0)
+                        | (widget->has_background ? NK_WINDOW_BACKGROUND : 0)
+                        | (widget->is_scalable_left ? NK_WINDOW_SCALE_LEFT : 0)
+                        | (!widget->has_input ? NK_WINDOW_NO_INPUT : 0)
+        ;
+
+        ctx.style.window.fixed_background = nk_style_item_color(nk_rgba(widget->color.x, widget->color.y, widget->color.z, widget->color.w));
         if (nk_begin(
-            &ctx, "Show",
+            &ctx, widget->title.c_str(),
             nk_rect(widget->position.x, widget->position.y, widget->size.x, widget->size.y),
-            NK_WINDOW_NOT_INTERACTIVE|NK_WINDOW_BORDER|NK_WINDOW_NO_SCROLLBAR))
+            widget_flags))
         {
-            ctx.style.window.fixed_background = nk_style_item_color(nk_rgba(widget->color.x, widget->color.z, widget->color.z, widget->color.w));
-            ctx.style.text.color = nk_rgb(255, 0, 0);
-            nk_layout_row_static(&ctx, 30, 700, 1);
-            nk_label(&ctx, ("FPS: " + std::to_string(glfwGetTime())).c_str(), NK_TEXT_LEFT);
+            
+            for(const auto& child : widget->elements) {
+                const ObjectUI* obj = child.second.obj;
+                if (obj->type == ObjectUI::Type::Label) {
+                    const LabelUI* label = (LabelUI*)obj;
+                    ctx.style.text.color = nk_rgb(label->color.x, label->color.y, label->color.z);
+                    nk_layout_row_static(&ctx, 30, 700, 1);
+                    //nk_layout
+                    
+                    nk_flags text_flags = 0;
+                    if (label->text_align == LabelUI::TextAlign::Left)
+                        text_flags = NK_TEXT_LEFT;
+                    else if (label->text_align == LabelUI::TextAlign::Center)
+                        text_flags = NK_TEXT_CENTERED;
+                    else if (label->text_align == LabelUI::TextAlign::Right)
+                        text_flags = NK_TEXT_RIGHT;
+                    nk_label(&ctx, label->text.c_str(), text_flags);
+                }
+            }
+            
         }
         nk_end(&ctx);
     }
-    draw();
+    glm::ivec2 resolution = this->engine->getResolution();
+    draw(resolution.x, resolution.y);
 }
 
-static void draw() {
+
+
+static void draw(int width, int height) {
     glEnableClientState(GL_COLOR_ARRAY);
     glPushMatrix();
 
-
-
-    #define X 1.0f * (float)WIDTH
-    #define Y 1.0f  * HEIGHT
-
-    glm::mat4 Mp = glm::ortho(0.0f, X, Y, 0.0f);//(glm::radians(60), 0.5, 0.1f, 30);
+    glm::mat4 Mp = glm::ortho(0.0f, (float)width, (float)height, 0.0f);//(glm::radians(60), 0.5, 0.1f, 30);
     //glm::mat4 Mp = glm::perspective(glm::radians(60.0f), (float)(WIDTH / HEIGHT), 0.1f, 30000.0f);
     glMatrixMode(GL_PROJECTION);
     glLoadMatrixf(glm::value_ptr(Mp));
-
-
-
 
     struct nk_convert_config cfg = {};
     static const struct nk_draw_vertex_layout_element vertex_layout[] = {

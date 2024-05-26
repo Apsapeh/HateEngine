@@ -12,6 +12,7 @@
 #include "../Utilities/UUID.hpp"
 #include "../UI/WidgetUI.hpp"
 
+
 namespace HateEngine {
     class Level {
         friend class Engine;
@@ -47,6 +48,18 @@ namespace HateEngine {
         std::vector<Particles*> particles;
         // This vector should be generated from lights_obj
         std::vector<Light*> lights;
+        
+        // Functions
+        /**
+            * @brief This function is called by the engine to process the level
+            * @param engine HateEngine. The engine that is calling the function
+        */
+        void (*processLoop)(void* engine, double delta) = nullptr;
+        /**
+            * @brief This function is called by the engine with a fixed time step to process the level
+            * @param engine HateEngine. The engine that is calling the function
+        */
+        void (*fixedProcessLoop)(void* engine, double delta) = nullptr;
 
         std::mutex uiWidgetsMutex;
         std::mutex meshesMutex;
@@ -67,6 +80,17 @@ namespace HateEngine {
 
         void setCameraRef(Camera* camera);
         void removeCameraRef();
+        
+        /**
+            * @brief This function is called by the engine to process the level
+            * @param engine HateEngine. The engine that is calling the function
+        */
+        void setProcessLoop(void (*processLoop)(void* engine, double delta));
+        /**
+            * @brief This function is called by the engine with a fixed time step to process the level
+            * @param engine HateEngine. The engine that is calling the function
+        */
+        void setFixedProcessLoop(void (*fixedProcessLoop)(void* engine, double delta));
 
         PhysEngine* getPhysEngine();
 
