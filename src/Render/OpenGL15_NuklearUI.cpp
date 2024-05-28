@@ -141,6 +141,8 @@ void OpenGL15::DrawNuklearUI(std::unordered_map<UUID, Level::SceneUIWidget>* wid
 
 
 static void draw(int width, int height) {
+    glEnable(GL_TEXTURE_2D);
+
     glEnableClientState(GL_COLOR_ARRAY);
     glPushMatrix();
 
@@ -202,6 +204,7 @@ static void draw(int width, int height) {
     nk_buffer_free(&idx);
     nk_clear(&ctx);
     glPopMatrix();
+    glDisable(GL_TEXTURE_2D);
     glDisableClientState(GL_COLOR_ARRAY);
 }
 

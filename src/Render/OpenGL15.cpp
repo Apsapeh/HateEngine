@@ -37,7 +37,6 @@ OpenGL15::OpenGL15(Engine* engine) {
     //glLightfv(GL_LIGHT0,GL_SPECULAR,white_light);
     //glEnable(GL_LIGHTING);
     //auto a = GL_CLAMP_TO_EDGE
-    glEnable(GL_TEXTURE_2D);
 
     //glEnableClientState(GL_COLOR_ARRAY);
 
@@ -126,6 +125,7 @@ void OpenGL15::render(const Mesh *mesh, std::vector<Light*>* lights_vec) {
             if (not mesh->getTexture()->is_loaded)
                 mesh->getTexture()->Load(loadTexture, unloadTexture);
 
+            glEnable(GL_TEXTURE_2D);
             glBindTexture(GL_TEXTURE_2D, mesh->getTexture()->getTextureID());
             glTexCoordPointer(2, GL_FLOAT, 0, mesh->getUV()->data());
         }
@@ -134,7 +134,12 @@ void OpenGL15::render(const Mesh *mesh, std::vector<Light*>* lights_vec) {
         glNormalPointer(GL_FLOAT, 0, mesh->getNormals()->data());
         //glColorPointer(3, GL_FLOAT, 0, color);
         glDrawElements(GL_TRIANGLES, mesh->getIndicies()->size(), GL_UNSIGNED_INT, mesh->getIndicies()->data());
-        glBindTexture(GL_TEXTURE_2D, 0);
+
+        if (mesh->getTexture() != nullptr) {
+            glBindTexture(GL_TEXTURE_2D, 0);
+            glDisable(GL_TEXTURE_2D);
+        }
+
         glPopMatrix();
         for (int i = 0; i < light_indicies.size(); ++i)
             glDisable(GL_LIGHT0 + i);

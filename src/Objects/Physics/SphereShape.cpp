@@ -17,3 +17,7 @@ void SphereShape::changeRadius(float radius) {
         ((reactphysics3d::SphereShape*)reactShape)->setRadius(radius);
     }
 }
+
+float SphereShape::getRadius() const {
+    return radius;
+}

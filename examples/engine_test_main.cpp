@@ -40,7 +40,7 @@ HateEngine::Light sun(HateEngine::Light::DirectionalLight);
 HateEngine::Particles *part;
 
 HateEngine::LabelUI fps_label;
-
+HateEngine::CubeMesh test2;
 int main() {
     std::cout << "Hello\n";
 
@@ -82,6 +82,12 @@ int main() {
     //HateEngine::GLTFModel glmodel2("examples/Assets/ignore/bolg.glb");
 
     game.setLevelRef(&lvl);
+    // HateEngine::CubeMesh test_mesh;
+    // HateEngine::Level level2;
+    // level2.addObjectRef(&test2);
+    // level2.setCameraRef(&camera);
+    // game.setLevelRef(&level2);
+    
 
     std::cout << glmodel.getGlobalPosition().x << " "
               << glmodel.getGlobalPosition().y << " "
@@ -116,17 +122,6 @@ int main() {
         std::cout << "Level fixed process loop dealay: " << delta << "\n";
         //_process(engine, delta);
     });
-    //lvl.addObjectRef(&glmodel);
-    //lvl.addObjectClone(glmodel2);
-
-    /*int poly_count = 0;
-    int mesh_count = 0;
-    for (const auto& m : glmodel2.getMeshes()) {
-        ++mesh_count;
-        poly_count += m->getIndicies()->size() / 3;
-    }
-    std::cout << "Poly count: " << poly_count << "\n";
-    std::cout << "Mesh count: " << mesh_count << "\n";*/
 
     // game.addObjectRef(&tomato2);
     HateEngine::Particle::ParticleSettings pa_set = {

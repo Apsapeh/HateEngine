@@ -9,7 +9,7 @@
 namespace HateEngine {
 
 class SphereShape : public CollisionShape {
-public:
+private:
     float radius = 0.5f;
 
 public:
@@ -20,6 +20,8 @@ public:
     );
 
     void changeRadius(float radius);
+    
+    float getRadius() const;
 };
 
 } // HateEngine

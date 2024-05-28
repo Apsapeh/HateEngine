@@ -84,7 +84,14 @@ UUID PhysEngine::addObjectRef(PhysicalBody *object) {
         }
         else if (shape_type == CollisionShape::Sphere) {
             SphereShape* shape = (SphereShape*)shape_pair.second.shape;
-            react_shape = physicsCommon.createSphereShape(shape->radius);
+            react_shape = physicsCommon.createSphereShape(shape->getRadius());
+            shape->reactShape = react_shape;
+        }
+        else if (shape_type == CollisionShape::Capsule) {
+            CapsuleShape* shape = (CapsuleShape*)shape_pair.second.shape;
+            react_shape = physicsCommon.createCapsuleShape(
+                shape->getRadius(), shape->getHeight()
+            );
             shape->reactShape = react_shape;
         }
         else {
