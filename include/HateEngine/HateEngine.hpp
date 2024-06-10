@@ -34,6 +34,7 @@ namespace HateEngine {
 
         enum InputEventType {
             InputEventKey,
+            InputEventMouseButton,
             InputEventMouseMove,
             InputEventMouseScroll
         };
@@ -90,6 +91,8 @@ namespace HateEngine {
         void Run();
         
         void setResolution(int width, int height);
+        void setOneThreadMode(bool mode);
+        void setMouseCapture(bool capture);
         
         glm::ivec2 getResolution();
         float getAspectRatio();

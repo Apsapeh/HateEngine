@@ -5,6 +5,7 @@
 #include <HateEngine/Render/OpenGL15.hpp>
 #include <HateEngine/Error.hpp>
 
+#include "GLFW/glfw3.h"
 #include "glm/ext/vector_float2.hpp"
 #include "globalStaticParams.hpp"
 
@@ -44,7 +45,7 @@ Engine::Engine(std::string window_lbl, int width, int height) : Input(this) {
     glfwSetWindowUserPointer(this->window, this);
     glfwMakeContextCurrent(this->window);
     glfwSwapInterval( 0 );
-    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+    //glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
     glfwSetFramebufferSizeCallback(this->window, [] (GLFWwindow *win, int w, int h) {
         Engine *th = static_cast<Engine*>(glfwGetWindowUserPointer(win));
@@ -76,6 +77,19 @@ Engine::Engine(std::string window_lbl, int width, int height) : Input(this) {
             info.type = InputEventType::InputEventKey;
             info.key = key;
             info.scancode = scancode;
+            info.action = action;
+            info.mods = mods;
+            th->inputEventFunc(th, info);
+        }
+    });
+    
+    glfwSetMouseButtonCallback(window, [] (GLFWwindow *win,  int button, int action, int mods) {
+        Engine *th = (Engine*)(glfwGetWindowUserPointer(win));
+        if (th->inputEventFunc != nullptr) {
+            InputEventInfo info;
+            info.type = InputEventType::InputEventMouseButton;
+            info.key = button;
+            info.scancode = button;
             info.action = action;
             info.mods = mods;
             th->inputEventFunc(th, info);
@@ -196,6 +210,17 @@ void Engine::setResolution(int width, int height) {
     // FIXME: Implement setResolution
     this->resolution = glm::ivec2(width, height);
     this->aspectRatio = (float)width / (float)height;
+}
+
+void Engine::setOneThreadMode(bool mode) {
+    this->isOneThread = mode;
+}
+
+void Engine::setMouseCapture(bool capture) {
+    if (capture)
+        glfwSetInputMode(this->window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+    else
+        glfwSetInputMode(this->window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
 }
 
 glm::ivec2 Engine::getResolution() {
