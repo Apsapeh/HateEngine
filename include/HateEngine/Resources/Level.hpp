@@ -1,7 +1,5 @@
 #pragma once
 
-
-
 #include "../PhysEngine.hpp"
 #include "../Objects/Object.hpp"
 #include "../Objects/Mesh.hpp"
@@ -13,11 +11,26 @@
 #include "../UI/WidgetUI.hpp"
 
 
-namespace HateEngine {
+namespace HateEngine {   
     class Level {
         friend class Engine;
+        friend class OpenGL15;
 
     public:
+        enum FogMode {
+            LINEAR,
+            EXPONENTIAL,
+            EXPONENTIAL_SQUARED
+        };
+        struct LevelSettings {
+            FogMode fog_mode = EXPONENTIAL;
+            float fog_density = 0.0f;
+            float fog_start = 0.0f;
+            float fog_end = 0.0f;
+            float fog_color[4] = {0.5f, 0.5f, 0.5f, 1.0f};
+            float background_color[4] = {0.5f, 0.5f, 0.5f, 0.0f};
+        };
+        
         struct SceneUIWidget {
             WidgetUI* obj;
             bool is_ref;
@@ -75,6 +88,8 @@ namespace HateEngine {
 
 
     public:
+        LevelSettings settings;
+    
         Level();
         ~Level();
 

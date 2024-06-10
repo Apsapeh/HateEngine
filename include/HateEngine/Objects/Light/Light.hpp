@@ -16,7 +16,7 @@ namespace HateEngine {
         std::vector<float> getColor() const;
     protected:
         LightTypeEnum lightType;
-        bool shadowsEnabled = true;
+    public:
         std::vector<float> color;
     };
 }

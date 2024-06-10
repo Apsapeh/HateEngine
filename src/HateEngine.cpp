@@ -9,11 +9,21 @@
 #include "globalStaticParams.hpp"
 
 #ifdef __linux__
+#define SET_THREAD_HIGH_PRIORITY
 #elif __APPLE__
 #include <sched.h>
+#define SET_THREAD_HIGH_PRIORITY\
+    sched_param sch_params;\
+    sch_params.sched_priority = 99;\
+    pthread_setschedparam(pthread_self(), SCHED_RR, &sch_params);
 #elif _WIN32
 #include <Windows.h>
+// FIXME: I don't, it's correct or not
+#define SET_THREAD_HIGH_PRIORITY\
+    SetPriorityClass(GetCurrentProcess(), HIGH_PRIORITY_CLASS);\
+    SetThreadPriority(GetCurrentThread(), THREAD_PRIORITY_TIME_CRITICAL);
 #endif
+
 
 
 bool glad_is_initialized = false;
@@ -82,15 +92,7 @@ Engine::Engine(std::string window_lbl, int width, int height) : Input(this) {
 
 
     // Calculating the delay between FixedProcessLoop iterations
-    #ifdef __linux__
-        // TODO: Add Linux
-    #elif __APPLE__
-        sched_param sch_params;
-        sch_params.sched_priority = 99;
-        pthread_setschedparam(pthread_self(), SCHED_RR, &sch_params);
-    #elif _WIN32
-        // TODO: Add Win
-    #endif
+    SET_THREAD_HIGH_PRIORITY
 
     int64_t fixDelay = 1000000 / fixedLoopRefreshRate;
     int64_t physDelay = 1000000 / physicsEngineIterateLoopRefreshRate;
@@ -117,11 +119,9 @@ Engine::Engine(std::string window_lbl, int width, int height) : Input(this) {
 
 
 void Engine::Run() {
-    bool isOneThread = false;
-
     std::thread *fixedProcessThread = nullptr;
     std::thread *physicsEngineProcessThread = nullptr;
-    if (not isOneThread) {
+    if (not this->isOneThread) {
         if (this->fixedProcessLoop != nullptr)
             fixedProcessThread = new std::thread(&Engine::threadFixedProcessLoop, this);
 
@@ -154,7 +154,7 @@ void Engine::Run() {
         if (this->level->processLoop != nullptr)
             this->level->processLoop(this, delta);
 
-        if (isOneThread) {
+        if (this->isOneThread) {
             if (this->fixedProcessLoop != nullptr and fixed_process_loop_delta >= fixed_process_loop_delay) {
                 this->fixedProcessLoop(this, fixed_process_loop_delta);
                 if (this->level->fixedProcessLoop != nullptr)
@@ -163,26 +163,21 @@ void Engine::Run() {
             }
 
             if (physics_engine_iterate_loop_delta >= physics_engine_iterate_loop_delay) {
-                level->getPhysEngine()->IteratePhysics((float)physics_engine_iterate_loop_delta);
+                //uint32_t i = 0;
+                //std::cout << "Physics Engine Iteration: " << physics_engine_iterate_loop_delta << std::endl;
+                while (physics_engine_iterate_loop_delta-0.0001 > 0.0f) {
+                    float d = physics_engine_iterate_loop_delay;
+                    if (physics_engine_iterate_loop_delta < d)
+                        d = physics_engine_iterate_loop_delta;
+                    this->level->getPhysEngine()->IteratePhysics(d); 
+                    physics_engine_iterate_loop_delta -= d;
+                    //std::cout << "Physics Engine Iteration [" << i++ << "]: " << d << std::endl;
+                }
                 physics_engine_iterate_loop_delta = 0.0;
             }
         }
-        //meshesMutex.unlock();
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        glPushMatrix();
-        ogl.Draw3D(
-            this->level->camera,
-            &this->level->meshes,
-            &this->level->particles,
-            &this->level->lights
-        );
-        glPopMatrix();
-
-        ogl.DrawNuklearUI(&this->level->ui_widgets);
-
-
-        //meshesMutex.unlock();
+        ogl.Render();
 
         glfwSwapBuffers(this->window);
     }
@@ -215,12 +210,7 @@ float Engine::getAspectRatio() {
 
 
 void Engine::threadFixedProcessLoop() {
-#ifdef __APPLE__
-    sched_param sch_params;
-    sch_params.sched_priority = 99;
-    pthread_t this_thread = pthread_self();
-    pthread_setschedparam(pthread_self(), SCHED_RR, &sch_params);
-#endif
+    SET_THREAD_HIGH_PRIORITY
 
     double oldTime = glfwGetTime();
     double delta = (float)this->fixedProcessDelayMCS / 1000000;
@@ -248,12 +238,7 @@ void Engine::threadFixedProcessLoop() {
 
 
 void Engine::threadPhysicsEngineIterateLoop() {
-#ifdef __APPLE__
-    sched_param sch_params;
-    sch_params.sched_priority = 99;
-    pthread_t this_thread = pthread_self();
-    pthread_setschedparam(pthread_self(), SCHED_RR, &sch_params);
-#endif
+    SET_THREAD_HIGH_PRIORITY
 
     double oldTime = glfwGetTime();
     double delta = (double)this->physicsEngineIterateDelayMCS / 1000000;

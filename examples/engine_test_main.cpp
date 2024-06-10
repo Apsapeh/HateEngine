@@ -1,3 +1,4 @@
+#include "HateEngine/Objects/Light/Light.hpp"
 #include "HateEngine/Objects/Object.hpp"
 #include "HateEngine/Objects/Physics/BoxShape.hpp"
 #include <HateEngine/Error.hpp>
@@ -29,7 +30,8 @@ void _input_event(HateEngine::Engine *, HateEngine::Engine::InputEventInfo);
 HateEngine::CubeMesh mesh1;
 HateEngine::CubeMesh mesh2;
 HateEngine::CubeMesh xAxMesh;
-HateEngine::GLTFModel glmodel("examples/Assets/employee.glb");
+//HateEngine::GLTFModel glmodel("examples/Assets/employee.glb");
+HateEngine::GLTFModel glmodel("examples/Assets/billy-plane-sep.glb");
 
 const int WIDTH = 800;
 const int HEIGHT = 600;
@@ -37,6 +39,8 @@ const int HEIGHT = 600;
 // HateEngine::CubeMesh meshes[22500];
 HateEngine::Camera camera(60, 600);
 HateEngine::Light sun(HateEngine::Light::DirectionalLight);
+HateEngine::Light light(HateEngine::Light::OmniLight);
+
 HateEngine::Particles *part;
 
 HateEngine::LabelUI fps_label;
@@ -50,8 +54,8 @@ int main() {
     camera.setPosition(0, 6, 3);
     //camera.setPosition(0, 25, 0);
     camera.setRotation(0, 0, 0);
-    //camera.setSkyBoxTexture(new HateEngine::Texture("examples/Assets/skybox.jpg", HateEngine::Texture::ClampToEdge));
-    camera.setSkyBoxEnabled(false);
+    camera.setSkyBoxTexture(new HateEngine::Texture("examples/Assets/skybox.jpg", HateEngine::Texture::ClampToEdge));
+    camera.setSkyBoxEnabled(true);
     mesh1.setRotation(0, 0, 0);
     mesh1.setSize(1, 1, 1);
 
@@ -68,7 +72,7 @@ int main() {
 
     mesh2.setPosition(3, 3, 3);
 
-    HateEngine::Engine game("Old3DE Test", WIDTH, HEIGHT);
+    HateEngine::Engine game("HateEngine Test", WIDTH, HEIGHT);
     // Setting textures for the cube and floor meshes
 
     HateEngine::Texture tex_floor("examples/Assets/ground.png");
@@ -114,12 +118,26 @@ int main() {
     lvl.addObjectRef(&xAxMesh);
     lvl.addObjectRef(&floor);
     lvl.addObjectRef(&sun);
+    lvl.addObjectRef(&glmodel);
+    
+    //print glmodel meshes id
+    
+    
+    glmodel.offset({30, 0, 30});
+    //glmodel.getMeshes()[0]->disableLightShading();
+    
+    //light.setPosition({0, 2, 0});
+    //l
+    lvl.addObjectRef(&light);
+    //light.color = {10, 10, 10, 1};
+    
+    camera.bindObj(&light);
     
     lvl.setFixedProcessLoop([](void *engine, double delta) {
         ////TODO: Change engine pointer to struct with Engine*, Level* 
         HateEngine::Engine *_engine = (HateEngine::Engine *)engine;
        // _engine->getLevel()->ob
-        std::cout << "Level fixed process loop dealay: " << delta << "\n";
+        //std::cout << "Level fixed process loop dealay: " << delta << "\n";
         //_process(engine, delta);
     });
 
@@ -224,7 +242,7 @@ void _process(HateEngine::Engine *engine, double delta) {
       ++count;
       del += delta;
     } else {
-      std::cout << "FPS: " << (float)count / del << std::endl;
+      //std::cout << "FPS: " << (float)count / del << std::endl;
       fps_label.text = "FPS: " + std::to_string((float)count / del);
 
       count = 0;

@@ -1,3 +1,4 @@
+#include "HateEngine/Resources/Level.hpp"
 #include <algorithm>
 #include <glm/glm.hpp>
 #include <glm/gtc/type_ptr.hpp>
@@ -23,7 +24,7 @@ OpenGL15::OpenGL15(Engine* engine) {
     GLfloat mat_shininess[]={50.0};
     GLfloat light_position[]={1.0,1.0,1.0,1.0};
     GLfloat white_light[]={1.0,1.0,1.0,1.0};
-    glClearColor(0.0,0.0,0.0,0.0);
+    glClearColor(0.0,1.0,0.0,0.0);
     //glShadeModel(GL_SMOOTH);
     //glMaterialfv(GL_FRONT,GL_SPECULAR,mat_specular);
     //glMaterialfv(GL_FRONT,GL_SHININESS,mat_shininess);
@@ -35,7 +36,6 @@ OpenGL15::OpenGL15(Engine* engine) {
     glLightf(GL_LIGHT0, GL_QUADRATIC_ATTENUATION, 0.5);*/
     //glLightfv(GL_LIGHT0,GL_DIFFUSE,white_light);
     //glLightfv(GL_LIGHT0,GL_SPECULAR,white_light);
-    //glEnable(GL_LIGHTING);
     //auto a = GL_CLAMP_TO_EDGE
 
     //glEnableClientState(GL_COLOR_ARRAY);
@@ -49,6 +49,8 @@ OpenGL15::OpenGL15(Engine* engine) {
     glEnableClientState(GL_VERTEX_ARRAY);
     glEnableClientState(GL_NORMAL_ARRAY);
     glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+    
+    //glDisable(GL_FOG);
 
     //glEnable(GL_DEPTH_TEST);
     //glEnable(GL_CULL_FACE);
@@ -58,6 +60,39 @@ OpenGL15::OpenGL15(Engine* engine) {
 
 //=======================> 3D <========================
 
+static uint32_t fog_modes[] = {
+    GL_LINEAR, GL_EXP, GL_EXP2
+};
+
+void OpenGL15::Render() {
+    HateEngine::Level* level = this->engine->getLevel();
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    glClearColor(
+        level->settings.background_color[0], level->settings.background_color[1],
+        level->settings.background_color[2], level->settings.background_color[3]
+    );
+    
+    // Fog
+    glEnable(GL_FOG);
+    glFogi(GL_FOG_MODE,    fog_modes[level->settings.fog_mode]);
+    glFogf(GL_FOG_DENSITY, level->settings.fog_density);
+    glFogf(GL_FOG_START,   level->settings.fog_start);
+    glFogf(GL_FOG_END,     level->settings.fog_end);
+    glFogfv(GL_FOG_COLOR,  level->settings.fog_color);
+
+    glPushMatrix();
+    this->Draw3D(
+        level->camera,
+        &level->meshes,
+        &level->particles,
+        &level->lights
+    );
+    glPopMatrix();
+
+    glDisable(GL_FOG);
+    this->DrawNuklearUI(&level->ui_widgets);
+}
+
 void OpenGL15::Draw3D(
         Camera* camera,
         std::vector<Mesh*>* meshes,
@@ -66,7 +101,6 @@ void OpenGL15::Draw3D(
 ) {
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_CULL_FACE);
-    //glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     if (camera != nullptr) {
         renderCamera(camera);
@@ -75,6 +109,8 @@ void OpenGL15::Draw3D(
             render(camera->getSkyBox(), &n);
         }
     }
+    glEnable(GL_LIGHTING);
+    glDisable(GL_LIGHT0);
 
     for (const auto obj : *meshes)
         render(obj, lights);
@@ -84,34 +120,32 @@ void OpenGL15::Draw3D(
             render((const Mesh*)&particle, lights);
     }
 
-    /*if (camera != nullptr) {
-        std::vector<Light*> n;
-        render(camera->getSkyBox(), &n);
-    }*/
-    //std::cout << "\n\n";
+
     glDisable(GL_DEPTH_TEST);
     glDisable(GL_CULL_FACE);
+    glDisable(GL_LIGHTING);
 }
 
 void OpenGL15::render(const Mesh *mesh, std::vector<Light*>* lights_vec) {
-    if (mesh->getVisible()){
-        std::vector<int> light_indicies = getNearestLights(
-            lights_vec, mesh->getGlobalPosition()
-        );
-        renderLight(lights_vec, light_indicies);
-
+    if (mesh->getVisible()) {
         glPushMatrix();
-
-
-
-        /*glm::vec3 par_pos = mesh->parent_position;
-        glTranslatef(par_pos.x, par_pos.y, par_pos.z);
-        glMultMatrixf(glm::value_ptr(mesh->parent_rotation_matrix));
-
-        glm::vec3 own_pos = mesh->position;
-        glTranslatef(own_pos.x, own_pos.y, own_pos.z);
-        glMultMatrixf(glm::value_ptr(mesh->rotation_matrix));*/
-
+        
+        std::vector<int> light_indicies;
+        if (mesh->isLightShading()) {
+            float max_light_render_dist = mesh->getCustomMaxLightDist();
+            if (max_light_render_dist == 0)
+                max_light_render_dist = this->maxLightRenderDist;
+            light_indicies = getNearestLights(
+                lights_vec, mesh->getGlobalPosition(),
+                max_light_render_dist
+            );
+            renderLight(lights_vec, light_indicies);
+        }
+        else {
+            glDisable(GL_LIGHTING);
+        }
+        
+        
         glm::vec3 par_pos = mesh->getGlobalPosition();
         glTranslatef(par_pos.x, par_pos.y, par_pos.z);
         //std::cout << "Render pos: " << par_pos.x << " | " << par_pos.y << " | " << par_pos.z << "\n";
@@ -143,6 +177,9 @@ void OpenGL15::render(const Mesh *mesh, std::vector<Light*>* lights_vec) {
         glPopMatrix();
         for (int i = 0; i < light_indicies.size(); ++i)
             glDisable(GL_LIGHT0 + i);
+            
+        if (mesh->isLightShading())
+            glEnable(GL_LIGHTING);
     }
 }
 
@@ -169,6 +206,7 @@ inline void OpenGL15::renderCamera(Camera* camera) {
 inline void OpenGL15::renderLight(
     std::vector<Light*>* lights_vec, const std::vector<int>& indicies
 ) {
+    //std::cout << "Lights: " << lights_vec->size() << "\n";
     for (int i = 0; i < indicies.size(); ++i) {
         int index = indicies[i];
         int light_num = GL_LIGHT0 + i;
@@ -178,6 +216,7 @@ inline void OpenGL15::renderLight(
 
         if (light->getLightType() == Light::LightTypeEnum::DirectionalLight)
             l_position[3] = 0.0;
+            
 
         glEnable(light_num);
         glLightfv(light_num,GL_DIFFUSE,light->getColor().data());
@@ -194,8 +233,9 @@ struct LightDistSt {
 };
 
 inline std::vector<int> OpenGL15::getNearestLights(
-    std::vector<Light*>* lights_vec, glm::vec3 position
-) {
+    std::vector<Light*>* lights_vec, glm::vec3 position,
+    float max_light_render_dist
+) {    
     std::vector<int> result;
 
     std::vector<LightDistSt> light_dist;
@@ -209,11 +249,15 @@ inline std::vector<int> OpenGL15::getNearestLights(
         else
             light_dist.push_back({glm::length(position - light->getGlobalPosition()), i});
     }
+    
+    //if
+   //TODO: Optimize 
+    
     std::sort(light_dist.begin(), light_dist.end(), [] (LightDistSt &a, LightDistSt &b) {
         return a.length < b.length;
     });
     for (int i = 0; i < light_dist.size() and result.size() <= maxLightCount; ++i) {
-        if (light_dist[i].length <= maxLightRenderDist)
+        if (light_dist[i].length <= max_light_render_dist)
             result.push_back(light_dist[i].index);
     }
     return result;
@@ -257,10 +301,3 @@ void OpenGL15::unloadTexture(Texture* texture_ptr) {
 }
 
 //============================ End 3D ============================
-
-
-//============================ 2D (Nuklear) ============================
-
-
-
-//============================ End 2D ============================

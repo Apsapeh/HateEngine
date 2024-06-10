@@ -13,14 +13,18 @@ namespace HateEngine {
     class OpenGL15 {
     public:
         OpenGL15(Engine* engine);
-
+    
+        void Render(
+            
+        );
+    private:
         /**
          * \brief Draw the scene
          * \param meshes  Vector of meshes
          * \param particles  Vector of particles
          * \param lights  Vector of lights
          */
-        void Draw3D(
+        inline void Draw3D(
                 Camera* camera,
                 std::vector<Mesh*>* meshes,
                 std::vector<Particles*>* particles,
@@ -29,10 +33,9 @@ namespace HateEngine {
 
         void DrawNuklearUI(std::unordered_map<UUID, Level::SceneUIWidget>* widgets);
 
-    private:
         Engine* engine = nullptr;
         uint8_t maxLightCount = 8;
-        float maxLightRenderDist = 25;
+        float maxLightRenderDist = 25; // TODO: Make it configurable
 
         void initNuklearUI();
 
@@ -65,7 +68,8 @@ namespace HateEngine {
          * \return Vector of indicies of the nearest lights
          */
         inline std::vector<int> getNearestLights(
-            std::vector<Light*>* lights_vec, glm::vec3 position
+            std::vector<Light*>* lights_vec, glm::vec3 position,
+            float max_light_render_dist
         );
 
 

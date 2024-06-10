@@ -51,6 +51,8 @@ namespace HateEngine {
             glm::vec2 offset = {0, 0};
             glm::vec2 position = {0, 0};
         };
+        
+        
 
         GLFWwindow *window;
 
@@ -64,6 +66,8 @@ namespace HateEngine {
         int64_t fixedProcessDelayMCS; // 1_000_000 / fixedLoopRefreshRate
         uint16_t physicsEngineIterateLoopRefreshRate = 120;
         int64_t physicsEngineIterateDelayMCS;
+        
+        bool isOneThread = true;
 
         glm::ivec2 resolution;
         float aspectRatio;

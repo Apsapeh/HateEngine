@@ -57,6 +57,27 @@ void Mesh::setUV(std::vector<float> uv) {
     this->UV = std::move(uv);
 }
 
+
+void Mesh::enableCustomMaxLightDist(float dist) {
+    this->max_light_dist = dist;
+}
+const float Mesh::getCustomMaxLightDist() const {
+    return this->max_light_dist;
+}
+void Mesh::disableCustomMaxLightDist() {
+    this->max_light_dist = 0;
+}
+
+void Mesh::enableLightShading() {
+    this->is_shaded = true;
+}
+void Mesh::disableLightShading() {
+    this->is_shaded = false;
+}
+bool Mesh::isLightShading() const {
+    return this->is_shaded;
+}
+
 const std::vector<float>* Mesh::getVertices() const {
     return &verticies;
 }
