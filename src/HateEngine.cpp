@@ -202,6 +202,10 @@ void Engine::Run() {
         physicsEngineProcessThread->join();
 }
 
+void Engine::Exit() {
+    glfwSetWindowShouldClose(this->window, true);
+}
+
 
 
 void Engine::setResolution(int width, int height) {
@@ -283,6 +287,9 @@ void Engine::threadPhysicsEngineIterateLoop() {
 }
 
 
+void Engine::changeWindowTitle(std::string title) {
+    glfwSetWindowTitle(this->window, title.c_str());
+}
 
 void Engine::setProcessLoop(void (*func)(Engine*, double)) {
     this->processLoop = func;

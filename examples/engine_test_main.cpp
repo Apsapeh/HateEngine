@@ -73,6 +73,7 @@ int main() {
     mesh2.setPosition(3, 3, 3);
 
     HateEngine::Engine game("HateEngine Test", WIDTH, HEIGHT);
+    game.setMouseCapture(true);
     // Setting textures for the cube and floor meshes
 
     HateEngine::Texture tex_floor("examples/Assets/ground.png");
@@ -259,7 +260,7 @@ void _physics_process(HateEngine::Engine *engine, double delta) {
     //mesh1.setPosition(rbodyPosVect.z, rbodyPosVect.y, rbodyPosVect.x);
 
     if (engine->Input.isKeyPressed(GLFW_KEY_ESCAPE))
-        glfwSetWindowShouldClose(engine->window, true);
+        engine->Exit();
 
 
     /*if (engine->Input.isKeyPressed(GLFW_KEY_UP))

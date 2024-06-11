@@ -94,6 +94,7 @@ namespace HateEngine {
         ~Level();
 
         void setCameraRef(Camera* camera);
+        Camera* getCameraRef();
         void removeCameraRef();
         
         /**

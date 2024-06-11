@@ -89,6 +89,9 @@ namespace HateEngine {
 
         Engine(std::string window_lbl, int width, int height);
         void Run();
+        void Exit();
+        
+        void changeWindowTitle(std::string title);
         
         void setResolution(int width, int height);
         void setOneThreadMode(bool mode);

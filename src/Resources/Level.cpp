@@ -16,6 +16,10 @@ void Level::setCameraRef(Camera* camera) {
     this->camera = camera;
 }
 
+Camera* Level::getCameraRef() {
+    return this->camera;
+}
+
 void Level::removeCameraRef() {
     this->camera = nullptr;
 }
