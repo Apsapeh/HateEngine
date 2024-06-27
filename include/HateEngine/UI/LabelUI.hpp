@@ -15,7 +15,7 @@ namespace HateEngine {
             Right
         };
     
-        glm::ivec2 size = {100, 100};
+        //glm::ivec2 size = {100, 100};
         glm::ivec3 color = {0, 0, 0};
         TextAlign text_align = Left;
 

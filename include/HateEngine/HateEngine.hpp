@@ -70,7 +70,7 @@ namespace HateEngine {
         
         bool isOneThread = true;
 
-        glm::ivec2 resolution;
+        glm::ivec2 resolution = {0, 0};
         float aspectRatio;
         Level* level;
 

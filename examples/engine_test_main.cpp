@@ -11,6 +11,7 @@
 #include <HateEngine/Resources/GLTFModel.hpp>
 #include <HateEngine/Resources/Texture.hpp>
 #include <HateEngine/Resources/Level.hpp>
+#include <HateEngine/Resources/HERFile.hpp>
 #include <cmath>
 #include <glm/ext.hpp>
 #include <glm/glm.hpp>
@@ -44,6 +45,7 @@ HateEngine::Light light(HateEngine::Light::OmniLight);
 HateEngine::Particles *part;
 
 HateEngine::LabelUI fps_label;
+HateEngine::WidgetUI* fps_widget_ptr = nullptr;
 HateEngine::CubeMesh test2;
 int main() {
     std::cout << "Hello\n";
@@ -75,8 +77,14 @@ int main() {
     HateEngine::Engine game("HateEngine Test", WIDTH, HEIGHT);
     game.setMouseCapture(true);
     // Setting textures for the cube and floor meshes
+    
+    
+    HateEngine::HERFile herfile("examples/Assets/test.her", "password");
+    HateEngine::Texture tex_floor = herfile["ground.png"].asTexture();
+    
+    
 
-    HateEngine::Texture tex_floor("examples/Assets/ground.png");
+    //HateEngine::Texture tex_floor("examples/Assets/ground.png");
     HateEngine::Level lvl;
     //    HateEngine::GLTFModel glmodel("examples/Assets/ignore/R.glb");
     //HateEngine::GLTFModel glmodel("examples/Assets/employee.glb");
@@ -208,17 +216,23 @@ int main() {
     HateEngine::WidgetUI ui;
     ui.has_border = true;
     ui.has_title = true;
-    ui.position = {400, 300};
+    ui.position = {50, 0, 1, HateEngine::CoordsUI::TopRight, HateEngine::CoordsUI::Percent};
+    ui.size = {50, 50, 1, HateEngine::CoordsUI::TopLeft, HateEngine::CoordsUI::Percent};
 
     //HateEngine::LabelUI label;
     //label.text = "Hello, World!";
     HateEngine::WidgetUI fps_widget;
     fps_widget.position = {0, 0};
-    fps_widget.size = {100, 200};
+    fps_widget.size = {200, 100, 1.5};
     fps_widget.color.w = 0;
-    //fps_widget.has_background = false;
+    //fps_widget.has_background = true;
+    fps_widget.has_border = true;
     
+    fps_widget_ptr = &fps_widget;
+        
     fps_label.color = {255, 0, 0};
+    fps_label.size = {100, 30};
+    fps_label.text = "FPS: 0";
     
     
 
@@ -279,6 +293,11 @@ void _physics_process(HateEngine::Engine *engine, double delta) {
 
     if (engine->Input.isKeyPressed(GLFW_KEY_T))
         xAxMesh.rotate(0, 0, 0);
+        
+    if (engine->Input.isKeyPressed(GLFW_KEY_Y))
+        engine->setMouseCapture(false);
+    if (engine->Input.isKeyPressed(GLFW_KEY_U))
+        engine->setMouseCapture(true);
 
     if (engine->Input.isKeyPressed(GLFW_KEY_P)) {
         GLFWmonitor *monitor = glfwGetPrimaryMonitor();
@@ -328,5 +347,12 @@ void _input_event(HateEngine::Engine *engine,
 
         camera.rotate(0, -xoffset, 0);
         camera.rotate(-yoffset, 0, 0, false);
+    }
+    
+    if (event.type == HateEngine::Engine::InputEventMouseScroll) {
+        if (event.position.y < 0)
+            fps_widget_ptr->zoom(-0.1);
+        else
+            fps_widget_ptr->zoom(0.1);
     }
 }

@@ -64,15 +64,23 @@ static uint32_t fog_modes[] = {
     GL_LINEAR, GL_EXP, GL_EXP2
 };
 
+uint32_t fr_texture1 = 0;
+
+#define render_width 800
+#define render_height 600
+
 void OpenGL15::Render() {
     HateEngine::Level* level = this->engine->getLevel();
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glClearColor(
         level->settings.background_color[0], level->settings.background_color[1],
         level->settings.background_color[2], level->settings.background_color[3]
     );
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    glViewport(0, 0, render_width, render_height);
+    //glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     
-    // Fog
+    
+    //Fog
     glEnable(GL_FOG);
     glFogi(GL_FOG_MODE,    fog_modes[level->settings.fog_mode]);
     glFogf(GL_FOG_DENSITY, level->settings.fog_density);
@@ -80,6 +88,7 @@ void OpenGL15::Render() {
     glFogf(GL_FOG_END,     level->settings.fog_end);
     glFogfv(GL_FOG_COLOR,  level->settings.fog_color);
 
+    //glMatrixMode(GL_PROJECTION);
     glPushMatrix();
     this->Draw3D(
         level->camera,
@@ -87,9 +96,90 @@ void OpenGL15::Render() {
         &level->particles,
         &level->lights
     );
+    //glFlush();
+    //glMatrixMode(GL_PROJECTION);
     glPopMatrix();
-
     glDisable(GL_FOG);
+    
+    glm::ivec2 window_size = this->engine->getResolution();
+    if (window_size.x != render_width or window_size.y != render_height) {
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity(); 
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity(); 
+    
+   
+    
+
+	glPushMatrix();
+
+    
+    glEnable(GL_TEXTURE_2D);
+    if (fr_texture1 == 0) {
+        glGenTextures(1, &fr_texture1); 
+        glBindTexture(GL_TEXTURE_2D, fr_texture1);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+        //glCopyTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, 0, 0, 400, 300, 0);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, render_width, render_height, 0, GL_RGB, GL_UNSIGNED_BYTE, 0);
+    }
+    //current_fr_texture = current_fr_texture == fr_texture1 ? fr_texture2 : fr_texture1;
+    glBindTexture(GL_TEXTURE_2D, fr_texture1);
+    //glCopyTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, 0, 0, 400, 300, 0);
+    glCopyTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, 0, 0, render_width, render_height);
+    
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+    glViewport(0, 0, 800, 600);
+    glDisableClientState(GL_COLOR_ARRAY);
+    
+    GLfloat vertices2[] = {
+        1, 1,
+        -1, 1, 
+        -1, -1,
+        -1, -1,
+        1, -1,
+        1, 1
+    };
+    
+    GLushort indices2[] = {
+        0, 1, 2,
+        3, 4, 5
+    };
+    
+    GLfloat tex_coords2[] = {
+        1, 1,
+        0, 1,
+        0, 0,
+        0, 0,
+        1, 0,
+        1, 1
+    };
+    
+    GLfloat colors2[] = {
+        1, 0, 0,
+        0, 1, 0,
+        0, 0, 1,
+        1, 0, 0,
+        0, 1, 0,
+        0, 0, 1
+    };
+    
+    //glDisable(GL_TEXTURE_2D);
+    //glEnableClientState(GL_COLOR_ARRAY);
+    
+    //glColorPointer(3, GL_FLOAT, 0, colors2);
+    glTexCoordPointer(2, GL_FLOAT, 0, tex_coords2);
+    glVertexPointer(2, GL_FLOAT, 0, vertices2);
+
+    
+    glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_SHORT, indices2);
+    
+    
+    
+    glPopMatrix();
+    }
+    
     this->DrawNuklearUI(&level->ui_widgets);
 }
 
@@ -274,7 +364,7 @@ void OpenGL15::loadTexture(Texture* texture_ptr) {
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, texture_ptr->texFiltering);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, texture_ptr->texMipMapFiltering);
     glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_LOD_BIAS, texture_ptr->MipMapLodBias);
-
+    
     if (texture_ptr->texMipMapFiltering != texture_ptr->texFiltering) // MipMap enabled
         gluBuild2DMipmaps(
             GL_TEXTURE_2D, texture_ptr->textureFormat,

@@ -7,5 +7,5 @@
 using namespace HateEngine;
 
 LabelUI::LabelUI() : ObjectUI(Type::Label) {
-    
+    this->size = {100, 100};
 }

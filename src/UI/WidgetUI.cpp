@@ -8,6 +8,7 @@
 using namespace HateEngine;
 
 WidgetUI::WidgetUI() : ObjectUI(Type::Widget) {
+    this->size = {100, 100};
     this->title += std::to_string(this->getUUID().getU64());
 }
 

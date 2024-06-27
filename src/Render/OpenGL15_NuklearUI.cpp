@@ -3,10 +3,12 @@
 //
 
 #include <HateEngine/Render/OpenGL15.hpp>
+#include <climits>
 #include <glad/gl.h>
 #include <GLFW/glfw3.h>
 #include <glm/ext.hpp>
 #include <string>
+#include "HateEngine/UI/CoordsUI.hpp"
 #include "HateEngine/UI/ObjectUI.hpp"
 #include "glm/ext/matrix_clip_space.hpp"
 #include "glm/ext/vector_int2.hpp"
@@ -92,6 +94,9 @@ void OpenGL15::DrawNuklearUI(std::unordered_map<UUID, Level::SceneUIWidget>* wid
     nk_end(&ctx);*/
     for (const auto& it : *widgets) {
         const WidgetUI* widget = it.second.obj;
+        glm::ivec2 res = engine->getResolution();
+        CoordsUI::CoordsData position = widget->position.getCoords(res.x, res.y);
+        CoordsUI::CoordsData size = widget->size.getTopLeftCoords(res.x, res.y);
         nk_flags widget_flags = (widget->has_border ? NK_WINDOW_BORDER : 0)
                         | (widget->is_movable ? NK_WINDOW_MOVABLE : 0)
                         | (widget->is_scalable ? NK_WINDOW_SCALABLE : 0)
@@ -108,7 +113,7 @@ void OpenGL15::DrawNuklearUI(std::unordered_map<UUID, Level::SceneUIWidget>* wid
         ctx.style.window.fixed_background = nk_style_item_color(nk_rgba(widget->color.x, widget->color.y, widget->color.z, widget->color.w));
         if (nk_begin(
             &ctx, widget->title.c_str(),
-            nk_rect(widget->position.x, widget->position.y, widget->size.x, widget->size.y),
+            nk_rect(position.x, position.y, size.x, size.y),
             widget_flags))
         {
             
@@ -116,8 +121,13 @@ void OpenGL15::DrawNuklearUI(std::unordered_map<UUID, Level::SceneUIWidget>* wid
                 const ObjectUI* obj = child.second.obj;
                 if (obj->type == ObjectUI::Type::Label) {
                     const LabelUI* label = (LabelUI*)obj;
+                    const CoordsUI::CoordsData label_size = label->size.getTopLeftCoords(size.x, size.y);
+                    const CoordsUI::CoordsData label_position = label->position.getCoords(label_size.x, label_size.y);
                     ctx.style.text.color = nk_rgb(label->color.x, label->color.y, label->color.z);
-                    nk_layout_row_static(&ctx, 30, 700, 1);
+                    nk_layout_space_begin(&ctx, NK_STATIC, (int)label_size.y, INT_MAX);
+                    //nk_layout_row_static(&ctx, 30, 700, 1);
+                    nk_layout_space_push(&ctx, nk_rect(label_position.x, label_position.y, label_size.x, label_size.y));
+                    
                     //nk_layout
                     
                     nk_flags text_flags = 0;
@@ -128,6 +138,7 @@ void OpenGL15::DrawNuklearUI(std::unordered_map<UUID, Level::SceneUIWidget>* wid
                     else if (label->text_align == LabelUI::TextAlign::Right)
                         text_flags = NK_TEXT_RIGHT;
                     nk_label(&ctx, label->text.c_str(), text_flags);
+                    nk_layout_space_end(&ctx);
                 }
             }
             

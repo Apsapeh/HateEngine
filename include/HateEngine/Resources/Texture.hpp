@@ -1,5 +1,6 @@
 #pragma once
 #include <string>
+#include <vector>
 
 namespace HateEngine {
     class OpenGL15;
@@ -48,6 +49,7 @@ namespace HateEngine {
             bool mipmap = true, float mipmap_bias = -1.0f,
             bool autoload = true
         );
+        
         Texture(
             std::vector<uint8_t> data, int width, int height,
             TexType tex_type, TexWrap tex_wrap = Repeat,

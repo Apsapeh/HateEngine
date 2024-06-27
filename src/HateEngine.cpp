@@ -95,6 +95,16 @@ Engine::Engine(std::string window_lbl, int width, int height) : Input(this) {
             th->inputEventFunc(th, info);
         }
     });
+    
+    glfwSetScrollCallback(window, [] (GLFWwindow *win, double xoffset, double yoffset) {
+        Engine *th = (Engine*)(glfwGetWindowUserPointer(win));
+        if (th->inputEventFunc != nullptr) {
+            InputEventInfo info;
+            info.type = InputEventType::InputEventMouseScroll;
+            info.position = {xoffset, yoffset};
+            th->inputEventFunc(th, info);
+        }
+    });
 
     // Load Glad
     int version = gladLoadGL(glfwGetProcAddress);
@@ -145,6 +155,7 @@ void Engine::Run() {
     }
 
     OpenGL15 ogl(this);
+    
 
     glfwSwapBuffers(this->window);
     double oldTime = glfwGetTime();

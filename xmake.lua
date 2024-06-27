@@ -25,7 +25,9 @@ target("HateEngine")
         "deps","include"
     )
     add_files(
-        "lib/gl/gl.c", "src/**.cpp"
+        "lib/gl/gl.c",
+        "deps/blowfish/blowfish.cpp",
+        "src/**.cpp"
     )
     add_packages("glfw", "glm", "tinygltf", "reactphysics3d", "nuklear", "glu")
     add_defines("GLM_ENABLE_EXPERIMENTAL")
@@ -56,7 +58,7 @@ target("Example_1")
         "examples/*.cpp"
     )
     set_languages("cxx11")
-    add_includedirs("deps", "include")
+    add_includedirs("include")
 
     add_deps("HateEngine")
     add_packages("glfw", "glm", "reactphysics3d", "nuklear", "ncvm")

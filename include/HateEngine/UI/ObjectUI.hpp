@@ -6,6 +6,7 @@
 
 #include "../Utilities/UUID.hpp"
 #include <glm/glm.hpp>
+#include "CoordsUI.hpp"
 
 namespace HateEngine {
     class ObjectUI {
@@ -18,11 +19,6 @@ namespace HateEngine {
             Label
         };
         
-        enum PositionMode {
-            Pixels,
-            Percent
-        };
-        
     private:
         Type type;
 
@@ -31,8 +27,11 @@ namespace HateEngine {
         
 
     public:
-        glm::vec2 position = {0, 0};
+        CoordsUI position = {0, 0};
+        CoordsUI size     = {0, 0};
         
+        void setScale(float scale);
+        void zoom(float delta);
 
         UUID getUUID() const;
     };

@@ -1,0 +1,7 @@
+password = "password"
+pack_path = "test.her"
+
+[[resources]]
+path = "ground.png"
+name = "ground.png"
+is_relative = true
