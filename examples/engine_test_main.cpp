@@ -56,8 +56,8 @@ int main() {
     camera.setPosition(0, 6, 3);
     //camera.setPosition(0, 25, 0);
     camera.setRotation(0, 0, 0);
-    camera.setSkyBoxTexture(new HateEngine::Texture("examples/Assets/skybox.jpg", HateEngine::Texture::ClampToEdge));
-    camera.setSkyBoxEnabled(true);
+    //camera.setSkyBoxTexture(new HateEngine::Texture("examples/Assets/skybox.jpg", HateEngine::Texture::ClampToEdge));
+    //camera.setSkyBoxEnabled(true);
     mesh1.setRotation(0, 0, 0);
     mesh1.setSize(1, 1, 1);
 
@@ -77,12 +77,12 @@ int main() {
     HateEngine::Engine game("HateEngine Test", WIDTH, HEIGHT);
     game.setMouseCapture(true);
     // Setting textures for the cube and floor meshes
-    
-    
+
+
     HateEngine::HERFile herfile("examples/Assets/test.her", "password");
     HateEngine::Texture tex_floor = herfile["ground.png"].asTexture();
-    
-    
+
+
 
     //HateEngine::Texture tex_floor("examples/Assets/ground.png");
     HateEngine::Level lvl;
@@ -100,7 +100,7 @@ int main() {
     // level2.addObjectRef(&test2);
     // level2.setCameraRef(&camera);
     // game.setLevelRef(&level2);
-    
+
 
     std::cout << glmodel.getGlobalPosition().x << " "
               << glmodel.getGlobalPosition().y << " "
@@ -128,22 +128,22 @@ int main() {
     lvl.addObjectRef(&floor);
     lvl.addObjectRef(&sun);
     lvl.addObjectRef(&glmodel);
-    
+
     //print glmodel meshes id
-    
-    
+
+
     glmodel.offset({30, 0, 30});
     //glmodel.getMeshes()[0]->disableLightShading();
-    
+
     //light.setPosition({0, 2, 0});
     //l
     lvl.addObjectRef(&light);
     //light.color = {10, 10, 10, 1};
-    
+
     camera.bindObj(&light);
-    
+
     lvl.setFixedProcessLoop([](void *engine, double delta) {
-        ////TODO: Change engine pointer to struct with Engine*, Level* 
+        ////TODO: Change engine pointer to struct with Engine*, Level*
         HateEngine::Engine *_engine = (HateEngine::Engine *)engine;
        // _engine->getLevel()->ob
         //std::cout << "Level fixed process loop dealay: " << delta << "\n";
@@ -227,14 +227,14 @@ int main() {
     fps_widget.color.w = 0;
     //fps_widget.has_background = true;
     fps_widget.has_border = true;
-    
+
     fps_widget_ptr = &fps_widget;
-        
+
     fps_label.color = {255, 0, 0};
     fps_label.size = {100, 30};
     fps_label.text = "FPS: 0";
-    
-    
+
+
 
     fps_widget.addObjectRef(&fps_label);
 
@@ -293,7 +293,7 @@ void _physics_process(HateEngine::Engine *engine, double delta) {
 
     if (engine->Input.isKeyPressed(GLFW_KEY_T))
         xAxMesh.rotate(0, 0, 0);
-        
+
     if (engine->Input.isKeyPressed(GLFW_KEY_Y))
         engine->setMouseCapture(false);
     if (engine->Input.isKeyPressed(GLFW_KEY_U))
@@ -348,7 +348,7 @@ void _input_event(HateEngine::Engine *engine,
         camera.rotate(0, -xoffset, 0);
         camera.rotate(-yoffset, 0, 0, false);
     }
-    
+
     if (event.type == HateEngine::Engine::InputEventMouseScroll) {
         if (event.position.y < 0)
             fps_widget_ptr->zoom(-0.1);

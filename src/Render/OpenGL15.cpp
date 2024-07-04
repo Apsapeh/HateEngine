@@ -19,7 +19,7 @@ using namespace HateEngine;
 
 OpenGL15::OpenGL15(Engine* engine) {
     this->engine = engine;
-    
+
     GLfloat mat_specular[]={1.0,1.0,1.0,1.0};
     GLfloat mat_shininess[]={50.0};
     GLfloat light_position[]={1.0,1.0,1.0,1.0};
@@ -49,7 +49,7 @@ OpenGL15::OpenGL15(Engine* engine) {
     glEnableClientState(GL_VERTEX_ARRAY);
     glEnableClientState(GL_NORMAL_ARRAY);
     glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-    
+
     //glDisable(GL_FOG);
 
     //glEnable(GL_DEPTH_TEST);
@@ -78,8 +78,8 @@ void OpenGL15::Render() {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glViewport(0, 0, render_width, render_height);
     //glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    
-    
+
+
     //Fog
     glEnable(GL_FOG);
     glFogi(GL_FOG_MODE,    fog_modes[level->settings.fog_mode]);
@@ -100,23 +100,23 @@ void OpenGL15::Render() {
     //glMatrixMode(GL_PROJECTION);
     glPopMatrix();
     glDisable(GL_FOG);
-    
+
     glm::ivec2 window_size = this->engine->getResolution();
     if (window_size.x != render_width or window_size.y != render_height) {
     glMatrixMode(GL_MODELVIEW);
-    glLoadIdentity(); 
+    glLoadIdentity();
     glMatrixMode(GL_PROJECTION);
-    glLoadIdentity(); 
-    
-   
-    
+    glLoadIdentity();
+
+
+
 
 	glPushMatrix();
 
-    
+
     glEnable(GL_TEXTURE_2D);
     if (fr_texture1 == 0) {
-        glGenTextures(1, &fr_texture1); 
+        glGenTextures(1, &fr_texture1);
         glBindTexture(GL_TEXTURE_2D, fr_texture1);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
@@ -127,26 +127,26 @@ void OpenGL15::Render() {
     glBindTexture(GL_TEXTURE_2D, fr_texture1);
     //glCopyTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, 0, 0, 400, 300, 0);
     glCopyTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, 0, 0, render_width, render_height);
-    
+
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    glViewport(0, 0, 800, 600);
+    glViewport(0, 0, window_size.x, window_size.y);
     glDisableClientState(GL_COLOR_ARRAY);
-    
+
     GLfloat vertices2[] = {
         1, 1,
-        -1, 1, 
+        -1, 1,
         -1, -1,
         -1, -1,
         1, -1,
         1, 1
     };
-    
+
     GLushort indices2[] = {
         0, 1, 2,
         3, 4, 5
     };
-    
+
     GLfloat tex_coords2[] = {
         1, 1,
         0, 1,
@@ -155,7 +155,7 @@ void OpenGL15::Render() {
         1, 0,
         1, 1
     };
-    
+
     GLfloat colors2[] = {
         1, 0, 0,
         0, 1, 0,
@@ -164,22 +164,22 @@ void OpenGL15::Render() {
         0, 1, 0,
         0, 0, 1
     };
-    
+
     //glDisable(GL_TEXTURE_2D);
     //glEnableClientState(GL_COLOR_ARRAY);
-    
+
     //glColorPointer(3, GL_FLOAT, 0, colors2);
     glTexCoordPointer(2, GL_FLOAT, 0, tex_coords2);
     glVertexPointer(2, GL_FLOAT, 0, vertices2);
 
-    
+
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_SHORT, indices2);
-    
-    
-    
+
+
+
     glPopMatrix();
     }
-    
+
     this->DrawNuklearUI(&level->ui_widgets);
 }
 
@@ -219,7 +219,7 @@ void OpenGL15::Draw3D(
 void OpenGL15::render(const Mesh *mesh, std::vector<Light*>* lights_vec) {
     if (mesh->getVisible()) {
         glPushMatrix();
-        
+
         std::vector<int> light_indicies;
         if (mesh->isLightShading()) {
             float max_light_render_dist = mesh->getCustomMaxLightDist();
@@ -234,8 +234,8 @@ void OpenGL15::render(const Mesh *mesh, std::vector<Light*>* lights_vec) {
         else {
             glDisable(GL_LIGHTING);
         }
-        
-        
+
+
         glm::vec3 par_pos = mesh->getGlobalPosition();
         glTranslatef(par_pos.x, par_pos.y, par_pos.z);
         //std::cout << "Render pos: " << par_pos.x << " | " << par_pos.y << " | " << par_pos.z << "\n";
@@ -243,7 +243,7 @@ void OpenGL15::render(const Mesh *mesh, std::vector<Light*>* lights_vec) {
 
         glm::vec3 scale = mesh->getGlobalScale();
         glScalef(scale.x, scale.y, scale.z);
-        
+
         // Render Textures
         if (mesh->getTexture() != nullptr) {
             if (not mesh->getTexture()->is_loaded)
@@ -267,7 +267,7 @@ void OpenGL15::render(const Mesh *mesh, std::vector<Light*>* lights_vec) {
         glPopMatrix();
         for (int i = 0; i < light_indicies.size(); ++i)
             glDisable(GL_LIGHT0 + i);
-            
+
         if (mesh->isLightShading())
             glEnable(GL_LIGHTING);
     }
@@ -306,7 +306,7 @@ inline void OpenGL15::renderLight(
 
         if (light->getLightType() == Light::LightTypeEnum::DirectionalLight)
             l_position[3] = 0.0;
-            
+
 
         glEnable(light_num);
         glLightfv(light_num,GL_DIFFUSE,light->getColor().data());
@@ -325,7 +325,7 @@ struct LightDistSt {
 inline std::vector<int> OpenGL15::getNearestLights(
     std::vector<Light*>* lights_vec, glm::vec3 position,
     float max_light_render_dist
-) {    
+) {
     std::vector<int> result;
 
     std::vector<LightDistSt> light_dist;
@@ -339,10 +339,10 @@ inline std::vector<int> OpenGL15::getNearestLights(
         else
             light_dist.push_back({glm::length(position - light->getGlobalPosition()), i});
     }
-    
+
     //if
-   //TODO: Optimize 
-    
+   //TODO: Optimize
+
     std::sort(light_dist.begin(), light_dist.end(), [] (LightDistSt &a, LightDistSt &b) {
         return a.length < b.length;
     });
@@ -364,7 +364,7 @@ void OpenGL15::loadTexture(Texture* texture_ptr) {
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, texture_ptr->texFiltering);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, texture_ptr->texMipMapFiltering);
     glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_LOD_BIAS, texture_ptr->MipMapLodBias);
-    
+
     if (texture_ptr->texMipMapFiltering != texture_ptr->texFiltering) // MipMap enabled
         gluBuild2DMipmaps(
             GL_TEXTURE_2D, texture_ptr->textureFormat,

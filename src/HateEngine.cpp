@@ -1,3 +1,5 @@
+#include <bits/types/struct_sched_param.h>
+#include <pthread.h>
 #include <thread>
 #include <algorithm>
 #include <glad/gl.h>
@@ -10,7 +12,10 @@
 #include "globalStaticParams.hpp"
 
 #ifdef __linux__
-#define SET_THREAD_HIGH_PRIORITY
+#define SET_THREAD_HIGH_PRIORITY\
+    sched_param sch_params;\
+    sch_params.sched_priority = 99;\
+    pthread_setschedparam(pthread_self(), SCHED_RR, &sch_params);
 #elif __APPLE__
 #include <sched.h>
 #define SET_THREAD_HIGH_PRIORITY\

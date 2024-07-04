@@ -68,7 +68,7 @@ namespace HateEngine {
         uint16_t physicsEngineIterateLoopRefreshRate = 120;
         int64_t physicsEngineIterateDelayMCS;
         
-        bool isOneThread = true;
+        bool isOneThread = false;
 
         glm::ivec2 resolution = {0, 0};
         float aspectRatio;

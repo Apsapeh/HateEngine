@@ -62,7 +62,7 @@ void OpenGL15::initNuklearUI() {
     nk_font_atlas_begin(&atlas);
     //font = nk_font_atlas_add_default(&atlas, 18, &config);
     //font = nk_font_atlas_add_from_file(&atlas, "/Users/ghost/Desktop/C++ Projects/Projects/Nuklear_GLFW3_GL1_Driver/OpenSans-Regular.ttf", 18, &config);
-    font = nk_font_atlas_add_from_file(&atlas, "/Users/ghost/CLionProjects/HateEngine/examples/Assets/Comfortaa-Regular.ttf", 18, &config);
+    font = nk_font_atlas_add_from_file(&atlas, "examples/Assets/Comfortaa-Regular.ttf", 18, &config);
     image = nk_font_atlas_bake(&atlas, &w, &h, NK_FONT_ATLAS_RGBA32);
     device_upload_atlas(image, w, h);
     nk_font_atlas_end(&atlas, nk_handle_id((int)font_tex), &tex_null);
