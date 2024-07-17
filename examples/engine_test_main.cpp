@@ -1,3 +1,8 @@
+#include "glm/ext/vector_float2.hpp"
+#include "glm/ext/vector_float3.hpp"
+#define WINVER 0x0501
+#define _WIN32_WINNT 0x0501
+
 #include "HateEngine/Objects/Light/Light.hpp"
 #include "HateEngine/Objects/Object.hpp"
 #include "HateEngine/Objects/Physics/BoxShape.hpp"
@@ -12,6 +17,7 @@
 #include <HateEngine/Resources/Texture.hpp>
 #include <HateEngine/Resources/Level.hpp>
 #include <HateEngine/Resources/HERFile.hpp>
+#include <HateEngine/Resources/ObjMapModel.hpp>
 #include <cmath>
 #include <glm/ext.hpp>
 #include <glm/glm.hpp>
@@ -21,7 +27,10 @@
 
 #include <HateEngine/UI/WidgetUI.hpp>
 #include <HateEngine/UI/LabelUI.hpp>
+#include <HateEngine/UI/ButtonUI.hpp>
 
+#define WINVER 0x0501
+#define _WIN32_WINNT 0x0501
 
 
 void _process(HateEngine::Engine *, double);
@@ -32,7 +41,8 @@ HateEngine::CubeMesh mesh1;
 HateEngine::CubeMesh mesh2;
 HateEngine::CubeMesh xAxMesh;
 //HateEngine::GLTFModel glmodel("examples/Assets/employee.glb");
-HateEngine::GLTFModel glmodel("examples/Assets/billy-plane-sep.glb");
+//HateEngine::GLTFModel glmodel("examples/Assets/billy-plane-sep.glb");
+HateEngine::GLTFModel glmodel("examples/Assets/romb.glb");
 
 const int WIDTH = 800;
 const int HEIGHT = 600;
@@ -53,7 +63,8 @@ int main() {
     xAxMesh.setSize(1, 0.1, 0.1);
     xAxMesh.offset(0, 6, 0);
 
-    camera.setPosition(0, 6, 3);
+    //camera.setPosition(0, 6, 3);
+    camera.offset(0, 6, 3);
     //camera.setPosition(0, 25, 0);
     camera.setRotation(0, 0, 0);
     //camera.setSkyBoxTexture(new HateEngine::Texture("examples/Assets/skybox.jpg", HateEngine::Texture::ClampToEdge));
@@ -73,9 +84,20 @@ int main() {
     sun.setPosition({1.0, 1.0, 1.0});
 
     mesh2.setPosition(3, 3, 3);
+    
+    HateEngine::GLTFModel test_glmodel("examples/Assets/SHOTGUN4.glb");
+    test_glmodel.offset(0.5, -0.5, -2);
+    test_glmodel.setScale(0.25, 0.25, 0.25);
+    test_glmodel.setRotation(0, 180, 0);
+    //test_glmodel.setVisible(false);
+
+
+    camera.bindObj(&test_glmodel);
+    //mesh1.bindObj(&test_glmodel);
 
     HateEngine::Engine game("HateEngine Test", WIDTH, HEIGHT);
     game.setMouseCapture(true);
+    game.setOneThreadMode(true);
     // Setting textures for the cube and floor meshes
 
 
@@ -95,11 +117,18 @@ int main() {
     //HateEngine::GLTFModel glmodel2("examples/Assets/ignore/bolg.glb");
 
     game.setLevelRef(&lvl);
+    lvl.addObjectRef(&test_glmodel);
     // HateEngine::CubeMesh test_mesh;
     // HateEngine::Level level2;
     // level2.addObjectRef(&test2);
     // level2.setCameraRef(&camera);
     // game.setLevelRef(&level2);
+
+
+    //HateEngine::ObjMapModel objmodel("examples/Assets/unnamed.obj", "examples/Assets/unnamed.map");
+    HateEngine::ObjMapModel objmodel("examples/Assets/cube.obj", "examples/Assets/unnamed.map");
+
+    lvl.addObjectRef(&objmodel);
 
 
     std::cout << glmodel.getGlobalPosition().x << " "
@@ -124,7 +153,7 @@ int main() {
 
     lvl.addObjectRef(&mesh1);
     //lvl.addObjectRef(&mesh2);
-    lvl.addObjectRef(&xAxMesh);
+    //lvl.addObjectRef(&xAxMesh);
     lvl.addObjectRef(&floor);
     lvl.addObjectRef(&sun);
     lvl.addObjectRef(&glmodel);
@@ -198,6 +227,7 @@ int main() {
     HateEngine::SphereShape sphereShape(0.5);
     rigidBody.addCollisionShapeRef(&sphereShape);
     rigidBody.bindObj(&mesh1);
+    rigidBody.bindObj(&camera);
     //rigidBody.bindObj(&glmodel);
 
     HateEngine::PhysicalBody floorBody(HateEngine::PhysicalBody::StaticBody);
@@ -235,11 +265,18 @@ int main() {
     fps_label.text = "FPS: 0";
 
 
+    HateEngine::ButtonUI button([] (HateEngine::Engine *engine) {
+        std::cout << "Hello, World!\n";
+    });
+
+
 
     fps_widget.addObjectRef(&fps_label);
+    fps_widget.addObjectRef(&button);
 
-    lvl.addObjectRef(&fps_widget);
-    lvl.addObjectRef(&ui);
+    
+    //lvl.addObjectRef(&fps_widget);
+    //lvl.addObjectRef(&ui);
 
 
 
@@ -263,12 +300,54 @@ void _process(HateEngine::Engine *engine, double delta) {
       count = 0;
       del = 0.0;
     }
+
+    glm::vec2 raw_dir = engine->Input.getVector(GLFW_KEY_A, GLFW_KEY_D, GLFW_KEY_W, GLFW_KEY_S);
+    glm::vec2 dir = raw_dir * glm::vec2(delta * 60); 
+
+    glm::vec3 cam_rot = glm::radians(camera.getRotationEuler());
+    
+    // Full free movement with mouse up and down
+    camera.offset(cos(cam_rot.y) * dir.y * cos(cam_rot.x) * 0.1,
+                  sin(cam_rot.x) * 0.1 * dir.y,
+                  -sin(cam_rot.y) * dir.y * cos(cam_rot.x) * 0.1
+    );
+
+    cam_rot.y += glm::pi<float>() * raw_dir.x / 2 * -1;
+
+    camera.offset(cos(cam_rot.y) * fabs(dir.x) * 0.1,
+                  0,
+                  -sin(cam_rot.y) * fabs(dir.x) * 0.1
+    );
+    
 }
 
+glm::vec3 cam_dir;
+
 void _physics_process(HateEngine::Engine *engine, double delta) {
+    //std::cout << camera.getRotationEuler().x << " " << camera.getRotationEuler().y << " " << camera.getRotationEuler().z << "\n";
     //std::cout << "FPS: " << 1.0 / delta << "\n";
     glm::vec3 mesh1_r = mesh1.getGlobalRotationEuler();
     //std::cout << mesh1_r.x << " " << mesh1_r.y << " " << mesh1_r.z << "\n";
+
+
+    /*glm::vec2 dir = engine->Input.getVector(GLFW_KEY_A, GLFW_KEY_D, GLFW_KEY_W, GLFW_KEY_S) * glm::vec2(delta * 60);
+    glm::vec3 cam_rot = glm::radians(camera.getRotationEuler());
+    
+    // Full free movement with mouse up and down
+    camera.offset(cos(cam_rot.y) * dir.y * cos(cam_rot.x) * 0.1,
+                  sin(cam_rot.x) * 0.1 * dir.y,
+                  -sin(cam_rot.y) * dir.y * cos(cam_rot.x) * 0.1
+    );
+
+    std::cout << cam_rot.y << " | ";
+    cam_rot.y += glm::pi<float>() * dir.x / 2 * -1;
+
+    std::cout << cam_rot.y << "\n";
+
+    camera.offset(cos(cam_rot.y) * fabs(dir.x) * 0.1,
+                  0,
+                  -sin(cam_rot.y) * fabs(dir.x) * 0.1
+    );*/
 
 
     //mesh1.setPosition(rbodyPosVect.z, rbodyPosVect.y, rbodyPosVect.x);
@@ -318,10 +397,7 @@ void _physics_process(HateEngine::Engine *engine, double delta) {
 
 
 
-    glm::vec2 dir =
-        engine->Input.getVector(GLFW_KEY_A, GLFW_KEY_D, GLFW_KEY_W, GLFW_KEY_S);
-    glm::vec3 cam_rot = glm::radians(camera.getRotationEuler());
-    camera.offset(cos(cam_rot.y) * dir.y * 0.1, 0, -sin(cam_rot.y) * dir.y * 0.1);
+    
 }
 
 float lastX = 0;
@@ -345,8 +421,10 @@ void _input_event(HateEngine::Engine *engine,
             is_first_iter = false;
         }
 
-        camera.rotate(0, -xoffset, 0);
-        camera.rotate(-yoffset, 0, 0, false);
+        camera.rotate(0, xoffset, 0);
+        camera.rotate(yoffset, 0, 0, false);
+        //camera.setRotationMatrix(glm::yawPitchRoll(event.position.x*0.01f, event.position.y*0.01f,0.0f));
+        
     }
 
     if (event.type == HateEngine::Engine::InputEventMouseScroll) {

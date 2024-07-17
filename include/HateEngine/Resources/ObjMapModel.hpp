@@ -3,14 +3,18 @@
 #include <string>
 
 namespace HateEngine {
-    class QMapModel : public Model{
+    class ObjMapModel : public Model {
+
+    private:
+        void parseObj(std::string data);
+
     public:
         /**
          * @brief Load model from file (.gltf/.glb)
          *
          * @param str File name
          */
-        QMapModel(std::string file_name);
+        ObjMapModel(std::string obj_file_name, std::string map_file_name);
 
         /**
          * @brief Load model from memory as ASCII string (.gltf)
@@ -19,7 +23,7 @@ namespace HateEngine {
          * @param size Data length
          * @param dir Directory
          */
-        QMapModel(const char* data, uint32_t size, std::string dir);
+        ObjMapModel(const char* data, uint32_t size, std::string dir);
     };
 }
 

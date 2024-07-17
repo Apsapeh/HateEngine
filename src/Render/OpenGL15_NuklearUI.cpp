@@ -15,6 +15,7 @@
 
 #include <HateEngine/UI/WidgetUI.hpp>
 #include <HateEngine/UI/LabelUI.hpp>
+#include <HateEngine/UI/ButtonUI.hpp>
 
 #define NK_INCLUDE_FIXED_TYPES
 #define NK_INCLUDE_STANDARD_IO
@@ -31,6 +32,7 @@ using namespace HateEngine;
 
 static void device_upload_atlas(const void *image, int width, int height);
 static void draw(int width, int height);
+static void pump_input(struct nk_context *ctx, GLFWwindow *win);
 
 #define MAX_MEMORY 512 * 1024
 //#define MAX_ELEMENT_MEMORY 128 * 1024
@@ -40,7 +42,6 @@ nk_font_atlas atlas;
 
 unsigned int font_tex = 0;
 nk_draw_null_texture tex_null;
-
 struct your_vertex
 {
     float pos[2]; // important to keep it to 2 floats
@@ -83,6 +84,7 @@ static void device_upload_atlas(const void *image, int width, int height)
 
 
 void OpenGL15::DrawNuklearUI(std::unordered_map<UUID, Level::SceneUIWidget>* widgets) {
+    pump_input(&ctx, engine->window);
     /*if (nk_begin(&ctx, "Show", nk_rect(0, 0, 220, 220),
     NK_WINDOW_NOT_INTERACTIVE|NK_WINDOW_BORDER)) {
         ctx.style.window.fixed_background = nk_style_item_color(nk_rgba(0, 0, 0, 0));
@@ -97,17 +99,19 @@ void OpenGL15::DrawNuklearUI(std::unordered_map<UUID, Level::SceneUIWidget>* wid
         glm::ivec2 res = engine->getResolution();
         CoordsUI::CoordsData position = widget->position.getCoords(res.x, res.y);
         CoordsUI::CoordsData size = widget->size.getTopLeftCoords(res.x, res.y);
-        nk_flags widget_flags = (widget->has_border ? NK_WINDOW_BORDER : 0)
-                        | (widget->is_movable ? NK_WINDOW_MOVABLE : 0)
-                        | (widget->is_scalable ? NK_WINDOW_SCALABLE : 0)
-                        | (widget->is_closable ? NK_WINDOW_CLOSABLE : 0)
-                        | (widget->is_minimizable ? NK_WINDOW_MINIMIZABLE : 0)
-                        | (!widget->has_scrollbar ? NK_WINDOW_NO_SCROLLBAR : 0)
-                        | (widget->has_title ? NK_WINDOW_TITLE : 0)
-                        | (widget->is_scroll_autohide ? NK_WINDOW_SCROLL_AUTO_HIDE : 0)
-                        | (widget->has_background ? NK_WINDOW_BACKGROUND : 0)
-                        | (widget->is_scalable_left ? NK_WINDOW_SCALE_LEFT : 0)
-                        | (!widget->has_input ? NK_WINDOW_NO_INPUT : 0)
+        nk_flags widget_flags = 
+              (widget->has_border ? NK_WINDOW_BORDER : 0)
+            | (widget->is_movable ? NK_WINDOW_MOVABLE : 0)
+            | (widget->is_scalable ? NK_WINDOW_SCALABLE : 0)
+            | (widget->is_closable ? NK_WINDOW_CLOSABLE : 0)
+            | (widget->is_minimizable ? NK_WINDOW_MINIMIZABLE : 0)
+            | (!widget->has_scrollbar ? NK_WINDOW_NO_SCROLLBAR : 0)
+            | (widget->has_title ? NK_WINDOW_TITLE : 0)
+            | (widget->is_scroll_autohide ? NK_WINDOW_SCROLL_AUTO_HIDE : 0)
+            | (widget->has_background ? NK_WINDOW_BACKGROUND : 0)
+            | (widget->is_scalable_left ? NK_WINDOW_SCALE_LEFT : 0)
+            | (!widget->has_input ? NK_WINDOW_NO_INPUT : 0)
+            | (!widget->is_interactive ? NK_WINDOW_NOT_INTERACTIVE : 0)
         ;
 
         ctx.style.window.fixed_background = nk_style_item_color(nk_rgba(widget->color.x, widget->color.y, widget->color.z, widget->color.w));
@@ -116,19 +120,21 @@ void OpenGL15::DrawNuklearUI(std::unordered_map<UUID, Level::SceneUIWidget>* wid
             nk_rect(position.x, position.y, size.x, size.y),
             widget_flags))
         {
+            nk_layout_space_begin(&ctx, NK_STATIC, (int)size.y, INT_MAX);
             
             for(const auto& child : widget->elements) {
                 const ObjectUI* obj = child.second.obj;
+                const CoordsUI::CoordsData obj_size = obj->size.getTopLeftCoords(size.x, size.y);
+                const CoordsUI::CoordsData obj_position = obj->position.getCoords(obj_size.x, obj_size.y);
+
+                    //nk_layout_row_static(&ctx, 30, 700, 1);
+                //nk_layout_space_begin(&ctx, NK_STATIC, (int)obj_size.y, INT_MAX);
+                nk_layout_space_push(&ctx, nk_rect(obj_position.x, obj_position.y, obj_size.x, obj_size.y));
+
                 if (obj->type == ObjectUI::Type::Label) {
                     const LabelUI* label = (LabelUI*)obj;
-                    const CoordsUI::CoordsData label_size = label->size.getTopLeftCoords(size.x, size.y);
-                    const CoordsUI::CoordsData label_position = label->position.getCoords(label_size.x, label_size.y);
-                    ctx.style.text.color = nk_rgb(label->color.x, label->color.y, label->color.z);
-                    nk_layout_space_begin(&ctx, NK_STATIC, (int)label_size.y, INT_MAX);
-                    //nk_layout_row_static(&ctx, 30, 700, 1);
-                    nk_layout_space_push(&ctx, nk_rect(label_position.x, label_position.y, label_size.x, label_size.y));
                     
-                    //nk_layout
+                    ctx.style.text.color = nk_rgb(label->color.x, label->color.y, label->color.z);
                     
                     nk_flags text_flags = 0;
                     if (label->text_align == LabelUI::TextAlign::Left)
@@ -138,9 +144,18 @@ void OpenGL15::DrawNuklearUI(std::unordered_map<UUID, Level::SceneUIWidget>* wid
                     else if (label->text_align == LabelUI::TextAlign::Right)
                         text_flags = NK_TEXT_RIGHT;
                     nk_label(&ctx, label->text.c_str(), text_flags);
-                    nk_layout_space_end(&ctx);
                 }
+                else if (obj->type == ObjectUI::Type::Button) {
+                    const ButtonUI* button = (ButtonUI*)obj;
+
+                    if (nk_button_label(&ctx, button->text.c_str())) {
+                        if (button->on_click != nullptr)
+                            button->on_click(this->engine);
+                    }
+                }
+
             }
+                nk_layout_space_end(&ctx);
             
         }
         nk_end(&ctx);
@@ -227,7 +242,7 @@ static void pump_input(struct nk_context *ctx, GLFWwindow *win)
 {
     double x, y;
     nk_input_begin(ctx);
-    glfwPollEvents();
+    //glfwPollEvents();
 
     nk_input_key(ctx, NK_KEY_DEL, glfwGetKey(win, GLFW_KEY_DELETE) == GLFW_PRESS);
     nk_input_key(ctx, NK_KEY_ENTER, glfwGetKey(win, GLFW_KEY_ENTER) == GLFW_PRESS);

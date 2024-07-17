@@ -14,6 +14,8 @@ namespace HateEngine {
         Model(const Model& model, bool copy_textures=false);
 
         std::vector<Mesh*> getMeshes() const;
+
+        void setVisible(bool visible);
         ~Model();
     };
 }

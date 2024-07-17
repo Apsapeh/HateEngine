@@ -23,6 +23,11 @@ std::vector<Mesh *> Model::getMeshes() const {
     return this->meshes;
 }
 
+void Model::setVisible(bool visible) {
+    for (const auto m : this->meshes)
+        m->setVisible(visible);
+}
+
 Model::~Model() {
     for (const auto m : this->meshes) {
         delete m;

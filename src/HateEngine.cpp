@@ -1,4 +1,4 @@
-#include <bits/types/struct_sched_param.h>
+//#include <bits/types/struct_sched_param.h>
 #include <pthread.h>
 #include <thread>
 #include <algorithm>
@@ -23,11 +23,12 @@
     sch_params.sched_priority = 99;\
     pthread_setschedparam(pthread_self(), SCHED_RR, &sch_params);
 #elif _WIN32
-#include <Windows.h>
+//#include <Windows.h>
 // FIXME: I don't, it's correct or not
-#define SET_THREAD_HIGH_PRIORITY\
-    SetPriorityClass(GetCurrentProcess(), HIGH_PRIORITY_CLASS);\
-    SetThreadPriority(GetCurrentThread(), THREAD_PRIORITY_TIME_CRITICAL);
+//#define SET_THREAD_HIGH_PRIORITY\
+//    SetPriorityClass(GetCurrentProcess(), HIGH_PRIORITY_CLASS);\
+//    SetThreadPriority(GetCurrentThread(), THREAD_PRIORITY_TIME_CRITICAL);
+#define SET_THREAD_HIGH_PRIORITY ;
 #endif
 
 
@@ -173,6 +174,7 @@ void Engine::Run() {
         delta = glfwGetTime() - oldTime;
         oldTime = glfwGetTime();
         glfwPollEvents();
+
 
         fixed_process_loop_delta += delta;
         physics_engine_iterate_loop_delta += delta;

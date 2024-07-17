@@ -16,7 +16,8 @@ namespace HateEngine {
     public:
         enum Type {
             Widget,
-            Label
+            Label,
+            Button
         };
         
     private:

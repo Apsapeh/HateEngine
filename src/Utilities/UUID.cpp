@@ -6,7 +6,8 @@ uint64_t UUID::counter = 0;
 std::mutex UUID::mutex;
 
 UUID::UUID() {
-    std::lock_guard<std::mutex> guard(this->mutex);
+    // FIXME: Почему-то мьютексы не работают на винде с мсвц 15
+    //std::lock_guard<std::mutex> guard(this->mutex);
     this->id = counter++;
 }
 

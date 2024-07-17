@@ -13,6 +13,7 @@ namespace HateEngine {
     class Object {
         friend OpenGL15;
         friend PhysicalBody;
+        friend class Camera;
 
     private:
         UUID uuid;
@@ -48,16 +49,16 @@ namespace HateEngine {
 
         bool binded = false;
 
-        void setParentPosition(glm::vec3 vec);
-        void setParentScale(glm::vec3 vec);
-        void setParentRotationMatrix(const glm::mat4&mat);
+        virtual void setParentPosition(glm::vec3 vec);
+        virtual void setParentScale(glm::vec3 vec);
+        virtual void setParentRotationMatrix(const glm::mat4&mat);
 
     public:
         void setPosition(glm::vec3 vec);
         void setPosition(float x, float y, float z);
         void setRotation(glm::vec3 vec);
         void setRotation(float x, float y, float z);
-        void setRotationMatrix(glm::mat4 mat);
+        virtual void setRotationMatrix(glm::mat4 mat);
         void setScale(glm::vec3 vec);
         void setScale(float x, float y, float z);
         void setVisible(bool);

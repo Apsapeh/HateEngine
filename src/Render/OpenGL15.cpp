@@ -1,4 +1,6 @@
 #include "HateEngine/Resources/Level.hpp"
+#include "glm/ext/matrix_float4x4.hpp"
+#include "glm/matrix.hpp"
 #include <algorithm>
 #include <glm/glm.hpp>
 #include <glm/gtc/type_ptr.hpp>
@@ -25,7 +27,7 @@ OpenGL15::OpenGL15(Engine* engine) {
     GLfloat light_position[]={1.0,1.0,1.0,1.0};
     GLfloat white_light[]={1.0,1.0,1.0,1.0};
     glClearColor(0.0,1.0,0.0,0.0);
-    //glShadeModel(GL_SMOOTH);
+    glShadeModel(GL_SMOOTH);
     //glMaterialfv(GL_FRONT,GL_SPECULAR,mat_specular);
     //glMaterialfv(GL_FRONT,GL_SHININESS,mat_shininess);
     GLfloat light_ambient[]={1.0,1.0,1.0,1.0};
@@ -39,6 +41,8 @@ OpenGL15::OpenGL15(Engine* engine) {
     //auto a = GL_CLAMP_TO_EDGE
 
     //glEnableClientState(GL_COLOR_ARRAY);
+    
+    //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
     glEnable(GL_BLEND);
     //glBlendEquation(GL_FUNC_ADD);
@@ -76,7 +80,8 @@ void OpenGL15::Render() {
         level->settings.background_color[2], level->settings.background_color[3]
     );
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    glViewport(0, 0, render_width, render_height);
+    //glViewport(0, 0, render_width, render_height);
+    glViewport(0, 0, this->engine->getResolution().x, this->engine->getResolution().y);
     //glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 
@@ -102,7 +107,7 @@ void OpenGL15::Render() {
     glDisable(GL_FOG);
 
     glm::ivec2 window_size = this->engine->getResolution();
-    if (window_size.x != render_width or window_size.y != render_height) {
+    /*if (window_size.x != render_width or window_size.y != render_height and false) {
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
     glMatrixMode(GL_PROJECTION);
@@ -178,7 +183,8 @@ void OpenGL15::Render() {
 
 
     glPopMatrix();
-    }
+    }*/
+
 
     this->DrawNuklearUI(&level->ui_widgets);
 }
@@ -190,7 +196,7 @@ void OpenGL15::Draw3D(
         std::vector<Light*>* lights
 ) {
     glEnable(GL_DEPTH_TEST);
-    glEnable(GL_CULL_FACE);
+    //glEnable(GL_CULL_FACE);
 
     if (camera != nullptr) {
         renderCamera(camera);
@@ -285,7 +291,8 @@ inline void OpenGL15::renderCamera(Camera* camera) {
     glMatrixMode(GL_PROJECTION);
     glLoadMatrixf(glm::value_ptr(Mp));
 
-    glm::mat4 mat = camera->getGlobalRotationMatrix();
+    glm::mat4 mat = camera->getGlobalRotationMatrix(); 
+
     mat = glm::translate(mat, -camera->getGlobalPosition()) ;
 
     glMatrixMode(GL_MODELVIEW);
@@ -311,9 +318,9 @@ inline void OpenGL15::renderLight(
         glEnable(light_num);
         glLightfv(light_num,GL_DIFFUSE,light->getColor().data());
         glLightfv(light_num,GL_POSITION, l_position);
-        glLightf(light_num, GL_CONSTANT_ATTENUATION, 0.2);
-        glLightf(light_num, GL_LINEAR_ATTENUATION, 0.2);
-        glLightf(light_num, GL_QUADRATIC_ATTENUATION, 0.5);
+        glLightf(light_num, GL_CONSTANT_ATTENUATION, 0.5);
+        glLightf(light_num, GL_LINEAR_ATTENUATION, 0.5);
+        glLightf(light_num, GL_QUADRATIC_ATTENUATION, 0.9);
     }
 }
 

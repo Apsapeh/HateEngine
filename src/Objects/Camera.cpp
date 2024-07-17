@@ -85,3 +85,63 @@ const CubeMesh *Camera::getSkyBox() const {
 bool Camera::isSkyBoxEnabled() const {
     return this->skyboxEnabled;
 }
+
+UUID Camera::bindObj(Object *obj, bool bind_pos, bool bind_rot, bool bind_scale) {
+    return this->root_obj.bindObj(obj, bind_pos, bind_rot, bind_scale);
+}
+
+bool Camera::unbindObj(UUID uuid) {
+    return this->root_obj.unbindObj(uuid);
+}
+
+
+void Camera::setRotation(glm::vec3 value) {
+    Object::setRotation(-value);
+    //root_obj.setRotation(value);    
+}
+void Camera::setRotation(float x, float y, float z) {
+    setRotation({x, y, z});
+}
+
+#include <iostream>
+void Camera::setParentPosition(glm::vec3 vec) {
+    Object::setParentPosition(vec);
+    root_obj.setPosition(getGlobalPosition());
+}
+
+void Camera::setParentScale(glm::vec3 vec) {
+    Object::setParentScale(vec);
+    //root_obj.setParentScale(vec);
+}
+
+void Camera::setParentRotationMatrix(const glm::mat4& mat) {
+    //std::cout << "Camera::setParentRotationMatrix" << std::endl;
+    //this->parent_rotation_matrix = glm::scale(mat, glm::vec3(-1, 1, -1));
+    //this->parent_rotation_matrix = glm::inverse(mat);
+    //root_obj.setParentRotationMatrix(mat);
+}
+
+void Camera::setRotationMatrix(glm::mat4 mat) {
+    Object::setRotationMatrix(mat);
+    //root_obj.setRotationMatrix(mat);
+}
+
+
+void Camera::offset(glm::vec3 vec) {
+    Object::offset(vec);
+    root_obj.offset(vec);
+}
+void Camera::offset(float x, float y, float z) {
+    offset({x, y, z});
+}
+
+
+void Camera::rotate(glm::vec3 vec, bool global) {
+    Object::rotate(-vec, global);
+    root_obj.rotate(vec, not global);
+    //glm::vec3 rot = this->getGlobalRotationEuler();
+    //root_obj.setRotation(glm::vec3(-rot.x, -rot.y, 0));
+}
+void Camera::rotate(float x, float y, float z, bool global) {
+    rotate({x, y, z}, global);
+}

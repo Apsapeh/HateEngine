@@ -1,12 +1,14 @@
 add_repositories("apsapeh-repo https://github.com/Apsapeh/xmake-repo.git")
 add_requires(
-    "glfw 3.3.9",
+    --"glfw 3.3.9",
     "glm 1.0.0", 
     "tinygltf 2.8.13", 
     "reactphysics3d 0.9.0", 
-    "nuklear", 
+    "nuklear",
     "glu"
 )
+
+add_requires("glfw 3.3.9", {configs = {wayland = true}})
 
 add_rules("mode.debug", "mode.release")
 
@@ -17,7 +19,7 @@ set_project("HateEngine")
 
 target("HateEngine")
     if is_plat("windows") then
-        add_defines("and=&&", "or=||", "not=!")
+        add_defines("and=&&", "or=||", "not=!", "_WIN32_WINNT=0x0501")
     end
     set_kind("$(kind)")
     set_languages("cxx11")
@@ -47,7 +49,7 @@ target("HateEngine")
 
 target("Example_1")
     if is_plat("windows") then
-        add_defines("and=&&", "or=||", "not=!")
+        add_defines("and=&&", "or=||", "not=!", "_WIN32_WINNT=0x0501")
     end
     if is_plat("linux") then
         add_ldflags("-static-libstdc++ -static-libgcc")

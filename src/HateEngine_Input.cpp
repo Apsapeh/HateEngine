@@ -1,5 +1,8 @@
 #include <HateEngine/HateEngine.hpp>
 
+#define WINVER 0x0501
+#define _WIN32_WINNT 0x0501
+
 using namespace HateEngine;
 
 Engine::InputClass::InputClass(Engine *eng) {

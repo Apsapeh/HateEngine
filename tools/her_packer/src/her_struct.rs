@@ -103,13 +103,13 @@ impl HerFile {
         her_file.write_all(&header).unwrap();
 
         let fish = Blowfish::new(&self.pswd);
+        let mut buffer = vec![0u8, 1024*1024*4].into_boxed_slice();
         for res in &self.resources {
             let mut file = std::fs::File::open(&res.file).unwrap();
             let mut left_to_read = res.original_size as u64;
 
             while left_to_read > 0 {
-                let mut buffer = [0u8; 1024 * 1024 * 4];
-                let readed = file.read(&mut buffer).unwrap();
+                let readed = file.read(buffer.as_mut()).unwrap();
 
                 let mut align = 0;
                 if readed % 8 != 0 {

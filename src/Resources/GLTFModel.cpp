@@ -82,6 +82,7 @@ static void Load(tgModel& model, std::vector<Mesh*>* meshes, std::vector<Texture
 
     int model_mesh_counter = 0;
     for (const auto& model_mesh : model.meshes) {
+
         for (const auto& primitive : model_mesh.primitives) {
             Mesh* mesh = new Mesh();
 
@@ -124,6 +125,7 @@ static void Load(tgModel& model, std::vector<Mesh*>* meshes, std::vector<Texture
 
 
 
+
             // =====> Get Normals <=====
             const auto& normal_accessor = model.accessors[attributes.find("NORMAL")->second];
             const auto& normal_view = model.bufferViews[normal_accessor.bufferView];
@@ -149,22 +151,25 @@ static void Load(tgModel& model, std::vector<Mesh*>* meshes, std::vector<Texture
                 mesh->setUV(std::vector<float> (texcoords_data, texcoords_data+data_size*2));
             }
 
-
             // =====> Get Base Color <=====
             const auto& material_index = primitive.material;
-            const auto& material = model.materials[material_index];
-            if (material.values.find("baseColorTexture") != material.values.end()) {
-                const auto& texture_index = material.values.at("baseColorTexture").TextureIndex();
-                if (t_id.count(texture_index) != 0)
-                    mesh->setTexture(&(*textures)[t_id[texture_index]]);
+            std::cout << "Material index: " << material_index << std::endl;
+            if (material_index != -1) {
+                const auto& material = model.materials[material_index];
+                if (material.values.find("baseColorTexture") != material.values.end()) {
+                    const auto& texture_index = material.values.at("baseColorTexture").TextureIndex();
+                    if (t_id.count(texture_index) != 0)
+                        mesh->setTexture(&(*textures)[t_id[texture_index]]);
+                }
             }
 
             // TODO: Add scale, rotation, translation
 
+    std::cout << "LOAD\n";
 
             // =====> Set Mesh Properties <=====
             if (mesh_properties.count(model_mesh_counter) != 0) {
-                //std::cout << "Mesh properties: " << model_mesh.name << std::endl;
+                std::cout << "Mesh properties: " << model_mesh.name << std::endl;
                 const auto& node = mesh_properties[model_mesh_counter];
 
                 if (node.scale.size() == 3)
@@ -174,6 +179,7 @@ static void Load(tgModel& model, std::vector<Mesh*>* meshes, std::vector<Texture
                 //if (node.rotation.size() == 4)
                     //mesh->setRotationMatrix({node.rotation[0], node.rotation[1], node.rotation[2], node.rotation[3]});
             }
+
 
             meshes->push_back(mesh);
         }
