@@ -34,7 +34,6 @@ target("HateEngine")
     )
     add_packages("glfw", "glm", "tinygltf", "reactphysics3d", "nuklear", "glu")
     add_defines("GLM_ENABLE_EXPERIMENTAL")
-    --add_ldflags("--static", {force = true})
     
     if is_mode("debug") then
         set_symbols("debug")
@@ -46,6 +45,12 @@ target("HateEngine")
         set_fpmodels("fast")
         set_optimize("aggressive")
     end
+
+    -- after_link(function (target)
+    --     print(target:info()) -- тут дальше можно вычленить linkdirs чтоб объединить glfw и reactphysics в hateengine
+    --     import("utils.archive.merge_staticlib")
+    --     merge_staticlib(target, "libout.a", {"libfoo.a", "libbar.a"})
+    -- end)
 
 
 target("Example_1")

@@ -51,6 +51,8 @@ namespace HateEngine {
 
         /*void setRotation(glm::vec3 vec);
         void setRotation(float x, float y, float z);*/
+        void setPosition(glm::vec3 vec);
+        void setPosition(float x, float y, float z);
         void setRotation(glm::vec3 vec);
         void setRotation(float x, float y, float z);
         void setRotationMatrix(glm::mat4 mat) override;

@@ -42,6 +42,8 @@ HateEngine::CubeMesh xAxMesh;
 //HateEngine::GLTFModel glmodel("examples/Assets/employee.glb");
 //HateEngine::GLTFModel glmodel("examples/Assets/billy-plane-sep.glb");
 HateEngine::GLTFModel glmodel("examples/Assets/romb.glb");
+    HateEngine::GLTFModel test_glmodel("examples/Assets/SHOTGUN4.glb");
+
 
 const int WIDTH = 800;
 const int HEIGHT = 600;
@@ -62,8 +64,8 @@ int main() {
     xAxMesh.setSize(1, 0.1, 0.1);
     xAxMesh.offset(0, 6, 0);
 
-    //camera.setPosition(0, 6, 3);
-    camera.offset(0, 6, 3);
+    camera.setPosition(0, 6, 3);
+    //camera.offset(0, 6, 3);
     //camera.setPosition(0, 25, 0);
     camera.setRotation(0, 0, 0);
     //camera.setSkyBoxTexture(new HateEngine::Texture("examples/Assets/skybox.jpg", HateEngine::Texture::ClampToEdge));
@@ -84,7 +86,6 @@ int main() {
 
     mesh2.setPosition(3, 3, 3);
     
-    HateEngine::GLTFModel test_glmodel("examples/Assets/SHOTGUN4.glb");
     test_glmodel.offset(0.5, -0.5, -2);
     test_glmodel.setScale(0.25, 0.25, 0.25);
     test_glmodel.setRotation(0, 180, 0);
@@ -92,6 +93,8 @@ int main() {
 
 
     camera.bindObj(&test_glmodel);
+
+    std::cout << "Camera uuid: " << camera.getUUID().getU64() << std::endl;
     //mesh1.bindObj(&test_glmodel);
 
     HateEngine::Engine game("HateEngine Test", WIDTH, HEIGHT);
@@ -194,7 +197,7 @@ int main() {
     snow_mesh.setPosition(0, 5, 0);
     //lvl.addObjectRef(&snow_mesh);
     // tomato.setScale({0.05, 0.05, 0.05});
-    HateEngine::Particles cube_part((HateEngine::Mesh)snow_mesh, 100, pa_set);
+    //HateEngine::Particles cube_part((HateEngine::Mesh)snow_mesh, 100, pa_set);
     /*cube_part.calculateFunc =  [] (HateEngine::Particle* p, double delta) {
         if (p->data.count("vel") == 0)
             p->data["vel"] = (void*) new glm::vec3(0, 0, 0);
@@ -212,8 +215,8 @@ int main() {
         //std::cout <<
     };*/
 
-    cube_part.setPosition(0, 3, 0);
-    cube_part.pause = true;
+    /*cube_part.setPosition(0, 3, 0);
+    cube_part.pause = true;*/
     // std::cout << part->getPosition().z << "\n";
     // game.addObjectClone(cube_part);
 
@@ -226,7 +229,7 @@ int main() {
     HateEngine::SphereShape sphereShape(0.5);
     rigidBody.addCollisionShapeRef(&sphereShape);
     rigidBody.bindObj(&mesh1);
-    rigidBody.bindObj(&camera);
+    //rigidBody.bindObj(&camera);
     //rigidBody.bindObj(&glmodel);
 
     HateEngine::PhysicalBody floorBody(HateEngine::PhysicalBody::StaticBody);
@@ -325,6 +328,7 @@ void _process(HateEngine::Engine *engine, double delta) {
 glm::vec3 cam_dir;
 
 void _physics_process(HateEngine::Engine *engine, double delta) {
+    test_glmodel.rotate(1, 0, 0);
     //std::cout << camera.getRotationEuler().x << " " << camera.getRotationEuler().y << " " << camera.getRotationEuler().z << "\n";
     //std::cout << "FPS: " << 1.0 / delta << "\n";
     glm::vec3 mesh1_r = mesh1.getGlobalRotationEuler();
@@ -388,7 +392,7 @@ void _physics_process(HateEngine::Engine *engine, double delta) {
         GLFW_KEY_LEFT, GLFW_KEY_RIGHT, GLFW_KEY_UP, GLFW_KEY_DOWN
     );
     glmodel.rotate(0, glmodel_rot.x, 0);
-    glmodel.offset(0, glmodel_rot.y / 10, 0);
+    //glmodel.offset(0, glmodel_rot.y / 10, 0);
 
 
 

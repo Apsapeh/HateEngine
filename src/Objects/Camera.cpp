@@ -126,13 +126,20 @@ void Camera::setRotationMatrix(glm::mat4 mat) {
     //root_obj.setRotationMatrix(mat);
 }
 
+void Camera::setPosition(const glm::vec3 value) {
+    Object::setPosition(value);
+    root_obj.setPosition(value);
+}
+void Camera::setPosition(float x, float y, float z) {
+    setPosition({x, y, z});
+}
 
 void Camera::offset(glm::vec3 vec) {
     Object::offset(vec);
     root_obj.offset(vec);
 }
 void Camera::offset(float x, float y, float z) {
-    offset({x, y, z});
+    Camera::offset({x, y, z});
 }
 
 
