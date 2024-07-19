@@ -1,7 +1,6 @@
+#include "GLFW/glfw3.h"
 #include "glm/ext/vector_float2.hpp"
 #include "glm/ext/vector_float3.hpp"
-#define WINVER 0x0501
-#define _WIN32_WINNT 0x0501
 
 #include "HateEngine/Objects/Light/Light.hpp"
 #include "HateEngine/Objects/Object.hpp"
@@ -97,7 +96,7 @@ int main() {
 
     HateEngine::Engine game("HateEngine Test", WIDTH, HEIGHT);
     game.setMouseCapture(true);
-    game.setOneThreadMode(true);
+    game.setOneThreadMode(false);
     // Setting textures for the cube and floor meshes
 
 
@@ -275,7 +274,7 @@ int main() {
     fps_widget.addObjectRef(&button);
 
     
-    //lvl.addObjectRef(&fps_widget);
+    lvl.addObjectRef(&fps_widget);
     //lvl.addObjectRef(&ui);
 
 
@@ -285,6 +284,8 @@ int main() {
     game.setInputEvent(_input_event);
     lvl.setCameraRef(&camera);
     game.Run();
+    int p = glfwGetPlatform();
+    std::cout << p << " | " << GLFW_PLATFORM_WAYLAND << "\n";
 }
 
 int count = 0;

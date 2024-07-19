@@ -38,6 +38,7 @@ bool glad_is_initialized = false;
 using namespace HateEngine;
 
 Engine::Engine(std::string window_lbl, int width, int height) : Input(this) {
+    glfwInitHint(GLFW_PLATFORM, GLFW_PLATFORM_WAYLAND);
     glfwInit();
     // Create window
     this->window = glfwCreateWindow(width, height, window_lbl.c_str(), NULL, NULL);
@@ -175,10 +176,6 @@ void Engine::Run() {
         oldTime = glfwGetTime();
         glfwPollEvents();
 
-
-        fixed_process_loop_delta += delta;
-        physics_engine_iterate_loop_delta += delta;
-
         //meshesMutex.lock();
         if (this->processLoop != nullptr)
             this->processLoop(this, delta);
@@ -187,6 +184,9 @@ void Engine::Run() {
             this->level->processLoop(this, delta);
 
         if (this->isOneThread) {
+            fixed_process_loop_delta += delta;
+            physics_engine_iterate_loop_delta += delta;
+
             if (this->fixedProcessLoop != nullptr and fixed_process_loop_delta >= fixed_process_loop_delay) {
                 this->fixedProcessLoop(this, fixed_process_loop_delta);
                 if (this->level->fixedProcessLoop != nullptr)

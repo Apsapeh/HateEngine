@@ -8,7 +8,7 @@ add_requires(
     "glu"
 )
 
-add_requires("glfw 3.3.9", {configs = {wayland = true}})
+add_requires("glfw 3.4", {configs = {wayland = is_plat("linux")}})
 
 add_rules("mode.debug", "mode.release")
 
@@ -21,6 +21,7 @@ target("HateEngine")
     if is_plat("windows") then
         add_defines("and=&&", "or=||", "not=!", "_WIN32_WINNT=0x0501")
     end
+
     set_kind("$(kind)")
     set_languages("cxx11")
     add_includedirs(
@@ -51,6 +52,7 @@ target("Example_1")
     if is_plat("windows") then
         add_defines("and=&&", "or=||", "not=!", "_WIN32_WINNT=0x0501")
     end
+
     if is_plat("linux") then
         add_ldflags("-static-libstdc++ -static-libgcc")
     end

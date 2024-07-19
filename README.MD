@@ -1,6 +1,5 @@
 # Why?
-### This engine is developed for a boomer shooter - Arx Infernus.
-### Unity is a piece of shit, Godot is a very cool engine, but it's use OpenGL 2 and doesn't support Windows XP
+### This engine is developed for a boomer shooter - Arx Infernus. <br /> Unity is a piece of shit, Godot is a very cool engine, but it's use OpenGL 2 and doesn't support Windows XP
 
 <br />
 
@@ -19,11 +18,11 @@
 <br />
 
 # How to build
-### Build only static lib: 
+### Build only а static lib: 
 ```sh
 $ xmake
 ```
-### Build with examples
+### Build with ал examples
 ```sh
 $ xmake f -m release --build_examples=true
 $ xmake
