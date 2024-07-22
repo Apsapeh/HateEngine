@@ -1,5 +1,4 @@
 #include <HateEngine/Objects/Object.hpp>
-#include "../globalStaticParams.hpp"
 //#include <cmath>
 
 //TODO: Добавить дочерние Object, которые наследуют перемещение, вращение и подобное
@@ -113,6 +112,7 @@ glm::vec3 Object::getPosition() const {
 }
 
 glm::vec3 Object::getRotationEuler() const {
+    // FIXME Z coord may be wrong
     glm::vec3 rot;
     float tmp_1, tmp_2;
     //glm::extractEulerAngleYXZ(rotation_matrix, rot.y, rot.x, rot.z); // return global rotation
@@ -121,7 +121,6 @@ glm::vec3 Object::getRotationEuler() const {
     glm::extractEulerAngleXZY(rotation_matrix, rot.x, tmp_1, tmp_2); // x
     //glm::extractEulerAngleYXZ(rotation_matrix, rot.y, tmp_1, tmp_2); 
     glm::extractEulerAngleZXY(rotation_matrix, rot.z, tmp_1, rot.y); // y, z = 0
-    #warning Z coord may be wrong
 
     rot *= -1;
 
@@ -156,7 +155,7 @@ glm::vec3 Object::getGlobalPosition() const {
     glm::vec4 rotatedOffset = this->parent_rotation_matrix * glm::vec4(this->position, 1.0f);
     return this->parent_position + glm::vec3(rotatedOffset);
 }
-#include <iostream>
+
 glm::vec3 Object::getGlobalRotationEuler() const {
     glm::vec3 rot;
     glm::mat4 global_rotation = getGlobalRotationMatrix();

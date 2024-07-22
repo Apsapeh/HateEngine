@@ -136,6 +136,11 @@ void OpenGL15::DrawNuklearUI(std::unordered_map<UUID, Level::SceneUIWidget>* wid
                     
                     ctx.style.text.color = nk_rgb(label->color.x, label->color.y, label->color.z);
                     
+                    if (label->text_align == LabelUI::TextAlign::Wrap) {
+                        nk_label_wrap(&ctx, label->text.c_str());
+                        continue;    
+                    }
+
                     nk_flags text_flags = 0;
                     if (label->text_align == LabelUI::TextAlign::Left)
                         text_flags = NK_TEXT_LEFT;

@@ -263,8 +263,9 @@ int main() {
     fps_widget_ptr = &fps_widget;
 
     fps_label.color = {255, 0, 0};
-    fps_label.size = {100, 30};
+    fps_label.size = {150, 60};
     fps_label.text = "FPS: 0";
+    //fps_label.text_align = HateEngine::LabelUI::Wrap;
 
 
     HateEngine::ButtonUI button([] (HateEngine::Engine *engine) {

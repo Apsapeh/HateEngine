@@ -1,7 +1,5 @@
 #include <HateEngine/Objects/Physics/PhysicalBody.hpp>
 #include <glm/gtx/quaternion.hpp>
-#include <algorithm>
-#include "../../globalStaticParams.hpp"
 #include "HateEngine/Error.hpp"
 
 using namespace HateEngine;

@@ -4,7 +4,7 @@ add_requires(
     "glm 1.0.0", 
     "tinygltf 2.8.13", 
     "reactphysics3d 0.9.0", 
-    "nuklear",
+    --"nuklear",
     "glu"
 )
 
@@ -32,7 +32,7 @@ target("HateEngine")
         "deps/blowfish/blowfish.cpp",
         "src/**.cpp"
     )
-    add_packages("glfw", "glm", "tinygltf", "reactphysics3d", "nuklear", "glu")
+    add_packages("glfw", "glm", "tinygltf", "reactphysics3d", "glu")
     add_defines("GLM_ENABLE_EXPERIMENTAL")
     
     if is_mode("debug") then
@@ -70,7 +70,7 @@ target("Example_1")
     add_includedirs("include")
 
     add_deps("HateEngine")
-    add_packages("glfw", "glm", "reactphysics3d", "nuklear", "ncvm")
+    add_packages("glfw", "glm", "reactphysics3d", "ncvm")
     add_defines("GLM_ENABLE_EXPERIMENTAL")
 
     if is_plat("mingw") then 

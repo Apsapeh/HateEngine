@@ -12,7 +12,8 @@ namespace HateEngine {
         enum TextAlign {
             Left,
             Center,
-            Right
+            Right,
+            Wrap
         };
     
         //glm::ivec2 size = {100, 100};
