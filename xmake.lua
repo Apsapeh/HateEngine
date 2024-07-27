@@ -74,7 +74,8 @@ target("Example_1")
     add_defines("GLM_ENABLE_EXPERIMENTAL")
 
     if is_plat("mingw") then 
-        add_ldflags("--static", {force = true})
+        add_cxxflags("-specs=msvcr120.spec", {force=true})        
+        add_ldflags("-static-libstdc++ -static-libgcc -specs=msvcr120.spec", {force = true})
     end
 
     set_rundir("$(projectdir)")

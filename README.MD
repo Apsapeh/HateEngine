@@ -10,10 +10,12 @@
 ## Tested on (works without or with some small bugs):
 - MacOS (M1 chip)
 - Linux (x86_64)
-- Windows XP (MSVC, AMD Athlon XP 2500+ (without SSE2))
+- Windows XP (MSVC 2022 (v140), MinGW*, AMD Athlon XP 2500+ (without SSE2))
 - Windows 10, 11
 ## Tested on (with major bugs):
 - Raspberry Pi 4 (ReactPhysics doesn't work)
+
+\* - MinGW <=7.0.0 (standalone) or newer, but with additional libwinpthread-1.dll
 
 <br />
 

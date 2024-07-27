@@ -6,6 +6,7 @@
 
 #include <HateEngine/Resources/ObjMapModel.hpp>
 #include <vector>
+#include "glm/ext/vector_float2.hpp"
 #include "glm/ext/vector_float3.hpp"
 #include "glm/geometric.hpp"
 #include "glm/matrix.hpp"
@@ -32,7 +33,46 @@ ObjMapModel::ObjMapModel(const char* data, uint32_t size, std::string dir) {
 
 /*=====================================================> PARSERS <=================================================================*/
 
+bool isPointInPolygon(glm::vec2 point, std::vector<glm::vec2> polygon, bool onEdges = false) {
+    uint32_t intersections = 0;
+    for (uint32_t i = 0; i < polygon.size()-1; i++) {
+        glm::vec2 a = polygon[i];
+        glm::vec2 b = polygon[i+1];
+        /*float yByX = a.y + (b.y - a.y) * (point.x - a.x) / (b.x - a.x);
 
+        if (point.y == yByX) return true;
+
+        if (yByX >= a.y && yByX <= b.y)
+            intersections++;*/
+        ;
+        /*float xByY = 0;
+        if (abs(a.y - b.y) < 0.0001) xByY = a.y;
+
+        else if (abs(a.x == b.x) < 0.0001) xByY = a.x;
+
+        else
+            xByY =
+
+        
+         a.x + (b.x - a.x) * (point.y - a.y) / (b.y - a.y);
+        //std::cout << point.x << " " << xByY << "\n";
+        if (abs(point.x - xByY) < 0.0001) return onEdges;
+
+
+        float min_x = std::min(a.x, b.x);
+        float max_x = std::max(a.x, b.x);
+
+        if (xByY >= min_x && xByY <= max_x)
+            intersections++;*/
+
+        if (point.y < a.y != point.y < b.y && point.x < (b.x - a.x) * (point.y - a.y) / (b.y - a.y) + a.x)
+            intersections++;
+    }
+
+    //std::cout << intersections << "\n";
+
+    return intersections % 2;
+}
 
 struct ObjObject {
     std::string name;
@@ -134,27 +174,56 @@ void ObjMapModel::parseObj(std::string data) {
             glm::vec3 v0_z_null = T * v0;
             //v0_z_null.z = 0.0f;
 
-            std::cout << "v0_z_null: " << v0_z_null.x << " | " << v0_z_null.y << " | " << v0_z_null.z << "\n";
+            //std::cout << "v0_z_null: " << v0_z_null.x << " | " << v0_z_null.y << " | " << v0_z_null.z << "\n";
 
             glm::vec3 v1_z_null = T * v1;            
-            std::cout << "v1_z_null: " << v1_z_null.x << " | " << v1_z_null.y << " | " << v1_z_null.z << "\n";
+            //std::cout << "v1_z_null: " << v1_z_null.x << " | " << v1_z_null.y << " | " << v1_z_null.z << "\n";
 
             glm::vec3 v2_z_null = T * v2;
-            std::cout << "v2_z_null: " << v2_z_null.x << " | " << v2_z_null.y << " | " << v2_z_null.z << "\n";
+            //std::cout << "v2_z_null: " << v2_z_null.x << " | " << v2_z_null.y << " | " << v2_z_null.z << "\n";
 
             glm::vec3 v3_z_null = T * v3;
-            std::cout << "v3_z_null: " << v3_z_null.x << " | " << v3_z_null.y << " | " << v3_z_null.z << "\n";
+            //std::cout << "v3_z_null: " << v3_z_null.x << " | " << v3_z_null.y << " | " << v3_z_null.z << "\n";
 
             glm::mat3 T_inv = glm::inverse(T);
 
             glm::vec3 v0_z_not_null = T_inv * v0_z_null;
 
-            std::cout << "v0_z_not_null: " << v0_z_not_null.x << " | " << v0_z_not_null.y << " | " << v0_z_not_null.z << "\n";
+            //std::cout << "v0_z_not_null: " << v0_z_not_null.x << " | " << v0_z_not_null.y << " | " << v0_z_not_null.z << "\n";
 
-            std::cout << "v0: " << v0.x << " | " << v0.y << " | " << v0.z << "\n";
+            //std::cout << "v0: " << v0.x << " | " << v0.y << " | " << v0.z << "\n";
 
 
-            std::cout << "\n";
+            //std::cout << "\n";
+            std::vector<glm::vec2> poly = {
+                {v0_z_null.x, v0_z_null.y},
+                {v1_z_null.x, v1_z_null.y},
+                {v2_z_null.x, v2_z_null.y},
+                {v3_z_null.x, v3_z_null.y}
+            };
+            
+            glm::vec2 poly_min = poly[0];
+            glm::vec2 poly_max = poly[0];
+            for (auto p : poly) {
+                if (p.x < poly_min.x) poly_min.x = p.x;
+                if (p.y < poly_min.y) poly_min.y = p.y;
+                if (p.x > poly_max.x) poly_max.x = p.x;
+                if (p.y > poly_max.y) poly_max.y = p.y;
+            }
+
+            float count = 0;
+            float step = 1;
+            for (float x = poly_min.x; x <= poly_max.x; x += step) {
+                for (float y = poly_min.y; y <= poly_max.y; y += step) {
+                    if (isPointInPolygon({x, y}, poly)) {
+
+                        count++;
+                    }
+                        //std::cout << x << " | " << y << "\n";
+                }
+            }
+
+            std::cout << "count: " << count << "\n";
 
 
             //vertices[i[0]] = v0_z_not_null;

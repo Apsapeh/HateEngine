@@ -99,7 +99,7 @@ int main() {
 
     HateEngine::Engine game("HateEngine Test", WIDTH, HEIGHT);
     game.setMouseCapture(true);
-    game.setOneThreadMode(false);
+    game.setOneThreadMode(true);
     // Setting textures for the cube and floor meshes
 
 
@@ -295,7 +295,7 @@ int main() {
 int count = 0;
 double del = 0.0;
 void _process(HateEngine::Engine *engine, double delta) {
-    if (count < 1000) {
+    if (count < 50) {
       ++count;
       del += delta;
     } else {
