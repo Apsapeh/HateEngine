@@ -42,12 +42,17 @@ Engine::Engine(std::string window_lbl, int width, int height) : Input(this) {
     //glfwInitHint(GLFW_PLATFORM, GLFW_PLATFORM_WAYLAND);
     glfwInit();
     // Create window
-    this->window = glfwCreateWindow(width, height, window_lbl.c_str(), NULL, NULL);
+    GLFWmonitor *monitor = NULL;glfwGetPrimaryMonitor();
+    this->window = glfwCreateWindow(width, height, window_lbl.c_str(), monitor, NULL);
     if (this->window == NULL) {
         Error::throwError("Failed to create GLFW window", false);
         glfwTerminate();
     }
+
+    float xscale, yscale;
+    //glfwGetWindowContentScale(this->window, &xscale, &yscale);
     
+    // FIXME: Баги с масштабированием
     this->setResolution(width, height);
 
     glfwSetWindowUserPointer(this->window, this);
@@ -66,6 +71,7 @@ Engine::Engine(std::string window_lbl, int width, int height) : Input(this) {
         }
 
         th->setResolution(w, h);
+        std::cout << "Framebuffer size: " << w << "x" << h << std::endl;
     });
 
     glfwSetCursorPosCallback(window, [] (GLFWwindow *win, double x, double y) {

@@ -35,9 +35,21 @@ ObjMapModel::ObjMapModel(const char* data, uint32_t size, std::string dir) {
 
 bool isPointInPolygon(glm::vec2 point, std::vector<glm::vec2> polygon, bool onEdges = false) {
     uint32_t intersections = 0;
-    for (uint32_t i = 0; i < polygon.size()-1; i++) {
+
+    for (auto p : polygon) {
+        //std::cout << p.x << " " << p.y << "\n";
+    }
+    
+    for (uint32_t i = 0; i < polygon.size(); i++) {
+        //std::cout << i << " - " << polygon[i].x << " " << polygon[i].y << "\n";
         glm::vec2 a = polygon[i];
-        glm::vec2 b = polygon[i+1];
+        glm::vec2 b;
+        if (i == polygon.size()-1)
+            b = polygon[0];
+        else
+            b = polygon[i+1];
+
+        std::cout << a.x << " " << a.y << " " << b.x << " " << b.y << "\n";
         /*float yByX = a.y + (b.y - a.y) * (point.x - a.x) / (b.x - a.x);
 
         if (point.y == yByX) return true;
@@ -65,9 +77,33 @@ bool isPointInPolygon(glm::vec2 point, std::vector<glm::vec2> polygon, bool onEd
         if (xByY >= min_x && xByY <= max_x)
             intersections++;*/
 
-        if (point.y < a.y != point.y < b.y && point.x < (b.x - a.x) * (point.y - a.y) / (b.y - a.y) + a.x)
+        /*if (point.y < a.y != point.y < b.y && point.x < (b.x - a.x) * (point.y - a.y) / (b.y - a.y) + a.x) {
+            float xByY = a.x + (b.x - a.x) * (point.y - a.y) / (b.y - a.y);
+            //if (point.x == xByY or abs(point.x - xByY) < 0.1) return false;
             intersections++;
+        }*/
+        //if (point.y < a.y != point.y < b.y)
+        float xByY = 0;
+        //std::cout << a.y << " " << b.y << "\n";
+        if (fabs(a.y - b.y) < 0.0001) continue;;
+
+        //else if (abs(a.x - b.x) < 0.0001) xByY = a.x;
+
+        
+            xByY = a.x + (b.x - a.x) * (point.y - a.y) / (b.y - a.y);
+
+        if (fabs(point.x - xByY) < 0.001) {
+            std::cout << xByY << "\n";
+            return false;
+        }
+
+        if (point.y < a.y != point.y < b.y && point.x < (b.x - a.x) * (point.y - a.y) / (b.y - a.y) + a.x) {
+            float xByY = a.x + (b.x - a.x) * (point.y - a.y) / (b.y - a.y);
+            //if (point.x == xByY or abs(point.x - xByY) < 0.1) return false;
+            intersections++;
+        }
     }
+
 
     //std::cout << intersections << "\n";
 
@@ -201,6 +237,10 @@ void ObjMapModel::parseObj(std::string data) {
                 {v2_z_null.x, v2_z_null.y},
                 {v3_z_null.x, v3_z_null.y}
             };
+
+            for (auto p : poly) {
+                std::cout << p.x << " " << p.y << "\n";
+            }
             
             glm::vec2 poly_min = poly[0];
             glm::vec2 poly_max = poly[0];
@@ -213,17 +253,21 @@ void ObjMapModel::parseObj(std::string data) {
 
             float count = 0;
             float step = 1;
+            int a = 0, b = 0;
             for (float x = poly_min.x; x <= poly_max.x; x += step) {
+                a++;
                 for (float y = poly_min.y; y <= poly_max.y; y += step) {
                     if (isPointInPolygon({x, y}, poly)) {
 
                         count++;
                     }
                         //std::cout << x << " | " << y << "\n";
+                        b++;
                 }
             }
 
             std::cout << "count: " << count << "\n";
+            //std::cout << a << " " << b / a << "\n";
 
 
             //vertices[i[0]] = v0_z_not_null;

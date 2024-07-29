@@ -287,6 +287,10 @@ int main() {
     game.setFixedProcessLoop(_physics_process);
     game.setInputEvent(_input_event);
     lvl.setCameraRef(&camera);
+    float xscale, yscale;
+    //glfwGetPrimaryMonitor();
+    glfwGetMonitorContentScale(glfwGetPrimaryMonitor(), &xscale, &yscale);
+    std::cout << "Content scale: " << xscale << " " << yscale << "\n";
     game.Run();
     int p = glfwGetPlatform();
     std::cout << p << " | " << GLFW_PLATFORM_WAYLAND << "\n";
@@ -329,6 +333,7 @@ void _process(HateEngine::Engine *engine, double delta) {
 glm::vec3 cam_dir;
 
 void _physics_process(HateEngine::Engine *engine, double delta) {
+    //std::cout << engine->getResolution().x << " | " << engine->getResolution().y << "\n";
     test_glmodel.rotate(1, 0, 0);
     //std::cout << camera.getRotationEuler().x << " " << camera.getRotationEuler().y << " " << camera.getRotationEuler().z << "\n";
     //std::cout << "FPS: " << 1.0 / delta << "\n";
@@ -386,7 +391,8 @@ void _physics_process(HateEngine::Engine *engine, double delta) {
 
     if (engine->Input.isKeyPressed(GLFW_KEY_P)) {
         GLFWmonitor *monitor = glfwGetPrimaryMonitor();
-        //glfwSetWindowMonitor(engine->getWindow(), monitor, 0, 0, 300, 600, 75);
+        glfwSetWindowMonitor(engine->window, monitor, 0, 0, 2560, 1600, GLFW_DONT_CARE);
+
     }
 
     glm::vec2 glmodel_rot = engine->Input.getVector(

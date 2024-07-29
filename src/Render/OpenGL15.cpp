@@ -80,7 +80,7 @@ void OpenGL15::Render() {
         level->settings.background_color[2], level->settings.background_color[3]
     );
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    //glViewport(0, 0, render_width, render_height);
+    //glViewport(0+, 0, render_width, render_height);
     glViewport(0, 0, this->engine->getResolution().x, this->engine->getResolution().y);
     //glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
