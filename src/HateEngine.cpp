@@ -12,6 +12,7 @@
 
 #ifdef __linux__
 #include <pthread.h>
+#include <sched.h>
 #define SET_THREAD_HIGH_PRIORITY\
     sched_param sch_params;\
     sch_params.sched_priority = 99;\
@@ -24,12 +25,12 @@
     sch_params.sched_priority = 99;\
     pthread_setschedparam(pthread_self(), SCHED_RR, &sch_params);
 #elif _WIN32
-//#include <Windows.h>
+#include <Windows.h>
 // FIXME: I don't, it's correct or not
-//#define SET_THREAD_HIGH_PRIORITY\
-//    SetPriorityClass(GetCurrentProcess(), HIGH_PRIORITY_CLASS);\
-//    SetThreadPriority(GetCurrentThread(), THREAD_PRIORITY_TIME_CRITICAL);
-#define SET_THREAD_HIGH_PRIORITY ;
+#define SET_THREAD_HIGH_PRIORITY\
+    SetPriorityClass(GetCurrentProcess(), HIGH_PRIORITY_CLASS);\
+    SetThreadPriority(GetCurrentThread(), THREAD_PRIORITY_TIME_CRITICAL);
+//#define SET_THREAD_HIGH_PRIORITY ;
 #endif
 
 
@@ -39,7 +40,7 @@ bool glad_is_initialized = false;
 using namespace HateEngine;
 
 Engine::Engine(std::string window_lbl, int width, int height) : Input(this) {
-    //glfwInitHint(GLFW_PLATFORM, GLFW_PLATFORM_WAYLAND);
+    //glfwInitHint(GLFW_PLATFORM, GLFW_PLATFORM_X11);
     glfwInit();
     // Create window
     GLFWmonitor *monitor = NULL;glfwGetPrimaryMonitor();
@@ -58,6 +59,7 @@ Engine::Engine(std::string window_lbl, int width, int height) : Input(this) {
     glfwSetWindowUserPointer(this->window, this);
     glfwMakeContextCurrent(this->window);
     glfwSwapInterval( 0 );
+    //glfwWindowHint(GLFW_DECORATED, false);
     //glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
     glfwSetFramebufferSizeCallback(this->window, [] (GLFWwindow *win, int w, int h) {
@@ -157,12 +159,14 @@ Engine::Engine(std::string window_lbl, int width, int height) : Input(this) {
 
 
 void Engine::Run() {
+    SET_THREAD_HIGH_PRIORITY
     std::thread *fixedProcessThread = nullptr;
     std::thread *physicsEngineProcessThread = nullptr;
     if (not this->isOneThread) {
         if (this->fixedProcessLoop != nullptr)
             fixedProcessThread = new std::thread(&Engine::threadFixedProcessLoop, this);
 
+        
         physicsEngineProcessThread = new std::thread(
                 &Engine::threadPhysicsEngineIterateLoop, this
         );

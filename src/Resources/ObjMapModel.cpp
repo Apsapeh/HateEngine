@@ -34,11 +34,7 @@ ObjMapModel::ObjMapModel(const char* data, uint32_t size, std::string dir) {
 /*=====================================================> PARSERS <=================================================================*/
 
 bool isPointInPolygon(glm::vec2 point, std::vector<glm::vec2> polygon, bool onEdges = false) {
-    uint32_t intersections = 0;
-
-    for (auto p : polygon) {
-        //std::cout << p.x << " " << p.y << "\n";
-    }
+    bool is_in = 0;
     
     for (uint32_t i = 0; i < polygon.size(); i++) {
         //std::cout << i << " - " << polygon[i].x << " " << polygon[i].y << "\n";
@@ -47,67 +43,29 @@ bool isPointInPolygon(glm::vec2 point, std::vector<glm::vec2> polygon, bool onEd
         if (i == polygon.size()-1)
             b = polygon[0];
         else
-            b = polygon[i+1];
-
-        std::cout << a.x << " " << a.y << " " << b.x << " " << b.y << "\n";
-        /*float yByX = a.y + (b.y - a.y) * (point.x - a.x) / (b.x - a.x);
-
-        if (point.y == yByX) return true;
-
-        if (yByX >= a.y && yByX <= b.y)
-            intersections++;*/
-        ;
-        /*float xByY = 0;
-        if (abs(a.y - b.y) < 0.0001) xByY = a.y;
-
-        else if (abs(a.x == b.x) < 0.0001) xByY = a.x;
-
-        else
-            xByY =
-
+            b = polygon[i+1];        
         
-         a.x + (b.x - a.x) * (point.y - a.y) / (b.y - a.y);
-        //std::cout << point.x << " " << xByY << "\n";
-        if (abs(point.x - xByY) < 0.0001) return onEdges;
-
-
-        float min_x = std::min(a.x, b.x);
-        float max_x = std::max(a.x, b.x);
-
-        if (xByY >= min_x && xByY <= max_x)
-            intersections++;*/
-
-        /*if (point.y < a.y != point.y < b.y && point.x < (b.x - a.x) * (point.y - a.y) / (b.y - a.y) + a.x) {
-            float xByY = a.x + (b.x - a.x) * (point.y - a.y) / (b.y - a.y);
-            //if (point.x == xByY or abs(point.x - xByY) < 0.1) return false;
-            intersections++;
-        }*/
-        //if (point.y < a.y != point.y < b.y)
         float xByY = 0;
-        //std::cout << a.y << " " << b.y << "\n";
-        if (fabs(a.y - b.y) < 0.0001) continue;;
-
-        //else if (abs(a.x - b.x) < 0.0001) xByY = a.x;
-
-        
+        if (std::abs(a.y - b.y) < 0.01f) continue;
+        if (std::abs(a.x - b.x) < 0.01f)
+            xByY = a.x;
+        else
             xByY = a.x + (b.x - a.x) * (point.y - a.y) / (b.y - a.y);
 
-        if (fabs(point.x - xByY) < 0.001) {
-            std::cout << xByY << "\n";
+        if (std::abs(point.x - xByY) < 0.01f) {
+            //std::cout << xByY << "\n";
             return false;
         }
 
-        if (point.y < a.y != point.y < b.y && point.x < (b.x - a.x) * (point.y - a.y) / (b.y - a.y) + a.x) {
-            float xByY = a.x + (b.x - a.x) * (point.y - a.y) / (b.y - a.y);
-            //if (point.x == xByY or abs(point.x - xByY) < 0.1) return false;
-            intersections++;
+        float min_y = std::min(a.y, b.y);
+        float max_y = std::max(a.y, b.y);
+
+        if (point.y > min_y && point.y < max_y && point.x < (b.x - a.x) * (point.y - a.y) / (b.y - a.y) + a.x) {
+            is_in = !is_in;
         }
     }
 
-
-    //std::cout << intersections << "\n";
-
-    return intersections % 2;
+    return is_in;
 }
 
 struct ObjObject {
@@ -239,7 +197,7 @@ void ObjMapModel::parseObj(std::string data) {
             };
 
             for (auto p : poly) {
-                std::cout << p.x << " " << p.y << "\n";
+                //std::cout << p.x << " " << p.y << "\n";
             }
             
             glm::vec2 poly_min = poly[0];
@@ -253,20 +211,78 @@ void ObjMapModel::parseObj(std::string data) {
 
             float count = 0;
             float step = 1;
-            int a = 0, b = 0;
-            for (float x = poly_min.x; x <= poly_max.x; x += step) {
-                a++;
-                for (float y = poly_min.y; y <= poly_max.y; y += step) {
+            
+            //const uint32_t x_iter_count = (uint32_t)std::floor((poly_max.x - poly_min.x) / step) + 1;
+            //std::cout << "x_iter_count: " << x_iter_count << "\n";
+            std::vector<glm::vec2> grid;
+            for (float x = poly_min.x - step; x < poly_max.x;) {
+                if (std::abs(poly_max.x - x) < step)
+                    x = poly_max.x;
+                else 
+                    x += step;
+
+                for (float y = poly_min.y - step; y < poly_max.y;) {
+                    if (std::abs(poly_max.y - y) < step)
+                        y = poly_max.y;
+                    else 
+                        y += step;
+                    
+                    //std::cout << x << " " << y << "\n";
                     if (isPointInPolygon({x, y}, poly)) {
 
-                        count++;
+                        //count++;
+                        grid.push_back({x, y});
+                        //std::cout << "[" << x << ", " << y << "],\n";
                     }
-                        //std::cout << x << " | " << y << "\n";
-                        b++;
                 }
             }
 
+            //for ()
+
+            //poly_max.x += 0.01;
+            for (float x = poly_min.x; x < poly_max.x; x += step) {
+                for (float y = poly_min.y; y < poly_max.y; y += step) {
+                    glm::vec2 a = {x, y};
+                    glm::vec2 b = {x + step, y + step};
+                    glm::vec2 points[4] = {
+                        {x, y},
+                        {x + step, y},
+                        {x + step, y + step},
+                        {x, y + step}
+                    };
+
+                    std::vector<uint32_t> cell_grid_indices;
+                    for (uint32_t i = 0; i < grid.size(); i++) {
+                        glm::vec2 &p = grid[i];
+                        if (a.x <= p.x && p.x <= b.x && a.y <= p.y && p.y <= b.y) {
+                            cell_grid_indices.push_back(i);
+                        }
+                    }
+
+                    /*for (const auto& p : poly) {
+                        //(b.x - a.x) * (point.y - a.y) / (b.y - a.y) + a.x
+                        auto xByY_f = [](float y) -> float {
+                            return 
+                        }
+                    }*/
+
+                
+
+                    std::cout << "[" << x << ", " << y << "] - {";
+                    for (uint32_t i = 0; i < cell_grid_indices.size(); i++) {
+                        std::cout << "[" << grid[cell_grid_indices[i]].x << ", " << grid[cell_grid_indices[i]].y << "], ";
+
+                        
+                    }
+                    std::cout << "}\n";
+                }
+            }
+
+
+            //for (uint32_t i = 0; i < ; i++) {
+
             std::cout << "count: " << count << "\n";
+            //exit(0);
             //std::cout << a << " " << b / a << "\n";
 
 

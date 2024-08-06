@@ -99,7 +99,7 @@ int main() {
 
     HateEngine::Engine game("HateEngine Test", WIDTH, HEIGHT);
     game.setMouseCapture(true);
-    game.setOneThreadMode(true);
+    game.setOneThreadMode(false);
     // Setting textures for the cube and floor meshes
 
 
@@ -299,7 +299,7 @@ int main() {
 int count = 0;
 double del = 0.0;
 void _process(HateEngine::Engine *engine, double delta) {
-    if (count < 50) {
+    if (count < 5000) {
       ++count;
       del += delta;
     } else {
@@ -311,23 +311,24 @@ void _process(HateEngine::Engine *engine, double delta) {
     }
 
     glm::vec2 raw_dir = engine->Input.getVector(GLFW_KEY_A, GLFW_KEY_D, GLFW_KEY_W, GLFW_KEY_S);
-    glm::vec2 dir = raw_dir * glm::vec2(delta * 60); 
+    if (raw_dir.x != 0 or raw_dir.y != 0) {
+        glm::vec2 dir = raw_dir * glm::vec2(delta * 60); 
 
-    glm::vec3 cam_rot = glm::radians(camera.getRotationEuler());
-    
-    // Full free movement with mouse up and down
-    camera.offset(cos(cam_rot.y) * dir.y * cos(cam_rot.x) * 0.1,
-                  sin(cam_rot.x) * 0.1 * dir.y,
-                  -sin(cam_rot.y) * dir.y * cos(cam_rot.x) * 0.1
-    );
+        glm::vec3 cam_rot = glm::radians(camera.getRotationEuler());
+        
+        // Full free movement with mouse up and down
+        camera.offset(cos(cam_rot.y) * dir.y * cos(cam_rot.x) * 0.1,
+                    sin(cam_rot.x) * 0.1 * dir.y,
+                    -sin(cam_rot.y) * dir.y * cos(cam_rot.x) * 0.1
+        );
 
-    cam_rot.y += glm::pi<float>() * raw_dir.x / 2 * -1;
+        cam_rot.y += glm::pi<float>() * raw_dir.x / 2 * -1;
 
-    camera.offset(cos(cam_rot.y) * fabs(dir.x) * 0.1,
-                  0,
-                  -sin(cam_rot.y) * fabs(dir.x) * 0.1
-    );
-    
+        camera.offset(cos(cam_rot.y) * fabs(dir.x) * 0.1,
+                    0,
+                    -sin(cam_rot.y) * fabs(dir.x) * 0.1
+        );
+    }
 }
 
 glm::vec3 cam_dir;
@@ -391,7 +392,13 @@ void _physics_process(HateEngine::Engine *engine, double delta) {
 
     if (engine->Input.isKeyPressed(GLFW_KEY_P)) {
         GLFWmonitor *monitor = glfwGetPrimaryMonitor();
-        glfwSetWindowMonitor(engine->window, monitor, 0, 0, 2560, 1600, GLFW_DONT_CARE);
+        const GLFWvidmode* mode = glfwGetVideoMode(monitor);
+ 
+        glfwWindowHint(GLFW_RED_BITS, mode->redBits);
+        glfwWindowHint(GLFW_GREEN_BITS, mode->greenBits);
+        glfwWindowHint(GLFW_BLUE_BITS, mode->blueBits);
+        glfwWindowHint(GLFW_REFRESH_RATE, mode->refreshRate);
+        glfwSetWindowMonitor(engine->window, monitor, 0, 0, mode->width, mode->height, mode->refreshRate);
 
     }
 
