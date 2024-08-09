@@ -12,14 +12,15 @@ def gen_AllHateEngine_hpp():
     file_data = ""
 
     for filename in glob(include_path+'/**/*.hpp', recursive=True):
+        if filename == include_path + "/FullHateEngine.hpp":
+            continue
+
         print(filename[len(include_path)+1:])
         file_data += "#include \"" + filename[len(include_path)+1:] + "\"\n"
 
     with open(include_path + "/FullHateEngine.hpp", "w") as f:
         f.write(file_data)  
 
-    
-    
 
 
 

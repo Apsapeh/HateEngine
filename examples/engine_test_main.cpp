@@ -5,7 +5,7 @@
 #include "HateEngine/Objects/Light/Light.hpp"
 #include "HateEngine/Objects/Object.hpp"
 #include "HateEngine/Objects/Physics/BoxShape.hpp"
-#include <HateEngine/Error.hpp>
+#include <HateEngine/Log.hpp>
 #include <HateEngine/HateEngine.hpp>
 #include <HateEngine/Objects/Camera.hpp>
 #include <HateEngine/Objects/CubeMesh.hpp>
@@ -18,6 +18,7 @@
 #include <HateEngine/Resources/HERFile.hpp>
 #include <HateEngine/Resources/ObjMapModel.hpp>
 #include <cmath>
+#include <cstdint>
 #include <glm/ext.hpp>
 #include <glm/glm.hpp>
 #include <glm/gtx/quaternion.hpp>
@@ -68,14 +69,19 @@ int main() {
     //camera.offset(0, 6, 3);
     //camera.setPosition(0, 25, 0);
     camera.setRotation(0, 0, 0);
-    //camera.setSkyBoxTexture(new HateEngine::Texture("examples/Assets/skybox.jpg", HateEngine::Texture::ClampToEdge));
-    //camera.setSkyBoxEnabled(true);
+    camera.setSkyBoxTexture(new HateEngine::Texture("examples/Assets/skybox.jpg", HateEngine::Texture::ClampToEdge));
+    camera.setSkyBoxEnabled(true);
     mesh1.setRotation(0, 0, 0);
     mesh1.setSize(1, 1, 1);
 
     HateEngine::CubeMesh floor;
     floor.setPosition(0, 0, 0);
     floor.setSize(25, 1, 25);
+    HATE_INFO("Info message");
+    HATE_WARNING("Warning message");
+    HATE_ERROR("Error message");
+    //HATE_FATAL("Fatal message");
+    
     //floor.setRotation(20, 0, 0);
 
 
@@ -127,8 +133,19 @@ int main() {
     // game.setLevelRef(&level2);
 
 
-    //HateEngine::ObjMapModel objmodel("examples/Assets/unnamed.obj", "examples/Assets/unnamed.map");
-    HateEngine::ObjMapModel objmodel("examples/Assets/cube.obj", "examples/Assets/unnamed.map");
+    HateEngine::ObjMapModel objmodel("examples/Assets/unnamed.obj", "examples/Assets/unnamed.map");
+    exit(0);
+    //HateEngine::ObjMapModel objmodel("examples/Assets/cube.obj", "examples/Assets/unnamed.map");
+    
+    std::cout << "Mesh count: " << objmodel.getMeshes().size() << std::endl;
+    //exit(0);
+    
+    uint32_t poly_count = 0;
+    for (HateEngine::Mesh* m : objmodel.getMeshes()) {
+        poly_count += m->getIndicies()->size() / 3;
+    }
+    
+    std::cout << "Poly count: " << poly_count << std::endl;
 
     lvl.addObjectRef(&objmodel);
 
@@ -296,23 +313,25 @@ int main() {
     std::cout << p << " | " << GLFW_PLATFORM_WAYLAND << "\n";
 }
 
-int count = 0;
-double del = 0.0;
+int frames_count = 0;
+float speed = 1;
+double fps_time = 0.0;
 void _process(HateEngine::Engine *engine, double delta) {
-    if (count < 5000) {
-      ++count;
-      del += delta;
+    
+    if (fps_time < 0.5) {
+      ++frames_count;
+        fps_time += delta;
     } else {
       //std::cout << "FPS: " << (float)count / del << std::endl;
-      fps_label.text = "FPS: " + std::to_string((float)count / del);
+      fps_label.text = "FPS: " + std::to_string((float)frames_count / fps_time);
 
-      count = 0;
-      del = 0.0;
+      frames_count = 0;
+        fps_time = 0.0;
     }
 
     glm::vec2 raw_dir = engine->Input.getVector(GLFW_KEY_A, GLFW_KEY_D, GLFW_KEY_W, GLFW_KEY_S);
     if (raw_dir.x != 0 or raw_dir.y != 0) {
-        glm::vec2 dir = raw_dir * glm::vec2(delta * 60); 
+        glm::vec2 dir = raw_dir * glm::vec2(delta * 60) * speed; 
 
         glm::vec3 cam_rot = glm::radians(camera.getRotationEuler());
         
@@ -448,8 +467,10 @@ void _input_event(HateEngine::Engine *engine,
 
     if (event.type == HateEngine::Engine::InputEventMouseScroll) {
         if (event.position.y < 0)
-            fps_widget_ptr->zoom(-0.1);
+            //fps_widget_ptr->zoom(-0.1);
+            speed /= 1.1;
         else
-            fps_widget_ptr->zoom(0.1);
+            speed *= 1.1;
+            //fps_widget_ptr->zoom(0.1);
     }
 }

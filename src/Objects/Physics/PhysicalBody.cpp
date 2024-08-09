@@ -1,6 +1,6 @@
 #include <HateEngine/Objects/Physics/PhysicalBody.hpp>
 #include <glm/gtx/quaternion.hpp>
-#include "HateEngine/Error.hpp"
+#include "HateEngine/Log.hpp"
 
 using namespace HateEngine;
 
@@ -72,20 +72,20 @@ UUID PhysicalBody::addCollisionShapeClone(CollisionShape shape) {
     //*new_shape = shape;
     //shapes[id] = {new_shape, false};
     //TODO: Add body
-    Error::throwWarning("addCollisionShapeClone is not implemented");
+    HATE_WARNING("addCollisionShapeClone is not implemented");
     return new_shape->getUUID();
 }
 
 UUID PhysicalBody::addCollisionShapeRef(CollisionShape *shape) {
     if (shape->reactShape != nullptr) {
-        Error::throwWarning("CollisionShape is already binded to another body");
+        HATE_WARNING("CollisionShape is already binded to another body");
         return UUID(0);
     }
 
     shapes[shape->getUUID()] = {shape, true};
 
     if (this->reactRigidBody != nullptr) {
-        Error::throwWarning("addCollisionShapeRef is not implemented");
+        HATE_WARNING("addCollisionShapeRef is not implemented");
         /*reactphysics3d::Transform transform = reactRigidBody->getTransform();
         reactphysics3d::Vector3 pos = transform.getPosition();
         reactphysics3d::Quaternion qu = transform.getOrientation();

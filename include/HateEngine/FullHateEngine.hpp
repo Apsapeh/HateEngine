@@ -1,6 +1,6 @@
-#include "Error.hpp"
 #include "HateEngine.hpp"
 #include "PhysEngine.hpp"
+#include "Log.hpp"
 #include "Objects/Camera.hpp"
 #include "Objects/CubeMesh.hpp"
 #include "Objects/Mesh.hpp"

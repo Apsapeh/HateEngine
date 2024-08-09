@@ -103,7 +103,7 @@ impl HerFile {
         her_file.write_all(&header).unwrap();
 
         let fish = Blowfish::new(&self.pswd);
-        let mut buffer = vec![0u8, 1024*1024*4].into_boxed_slice();
+        let mut buffer = vec![0u8; 1024*1024*4].into_boxed_slice();
         for res in &self.resources {
             let mut file = std::fs::File::open(&res.file).unwrap();
             let mut left_to_read = res.original_size as u64;

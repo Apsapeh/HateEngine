@@ -2,7 +2,7 @@
 #include <glm/ext.hpp>
 #include <string>
 
-#include "HateEngine/Error.hpp"
+#include "HateEngine/Log.hpp"
 #include "HateEngine/Objects/Physics/BoxShape.hpp"
 #include "HateEngine/Objects/Physics/SphereShape.hpp"
 #include "HateEngine/Objects/Physics/CapsuleShape.hpp"
@@ -44,13 +44,13 @@ UUID PhysEngine::addObjectClone(const PhysicalBody& object) {
     PhysicalBody* new_obj;
     // FIX ME: ADD obj copy
     physBodies[new_obj->getUUID()] = {new_obj, false};
-    Error::throwWarning("addObjectClone is not implemented for PhysicalBody");
+    HATE_WARNING("addObjectClone is not implemented for PhysicalBody");
     return new_obj->getUUID();
 }
 
 UUID PhysEngine::addObjectRef(PhysicalBody *object) {
     if (object->reactRigidBody != nullptr) {
-        Error::throwError(
+        HATE_ERROR(
             "PhysicalBody [" 
             + std::to_string(object->getUUID().getU64()) 
             + "] is already added to another PhysEngine"
@@ -95,7 +95,7 @@ UUID PhysEngine::addObjectRef(PhysicalBody *object) {
             shape->reactShape = react_shape;
         }
         else {
-            Error::throwWarning("CollisionShape [" + std::to_string(shape_pair.second.shape->getUUID().getU64()) + "] type is not implemented");
+            HATE_WARNING("CollisionShape [" + std::to_string(shape_pair.second.shape->getUUID().getU64()) + "] type is not implemented");
             continue;
         }
 

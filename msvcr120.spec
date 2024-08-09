@@ -62,7 +62,7 @@ cc1 -E %{traditional|traditional-cpp:-traditional-cpp}
 
 
 *libgcc:
-%{mthreads:-lmingwthrd} -lmingw32      %{static|static-libgcc:-lgcc -lgcc_eh}  %{!static:    %{!static-libgcc:      %{!shared:        %{!shared-libgcc:-lgcc -lgcc_eh}        %{shared-libgcc:-lgcc_s -lgcc}       }      %{shared:-lgcc_s -lgcc}     }   }     -lmoldname -lmingwex -lmsvcr80
+%{mthreads:-lmingwthrd} -lmingw32      %{static|static-libgcc:-lgcc -lgcc_eh}  %{!static:    %{!static-libgcc:      %{!shared:        %{!shared-libgcc:-lgcc -lgcc_eh}        %{shared-libgcc:-lgcc_s -lgcc}       }      %{shared:-lgcc_s -lgcc}     }   }     -lmoldname -lmingwex -lmsvcr90
 
 *startfile:
 %{shared|mdll:dllcrt2%O%s}   %{!shared:%{!mdll:%{!municode:crt2%O%s}}}   %{!shared:%{!mdll:%{municode:crt2u%O%s}}}   %{pg:gcrt2%O%s}   crtbegin.o%s   %{fvtable-verify=none:%s;     fvtable-verify=preinit:vtv_start.o%s;     fvtable-verify=std:vtv_start.o%s}

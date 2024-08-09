@@ -2,7 +2,7 @@
 #include <vector>
 #include <stb_image.h>
 #include <glad/gl.h>
-#include <HateEngine/Error.hpp>
+#include <HateEngine/Log.hpp>
 #include <HateEngine/Resources/Texture.hpp>
 #include "../globalStaticParams.hpp"
 
@@ -124,7 +124,7 @@ bool Texture::loadFromFile() {
         &this->height, &n, 0
     );
     if (s_data == nullptr) {
-        Error::throwWarning("Error: Texture \"" + this->fileName + "\" was not found");
+        HATE_WARNING("Error: Texture \"" + this->fileName + "\" was not found");
         return false;
     }
     if (n == 4) this->textureFormat = GL_RGBA;
@@ -143,7 +143,7 @@ bool Texture::Load(
 ) {
     this->API_unloader = API_unloader;
     if (this->API_unloader == nullptr) {
-        Error::throwWarning("Error: API_unloader is not set");
+        HATE_WARNING("Error: API_unloader is not set");
     }
 
     if (this->is_loaded) {

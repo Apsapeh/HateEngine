@@ -5,7 +5,8 @@ add_requires(
     "tinygltf 2.8.13", 
     "reactphysics3d 0.9.0", 
     --"nuklear",
-    "glu"
+    "glu",
+    "termcolor 5635ae00856eeddffcbf7091d13e2987abde91a2"
 )
 
 add_requires("glfw 3.4", {configs = {wayland = is_plat("linux")}})
@@ -32,13 +33,14 @@ target("HateEngine")
         "deps/blowfish/blowfish.cpp",
         "src/**.cpp"
     )
-    add_packages("glfw", "glm", "tinygltf", "reactphysics3d", "glu")
+    add_packages("glfw", "glm", "tinygltf", "reactphysics3d", "glu", "termcolor")
     add_defines("GLM_ENABLE_EXPERIMENTAL")
     
     if is_mode("debug") then
         set_symbols("debug")
         set_optimize("none")
         add_defines("_OLD3D_DEBUG")
+        set_warnings("everything")
     elseif is_mode("release") then
         set_policy("build.merge_archive", true)
         set_symbols("hidden")
@@ -85,6 +87,7 @@ target("Example_1")
         set_symbols("debug")
         set_optimize("none")
         add_defines("_OLD3D_DEBUG")
+        set_warnings("everything")
     elseif is_mode("release") then
         --set_policy("build.merge_archive", true)
         set_symbols("hidden")

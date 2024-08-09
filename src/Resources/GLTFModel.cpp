@@ -1,5 +1,5 @@
 #include <HateEngine/Resources/GLTFModel.hpp>
-#include <HateEngine/Error.hpp>
+#include <HateEngine/Log.hpp>
 #include <unordered_map>
 #include <iostream>
 
@@ -15,15 +15,15 @@ using tinygltf::TinyGLTF;
 // DRY
 static bool process_error(std::string err, std::string warn, bool loader_ret) {
     if (!warn.empty()) {
-        Error::throwWarning(warn);
+        HATE_WARNING(warn);
         return true;
     }
     if (!err.empty()) {
-        Error::throwError(err);
+        HATE_ERROR(err);
         return true;
     }
     if (!loader_ret) {
-        Error::throwWarning("Failed to parse glTF");
+        HATE_WARNING("Failed to parse glTF");
         return true;
     }
     return false;
@@ -55,7 +55,7 @@ static void Load(tgModel& model, std::vector<Mesh*>* meshes, std::vector<Texture
             else if (image.component == 4)
                 t_form = Texture::TexType::RGBA;
             else {
-                Error::throwWarning("Неизвестный формат");
+                HATE_WARNING("Неизвестный формат");
                 continue;
             }
 
@@ -205,7 +205,7 @@ GLTFModel::GLTFModel(std::string file_name) {
     if (file_name.length() >= 4)
         file_ext = std::string(file_name.end()-4, file_name.end());
     else {
-        Error::throwWarning("");
+        HATE_WARNING("");
         return;
     }
 

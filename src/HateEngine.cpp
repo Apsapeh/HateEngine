@@ -4,7 +4,7 @@
 #include <glad/gl.h>
 #include <HateEngine/HateEngine.hpp>
 #include <HateEngine/Render/OpenGL15.hpp>
-#include <HateEngine/Error.hpp>
+#include <HateEngine/Log.hpp>
 
 #include "GLFW/glfw3.h"
 #include "glm/ext/vector_float2.hpp"
@@ -25,7 +25,7 @@
     sch_params.sched_priority = 99;\
     pthread_setschedparam(pthread_self(), SCHED_RR, &sch_params);
 #elif _WIN32
-#include <Windows.h>
+#include <windows.h>
 // FIXME: I don't, it's correct or not
 #define SET_THREAD_HIGH_PRIORITY\
     SetPriorityClass(GetCurrentProcess(), HIGH_PRIORITY_CLASS);\
@@ -46,7 +46,7 @@ Engine::Engine(std::string window_lbl, int width, int height) : Input(this) {
     GLFWmonitor *monitor = NULL;glfwGetPrimaryMonitor();
     this->window = glfwCreateWindow(width, height, window_lbl.c_str(), monitor, NULL);
     if (this->window == NULL) {
-        Error::throwError("Failed to create GLFW window", false);
+        HATE_FATAL("Failed to create GLFW window");
         glfwTerminate();
     }
 
@@ -125,7 +125,7 @@ Engine::Engine(std::string window_lbl, int width, int height) : Input(this) {
     // Load Glad
     int version = gladLoadGL(glfwGetProcAddress);
     if (not version) {
-        Error::throwError("Failed to initialize GLAD", false);
+        HATE_FATAL("Failed to initialize GLAD");
         glfwTerminate();
     }
     glad_is_initialized = true;
@@ -238,7 +238,7 @@ void Engine::Exit() {
 
 
 void Engine::setResolution(int width, int height) {
-    Error::throwWarning("Engine::setResolution not implemented");
+    HATE_WARNING("Engine::setResolution not implemented");
     
     // FIXME: Implement setResolution
     this->resolution = glm::ivec2(width, height);

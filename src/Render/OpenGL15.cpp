@@ -1,6 +1,5 @@
 #include "HateEngine/Resources/Level.hpp"
 #include "glm/ext/matrix_float4x4.hpp"
-#include "glm/matrix.hpp"
 #include <algorithm>
 #include <glm/glm.hpp>
 #include <glm/gtc/type_ptr.hpp>
@@ -196,7 +195,7 @@ void OpenGL15::Draw3D(
         std::vector<Light*>* lights
 ) {
     glEnable(GL_DEPTH_TEST);
-    //glEnable(GL_CULL_FACE);
+    glEnable(GL_CULL_FACE);
 
     if (camera != nullptr) {
         renderCamera(camera);
