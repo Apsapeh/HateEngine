@@ -2,8 +2,5 @@
 #include "Light.hpp"
 
 namespace HateEngine {
-    class AmbientLight : public Light {
-
-    };
-}
-
+    class AmbientLight : public Light {};
+} // namespace HateEngine

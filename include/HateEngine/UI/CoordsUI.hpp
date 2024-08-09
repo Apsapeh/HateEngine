@@ -19,27 +19,23 @@ namespace HateEngine {
             float x;
             float y;
         };
-        
+
     private:
-    
-    public:        
+    public:
         Anchor anchor = TopLeft;
-        Units units   = Pixels;
+        Units units = Pixels;
         float scale = 1.0f;
         float x = 0.0f;
         float y = 0.0f;
-        
+
         CoordsUI();
         CoordsUI(
-            float x, float y,
-            float scale = 1.0f,
-            Anchor anchor = TopLeft,
-            Units units = Pixels
+                float x, float y, float scale = 1.0f, Anchor anchor = TopLeft, Units units = Pixels
         );
-        
+
         CoordsData getCoords(int screenWidth, int screenHeight) const;
         CoordsData getTopLeftCoords(int screenWidth, int screenHeight) const;
         CoordsData getRawCoords() const;
         ~CoordsUI();
     };
-}
+} // namespace HateEngine

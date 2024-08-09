@@ -1,6 +1,6 @@
 #pragma once
-#include "../Objects/Object.hpp"
 #include "../Objects/Mesh.hpp"
+#include "../Objects/Object.hpp"
 #include "../Resources/Texture.hpp"
 
 namespace HateEngine {
@@ -11,11 +11,11 @@ namespace HateEngine {
 
     public:
         Model();
-        Model(const Model& model, bool copy_textures=false);
+        Model(const Model& model, bool copy_textures = false);
 
         std::vector<Mesh*> getMeshes() const;
 
         void setVisible(bool visible);
         ~Model();
     };
-}
+} // namespace HateEngine

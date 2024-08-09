@@ -14,6 +14,8 @@ add_requires("glfw 3.4", {configs = {wayland = is_plat("linux")}})
 add_rules("mode.debug", "mode.release")
 
 option("build_examples")
+option("show_warnings")
+set_default(false)
 option_end()
 
 set_project("HateEngine")
@@ -39,8 +41,7 @@ target("HateEngine")
     if is_mode("debug") then
         set_symbols("debug")
         set_optimize("none")
-        add_defines("_OLD3D_DEBUG")
-        set_warnings("everything")
+        add_defines("__HATE_ENGINE_DEBUG")
     elseif is_mode("release") then
         set_policy("build.merge_archive", true)
         set_symbols("hidden")
@@ -48,6 +49,10 @@ target("HateEngine")
         set_optimize("aggressive")
     end
 
+    if has_config("show_warnings") then
+        set_warnings("everything")
+    end
+    
     -- after_link(function (target)
     --     print(target:info()) -- тут дальше можно вычленить linkdirs чтоб объединить glfw и reactphysics в hateengine
     --     import("utils.archive.merge_staticlib")
@@ -86,7 +91,7 @@ target("Example_1")
     if is_mode("debug") then
         set_symbols("debug")
         set_optimize("none")
-        add_defines("_OLD3D_DEBUG")
+        add_defines("__HATE_ENGINE_DEBUG")
         set_warnings("everything")
     elseif is_mode("release") then
         --set_policy("build.merge_archive", true)
@@ -94,4 +99,8 @@ target("Example_1")
         set_strip("all")
         set_fpmodels("fast")
         set_optimize("aggressive")
+    end
+    
+    if has_config("show_warnings") then
+        set_warnings("everything")
     end

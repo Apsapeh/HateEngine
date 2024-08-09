@@ -4,7 +4,8 @@
 
 using namespace HateEngine;
 
-Mesh::Mesh() {}
+Mesh::Mesh() {
+}
 
 Mesh::Mesh(std::vector<float> vert, std::vector<uint32_t> ind, std::vector<float> norm) {
     this->verticies = std::move(vert);
@@ -13,7 +14,7 @@ Mesh::Mesh(std::vector<float> vert, std::vector<uint32_t> ind, std::vector<float
 }
 
 // FIXME: DIRTY HACK
-Mesh::Mesh(const Mesh &mesh, bool copy_texture) {
+Mesh::Mesh(const Mesh& mesh, bool copy_texture) {
     parent_position = mesh.parent_position;
     parent_rotation_matrix = mesh.parent_rotation_matrix;
     parent_scale = mesh.parent_scale;
@@ -32,7 +33,6 @@ Mesh::Mesh(const Mesh &mesh, bool copy_texture) {
 }
 
 Mesh::~Mesh() {
-
 }
 
 void Mesh::setVertices(std::vector<float> vec) {
@@ -47,16 +47,13 @@ void Mesh::setNormals(std::vector<float> vec) {
     this->normals = std::move(vec);
 }
 
-
-
-void Mesh::setTexture(Texture *tex) {
+void Mesh::setTexture(Texture* tex) {
     this->texture = tex;
 }
 
 void Mesh::setUV(std::vector<float> uv) {
     this->UV = std::move(uv);
 }
-
 
 void Mesh::enableCustomMaxLightDist(float dist) {
     this->max_light_dist = dist;
@@ -97,5 +94,3 @@ Texture* Mesh::getTexture() const {
 const std::vector<float>* Mesh::getUV() const {
     return &this->UV;
 }
-
-

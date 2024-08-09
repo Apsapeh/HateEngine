@@ -1,16 +1,14 @@
 #include <HateEngine/Resources/Level.hpp>
+
 #include "../globalStaticParams.hpp"
 
 using namespace HateEngine;
 
 Level::Level() {
-
 }
 
 Level::~Level() {
-
 }
-
 
 void Level::setCameraRef(Camera* camera) {
     this->camera = camera;
@@ -32,11 +30,9 @@ void Level::setFixedProcessLoop(void (*fixedProcessLoop)(void*, double)) {
     this->fixedProcessLoop = fixedProcessLoop;
 }
 
-PhysEngine *Level::getPhysEngine() {
+PhysEngine* Level::getPhysEngine() {
     return &this->physEngine;
 }
-
-
 
 // TODO: Add mutexes
 // TODO: Add Particles, Model
@@ -48,7 +44,6 @@ PhysEngine *Level::getPhysEngine() {
     objects.push_back({new_mesh, id, false});
     return id;
 }*/
-
 
 UUID Level::addObjectClone(const Mesh& object, bool copy_tex) {
     std::lock_guard<std::mutex> guard(meshesMutex);
@@ -80,7 +75,8 @@ UUID Level::addObjectClone(const Light& object) {
 
 // FIXME: Wrong copy, because meshes are not copied
 UUID Level::addObjectClone(const Model& object, bool copy_tex) {
-    std::lock_guard<std::mutex> guard(modelsMutex);;
+    std::lock_guard<std::mutex> guard(modelsMutex);
+    ;
     Model* new_mesh = new Model(object, copy_tex);
     models_obj[new_mesh->getUUID()] = {new_mesh, false};
     updateMeshesVector();
@@ -93,27 +89,27 @@ UUID Level::addObjectClone(const Model& object, bool copy_tex) {
     return id;
 }*/
 
-UUID Level::addObjectRef(WidgetUI *object) {
+UUID Level::addObjectRef(WidgetUI* object) {
     std::lock_guard<std::mutex> guard(uiWidgetsMutex);
     ui_widgets[object->getUUID()] = {object, true};
     return object->getUUID();
 }
 
-UUID Level::addObjectRef(Mesh *object) {
+UUID Level::addObjectRef(Mesh* object) {
     std::lock_guard<std::mutex> guard(meshesMutex);
     meshes_obj[object->getUUID()] = {object, true};
     updateMeshesVector();
     return object->getUUID();
 }
 
-UUID Level::addObjectRef(Light *object) {
+UUID Level::addObjectRef(Light* object) {
     std::lock_guard<std::mutex> guard(lightsMutex);
     lights_obj[object->getUUID()] = {object, true};
     updateLightsVector();
     return object->getUUID();
 }
 
-UUID Level::addObjectRef(Model *object) {
+UUID Level::addObjectRef(Model* object) {
     std::lock_guard<std::mutex> guard(modelsMutex);
     models_obj[object->getUUID()] = {object, true};
     updateMeshesVector();
@@ -165,16 +161,14 @@ bool Level::removeObject(const UUID& uuid) {
     return false;
 }
 
-
-
 /* =============> UPDATE RENDER VECTORS <============= */
 void Level::updateMeshesVector() {
     meshes.clear();
-    meshes.reserve(this->meshes_obj.size() + 5*this->models_obj.size());
-    for (const auto& obj : meshes_obj)
-        meshes.push_back((Mesh*)(obj.second.obj));
-    for (const auto& obj : models_obj) {
-        auto model_meshes = ((Model*)obj.second.obj)->getMeshes();
+    meshes.reserve(this->meshes_obj.size() + 5 * this->models_obj.size());
+    for (const auto& obj: meshes_obj)
+        meshes.push_back((Mesh*) (obj.second.obj));
+    for (const auto& obj: models_obj) {
+        auto model_meshes = ((Model*) obj.second.obj)->getMeshes();
         meshes.insert(meshes.end(), model_meshes.begin(), model_meshes.end());
     }
     meshes.shrink_to_fit();
@@ -183,16 +177,16 @@ void Level::updateMeshesVector() {
 void Level::updateParticlesVector() {
     particles.clear();
     particles.reserve(this->particles_obj.size());
-    for (const auto& obj : particles_obj)
-        particles.push_back((Particles*)obj.second.obj);
+    for (const auto& obj: particles_obj)
+        particles.push_back((Particles*) obj.second.obj);
     particles.shrink_to_fit();
 }
 
 void Level::updateLightsVector() {
     lights.clear();
     lights.reserve(this->lights_obj.size());
-    for (const auto& obj : lights_obj)
-        lights.push_back((Light*)obj.second.obj);
+    for (const auto& obj: lights_obj)
+        lights.push_back((Light*) obj.second.obj);
     lights.shrink_to_fit();
 }
 /* ===========> END UPDATE RENDER VECTORS <=========== */

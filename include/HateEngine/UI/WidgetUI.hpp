@@ -4,10 +4,10 @@
 
 #pragma once
 
+#include <unordered_map>
+#include "../Utilities/UUID.hpp"
 #include "HateEngine/UI/CoordsUI.hpp"
 #include "ObjectUI.hpp"
-#include "../Utilities/UUID.hpp"
-#include <unordered_map>
 
 namespace HateEngine {
     class WidgetUI : public ObjectUI {
@@ -20,7 +20,7 @@ namespace HateEngine {
         std::unordered_map<UUID, Element> elements;
 
     public:
-        //glm::vec2 size = {100, 100};
+        // glm::vec2 size = {100, 100};
         glm::ivec4 color = {0, 0, 0, 125};
         std::string title = "Widget";
         bool has_border = false;
@@ -37,8 +37,6 @@ namespace HateEngine {
 
         bool is_interactive = true;
 
-
-
     public:
         WidgetUI();
 
@@ -46,4 +44,4 @@ namespace HateEngine {
 
         bool removeObjectRef(const UUID& uuid);
     };
-}
+} // namespace HateEngine

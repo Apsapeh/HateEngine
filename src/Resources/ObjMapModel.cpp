@@ -1,12 +1,13 @@
+#include <HateEngine/Resources/ObjMapModel.hpp>
 #include <algorithm>
 #include <cstdint>
 #include <fstream>
 #include <iostream>
 #include <sstream>
 #include <string>
-
-#include <HateEngine/Resources/ObjMapModel.hpp>
 #include <vector>
+
+#include "HateEngine/Log.hpp"
 #include "glm/ext/vector_float2.hpp"
 #include "glm/ext/vector_float3.hpp"
 #include "glm/geometric.hpp"
@@ -24,20 +25,21 @@ ObjMapModel::ObjMapModel(std::string obj_filename, std::string map_file_name) {
     auto t0 = std::chrono::high_resolution_clock::now();
     parseObj(data);
     auto t1 = std::chrono::high_resolution_clock::now();
-    std::cout << "Parsing took: " << std::chrono::duration_cast<std::chrono::milliseconds>(t1 - t0).count() << " ms\n";
+    std::cout << "Parsing took: "
+              << std::chrono::duration_cast<std::chrono::milliseconds>(t1 - t0).count() << " ms\n";
 }
 
-ObjMapModel::ObjMapModel(const char *data, uint32_t size, std::string dir) {}
+ObjMapModel::ObjMapModel(const char* data, uint32_t size, std::string dir) {
+}
 
-
-/*=====================================================> PARSERS
- * <=================================================================*/
+/*======================================> PARSERS <==============================================*/
 
 inline static bool isPointInPolygon(glm::vec2 point, std::vector<glm::vec2> polygon) {
     bool is_in = 0;
 
     for (uint32_t i = 0; i < polygon.size(); i++) {
-        // std::cout << i << " - " << polygon[i].x << " " << polygon[i].y << "\n";
+        // std::cout << i << " - " << polygon[i].x << " " << polygon[i].y <<
+        // "\n";
         glm::vec2 a = polygon[i];
         glm::vec2 b;
         if (i == polygon.size() - 1)
@@ -72,6 +74,7 @@ inline static bool isPointInPolygon(glm::vec2 point, std::vector<glm::vec2> poly
 struct ObjFace {
     std::vector<int32_t> indices;
     float normal[3] = {0.0f, 0.0f, 0.0f};
+    std::vector<int32_t> tex_indices;
 };
 
 struct ObjObject {
@@ -82,9 +85,10 @@ struct ObjObject {
 void ObjMapModel::parseObj(std::string data) {
     std::vector<glm::vec3> vertices;
     std::vector<glm::vec3> normals;
+    std::vector<glm::vec2> tex_coords;
     std::vector<ObjObject> objects;
 
-    ObjObject *current_obj;
+    ObjObject* current_obj;
 
     std::string line;
     std::istringstream tokenStream(data);
@@ -97,13 +101,16 @@ void ObjMapModel::parseObj(std::string data) {
         if (words[0] == "v") {
             if (words.size() < 4)
                 continue;
-            vertices.push_back(glm::vec3(std::stof(words[1]), std::stof(words[2]), std::stof(words[3])));
+            vertices.push_back(
+                    glm::vec3(std::stof(words[1]), std::stof(words[2]), std::stof(words[3]))
+            );
         } else if (words[0] == "f") {
             if (words.size() < 4)
                 continue;
 
             std::vector<int32_t> v_indices;
             std::vector<int32_t> n_indices;
+            std::vector<int32_t> t_indices;
             int32_t prev_n_index = 0;
             for (uint32_t i = 1; i < words.size(); i++) {
                 std::vector<std::string> indices = split(words[i], '/');
@@ -112,8 +119,10 @@ void ObjMapModel::parseObj(std::string data) {
                 int32_t v_i = std::stoi(indices[0]);
                 v_indices.push_back(v_i - (v_i > 0 ? 1 : 0));
 
-                if (indices.size() >= 2) {
+                if (indices.size() >= 2 and indices[1] != "") {
                     // Tex coords
+                    int32_t t_i = std::stoi(indices[1]);
+                    t_indices.push_back(t_i - (t_i > 0 ? 1 : 0));
                 }
 
                 if (indices.size() >= 3) {
@@ -135,16 +144,22 @@ void ObjMapModel::parseObj(std::string data) {
             // current_obj->faces.push_back({v_indices, {0.0f, 0.0f, 0.0f}});
             ObjFace face;
             face.indices = v_indices;
+            face.tex_indices = t_indices;
             face.normal[0] = normals[n_indices[0]].x;
             face.normal[1] = normals[n_indices[0]].y;
             face.normal[2] = normals[n_indices[0]].z;
 
             current_obj->faces.push_back(face);
         } else if (words[0] == "vt") {
+            if (words.size() < 3)
+                continue;
+            tex_coords.push_back(glm::vec2(std::stof(words[1]), std::stof(words[2])));
         } else if (words[0] == "vn") {
             if (words.size() < 4)
                 continue;
-            normals.push_back(glm::vec3(std::stof(words[1]), std::stof(words[2]), std::stof(words[3])));
+            normals.push_back(
+                    glm::vec3(std::stof(words[1]), std::stof(words[2]), std::stof(words[3]))
+            );
         } else if (words[0] == "usemtl") {
         } else if (words[0] == "mtllib") {
         } else if (words[0] == "o") {
@@ -177,8 +192,7 @@ void ObjMapModel::parseObj(std::string data) {
         std::vector<float> mesh_normals;
         // Mesh mesh;
 
-        for (const auto &face: obj.faces) {
-            
+        for (const auto& face: obj.faces) {
             if (face.indices.size() < 3) {
                 continue;
             }
@@ -186,7 +200,7 @@ void ObjMapModel::parseObj(std::string data) {
             glm::vec3 v0 = vertices[face.indices[0]];
             glm::vec3 v1 = vertices[face.indices[1]];
             glm::vec3 v2 = vertices[face.indices[2]];
-            //glm::vec3 v3 = vertices[face.indices[3]];
+            // glm::vec3 v3 = vertices[face.indices[3]];
 
             glm::vec3 AB = v1 - v0;
             glm::vec3 AC = v2 - v0;
@@ -200,34 +214,63 @@ void ObjMapModel::parseObj(std::string data) {
             // Матрица афинного преобразования
             glm::mat3 T = glm::mat3(U.x, V.x, N.x, U.y, V.y, N.y, U.z, V.z, N.z);
             glm::mat3 T_inv = glm::inverse(T);
-            
+
             std::vector<glm::vec2> poly;
-            for (const auto &index: face.indices) {
+            for (const auto& index: face.indices) {
                 glm::vec3 v = vertices[index];
                 glm::vec3 v_z_null = T * v;
                 poly.push_back(glm::vec2(v_z_null.x, v_z_null.y));
             }
-            
+
             glm::vec3 v0_z_null = T * v0;
             float KEY = v0_z_null.z;
-            
+
             glm::vec2 poly_min = poly[0];
             glm::vec2 poly_max = poly[0];
-            for (auto p: poly) {
-                if (p.x < poly_min.x)
+            uint32_t min_index_x = 0;
+            uint32_t max_index_x = 0;
+            uint32_t min_index_y = 0;
+            uint32_t max_index_y = 0;
+            for (uint32_t i = 1; i < poly.size(); i++) {
+                glm::vec2 p = poly[i];
+                if (p.x < poly_min.x) {
                     poly_min.x = p.x;
-                if (p.y < poly_min.y)
+                    min_index_x = i;
+                }
+                if (p.y < poly_min.y) {
                     poly_min.y = p.y;
-                if (p.x > poly_max.x)
+                    min_index_y = i;
+                }
+                if (p.x > poly_max.x) {
                     poly_max.x = p.x;
-                if (p.y > poly_max.y)
+                    max_index_x = i;
+                }
+                if (p.y > poly_max.y) {
                     poly_max.y = p.y;
+                    max_index_y = i;
+                }
             }
+
+            glm::vec2 start_tex = {
+                    tex_coords[face.tex_indices[min_index_x]].x,
+                    tex_coords[face.tex_indices[min_index_y]].y
+            };
+            glm::vec2 end_tex = {
+                    tex_coords[face.tex_indices[max_index_x]].x,
+                    tex_coords[face.tex_indices[max_index_y]].y
+            };
+
+            // HATE_DEBUG_F("start_text ", start_tex.x);
+            HATE_DEBUG_F("[%f, %f] - [%f, %f]", start_tex.x, end_tex.x, start_tex.y, end_tex.y);
+            HATE_DEBUG_F("{%f, %f} - {%f, %f}", poly_min.x, poly_max.x, poly_min.y, poly_max.y);
 
             float step = 0.5f;
 
             std::vector<glm::vec2> grid;
-            grid.reserve((poly_max.x - poly_min.x) * (poly_max.y - poly_min.y) / (step * step) + poly.size());
+            grid.reserve(
+                    (poly_max.x - poly_min.x) * (poly_max.y - poly_min.y) / (step * step) +
+                    poly.size()
+            );
             // Add to grid points inside the polygon
             for (float x = poly_min.x - step; x < poly_max.x;) {
                 if (std::abs(poly_max.x - x) < step)
@@ -276,16 +319,15 @@ void ObjMapModel::parseObj(std::string data) {
             }
 
             // Add to grid polygon vertices
-            for (const auto p : poly) {
+            for (const auto p: poly) {
                 grid.push_back(p);
             }
-
 
             /*uint32_t g_x = 0;
             for (float x = poly_min.x; x < poly_max.x; x += step) {g_x++;}
             uint32_t g_y = 0;
             for (float y = poly_min.y; y < poly_max.y; y += step) {g_y++;}*/
-            
+
             uint32_t g_x = std::ceil((poly_max.x - poly_min.x) / step);
             uint32_t g_y = std::ceil((poly_max.y - poly_min.y) / step);
 
@@ -307,11 +349,14 @@ void ObjMapModel::parseObj(std::string data) {
                 uint32_t start_y = y > 0 ? y - 1 : 0;
                 uint32_t end_x = x < g_x - 1 ? x + 1 : g_x - 1;
                 uint32_t end_y = y < g_y - 1 ? y + 1 : g_y - 1;
-                
+
                 for (uint32_t x = start_x; x <= end_x; x++) {
                     for (uint32_t y = start_y; y <= end_y; y++) {
                         glm::vec2 a = {poly_min.x + x * step - 0.01, poly_min.y + y * step - 0.01};
-                        glm::vec2 b = {poly_min.x + (x + 1) * step + 0.01, poly_min.y + (y + 1) * step + 0.01};
+                        glm::vec2 b = {
+                                poly_min.x + (x + 1) * step + 0.01,
+                                poly_min.y + (y + 1) * step + 0.01
+                        };
                         glm::vec2 p = grid[i];
 
                         if (((a.x < p.x && p.x < b.x)) && ((a.y < p.y && p.y < b.y))) {
@@ -351,13 +396,16 @@ void ObjMapModel::parseObj(std::string data) {
                     float center_y = (min_y + max_y) / 2;
 
                     // sort in counter clockwise order
-                    std::sort(cell.begin(), cell.end(), [&center_x, &center_y, &grid](uint32_t a, uint32_t b) -> bool {
-                        glm::vec2 a_v = grid[a];
-                        glm::vec2 b_v = grid[b];
-                        float a_angle = std::atan2(a_v.y - center_y, a_v.x - center_x);
-                        float b_angle = std::atan2(b_v.y - center_y, b_v.x - center_x);
-                        return (a_angle > b_angle);
-                    });
+                    std::sort(
+                            cell.begin(), cell.end(),
+                            [&center_x, &center_y, &grid](uint32_t a, uint32_t b) -> bool {
+                                glm::vec2 a_v = grid[a];
+                                glm::vec2 b_v = grid[b];
+                                float a_angle = std::atan2(a_v.y - center_y, a_v.x - center_x);
+                                float b_angle = std::atan2(b_v.y - center_y, b_v.x - center_x);
+                                return (a_angle > b_angle);
+                            }
+                    );
 
                     cell.push_back(cell[0]);
                     for (uint32_t i = 2; i < cell.size(); i++) {
@@ -368,75 +416,7 @@ void ObjMapModel::parseObj(std::string data) {
                 }
             }
 
-
-            // std::cout << "G X: " << g_x << " | G Y: " << g_y << "\n" << "Grid size: " << grid.size() << "\n";
-
-            /*std::vector<uint32_t> cell_grid_indices;
-            cell_grid_indices.reserve(8);
-            for (float x = poly_min.x; x < poly_max.x; x += step) {
-                for (float y = poly_min.y; y < poly_max.y; y += step) {
-                    glm::vec2 a = {x-0.01, y-0.01};
-                    glm::vec2 b = {x + step + 0.01, y + step + 0.01};
-                    glm::vec2 points[4] = {{x, y}, {x + step, y}, {x + step, y + step}, {x, y + step}};
-
-                    for (uint32_t i = 0; i < grid.size(); i++) {
-                        glm::vec2 &p = grid[i];
-                        if (((a.x < p.x && p.x < b.x) ) &&
-                            ((a.y < p.y && p.y < b.y))) {
-                            cell_grid_indices.push_back(i);
-                        }
-                    }
-
-                    if (cell_grid_indices.size() < 3) {
-                        continue;
-                    }
-
-
-                    float min_x = 0;
-                    float max_x = 0;
-                    float min_y = 0;
-                    float max_y = 0;
-                    for (uint32_t i = 0; i < cell_grid_indices.size(); i++) {
-
-                        if (i == 0) {
-                            min_x = grid[cell_grid_indices[i]].x;
-                            max_x = grid[cell_grid_indices[i]].x;
-                            min_y = grid[cell_grid_indices[i]].y;
-                            max_y = grid[cell_grid_indices[i]].y;
-                        } else {
-                            min_x = std::min(min_x, grid[cell_grid_indices[i]].x);
-                            max_x = std::max(max_x, grid[cell_grid_indices[i]].x);
-                            min_y = std::min(min_y, grid[cell_grid_indices[i]].y);
-                            max_y = std::max(max_y, grid[cell_grid_indices[i]].y);
-                        }
-                    }
-
-                    float center_x = (min_x + max_x) / 2;
-                    float center_y = (min_y + max_y) / 2;
-
-                    // sort in counter clockwise order
-                    std::sort(cell_grid_indices.begin(), cell_grid_indices.end(),
-                              [&center_x, &center_y, &grid](uint32_t a, uint32_t b) -> bool {
-                                  glm::vec2 a_v = grid[a];
-                                  glm::vec2 b_v = grid[b];
-                                  float a_angle = std::atan2(a_v.y - center_y, a_v.x - center_x);
-                                  float b_angle = std::atan2(b_v.y - center_y, b_v.x - center_x);
-                                  return (a_angle > b_angle);
-                              });
-
-                    cell_grid_indices.push_back(cell_grid_indices[0]);
-                    for (uint32_t i = 2; i < cell_grid_indices.size(); i++) {
-                        mesh_indicies.push_back(mesh_vertices.size() / 3 + cell_grid_indices[0]);
-                        mesh_indicies.push_back(mesh_vertices.size() / 3 + cell_grid_indices[i - 1]);
-                        mesh_indicies.push_back(mesh_vertices.size() / 3 + cell_grid_indices[i]);
-                    }
-
-                    cell_grid_indices.clear();
-                }
-            }*/
-
-
-            for (const auto &p: grid) {
+            for (const auto& p: grid) {
                 glm::vec3 a = {p.x, p.y, KEY};
                 glm::vec3 new_a = T_inv * a;
                 mesh_vertices.push_back(new_a.x);
@@ -449,11 +429,10 @@ void ObjMapModel::parseObj(std::string data) {
             }
         }
 
-        Mesh *mesh = new Mesh(mesh_vertices, mesh_indicies, mesh_normals);
+        Mesh* mesh = new Mesh(mesh_vertices, mesh_indicies, mesh_normals);
         this->meshes.push_back(mesh);
     }
 }
-
 
 /*==========================================================> SRING FUNCS
  * <==============================================================*/

@@ -1,19 +1,21 @@
 #define STB_IMAGE_IMPLEMENTATION
-#include <vector>
-#include <stb_image.h>
 #include <glad/gl.h>
+#include <stb_image.h>
+
 #include <HateEngine/Log.hpp>
 #include <HateEngine/Resources/Texture.hpp>
+#include <vector>
+
 #include "../globalStaticParams.hpp"
 
 // Include OpenGL Utility header (glu.h)
 #ifdef __linux__
-    #include <GL/glu.h>
+#include <GL/glu.h>
 #elif __APPLE__
-    #include <OpenGL/glu.h>
+#include <OpenGL/glu.h>
 #elif _WIN32
-    #include <windows.h>
-    #include <GL/glu.h>
+#include <GL/glu.h>
+#include <windows.h>
 #endif
 
 using namespace HateEngine;
@@ -44,14 +46,14 @@ Texture::Texture(const Texture& texture, bool copy_tex_data) {
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, this->texMipMapFiltering);
             glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_LOD_BIAS, this->MipMapLodBias);
 
-
             glBindTexture(GL_TEXTURE_2D, texture.textureGL_ID);
             int oldTextureChannelCount = texture.textureFormat == GL_RGBA ? 4 : 3;
             // Get the old texture data
-            std::vector<GLubyte> cpy_data(texture.width * texture.height * oldTextureChannelCount); // Assuming RGBA format
+            std::vector<GLubyte> cpy_data(
+                    texture.width * texture.height * oldTextureChannelCount
+            ); // Assuming RGBA format
             glGetTexImage(
-                GL_TEXTURE_2D, 0, texture.textureFormat,
-                GL_UNSIGNED_BYTE, cpy_data.data()
+                    GL_TEXTURE_2D, 0, texture.textureFormat, GL_UNSIGNED_BYTE, cpy_data.data()
             );
 
             // Bind the new texture and set the texture data
@@ -59,14 +61,13 @@ Texture::Texture(const Texture& texture, bool copy_tex_data) {
 
             if (this->texMipMapFiltering != this->texFiltering) // MipMap enabled
                 gluBuild2DMipmaps(
-                    GL_TEXTURE_2D, texture.textureFormat,
-                    texture.width, texture.height,texture.textureFormat,
-                    GL_UNSIGNED_BYTE, cpy_data.data()
+                        GL_TEXTURE_2D, texture.textureFormat, texture.width, texture.height,
+                        texture.textureFormat, GL_UNSIGNED_BYTE, cpy_data.data()
                 );
             else // MipMad disabled
-                glTexImage2D(GL_TEXTURE_2D, 0, texture.textureFormat,
-                    texture.width, texture.height, 0, texture.textureFormat,
-                    GL_UNSIGNED_BYTE, cpy_data.data()
+                glTexImage2D(
+                        GL_TEXTURE_2D, 0, texture.textureFormat, texture.width, texture.height, 0,
+                        texture.textureFormat, GL_UNSIGNED_BYTE, cpy_data.data()
                 );
             glBindTexture(GL_TEXTURE_2D, 0);
         }
@@ -75,9 +76,8 @@ Texture::Texture(const Texture& texture, bool copy_tex_data) {
 }
 
 Texture::Texture(
-    std::string file_name, Texture::TexWrap tex_wrap,
-    Texture::TexFiltering tex_filtering, bool mipmap,
-    float mipmap_bias, bool autoload
+        std::string file_name, Texture::TexWrap tex_wrap, Texture::TexFiltering tex_filtering,
+        bool mipmap, float mipmap_bias, bool autoload
 ) {
     this->fileName = file_name;
     this->texWrap = tex_wrap;
@@ -92,10 +92,9 @@ Texture::Texture(
 }
 
 Texture::Texture(
-    std::vector<uint8_t> data, int width, int height,
-    Texture::TexType tex_type, Texture::TexWrap tex_wrap,
-    Texture::TexFiltering tex_filtering, bool mipmap,
-    float mipmap_bias, bool autoload
+        std::vector<uint8_t> data, int width, int height, Texture::TexType tex_type,
+        Texture::TexWrap tex_wrap, Texture::TexFiltering tex_filtering, bool mipmap,
+        float mipmap_bias, bool autoload
 ) {
     this->data = std::move(data);
     this->width = width;
@@ -119,27 +118,20 @@ Texture::~Texture() {
 
 bool Texture::loadFromFile() {
     int n;
-    unsigned char *s_data = stbi_load(
-        this->fileName.c_str(), &this->width,
-        &this->height, &n, 0
-    );
+    unsigned char* s_data = stbi_load(this->fileName.c_str(), &this->width, &this->height, &n, 0);
     if (s_data == nullptr) {
         HATE_WARNING("Error: Texture \"" + this->fileName + "\" was not found");
         return false;
     }
-    if (n == 4) this->textureFormat = GL_RGBA;
-    this->data = std::vector<uint8_t>(
-        s_data,  s_data + this->width * this->height * n
-    );
+    if (n == 4)
+        this->textureFormat = GL_RGBA;
+    this->data = std::vector<uint8_t>(s_data, s_data + this->width * this->height * n);
     stbi_image_free(s_data);
     return true;
 }
 
-
-
 bool Texture::Load(
-    void(*API_load_func)(Texture* texture_ptr),
-    void(*API_unloader)(Texture* texture_ptr)
+        void (*API_load_func)(Texture* texture_ptr), void (*API_unloader)(Texture* texture_ptr)
 ) {
     this->API_unloader = API_unloader;
     if (this->API_unloader == nullptr) {
@@ -174,7 +166,7 @@ void Texture::Unload() {
     }
 }
 
-uint32_t Texture::getTextureID(){
+uint32_t Texture::getTextureID() {
     /*if (this->autoload)
         Load();*/
 

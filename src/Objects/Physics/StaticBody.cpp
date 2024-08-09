@@ -3,5 +3,4 @@
 using namespace HateEngine;
 
 StaticBody::StaticBody() : PhysicalBody(BodyType::StaticBody) {
-
 }

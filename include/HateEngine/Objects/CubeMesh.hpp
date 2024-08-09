@@ -7,4 +7,4 @@ namespace HateEngine {
         CubeMesh();
         void setSize(float width, float height, float length);
     };
-}
+} // namespace HateEngine

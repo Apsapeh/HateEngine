@@ -1,7 +1,7 @@
 #pragma once
+#include <reactphysics3d/reactphysics3d.h>
 #include <vector>
 #include "../Object.hpp"
-#include <reactphysics3d/reactphysics3d.h>
 
 namespace HateEngine {
     class CollisionShape : public Object {
@@ -15,17 +15,12 @@ namespace HateEngine {
                 0, 0, 0, 0, 0, 0, 0, 0
         };*/
 
-
     public:
-        enum ShapeEnum {
-            Sphere,
-            Capsule,
-            Box
-        };
+        enum ShapeEnum { Sphere, Capsule, Box };
 
         ShapeEnum shapeType;
         reactphysics3d::CollisionShape* reactShape = nullptr;
-        reactphysics3d::Collider*       reactCollider = nullptr;
+        reactphysics3d::Collider* reactCollider = nullptr;
 
         CollisionShape(ShapeEnum type, glm::vec3 pos, glm::vec3 rot);
         CollisionShape(ShapeEnum type, glm::vec3 pos, glm::mat4 rot);
@@ -45,20 +40,22 @@ namespace HateEngine {
         void rotate(float x, float y, float z);
         void rotate(glm::vec3 vec);
 
-
-
         /**
-         * Sets the collision layer on which a body can collide with other bodies
+         * Sets the collision layer on which a body can collide with other
+         * bodies
          * @param layers Array of layer numbers (0..15)
          * @param state Layer state array (true, false)
          */
-        //void setCollisionLayers(std::vector<uint8_t>& layers, std::vector<bool> state);
+        // void setCollisionLayers(std::vector<uint8_t>& layers,
+        // std::vector<bool> state);
 
         /**
-         * Sets the collision layer on which other bodies can collide with the body
+         * Sets the collision layer on which other bodies can collide with the
+         * body
          * @param masks Array of layer numbers (0..15)
          * @param state Layer state array (true, false)
          */
-        //void setCollisionMasks(std::vector<uint8_t>& masks, std::vector<bool> state);
+        // void setCollisionMasks(std::vector<uint8_t>& masks, std::vector<bool>
+        // state);
     };
-}
+} // namespace HateEngine

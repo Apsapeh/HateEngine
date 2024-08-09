@@ -1,29 +1,30 @@
 #include <HateEngine/Objects/Physics/PhysicalBody.hpp>
 #include <glm/gtx/quaternion.hpp>
+
 #include "HateEngine/Log.hpp"
 
 using namespace HateEngine;
 
-
 PhysicalBody::PhysicalBody(BodyType bodyType) {
     this->bodyType = bodyType;
-
 }
 
 PhysicalBody::~PhysicalBody() {
-    for (auto &obj : shapes) {
+    for (auto& obj: shapes) {
         if (not obj.second.is_ref)
             delete obj.second.shape;
     }
     shapes.clear();
 }
 
-void PhysicalBody::Init(reactphysics3d::RigidBody *body) {
+void PhysicalBody::Init(reactphysics3d::RigidBody* body) {
     this->reactRigidBody = body;
 
-    this->reactRigidBody->setType(
-        (reactphysics3d::BodyType)this->bodyType
-    //bodyType == StaticBody ? reactphysics3d::BodyType::STATIC : bodyType == KinematicBody ? reactphysics3d::BodyType::KINEMATIC : reactphysics3d::BodyType::DYNAMIC
+    this->reactRigidBody->setType((reactphysics3d::BodyType) this->bodyType
+                                  // bodyType == StaticBody ? reactphysics3d::BodyType::STATIC :
+                                  // bodyType
+                                  // == KinematicBody ? reactphysics3d::BodyType::KINEMATIC :
+                                  // reactphysics3d::BodyType::DYNAMIC
     );
 
     // TODO: Add set pref
@@ -42,21 +43,26 @@ void PhysicalBody::Update() {
     Object::setPosition(fix_pos);
     Object::setRotationMatrix(fix_mat);
 
-    //std::cout << "[" << uuid.getU64() << "]: " << fix_pos.x << " " << fix_pos.y << " " << fix_pos.z << std::endl;
+    // std::cout << "[" << uuid.getU64() << "]: " << fix_pos.x << " " <<
+    // fix_pos.y << " " << fix_pos.z << std::endl;
 
     if (binded) {
-        if (this->prev_parent_position != this->parent_position){
+        if (this->prev_parent_position != this->parent_position) {
             this->prev_parent_position = this->parent_position;
             glm::vec3 global_pos = Object::getGlobalPosition();
             reactphysics3d::Vector3 pos(global_pos.z, global_pos.y, global_pos.x);
-            reactRigidBody->setTransform(reactphysics3d::Transform(pos, reactRigidBody->getTransform().getOrientation()));
+            reactRigidBody->setTransform(
+                    reactphysics3d::Transform(pos, reactRigidBody->getTransform().getOrientation())
+            );
         }
 
-        if (this->prev_parent_rotation_matrix != this->parent_rotation_matrix){
+        if (this->prev_parent_rotation_matrix != this->parent_rotation_matrix) {
             this->prev_parent_rotation_matrix = this->parent_rotation_matrix;
             glm::quat q = glm::quat_cast(this->getGlobalRotationMatrix());
             reactphysics3d::Quaternion qu = reactphysics3d::Quaternion(-q.z, -q.y, -q.x, q.w);
-            reactRigidBody->setTransform(reactphysics3d::Transform(reactRigidBody->getTransform().getPosition(), qu));
+            reactRigidBody->setTransform(
+                    reactphysics3d::Transform(reactRigidBody->getTransform().getPosition(), qu)
+            );
         }
     }
 }
@@ -65,18 +71,16 @@ PhysicalBody::BodyType PhysicalBody::getBodyType() const {
     return bodyType;
 }
 
-
-
 UUID PhysicalBody::addCollisionShapeClone(CollisionShape shape) {
-    CollisionShape *new_shape = new CollisionShape(shape);
+    CollisionShape* new_shape = new CollisionShape(shape);
     //*new_shape = shape;
-    //shapes[id] = {new_shape, false};
-    //TODO: Add body
+    // shapes[id] = {new_shape, false};
+    // TODO: Add body
     HATE_WARNING("addCollisionShapeClone is not implemented");
     return new_shape->getUUID();
 }
 
-UUID PhysicalBody::addCollisionShapeRef(CollisionShape *shape) {
+UUID PhysicalBody::addCollisionShapeRef(CollisionShape* shape) {
     if (shape->reactShape != nullptr) {
         HATE_WARNING("CollisionShape is already binded to another body");
         return UUID(0);
@@ -105,15 +109,15 @@ bool PhysicalBody::delCollisionShape(UUID uuid) {
     return false;
 }
 
-
-
 void PhysicalBody::setPosition(glm::vec3 vec) {
     Object::setPosition(vec);
 
     if (this->reactRigidBody != nullptr) {
         glm::vec3 global_pos = Object::getGlobalPosition();
         reactphysics3d::Vector3 pos(global_pos.z, global_pos.y, global_pos.x);
-        reactRigidBody->setTransform(reactphysics3d::Transform(pos, reactRigidBody->getTransform().getOrientation()));
+        reactRigidBody->setTransform(
+                reactphysics3d::Transform(pos, reactRigidBody->getTransform().getOrientation())
+        );
     }
 }
 void PhysicalBody::setPosition(float x, float y, float z) {
@@ -125,13 +129,17 @@ void PhysicalBody::setRotation(glm::vec3 vec) {
 
     if (this->reactRigidBody != nullptr) {
         /*glm::vec3 global_rot = Object::getGlobalRotationEuler();
-        reactphysics3d::Quaternion quaternion = reactphysics3d::Quaternion::fromEulerAngles(
-                global_rot.z, global_rot.y, global_rot.x
+        reactphysics3d::Quaternion quaternion =
+        reactphysics3d::Quaternion::fromEulerAngles( global_rot.z, global_rot.y,
+        global_rot.x
         );
-        reactRigidBody->setTransform(reactphysics3d::Transform(reactRigidBody->getTransform().getPosition(), quaternion));*/
+        reactRigidBody->setTransform(reactphysics3d::Transform(reactRigidBody->getTransform().getPosition(),
+        quaternion));*/
         glm::quat q = glm::quat_cast(this->getGlobalRotationMatrix());
         reactphysics3d::Quaternion qu = reactphysics3d::Quaternion(-q.z, -q.y, -q.x, q.w);
-        reactRigidBody->setTransform(reactphysics3d::Transform(reactRigidBody->getTransform().getPosition(), qu));
+        reactRigidBody->setTransform(
+                reactphysics3d::Transform(reactRigidBody->getTransform().getPosition(), qu)
+        );
     }
 }
 void PhysicalBody::setRotation(float x, float y, float z) {
@@ -151,9 +159,8 @@ void PhysicalBody::rotate(float x, float y, float z) {
     if (this->reactRigidBody != nullptr) {
         glm::vec3 rotation = getRotationEuler();
         reactphysics3d::Vector3 pos(parent_position.x, parent_position.y, parent_position.z);
-        reactphysics3d::Quaternion quaternion = reactphysics3d::Quaternion::fromEulerAngles(
-                rotation.x, rotation.y, rotation.z
-        );
+        reactphysics3d::Quaternion quaternion =
+                reactphysics3d::Quaternion::fromEulerAngles(rotation.x, rotation.y, rotation.z);
         reactphysics3d::Transform transform(pos, quaternion);
         reactRigidBody->setTransform(transform);
     }
@@ -161,8 +168,6 @@ void PhysicalBody::rotate(float x, float y, float z) {
 void PhysicalBody::rotate(glm::vec3 vec) {
     PhysicalBody::rotate(vec.x, vec.y, vec.z);
 }
-
-
 
 /*glm::vec3 PhysicalBody::getPosition() const {
     return this->position;
@@ -192,8 +197,9 @@ glm::vec3 PhysicalBody::getScale() const {
 
 
 glm::vec3 PhysicalBody::getGlobalPosition() const {
-    reactphysics3d::Vector3 pos = this->reactRigidBody->getTransform().getPosition();
-    glm::vec3 fix_pos = glm::vec3(pos.z, pos.y, pos.x) - this->parent_position;
+    reactphysics3d::Vector3 pos =
+this->reactRigidBody->getTransform().getPosition(); glm::vec3 fix_pos =
+glm::vec3(pos.z, pos.y, pos.x) - this->parent_position;
 }
 
 glm::vec3 PhysicalBody::getGlobalRotationEuler() const {

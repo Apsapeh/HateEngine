@@ -1,6 +1,6 @@
 #pragma once
-#include "../Objects/Model.hpp"
 #include <string>
+#include "../Objects/Model.hpp"
 
 namespace HateEngine {
     class ObjMapModel : public Model {
@@ -25,5 +25,4 @@ namespace HateEngine {
          */
         ObjMapModel(const char* data, uint32_t size, std::string dir);
     };
-}
-
+} // namespace HateEngine

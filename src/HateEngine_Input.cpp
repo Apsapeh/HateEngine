@@ -5,7 +5,7 @@
 
 using namespace HateEngine;
 
-Engine::InputClass::InputClass(Engine *eng) {
+Engine::InputClass::InputClass(Engine* eng) {
     engine = eng;
 }
 
@@ -15,8 +15,8 @@ bool Engine::InputClass::isKeyPressed(int key) {
 
 glm::vec2 Engine::InputClass::getVector(int left, int right, int up, int down) {
     glm::vec2 vec;
-    vec.x = isKeyPressed(right) - isKeyPressed(left) ;
-    //vec.x += isKeyPressed(right);
+    vec.x = isKeyPressed(right) - isKeyPressed(left);
+    // vec.x += isKeyPressed(right);
     vec.y = isKeyPressed(up) - isKeyPressed(down);
     return vec;
 }

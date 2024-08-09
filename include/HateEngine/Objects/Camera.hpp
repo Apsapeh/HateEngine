@@ -1,8 +1,8 @@
 #pragma once
 
-#include "Object.hpp"
 #include "../Resources/Texture.hpp"
 #include "CubeMesh.hpp"
+#include "Object.hpp"
 
 namespace HateEngine {
     class Camera : public Object {
@@ -14,11 +14,11 @@ namespace HateEngine {
         bool skyboxEnabled = false;
 
         Object root_obj;
-        
+
     protected:
         void setParentPosition(glm::vec3 vec) override;
         void setParentScale(glm::vec3 vec) override;
-        void setParentRotationMatrix(const glm::mat4&mat) override;
+        void setParentRotationMatrix(const glm::mat4& mat) override;
 
     public:
         float yaw = -90;
@@ -40,12 +40,14 @@ namespace HateEngine {
          * \param obj Object to bind
          * \return UUID of binded object
          */
-        UUID bindObj(Object* obj, bool bind_pos = true, bool bind_rot = true, bool bind_scale = true);
+        UUID
+        bindObj(Object* obj, bool bind_pos = true, bool bind_rot = true, bool bind_scale = true);
 
         /**
          * Unbind object by UUID
          * \param uuid UUID of binded object
-         * \return True if unbinded successfully, False if the object is not found
+         * \return True if unbinded successfully, False if the object is not
+         * found
          */
         bool unbindObj(UUID uuid);
 
@@ -58,7 +60,7 @@ namespace HateEngine {
         void setRotationMatrix(glm::mat4 mat) override;
         void offset(glm::vec3 vec);
         void offset(float x, float y, float z);
-        void rotate(glm::vec3 vec, bool global=true);
-        void rotate(float x, float y, float z, bool global=true);
+        void rotate(glm::vec3 vec, bool global = true);
+        void rotate(float x, float y, float z, bool global = true);
     };
-}
+} // namespace HateEngine

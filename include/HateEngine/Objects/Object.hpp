@@ -1,9 +1,9 @@
 #pragma once
-#include <vector>
-#include <unordered_map>
-#include <glm/vec3.hpp>
-#include <glm/matrix.hpp>
 #include <glm/gtx/euler_angles.hpp>
+#include <glm/matrix.hpp>
+#include <glm/vec3.hpp>
+#include <unordered_map>
+#include <vector>
 #include "../Utilities/UUID.hpp"
 
 namespace HateEngine {
@@ -33,25 +33,19 @@ namespace HateEngine {
         glm::vec3 parent_position = {0, 0, 0};
         glm::vec3 parent_scale = {1.0, 1.0, 1.0};
         glm::mat4 parent_rotation_matrix = {
-                1.0, 0.0, 0.0, 0.0,
-                0.0, 1.0, 0.0, 0.0,
-                0.0, 0.0, 1.0, 0.0,
-                0.0, 0.0, 0.0, 1.0,
+                1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0,
         };
         glm::vec3 position = {0, 0, 0};
-        glm::vec3 scale    = {1.0, 1.0, 1.0};
+        glm::vec3 scale = {1.0, 1.0, 1.0};
         glm::mat4 rotation_matrix = {
-            1.0, 0.0, 0.0, 0.0,
-            0.0, 1.0, 0.0, 0.0,
-            0.0, 0.0, 1.0, 0.0,
-            0.0, 0.0, 0.0, 1.0,
+                1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0,
         };
 
         bool binded = false;
 
         virtual void setParentPosition(glm::vec3 vec);
         virtual void setParentScale(glm::vec3 vec);
-        virtual void setParentRotationMatrix(const glm::mat4&mat);
+        virtual void setParentRotationMatrix(const glm::mat4& mat);
 
     public:
         void setPosition(glm::vec3 vec);
@@ -65,8 +59,8 @@ namespace HateEngine {
 
         void offset(glm::vec3 vec);
         void offset(float x, float y, float z);
-        void rotate(glm::vec3 vec, bool global=true);
-        void rotate(float x, float y, float z, bool global=true);
+        void rotate(glm::vec3 vec, bool global = true);
+        void rotate(float x, float y, float z, bool global = true);
 
         glm::vec3 getPosition() const;
         glm::vec3 getRotationEuler() const;
@@ -77,7 +71,7 @@ namespace HateEngine {
         glm::vec3 getGlobalRotationEuler() const;
         glm::mat4 getGlobalRotationMatrix() const;
         glm::vec3 getGlobalScale() const;
-        
+
         bool getVisible() const;
         UUID getUUID() const;
 
@@ -86,15 +80,15 @@ namespace HateEngine {
          * \param obj Object to bind
          * \return UUID of binded object
          */
-        UUID bindObj(Object* obj, bool bind_pos = true, bool bind_rot = true, bool bind_scale = true);
+        UUID
+        bindObj(Object* obj, bool bind_pos = true, bool bind_rot = true, bool bind_scale = true);
 
         /**
          * Unbind object by UUID
          * \param uuid UUID of binded object
-         * \return True if unbinded successfully, False if the object is not found
+         * \return True if unbinded successfully, False if the object is not
+         * found
          */
         bool unbindObj(UUID uuid);
-
-
     };
-}
+} // namespace HateEngine

@@ -8,20 +8,18 @@
 
 namespace HateEngine {
 
-class BoxShape : public CollisionShape {
-public:
-    //                      legth/2, width/2, height/2
-    glm::vec3 reactRightSize = {.5f, .5f, .5f};
+    class BoxShape : public CollisionShape {
+    public:
+        //                      legth/2, width/2, height/2
+        glm::vec3 reactRightSize = {.5f, .5f, .5f};
 
-public:
-    BoxShape(
-        glm::vec3 extents = {.5, .5, .5},
-        glm::vec3 pos = {0, 0, 0},
-        glm::vec3 rot = {0, 0, 0}
-    );
+    public:
+        BoxShape(
+                glm::vec3 extents = {.5, .5, .5}, glm::vec3 pos = {0, 0, 0},
+                glm::vec3 rot = {0, 0, 0}
+        );
 
-    void changeSize(float width, float height, float length);
-};
+        void changeSize(float width, float height, float length);
+    };
 
-} // HateEngine
-
+} // namespace HateEngine

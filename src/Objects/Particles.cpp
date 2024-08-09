@@ -1,15 +1,16 @@
-#include "HateEngine/Objects/Particles.hpp"
+#include <HateEngine/Log.hpp>
+#include <HateEngine/Objects/Particles.hpp>
+
 #include <random>
-
-
+#include <string>
 
 using namespace HateEngine;
 
 Particle::Particle(
-        uint32_t index, const Mesh& mesh, glm::vec3 pos,
-        float lifetime, bool del_on_time
-) : Mesh(mesh) {
-    //std::cout << pos.x << " | " << pos.y << " | " << pos.z << "\n";
+        uint32_t index, const Mesh& mesh, glm::vec3 pos, float lifetime, bool del_on_time
+) :
+    Mesh(mesh) {
+    // std::cout << pos.x << " | " << pos.y << " | " << pos.z << "\n";
     this->parent_position = pos;
     this->index = index;
     this->lifetime = lifetime;
@@ -17,18 +18,16 @@ Particle::Particle(
     this->deleteOnEndOfLife = del_on_time;
 }
 
-Particle::Particle(const Particle &particle) : Mesh(particle) {
+Particle::Particle(const Particle& particle) : Mesh(particle) {
     lifetime = particle.lifetime;
     deleteOnEndOfLife = particle.deleteOnEndOfLife;
     lostLifetime = particle.lostLifetime;
     index = particle.index;
 }
 
-
 // Pretty this function
 Particles::Particles(
-        const Mesh& mesh, uint32_t particles_count,
-        Particle::ParticleSettings settings
+        const Mesh& mesh, uint32_t particles_count, Particle::ParticleSettings settings
 ) {
     std::random_device rand_dev;
     std::mt19937 gen(rand_dev());
@@ -40,34 +39,29 @@ Particles::Particles(
 
     particlesVector.reserve(particles_count);
     for (uint32_t i = 0; i < particles_count; ++i) {
-        particlesVector.push_back(
-            Particle(
+        particlesVector.push_back(Particle(
                 i, mesh,
                 this->parent_position + glm::vec3{posX_dist(gen), posY_dist(gen), posZ_dist(gen)},
-                life_dist(gen),
-                settings.delete_on_end_of_life
-            )
-        );
+                life_dist(gen), settings.delete_on_end_of_life
+        ));
     }
 }
 
-//#include <iostream>
+// #include <iostream>
 void Particles::update(double delta) {
     for (auto it = particlesVector.begin(); it < particlesVector.end(); ++it) {
         Particle* p = &*it;
-        //std::cout << p->index << " -- " << p->lostLifetime << "\n";
+        // std::cout << p->index << " -- " << p->lostLifetime << "\n";
         calculateFunc(p, delta);
         if (p->lostLifetime >= 0) {
-            p->lostLifetime -= (float)delta;
+            p->lostLifetime -= (float) delta;
             if (p->lostLifetime <= 0 and p->deleteOnEndOfLife and p->visible == true) {
                 p->lostLifetime = 0;
-                #ifdef _OLD3D_DEBUG
-                std::cout << p->index << " -- deleted\n";
-                #endif
+                HATE_DEBUG(std::to_string(p->index) + " -- deleted\n")
 
-                //p->visible = false;
+                // p->visible = false;
 
-                //particlesVector.erase(it);
+                // particlesVector.erase(it);
 
                 std::random_device rand_dev;
                 std::mt19937 gen(rand_dev());
@@ -76,8 +70,10 @@ void Particles::update(double delta) {
                 std::uniform_real_distribution<float> posY_dist(set.min_offset.y, set.max_offset.y);
                 std::uniform_real_distribution<float> posZ_dist(set.min_offset.z, set.max_offset.z);
 
-                p->parent_position = this->parent_position + glm::vec3{posX_dist(gen), posY_dist(gen), posZ_dist(gen)};
-                //std::cout << "POS: " << p->position.x << " | " << p->position.y << " | " << p->position.z << "\n";
+                p->parent_position = this->parent_position +
+                                     glm::vec3{posX_dist(gen), posY_dist(gen), posZ_dist(gen)};
+                // std::cout << "POS: " << p->position.x << " | " <<
+                // p->position.y << " | " << p->position.z << "\n";
                 p->lostLifetime = p->lifetime;
                 //--it;
             }
@@ -91,13 +87,15 @@ void Particles::setPosition(float x, float y, float z) {
 
 void Particles::setPosition(glm::vec3 vec) {
     Object::setPosition(vec);
-    for (Particle &p : particlesVector) {
+    for (Particle& p: particlesVector) {
         p.offset(vec);
     }
 }
 
-Particle::ParticleSettings::ParticleSettings(float min_lifetime, float max_liftime, bool del_on_end,
-                                             glm::vec3 min_offset, glm::vec3 max_offset) {
+Particle::ParticleSettings::ParticleSettings(
+        float min_lifetime, float max_liftime, bool del_on_end, glm::vec3 min_offset,
+        glm::vec3 max_offset
+) {
     this->min_lifetime = min_lifetime;
     this->max_lifetime = max_liftime;
     this->delete_on_end_of_life = del_on_end;
@@ -106,6 +104,4 @@ Particle::ParticleSettings::ParticleSettings(float min_lifetime, float max_lifti
 }
 
 Particle::ParticleSettings::ParticleSettings() {
-
 }
-

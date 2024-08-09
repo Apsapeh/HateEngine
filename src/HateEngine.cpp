@@ -1,10 +1,11 @@
-//#include <bits/types/struct_sched_param.h>
-//#include <pthread.h>
-#include <thread>
+// #include <bits/types/struct_sched_param.h>
+// #include <pthread.h>
 #include <glad/gl.h>
+
 #include <HateEngine/HateEngine.hpp>
-#include <HateEngine/Render/OpenGL15.hpp>
 #include <HateEngine/Log.hpp>
+#include <HateEngine/Render/OpenGL15.hpp>
+#include <thread>
 
 #include "GLFW/glfw3.h"
 #include "glm/ext/vector_float2.hpp"
@@ -13,37 +14,36 @@
 #ifdef __linux__
 #include <pthread.h>
 #include <sched.h>
-#define SET_THREAD_HIGH_PRIORITY\
-    sched_param sch_params;\
-    sch_params.sched_priority = 99;\
+#define SET_THREAD_HIGH_PRIORITY                                                                   \
+    sched_param sch_params;                                                                        \
+    sch_params.sched_priority = 99;                                                                \
     pthread_setschedparam(pthread_self(), SCHED_RR, &sch_params);
 #elif __APPLE__
 #include <pthread.h>
 #include <sched.h>
-#define SET_THREAD_HIGH_PRIORITY\
-    sched_param sch_params;\
-    sch_params.sched_priority = 99;\
+#define SET_THREAD_HIGH_PRIORITY                                                                   \
+    sched_param sch_params;                                                                        \
+    sch_params.sched_priority = 99;                                                                \
     pthread_setschedparam(pthread_self(), SCHED_RR, &sch_params);
 #elif _WIN32
 #include <windows.h>
 // FIXME: I don't, it's correct or not
-#define SET_THREAD_HIGH_PRIORITY\
-    SetPriorityClass(GetCurrentProcess(), HIGH_PRIORITY_CLASS);\
+#define SET_THREAD_HIGH_PRIORITY                                                                   \
+    SetPriorityClass(GetCurrentProcess(), HIGH_PRIORITY_CLASS);                                    \
     SetThreadPriority(GetCurrentThread(), THREAD_PRIORITY_TIME_CRITICAL);
-//#define SET_THREAD_HIGH_PRIORITY ;
+// #define SET_THREAD_HIGH_PRIORITY ;
 #endif
-
-
 
 bool glad_is_initialized = false;
 
 using namespace HateEngine;
 
 Engine::Engine(std::string window_lbl, int width, int height) : Input(this) {
-    //glfwInitHint(GLFW_PLATFORM, GLFW_PLATFORM_X11);
+    // glfwInitHint(GLFW_PLATFORM, GLFW_PLATFORM_X11);
     glfwInit();
     // Create window
-    GLFWmonitor *monitor = NULL;glfwGetPrimaryMonitor();
+    GLFWmonitor* monitor = NULL;
+    glfwGetPrimaryMonitor();
     this->window = glfwCreateWindow(width, height, window_lbl.c_str(), monitor, NULL);
     if (this->window == NULL) {
         HATE_FATAL("Failed to create GLFW window");
@@ -51,21 +51,22 @@ Engine::Engine(std::string window_lbl, int width, int height) : Input(this) {
     }
 
     float xscale, yscale;
-    //glfwGetWindowContentScale(this->window, &xscale, &yscale);
-    
+    // glfwGetWindowContentScale(this->window, &xscale, &yscale);
+
     // FIXME: Баги с масштабированием
     this->setResolution(width, height);
 
     glfwSetWindowUserPointer(this->window, this);
     glfwMakeContextCurrent(this->window);
-    glfwSwapInterval( 0 );
-    //glfwWindowHint(GLFW_DECORATED, false);
-    //glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+    glfwSwapInterval(0);
+    // glfwWindowHint(GLFW_DECORATED, false);
+    // glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
-    glfwSetFramebufferSizeCallback(this->window, [] (GLFWwindow *win, int w, int h) {
-        Engine *th = static_cast<Engine*>(glfwGetWindowUserPointer(win));
-        //th->frameBufferSizeChange(win, w, h);
-        // XXX: If will be few render APIs, this code should be in RenderAPI class
+    glfwSetFramebufferSizeCallback(this->window, [](GLFWwindow* win, int w, int h) {
+        Engine* th = static_cast<Engine*>(glfwGetWindowUserPointer(win));
+        // th->frameBufferSizeChange(win, w, h);
+        //  XXX: If will be few render APIs, this code should be in
+        //  RenderAPI class
         glViewport(0, 0, w, h);
         if (th->level->camera == nullptr) {
             // WARNING
@@ -76,8 +77,8 @@ Engine::Engine(std::string window_lbl, int width, int height) : Input(this) {
         std::cout << "Framebuffer size: " << w << "x" << h << std::endl;
     });
 
-    glfwSetCursorPosCallback(window, [] (GLFWwindow *win, double x, double y) {
-        Engine *th = (Engine*)(glfwGetWindowUserPointer(win));
+    glfwSetCursorPosCallback(window, [](GLFWwindow* win, double x, double y) {
+        Engine* th = (Engine*) (glfwGetWindowUserPointer(win));
         if (th->inputEventFunc != nullptr) {
             InputEventInfo info;
             info.type = InputEventType::InputEventMouseMove;
@@ -86,8 +87,8 @@ Engine::Engine(std::string window_lbl, int width, int height) : Input(this) {
         }
     });
 
-    glfwSetKeyCallback(window, [] (GLFWwindow *win, int key, int scancode, int action, int mods) {
-        Engine *th = (Engine*)(glfwGetWindowUserPointer(win));
+    glfwSetKeyCallback(window, [](GLFWwindow* win, int key, int scancode, int action, int mods) {
+        Engine* th = (Engine*) (glfwGetWindowUserPointer(win));
         if (th->inputEventFunc != nullptr) {
             InputEventInfo info;
             info.type = InputEventType::InputEventKey;
@@ -98,9 +99,9 @@ Engine::Engine(std::string window_lbl, int width, int height) : Input(this) {
             th->inputEventFunc(th, info);
         }
     });
-    
-    glfwSetMouseButtonCallback(window, [] (GLFWwindow *win,  int button, int action, int mods) {
-        Engine *th = (Engine*)(glfwGetWindowUserPointer(win));
+
+    glfwSetMouseButtonCallback(window, [](GLFWwindow* win, int button, int action, int mods) {
+        Engine* th = (Engine*) (glfwGetWindowUserPointer(win));
         if (th->inputEventFunc != nullptr) {
             InputEventInfo info;
             info.type = InputEventType::InputEventMouseButton;
@@ -111,9 +112,9 @@ Engine::Engine(std::string window_lbl, int width, int height) : Input(this) {
             th->inputEventFunc(th, info);
         }
     });
-    
-    glfwSetScrollCallback(window, [] (GLFWwindow *win, double xoffset, double yoffset) {
-        Engine *th = (Engine*)(glfwGetWindowUserPointer(win));
+
+    glfwSetScrollCallback(window, [](GLFWwindow* win, double xoffset, double yoffset) {
+        Engine* th = (Engine*) (glfwGetWindowUserPointer(win));
         if (th->inputEventFunc != nullptr) {
             InputEventInfo info;
             info.type = InputEventType::InputEventMouseScroll;
@@ -130,7 +131,6 @@ Engine::Engine(std::string window_lbl, int width, int height) : Input(this) {
     }
     glad_is_initialized = true;
 
-
     // Calculating the delay between FixedProcessLoop iterations
     SET_THREAD_HIGH_PRIORITY
 
@@ -141,7 +141,8 @@ Engine::Engine(std::string window_lbl, int width, int height) : Input(this) {
     for (int o = 0; o < 10; ++o)
         std::this_thread::sleep_for(std::chrono::microseconds(fixDelay));
     std::chrono::high_resolution_clock::time_point t2 = std::chrono::high_resolution_clock::now();
-    int64_t d_fp = std::chrono::duration_cast<std::chrono::microseconds>(t2-t1).count() / 10 - fixDelay;
+    int64_t d_fp =
+            std::chrono::duration_cast<std::chrono::microseconds>(t2 - t1).count() / 10 - fixDelay;
     this->fixedProcessDelayMCS = fixDelay - d_fp;
 
     if (physicsEngineIterateLoopRefreshRate == fixedLoopRefreshRate) {
@@ -153,27 +154,23 @@ Engine::Engine(std::string window_lbl, int width, int height) : Input(this) {
     for (int o = 0; o < 10; ++o)
         std::this_thread::sleep_for(std::chrono::microseconds(physDelay));
     t2 = std::chrono::high_resolution_clock::now();
-    int64_t d_pp = std::chrono::duration_cast<std::chrono::microseconds>(t2-t1).count() / 10 - physDelay;
+    int64_t d_pp =
+            std::chrono::duration_cast<std::chrono::microseconds>(t2 - t1).count() / 10 - physDelay;
     this->physicsEngineIterateDelayMCS = physDelay - d_pp;
 }
 
-
 void Engine::Run() {
     SET_THREAD_HIGH_PRIORITY
-    std::thread *fixedProcessThread = nullptr;
-    std::thread *physicsEngineProcessThread = nullptr;
+    std::thread* fixedProcessThread = nullptr;
+    std::thread* physicsEngineProcessThread = nullptr;
     if (not this->isOneThread) {
         if (this->fixedProcessLoop != nullptr)
             fixedProcessThread = new std::thread(&Engine::threadFixedProcessLoop, this);
 
-        
-        physicsEngineProcessThread = new std::thread(
-                &Engine::threadPhysicsEngineIterateLoop, this
-        );
+        physicsEngineProcessThread = new std::thread(&Engine::threadPhysicsEngineIterateLoop, this);
     }
 
     OpenGL15 ogl(this);
-    
 
     glfwSwapBuffers(this->window);
     double oldTime = glfwGetTime();
@@ -187,10 +184,10 @@ void Engine::Run() {
         oldTime = glfwGetTime();
         glfwPollEvents();
 
-        //meshesMutex.lock();
+        // meshesMutex.lock();
         if (this->processLoop != nullptr)
             this->processLoop(this, delta);
-            
+
         if (this->level->processLoop != nullptr)
             this->level->processLoop(this, delta);
 
@@ -198,7 +195,8 @@ void Engine::Run() {
             fixed_process_loop_delta += delta;
             physics_engine_iterate_loop_delta += delta;
 
-            if (this->fixedProcessLoop != nullptr and fixed_process_loop_delta >= fixed_process_loop_delay) {
+            if (this->fixedProcessLoop != nullptr and
+                fixed_process_loop_delta >= fixed_process_loop_delay) {
                 this->fixedProcessLoop(this, fixed_process_loop_delta);
                 if (this->level->fixedProcessLoop != nullptr)
                     this->level->fixedProcessLoop(this, delta);
@@ -206,15 +204,17 @@ void Engine::Run() {
             }
 
             if (physics_engine_iterate_loop_delta >= physics_engine_iterate_loop_delay) {
-                //uint32_t i = 0;
-                //std::cout << "Physics Engine Iteration: " << physics_engine_iterate_loop_delta << std::endl;
-                while (physics_engine_iterate_loop_delta-0.0001 > 0.0f) {
+                // uint32_t i = 0;
+                // std::cout << "Physics Engine Iteration: " <<
+                // physics_engine_iterate_loop_delta << std::endl;
+                while (physics_engine_iterate_loop_delta - 0.0001 > 0.0f) {
                     float d = physics_engine_iterate_loop_delay;
                     if (physics_engine_iterate_loop_delta < d)
                         d = physics_engine_iterate_loop_delta;
-                    this->level->getPhysEngine()->IteratePhysics(d); 
+                    this->level->getPhysEngine()->IteratePhysics(d);
                     physics_engine_iterate_loop_delta -= d;
-                    //std::cout << "Physics Engine Iteration [" << i++ << "]: " << d << std::endl;
+                    // std::cout << "Physics Engine Iteration [" << i++ << "]: "
+                    // << d << std::endl;
                 }
                 physics_engine_iterate_loop_delta = 0.0;
             }
@@ -235,14 +235,12 @@ void Engine::Exit() {
     glfwSetWindowShouldClose(this->window, true);
 }
 
-
-
 void Engine::setResolution(int width, int height) {
     HATE_WARNING("Engine::setResolution not implemented");
-    
+
     // FIXME: Implement setResolution
     this->resolution = glm::ivec2(width, height);
-    this->aspectRatio = (float)width / (float)height;
+    this->aspectRatio = (float) width / (float) height;
 }
 
 void Engine::setOneThreadMode(bool mode) {
@@ -264,57 +262,48 @@ float Engine::getAspectRatio() {
     return this->aspectRatio;
 }
 
-
-
-
 void Engine::threadFixedProcessLoop() {
     SET_THREAD_HIGH_PRIORITY
 
     double oldTime = glfwGetTime();
-    double delta = (float)this->fixedProcessDelayMCS / 1000000;
+    double delta = (float) this->fixedProcessDelayMCS / 1000000;
     double func_delta = 0.0;
 
     while (not glfwWindowShouldClose(this->window)) {
         int64_t a = this->fixedProcessDelayMCS - int64_t(func_delta * 1000000);
-        std::this_thread::sleep_for(
-                std::chrono::microseconds(a)
-        );
-        //std::cout << d / 10<< "\n";
+        std::this_thread::sleep_for(std::chrono::microseconds(a));
+        // std::cout << d / 10<< "\n";
         delta = glfwGetTime() - oldTime;
         oldTime = glfwGetTime();
-        //physicsWorld->update((float)delta);
-        //std::cout << rbody->getTransform().getGlobalPosition().y << "\n";
+        // physicsWorld->update((float)delta);
+        // std::cout << rbody->getTransform().getGlobalPosition().y << "\n";
 
-        //meshesMutex.lock();
+        // meshesMutex.lock();
         fixedProcessLoop(this, delta);
         if (this->level->fixedProcessLoop != nullptr)
             this->level->fixedProcessLoop(this, delta);
-        //meshesMutex.unlock();
+        // meshesMutex.unlock();
         func_delta = glfwGetTime() - oldTime;
     }
 }
-
 
 void Engine::threadPhysicsEngineIterateLoop() {
     SET_THREAD_HIGH_PRIORITY
 
     double oldTime = glfwGetTime();
-    double delta = (double)this->physicsEngineIterateDelayMCS / 1000000;
+    double delta = (double) this->physicsEngineIterateDelayMCS / 1000000;
     double func_delta = 0.0;
 
     while (not glfwWindowShouldClose(this->window)) {
         int64_t a = this->fixedProcessDelayMCS - int64_t(func_delta * 1000000);
-        std::this_thread::sleep_for(
-                std::chrono::microseconds(a)
-        );
+        std::this_thread::sleep_for(std::chrono::microseconds(a));
 
         delta = glfwGetTime() - oldTime;
-        level->getPhysEngine()->IteratePhysics((float)delta);
+        level->getPhysEngine()->IteratePhysics((float) delta);
         oldTime = glfwGetTime();
         func_delta = glfwGetTime() - oldTime;
     }
 }
-
 
 void Engine::changeWindowTitle(std::string title) {
     glfwSetWindowTitle(this->window, title.c_str());
@@ -326,10 +315,9 @@ void Engine::setProcessLoop(void (*func)(Engine*, double)) {
 void Engine::setFixedProcessLoop(void (*func)(Engine*, double)) {
     this->fixedProcessLoop = func;
 }
-void Engine::setInputEvent(void (*func)(Engine *, InputEventInfo)) {
+void Engine::setInputEvent(void (*func)(Engine*, InputEventInfo)) {
     this->inputEventFunc = func;
 }
-
 
 void Engine::setLevelRef(Level* lvl) {
     this->level = lvl;
@@ -338,11 +326,6 @@ void Engine::setLevelRef(Level* lvl) {
 Level* Engine::getLevel() {
     return this->level;
 }
-
-
-
-
-
 
 /*===========> THIS CODE SECTION CANNOT BE MODIFIED <===========*/
 

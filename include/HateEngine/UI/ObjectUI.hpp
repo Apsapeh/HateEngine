@@ -4,8 +4,8 @@
 
 #pragma once
 
-#include "../Utilities/UUID.hpp"
 #include <glm/glm.hpp>
+#include "../Utilities/UUID.hpp"
 #include "CoordsUI.hpp"
 
 namespace HateEngine {
@@ -14,26 +14,21 @@ namespace HateEngine {
         UUID uuid;
 
     public:
-        enum Type {
-            Widget,
-            Label,
-            Button
-        };
-        
+        enum Type { Widget, Label, Button };
+
     private:
         Type type;
 
     protected:
         ObjectUI(Type type);
-        
 
     public:
         CoordsUI position = {0, 0};
-        CoordsUI size     = {0, 0};
-        
+        CoordsUI size = {0, 0};
+
         void setScale(float scale);
         void zoom(float delta);
 
         UUID getUUID() const;
     };
-}
+} // namespace HateEngine

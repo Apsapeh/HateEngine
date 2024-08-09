@@ -1,9 +1,9 @@
-#include "HateEngine/Log.hpp"
-#include "reactphysics3d/collision/shapes/BoxShape.h"
 #include <HateEngine/Objects/Physics/CollisionShape.hpp>
 
-using namespace HateEngine;
+#include "HateEngine/Log.hpp"
+#include "reactphysics3d/collision/shapes/BoxShape.h"
 
+using namespace HateEngine;
 
 CollisionShape::CollisionShape(ShapeEnum type, glm::vec3 pos, glm::vec3 rot) {
     this->shapeType = type;
@@ -22,13 +22,12 @@ bool CollisionShape::isInitialized() {
     return this->reactShape != nullptr and this->reactCollider != nullptr;
 }
 
-const reactphysics3d::CollisionShape *CollisionShape::getReactShape() {
+const reactphysics3d::CollisionShape* CollisionShape::getReactShape() {
     return this->reactShape;
 }
-const reactphysics3d::Collider *CollisionShape::getReactCollider() {
+const reactphysics3d::Collider* CollisionShape::getReactCollider() {
     return this->reactCollider;
 }
-
 
 void CollisionShape::setPosition(glm::vec3 vec) {
     HATE_WARNING("setPosition is not supported for CollisionShape");

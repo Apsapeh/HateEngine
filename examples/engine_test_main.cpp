@@ -133,9 +133,10 @@ int main() {
     // game.setLevelRef(&level2);
 
 
-    HateEngine::ObjMapModel objmodel("examples/Assets/unnamed.obj", "examples/Assets/unnamed.map");
-    exit(0);
-    //HateEngine::ObjMapModel objmodel("examples/Assets/cube.obj", "examples/Assets/unnamed.map");
+    //HateEngine::ObjMapModel objmodel("examples/Assets/unnamed.obj", "examples/Assets/unnamed.map");
+    HateEngine::ObjMapModel objmodel("examples/Assets/cube.obj", "examples/Assets/unnamed.map");
+    HATE_FATAL("Fatal message")
+    //exit(0);
     
     std::cout << "Mesh count: " << objmodel.getMeshes().size() << std::endl;
     //exit(0);

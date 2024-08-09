@@ -8,21 +8,16 @@
 
 namespace HateEngine {
 
-class SphereShape : public CollisionShape {
-private:
-    float radius = 0.5f;
+    class SphereShape : public CollisionShape {
+    private:
+        float radius = 0.5f;
 
-public:
-    SphereShape(
-        float radius = 0.5f,
-        glm::vec3 pos = {0, 0, 0},
-        glm::vec3 rot = {0, 0, 0}
-    );
+    public:
+        SphereShape(float radius = 0.5f, glm::vec3 pos = {0, 0, 0}, glm::vec3 rot = {0, 0, 0});
 
-    void changeRadius(float radius);
-    
-    float getRadius() const;
-};
+        void changeRadius(float radius);
 
-} // HateEngine
+        float getRadius() const;
+    };
 
+} // namespace HateEngine

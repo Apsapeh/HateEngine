@@ -6,4 +6,4 @@ namespace HateEngine {
     public:
         RigidBody();
     };
-}
+} // namespace HateEngine
