@@ -133,12 +133,18 @@ int main() {
     // game.setLevelRef(&level2);
 
 
-    //HateEngine::ObjMapModel objmodel("examples/Assets/unnamed.obj", "examples/Assets/unnamed.map");
-    HateEngine::ObjMapModel objmodel("examples/Assets/cube.obj", "examples/Assets/unnamed.map");
-    HATE_FATAL("Fatal message")
+    HateEngine::ObjMapModel objmodel("examples/Assets/unnamed.obj", "examples/Assets/unnamed.map");
+    //HateEngine::ObjMapModel objmodel("examples/Assets/cube.obj", "examples/Assets/unnamed.map");
+    //HateEngine::ObjMapModel objmodel("examples/Assets/gayman.obj", "examples/Assets/unnamed.map");
+    //HATE_FATAL("Fatal message")
     //exit(0);
     
+    
+    
     std::cout << "Mesh count: " << objmodel.getMeshes().size() << std::endl;
+    std::cout << objmodel.getMeshes()[0]->getVertices()->size() << "\n"; // 108
+    std::cout << objmodel.getMeshes()[0]->getIndicies()->size() << "\n";    // 36
+    std::cout << objmodel.getMeshes()[0]->getUV()->size() << "\n";  // 72
     //exit(0);
     
     uint32_t poly_count = 0;
@@ -318,7 +324,7 @@ int frames_count = 0;
 float speed = 1;
 double fps_time = 0.0;
 void _process(HateEngine::Engine *engine, double delta) {
-    
+    //std::cout << test_glmodel.getGlobalPosition().z << "\n";
     if (fps_time < 0.5) {
       ++frames_count;
         fps_time += delta;
@@ -349,6 +355,11 @@ void _process(HateEngine::Engine *engine, double delta) {
                     -sin(cam_rot.y) * fabs(dir.x) * 0.1
         );
     }
+    
+    if (engine->Input.isKeyPressed(GLFW_KEY_LEFT_CONTROL))
+        camera.offset(0, -0.1 * speed * delta * 60, 0);
+    if (engine->Input.isKeyPressed(GLFW_KEY_SPACE))
+        camera.offset(0, 0.1 * speed * delta * 60, 0);
 }
 
 glm::vec3 cam_dir;
@@ -391,10 +402,7 @@ void _physics_process(HateEngine::Engine *engine, double delta) {
     /*if (engine->Input.isKeyPressed(GLFW_KEY_UP))
         rbody_body->setLinearVelocity({0, -1, 0});*/
 
-    if (engine->Input.isKeyPressed(GLFW_KEY_LEFT_CONTROL))
-        camera.offset(0, -0.1, 0);
-    if (engine->Input.isKeyPressed(GLFW_KEY_SPACE))
-        camera.offset(0, 0.1, 0);
+    
 
     if (engine->Input.isKeyPressed(GLFW_KEY_Q))
         mesh2.rotate({0.0, 1, 0.0});

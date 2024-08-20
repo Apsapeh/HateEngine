@@ -49,8 +49,10 @@ target("HateEngine")
         set_optimize("aggressive")
     end
 
+    set_warnings("pedantic")
     if has_config("show_warnings") then
-        set_warnings("everything")
+        set_warnings("everything", "pedantic")
+        
     end
     
     -- after_link(function (target)

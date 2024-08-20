@@ -39,7 +39,7 @@ bool glad_is_initialized = false;
 using namespace HateEngine;
 
 Engine::Engine(std::string window_lbl, int width, int height) : Input(this) {
-    // glfwInitHint(GLFW_PLATFORM, GLFW_PLATFORM_X11);
+    //glfwInitHint(GLFW_PLATFORM, GLFW_PLATFORM_WAYLAND);
     glfwInit();
     // Create window
     GLFWmonitor* monitor = NULL;

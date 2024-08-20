@@ -48,6 +48,7 @@ OpenGL15::OpenGL15(Engine* engine) {
     glEnable(GL_BLEND);
     // glBlendEquation(GL_FUNC_ADD);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    glDisable(GL_BLEND);
     // glLightModelf(GL_LIGHT_MODEL_TWO_SIDE, GL_TRUE);
 
     glEnableClientState(GL_VERTEX_ARRAY);

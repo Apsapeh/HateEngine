@@ -1,4 +1,5 @@
 #include <HateEngine/Resources/ObjMapModel.hpp>
+#include <HateEngine/Resources/Texture.hpp>
 #include <algorithm>
 #include <cstdint>
 #include <fstream>
@@ -114,6 +115,8 @@ void ObjMapModel::parseObj(std::string data) {
             int32_t prev_n_index = 0;
             for (uint32_t i = 1; i < words.size(); i++) {
                 std::vector<std::string> indices = split(words[i], '/');
+                //HATE_DEBUG_F("Indices: %s", words[i].c_str())
+                //HATE_DEBUG_F("Line: %s", line.c_str())
 
                 // TODO: ONLY VERTICES
                 int32_t v_i = std::stoi(indices[0]);
@@ -190,9 +193,12 @@ void ObjMapModel::parseObj(std::string data) {
         std::vector<float> mesh_vertices;
         std::vector<uint32_t> mesh_indicies;
         std::vector<float> mesh_normals;
+        std::vector<float> mesh_UVs;
         // Mesh mesh;
 
+        std::vector<ObjFace> of = {obj.faces[0]};
         for (const auto& face: obj.faces) {
+        //for (const auto& face: of) {
             if (face.indices.size() < 3) {
                 continue;
             }
@@ -223,7 +229,7 @@ void ObjMapModel::parseObj(std::string data) {
             }
 
             glm::vec3 v0_z_null = T * v0;
-            float KEY = v0_z_null.z;
+            const float KEY = v0_z_null.z;
 
             glm::vec2 poly_min = poly[0];
             glm::vec2 poly_max = poly[0];
@@ -260,9 +266,16 @@ void ObjMapModel::parseObj(std::string data) {
                     tex_coords[face.tex_indices[max_index_y]].y
             };
 
-            // HATE_DEBUG_F("start_text ", start_tex.x);
-            HATE_DEBUG_F("[%f, %f] - [%f, %f]", start_tex.x, end_tex.x, start_tex.y, end_tex.y);
-            HATE_DEBUG_F("{%f, %f} - {%f, %f}", poly_min.x, poly_max.x, poly_min.y, poly_max.y);
+            const glm::vec2 UV_Vertex_K = {
+                (end_tex.x - start_tex.x) / (poly_max.x - poly_min.x),
+                (end_tex.y - start_tex.y) / (poly_max.y - poly_min.y)
+            };
+
+            HATE_DEBUG_F("%d | %d", poly.size(), face.tex_indices.size())
+            // HATE_DEBUG_F("x: %f, y: %f", UV_Vertex_K.x, UV_Vertex_K.y);
+
+            // HATE_DEBUG_F("[%f, %f] - [%f, %f]", start_tex.x, end_tex.x, start_tex.y, end_tex.y);
+            // HATE_DEBUG_F("{%f, %f} - {%f, %f}", poly_min.x, poly_max.x, poly_min.y, poly_max.y);
 
             float step = 0.5f;
 
@@ -407,12 +420,49 @@ void ObjMapModel::parseObj(std::string data) {
                             }
                     );
 
-                    cell.push_back(cell[0]);
-                    for (uint32_t i = 2; i < cell.size(); i++) {
+                    for (auto c : cell ) {
+                        auto p = grid[c];
+                        //HATE_DEBUG_F("Cx: %f, Cy: %f", p.x, p.y);
+                    }
+                    //std::cout << std::endl;
+
+                    //cell.push_back(cell[0]);
+                    //HATE_DEBUG_F("Cell size: %d", cell.size());
+                    for (uint32_t i = 2; i < cell.size(); ++i) {
                         mesh_indicies.push_back(mesh_vertices.size() / 3 + cell[0]);
                         mesh_indicies.push_back(mesh_vertices.size() / 3 + cell[i - 1]);
                         mesh_indicies.push_back(mesh_vertices.size() / 3 + cell[i]);
+
+
                     }
+
+                    /*for (const auto c : cell) {
+                        glm::vec2 p = grid[c] * UV_Vertex_K;
+                        mesh_UVs.push_back(p.x);
+                        mesh_UVs.push_back(p.y);
+                    }*/
+
+                    /*glm::vec2 p = grid[cell[0]] * UV_Vertex_K;
+
+                    mesh_UVs.push_back(p.x);
+                    mesh_UVs.push_back(p.y);
+                    HATE_DEBUG_F("x: %f | y: %f", p.x, p.y);
+                    p = grid[cell[1]] * UV_Vertex_K;
+                    mesh_UVs.push_back(p.x);
+                    mesh_UVs.push_back(p.y);
+                    HATE_DEBUG_F("x: %f | y: %f", p.x, p.y);
+
+                    p = grid[cell[2]] * UV_Vertex_K;
+                    mesh_UVs.push_back(p.x);
+                    mesh_UVs.push_back(p.y);
+                    HATE_DEBUG_F("x: %f | y: %f", p.x, p.y);
+                    std::cout << std::endl;
+
+                    p = grid[cell[3]] * UV_Vertex_K;
+                    mesh_UVs.push_back(p.x);
+                    mesh_UVs.push_back(p.y);
+                    HATE_DEBUG_F("x: %f | y: %f", p.x, p.y);
+                    std::cout << std::endl;*/
                 }
             }
 
@@ -426,10 +476,21 @@ void ObjMapModel::parseObj(std::string data) {
                 mesh_normals.push_back(face.normal[0]);
                 mesh_normals.push_back(face.normal[1]);
                 mesh_normals.push_back(face.normal[2]);
+
+                glm::vec2 uv = p * UV_Vertex_K;
+                mesh_UVs.push_back(uv.x);
+                mesh_UVs.push_back(uv.y);
             }
         }
-
+        
+        //HATE_DEBUG_F("Indi. size: %lu | UV size: %lu | %d", mesh_indicies.size(), mesh_UVs.size(), mesh_UVs.size() == mesh_indicies.size()*2)
+        
         Mesh* mesh = new Mesh(mesh_vertices, mesh_indicies, mesh_normals);
+        mesh->setUV(mesh_UVs);
+        Texture* texture = new Texture("examples/Assets/brick.png");
+        mesh->setTexture(texture);
+        //mesh->disableLightShading();
+        
         this->meshes.push_back(mesh);
     }
 }
@@ -442,7 +503,9 @@ std::vector<std::string> split(std::string str, char delimiter) {
     std::string token;
     std::istringstream tokenStream(str);
     while (std::getline(tokenStream, token, delimiter)) {
-        result.push_back(token);
+        //HATE_DEBUG_F("Token: '%s'", token.c_str())
+        if (not token.empty())
+            result.push_back(token);
     }
     return result;
 }
