@@ -4,6 +4,7 @@
 #include <HateEngine/UI/WidgetUI.hpp>
 #include <string>
 
+//#include "HateEngine/UI/CheckboxUI.hpp"
 #include "HateEngine/UI/ObjectUI.hpp"
 
 using namespace HateEngine;
@@ -16,6 +17,21 @@ WidgetUI::WidgetUI() : ObjectUI(Type::Widget) {
 UUID WidgetUI::addObjectRef(ObjectUI* obj) {
     elements[obj->getUUID()] = {obj, true};
     return obj->getUUID();
+}
+
+UUID WidgetUI::addObjectClone(LabelUI& obj) {
+    elements[obj.getUUID()] = {new LabelUI(obj), false};
+    return obj.getUUID();
+}
+
+UUID WidgetUI::addObjectClone(ButtonUI& obj) {
+    elements[obj.getUUID()] = {new ButtonUI(obj), false};
+    return obj.getUUID();
+}
+
+UUID WidgetUI::addObjectClone(CheckboxUI& obj) {
+    elements[obj.getUUID()] = {new CheckboxUI(obj), false};
+    return obj.getUUID();
 }
 
 bool WidgetUI::removeObjectRef(const UUID& uuid) {

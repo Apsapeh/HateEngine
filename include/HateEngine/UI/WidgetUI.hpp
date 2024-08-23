@@ -6,8 +6,10 @@
 
 #include <unordered_map>
 #include "../Utilities/UUID.hpp"
-#include "HateEngine/UI/CoordsUI.hpp"
+#include "ButtonUI.hpp"
 #include "ObjectUI.hpp"
+#include "LabelUI.hpp"
+#include "CheckboxUI.hpp"
 
 namespace HateEngine {
     class WidgetUI : public ObjectUI {
@@ -41,6 +43,9 @@ namespace HateEngine {
         WidgetUI();
 
         UUID addObjectRef(ObjectUI* obj);
+        UUID addObjectClone(LabelUI& lbl);
+        UUID addObjectClone(ButtonUI& obj);
+        UUID addObjectClone(CheckboxUI& ckbox);
 
         bool removeObjectRef(const UUID& uuid);
     };

@@ -6,6 +6,13 @@
 
 using namespace HateEngine;
 
+ObjectUI::ObjectUI(const ObjectUI& obj) {
+    this->uuid = obj.uuid;
+    this->position = obj.position;
+    this->size = obj.size;
+    this->type = obj.type;
+}
+
 ObjectUI::ObjectUI(Type type) {
     this->type = type;
 }

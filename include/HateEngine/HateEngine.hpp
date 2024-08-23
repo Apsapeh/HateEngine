@@ -6,13 +6,7 @@
 #include <unordered_map>
 #include "Objects/Camera.hpp"
 // #include "Utilities/UUID_Generator.hpp"
-#include "Objects/Light/Light.hpp"
-#include "Objects/Mesh.hpp"
-#include "Objects/Model.hpp"
-#include "Objects/Particles.hpp"
-#include "PhysEngine.hpp"
 #include "Resources/Level.hpp"
-#include "glm/vec2.hpp"
 
 namespace HateEngine {
     class Engine {

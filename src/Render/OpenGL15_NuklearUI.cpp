@@ -162,7 +162,7 @@ void OpenGL15::DrawNuklearUI(std::unordered_map<UUID, Level::SceneUIWidget>* wid
                         if (button->on_click != nullptr)
                             button->on_click(this->engine);
                     }
-                } else if (obj->type == ObjectUI::Type::CheckboxUI) {
+                } else if (obj->type == ObjectUI::Type::Checkbox) {
                     CheckboxUI* checkbox = (CheckboxUI*) obj;
                     
                     nk_bool checked = checkbox->get_checked();

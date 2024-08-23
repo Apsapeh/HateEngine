@@ -14,12 +14,13 @@ namespace HateEngine {
         UUID uuid;
 
     public:
-        enum Type { Widget, Label, Button, CheckboxUI };
+        enum Type { Widget, Label, Button, Checkbox };
 
     private:
         Type type;
 
     protected:
+        ObjectUI(const ObjectUI& obj);
         ObjectUI(Type type);
 
     public:

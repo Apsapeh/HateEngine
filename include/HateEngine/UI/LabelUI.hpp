@@ -18,6 +18,7 @@ namespace HateEngine {
     public:
         std::string text = "";
 
+        LabelUI(const LabelUI& lbl);
         LabelUI();
 
         // LabelUI();

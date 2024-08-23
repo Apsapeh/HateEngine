@@ -312,7 +312,8 @@ int main() {
 
 
     fps_widget.addObjectRef(&fps_label);
-    fps_widget.addObjectRef(&button);
+    //fps_widget.addObjectRef(&button);
+    fps_widget.addObjectClone(button);
     fps_widget.addObjectRef(&checkbox);
 
     
