@@ -11,7 +11,7 @@ CheckboxUI::CheckboxUI(const CheckboxUI& checkbox) : ObjectUI(checkbox) {
 
 CheckboxUI::CheckboxUI() : ObjectUI(Type::Checkbox) {
     this->size = {100, 100};
-    //this->on_click = on_click;
+    // this->on_click = on_click;
 }
 
 void CheckboxUI::set_checked(bool checked) {

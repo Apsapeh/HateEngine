@@ -23,6 +23,8 @@ namespace HateEngine {
 
     public:
         PhysEngine();
+        
+        ~PhysEngine();
 
         /**
          * Updates the position of objects and checks for collision

@@ -115,8 +115,8 @@ void ObjMapModel::parseObj(std::string data) {
             int32_t prev_n_index = 0;
             for (uint32_t i = 1; i < words.size(); i++) {
                 std::vector<std::string> indices = split(words[i], '/');
-                //HATE_DEBUG_F("Indices: %s", words[i].c_str())
-                //HATE_DEBUG_F("Line: %s", line.c_str())
+                // HATE_DEBUG_F("Indices: %s", words[i].c_str())
+                // HATE_DEBUG_F("Line: %s", line.c_str())
 
                 // TODO: ONLY VERTICES
                 int32_t v_i = std::stoi(indices[0]);
@@ -198,7 +198,7 @@ void ObjMapModel::parseObj(std::string data) {
 
         std::vector<ObjFace> of = {obj.faces[0]};
         for (const auto& face: obj.faces) {
-        //for (const auto& face: of) {
+            // for (const auto& face: of) {
             if (face.indices.size() < 3) {
                 continue;
             }
@@ -267,8 +267,8 @@ void ObjMapModel::parseObj(std::string data) {
             };
 
             const glm::vec2 UV_Vertex_K = {
-                (end_tex.x - start_tex.x) / (poly_max.x - poly_min.x),
-                (end_tex.y - start_tex.y) / (poly_max.y - poly_min.y)
+                    (end_tex.x - start_tex.x) / (poly_max.x - poly_min.x),
+                    (end_tex.y - start_tex.y) / (poly_max.y - poly_min.y)
             };
 
             HATE_DEBUG_F("%d | %d", poly.size(), face.tex_indices.size())
@@ -420,20 +420,18 @@ void ObjMapModel::parseObj(std::string data) {
                             }
                     );
 
-                    for (auto c : cell ) {
+                    for (auto c: cell) {
                         auto p = grid[c];
-                        //HATE_DEBUG_F("Cx: %f, Cy: %f", p.x, p.y);
+                        // HATE_DEBUG_F("Cx: %f, Cy: %f", p.x, p.y);
                     }
-                    //std::cout << std::endl;
+                    // std::cout << std::endl;
 
-                    //cell.push_back(cell[0]);
-                    //HATE_DEBUG_F("Cell size: %d", cell.size());
+                    // cell.push_back(cell[0]);
+                    // HATE_DEBUG_F("Cell size: %d", cell.size());
                     for (uint32_t i = 2; i < cell.size(); ++i) {
                         mesh_indicies.push_back(mesh_vertices.size() / 3 + cell[0]);
                         mesh_indicies.push_back(mesh_vertices.size() / 3 + cell[i - 1]);
                         mesh_indicies.push_back(mesh_vertices.size() / 3 + cell[i]);
-
-
                     }
 
                     /*for (const auto c : cell) {
@@ -482,15 +480,16 @@ void ObjMapModel::parseObj(std::string data) {
                 mesh_UVs.push_back(uv.y);
             }
         }
-        
-        //HATE_DEBUG_F("Indi. size: %lu | UV size: %lu | %d", mesh_indicies.size(), mesh_UVs.size(), mesh_UVs.size() == mesh_indicies.size()*2)
-        
+
+        // HATE_DEBUG_F("Indi. size: %lu | UV size: %lu | %d", mesh_indicies.size(),
+        // mesh_UVs.size(), mesh_UVs.size() == mesh_indicies.size()*2)
+
         Mesh* mesh = new Mesh(mesh_vertices, mesh_indicies, mesh_normals);
         mesh->setUV(mesh_UVs);
         Texture* texture = new Texture("examples/Assets/brick.png");
         mesh->setTexture(texture);
-        //mesh->disableLightShading();
-        
+        // mesh->disableLightShading();
+
         this->meshes.push_back(mesh);
     }
 }
@@ -503,7 +502,7 @@ std::vector<std::string> split(std::string str, char delimiter) {
     std::string token;
     std::istringstream tokenStream(str);
     while (std::getline(tokenStream, token, delimiter)) {
-        //HATE_DEBUG_F("Token: '%s'", token.c_str())
+        // HATE_DEBUG_F("Token: '%s'", token.c_str())
         if (not token.empty())
             result.push_back(token);
     }

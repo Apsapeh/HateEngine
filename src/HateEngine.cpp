@@ -39,7 +39,7 @@ bool glad_is_initialized = false;
 using namespace HateEngine;
 
 Engine::Engine(std::string window_lbl, int width, int height) : Input(this) {
-    //glfwInitHint(GLFW_PLATFORM, GLFW_PLATFORM_WAYLAND);
+    // glfwInitHint(GLFW_PLATFORM, GLFW_PLATFORM_WAYLAND);
     glfwInit();
     // Create window
     GLFWmonitor* monitor = NULL;
@@ -70,7 +70,7 @@ Engine::Engine(std::string window_lbl, int width, int height) : Input(this) {
         glViewport(0, 0, w, h);
 
         th->setResolution(w, h);
-        //std::cout << "Framebuffer size: " << w << "x" << h << std::endl;
+        // std::cout << "Framebuffer size: " << w << "x" << h << std::endl;
         HATE_DEBUG_F("Framebuffer size: %dx%d", w, h);
     });
 

@@ -68,7 +68,7 @@ void OpenGL15::initNuklearUI() {
     // &config);
 
     font = nk_font_atlas_add_from_file(
-        &atlas, "examples/Assets/Comfortaa-Regular.ttf", 18, &config
+            &atlas, "examples/Assets/Comfortaa-Regular.ttf", 18, &config
     );
     image = nk_font_atlas_bake(&atlas, &w, &h, NK_FONT_ATLAS_RGBA32);
     device_upload_atlas(image, w, h);
@@ -129,8 +129,7 @@ void OpenGL15::DrawNuklearUI(std::unordered_map<UUID, Level::SceneUIWidget>* wid
             for (const auto& child: widget->elements) {
                 const ObjectUI* obj = child.second.obj;
                 const CoordsUI::CoordsData obj_size = obj->size.getTopLeftCoords(size.x, size.y);
-                const CoordsUI::CoordsData obj_position =
-                        obj->position.getCoords(size.x, size.y);
+                const CoordsUI::CoordsData obj_position = obj->position.getCoords(size.x, size.y);
 
                 // nk_layout_row_static(&ctx, 30, 700, 1);
                 // nk_layout_space_begin(&ctx, NK_STATIC, (int)obj_size.y,
@@ -170,7 +169,7 @@ void OpenGL15::DrawNuklearUI(std::unordered_map<UUID, Level::SceneUIWidget>* wid
                     }
                 } else if (obj->type == ObjectUI::Type::Checkbox) {
                     CheckboxUI* checkbox = (CheckboxUI*) obj;
-                    
+
                     nk_bool checked = checkbox->get_checked();
                     nk_checkbox_label(&ctx, checkbox->text.c_str(), &checked);
                     checkbox->set_checked(checked);

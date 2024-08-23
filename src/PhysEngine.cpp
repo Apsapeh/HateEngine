@@ -21,6 +21,14 @@ PhysEngine::PhysEngine() {
     // physicsWorld->setIsDebugRenderingEnabled(true);
 }
 
+PhysEngine::~PhysEngine() {
+    for (const auto& body_pair: physBodies) {
+        if (not body_pair.second.is_ref)
+            delete body_pair.second.obj;
+    }
+    physicsCommon.destroyPhysicsWorld(physicsWorld);
+}
+
 // FIXME: Add destructor
 
 void PhysEngine::IteratePhysics(float delta) {

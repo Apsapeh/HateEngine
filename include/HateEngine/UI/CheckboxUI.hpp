@@ -15,9 +15,9 @@ namespace HateEngine {
     public:
         std::string text = "";
 
-        CheckboxUI(const CheckboxUI &checkbox );
+        CheckboxUI(const CheckboxUI& checkbox);
         CheckboxUI();
-        
+
         void set_checked(bool checked);
         bool get_checked();
 

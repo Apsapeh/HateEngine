@@ -9,10 +9,11 @@ ButtonUI::ButtonUI(const ButtonUI& btn) : ObjectUI(btn) {
     this->on_click = btn.on_click;
     this->color = btn.color;
     this->data_p = btn.data_p;
-    //text_align = btn.text_align;
+    // text_align = btn.text_align;
 }
 
-ButtonUI::ButtonUI(void (*on_click)(HateEngine::Engine* engine, void* data_p), void* data_p) : ObjectUI(Type::Button) {
+ButtonUI::ButtonUI(void (*on_click)(HateEngine::Engine* engine, void* data_p), void* data_p) :
+    ObjectUI(Type::Button) {
     this->size = {100, 100};
     this->data_p = data_p;
     this->on_click = on_click;
@@ -20,7 +21,7 @@ ButtonUI::ButtonUI(void (*on_click)(HateEngine::Engine* engine, void* data_p), v
 
 ButtonUI::ButtonUI(void (*on_click)(HateEngine::Engine* engine)) : ObjectUI(Type::Button) {
     this->size = {100, 100};
-    this->data_p = (void*)on_click;
+    this->data_p = (void*) on_click;
     this->on_click = on_click_wrapper;
 }
 
@@ -31,6 +32,6 @@ void ButtonUI::call_on_click(HateEngine::Engine* engine) const {
 }
 
 void on_click_wrapper(HateEngine::Engine* engine, void* data_p) {
-    void (*on_click)(HateEngine::Engine* engine) = (void (*)(HateEngine::Engine* engine))data_p;
+    void (*on_click)(HateEngine::Engine* engine) = (void (*)(HateEngine::Engine* engine)) data_p;
     on_click(engine);
 }

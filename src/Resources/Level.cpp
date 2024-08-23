@@ -2,12 +2,24 @@
 
 #include "../globalStaticParams.hpp"
 
+#define DESTRUCTOR_DELETE_POINTERS(ptr_obj) \
+    for (const auto& obj: ptr_obj) { \
+        if (not obj.second.is_ref) \
+            delete obj.second.obj; \
+    } \
+    ptr_obj.clear();
+
 using namespace HateEngine;
 
 Level::Level() {
 }
 
 Level::~Level() {
+    DESTRUCTOR_DELETE_POINTERS(ui_widgets)
+    DESTRUCTOR_DELETE_POINTERS(meshes_obj)
+    DESTRUCTOR_DELETE_POINTERS(models_obj)
+    DESTRUCTOR_DELETE_POINTERS(particles_obj)
+    DESTRUCTOR_DELETE_POINTERS(lights_obj)
 }
 
 void Level::setCameraRef(Camera* camera) {

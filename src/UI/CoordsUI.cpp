@@ -43,20 +43,20 @@ CoordsUI::CoordsData CoordsUI::getCoords(int screenWidth, int screenHeight) cons
             break;
         case Anchor::CenterLeft:
             result = {0.0f, (float) screenHeight / 2.0f};
-            //coord_multiplier[1] = -1;
+            // coord_multiplier[1] = -1;
             break;
         case Anchor::CenterRight:
             result = {(float) screenWidth, (float) screenHeight / 2.0f};
-            //coord_multiplier[0] = -1;
-            //coord_multiplier[1] = -1;
+            // coord_multiplier[0] = -1;
+            // coord_multiplier[1] = -1;
             break;
         case Anchor::CenterTop:
             result = {(float) screenWidth / 2.0f, 0.0f};
-            //coord_multiplier[1] = -1;
+            // coord_multiplier[1] = -1;
             break;
         case Anchor::CenterBottom:
             result = {(float) screenWidth / 2.0f, (float) screenHeight};
-            //coord_multiplier[1] = -1;
+            // coord_multiplier[1] = -1;
             break;
     }
 

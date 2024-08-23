@@ -14,8 +14,8 @@
 #elif __APPLE__
 #include <OpenGL/glu.h>
 #elif _WIN32
-#include <windows.h>
 #include <GL/glu.h>
+#include <windows.h>
 #endif
 
 using namespace HateEngine;

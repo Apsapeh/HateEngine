@@ -7,9 +7,9 @@
 #include <unordered_map>
 #include "../Utilities/UUID.hpp"
 #include "ButtonUI.hpp"
-#include "ObjectUI.hpp"
-#include "LabelUI.hpp"
 #include "CheckboxUI.hpp"
+#include "LabelUI.hpp"
+#include "ObjectUI.hpp"
 
 namespace HateEngine {
     class WidgetUI : public ObjectUI {
