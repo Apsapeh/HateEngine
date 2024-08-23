@@ -18,6 +18,7 @@
 #include <HateEngine/UI/ObjectUI.hpp>
 #include <glm/ext/matrix_clip_space.hpp>
 #include <glm/ext/vector_int2.hpp>
+#include "HateEngine/Resources/Level.hpp"
 
 #define NK_INCLUDE_FIXED_TYPES
 #define NK_INCLUDE_STANDARD_IO
@@ -87,6 +88,7 @@ static void device_upload_atlas(const void* image, int width, int height) {
 }
 
 void OpenGL15::DrawNuklearUI(std::unordered_map<UUID, Level::SceneUIWidget>* widgets) {
+    Level* start_level = engine->getLevel();
     pump_input(&ctx, engine->window);
     /*if (nk_begin(&ctx, "Show", nk_rect(0, 0, 220, 220),
     NK_WINDOW_NOT_INTERACTIVE|NK_WINDOW_BORDER)) {
@@ -159,8 +161,12 @@ void OpenGL15::DrawNuklearUI(std::unordered_map<UUID, Level::SceneUIWidget>* wid
                     const ButtonUI* button = (ButtonUI*) obj;
 
                     if (nk_button_label(&ctx, button->text.c_str())) {
-                        if (button->on_click != nullptr)
+                        if (button->on_click != nullptr) {
                             button->call_on_click(this->engine);
+                            // Because the level can be changed in the callback
+                            if (start_level != engine->getLevel())
+                                return;
+                        }
                     }
                 } else if (obj->type == ObjectUI::Type::Checkbox) {
                     CheckboxUI* checkbox = (CheckboxUI*) obj;
