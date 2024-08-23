@@ -68,13 +68,10 @@ Engine::Engine(std::string window_lbl, int width, int height) : Input(this) {
         //  XXX: If will be few render APIs, this code should be in
         //  RenderAPI class
         glViewport(0, 0, w, h);
-        if (th->level->camera == nullptr) {
-            // WARNING
-            return;
-        }
 
         th->setResolution(w, h);
-        std::cout << "Framebuffer size: " << w << "x" << h << std::endl;
+        //std::cout << "Framebuffer size: " << w << "x" << h << std::endl;
+        HATE_DEBUG_F("Framebuffer size: %dx%d", w, h);
     });
 
     glfwSetCursorPosCallback(window, [](GLFWwindow* win, double x, double y) {
