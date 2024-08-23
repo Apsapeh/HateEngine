@@ -33,7 +33,7 @@ namespace HateEngine {
 
     private:
         PhysEngine physEngine;
-        Camera* camera;
+        Camera* camera = nullptr;
 
         struct SceneObject {
             Object* obj;

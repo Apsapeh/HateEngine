@@ -111,7 +111,7 @@ int main() {
     //std::cout << sizeof(game) << "\n";
     //while(true) {}
     
-    game.setMouseCapture(true);
+    game.setMouseCapture(false);
     //std::cout << "\n\n\n\n" << glfwGetInputMode(game.window, GLFW_CURSOR) << "\n\n\n\n";
     game.setOneThreadMode(true);
     // Setting textures for the cube and floor meshes
@@ -324,7 +324,7 @@ int main() {
     game.setProcessLoop(_process);
     game.setFixedProcessLoop(_physics_process);
     game.setInputEvent(_input_event);
-    lvl.setCameraRef(&camera);
+    //lvl.setCameraRef(&camera);
     float xscale, yscale;
     //glfwGetPrimaryMonitor();
     glfwGetMonitorContentScale(glfwGetPrimaryMonitor(), &xscale, &yscale);
