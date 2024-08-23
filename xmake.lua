@@ -84,7 +84,8 @@ target("Example_1")
 
     if is_plat("mingw") then 
         add_cxxflags("-specs=msvcr120.spec", {force=true})        
-        add_ldflags("-static-libstdc++ -static-libgcc -specs=msvcr120.spec", {force = true})
+        add_ldflags("-static -specs=msvcr120.spec", {force = true})
+        --add_ldflags("-static")
     end
 
     set_rundir("$(projectdir)")

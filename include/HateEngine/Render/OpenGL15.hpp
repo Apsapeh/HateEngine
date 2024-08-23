@@ -34,6 +34,7 @@ namespace HateEngine {
         Engine* engine = nullptr;
         uint8_t maxLightCount = 8;
         float maxLightRenderDist = 2500; // TODO: Make it configurable
+        float UIScale = 1.0f;
 
         void initNuklearUI();
 

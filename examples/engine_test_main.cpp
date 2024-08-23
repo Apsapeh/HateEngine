@@ -28,6 +28,7 @@
 #include <HateEngine/UI/WidgetUI.hpp>
 #include <HateEngine/UI/LabelUI.hpp>
 #include <HateEngine/UI/ButtonUI.hpp>
+#include <HateEngine/UI/CheckboxUI.hpp>
 
 #define WINVER 0x0501
 #define _WIN32_WINNT 0x0501
@@ -61,6 +62,7 @@ HateEngine::WidgetUI* fps_widget_ptr = nullptr;
 HateEngine::CubeMesh test2;
 int main() {
     std::cout << "Hello\n";
+    
 
     xAxMesh.setSize(1, 0.1, 0.1);
     xAxMesh.offset(0, 6, 0);
@@ -69,8 +71,8 @@ int main() {
     //camera.offset(0, 6, 3);
     //camera.setPosition(0, 25, 0);
     camera.setRotation(0, 0, 0);
-    camera.setSkyBoxTexture(new HateEngine::Texture("examples/Assets/skybox.jpg", HateEngine::Texture::ClampToEdge));
-    camera.setSkyBoxEnabled(true);
+    //camera.setSkyBoxTexture(new HateEngine::Texture("examples/Assets/skybox.jpg", HateEngine::Texture::ClampToEdge));
+    //camera.setSkyBoxEnabled(true);
     mesh1.setRotation(0, 0, 0);
     mesh1.setSize(1, 1, 1);
 
@@ -87,6 +89,8 @@ int main() {
 
     //floor.setRotationMatrix(matfloor);
     // floor.matrix
+    // 
+    
 
     sun.setPosition({1.0, 1.0, 1.0});
 
@@ -99,19 +103,22 @@ int main() {
 
 
     camera.bindObj(&test_glmodel);
+    
 
     std::cout << "Camera uuid: " << camera.getUUID().getU64() << std::endl;
     //mesh1.bindObj(&test_glmodel);
-
     HateEngine::Engine game("HateEngine Test", WIDTH, HEIGHT);
+    //std::cout << sizeof(game) << "\n";
+    //while(true) {}
+    
     game.setMouseCapture(true);
-    game.setOneThreadMode(false);
+    //std::cout << "\n\n\n\n" << glfwGetInputMode(game.window, GLFW_CURSOR) << "\n\n\n\n";
+    game.setOneThreadMode(true);
     // Setting textures for the cube and floor meshes
 
 
     HateEngine::HERFile herfile("examples/Assets/test.her", "password");
     HateEngine::Texture tex_floor = herfile["ground.png"].asTexture();
-
 
 
     //HateEngine::Texture tex_floor("examples/Assets/ground.png");
@@ -133,7 +140,7 @@ int main() {
     // game.setLevelRef(&level2);
 
 
-    HateEngine::ObjMapModel objmodel("examples/Assets/unnamed.obj", "examples/Assets/unnamed.map");
+    //HateEngine::ObjMapModel objmodel("examples/Assets/unnamed.obj", "examples/Assets/unnamed.map");
     //HateEngine::ObjMapModel objmodel("examples/Assets/cube.obj", "examples/Assets/unnamed.map");
     //HateEngine::ObjMapModel objmodel("examples/Assets/gayman.obj", "examples/Assets/unnamed.map");
     //HATE_FATAL("Fatal message")
@@ -141,20 +148,20 @@ int main() {
     
     
     
-    std::cout << "Mesh count: " << objmodel.getMeshes().size() << std::endl;
+    /*std::cout << "Mesh count: " << objmodel.getMeshes().size() << std::endl;
     std::cout << objmodel.getMeshes()[0]->getVertices()->size() << "\n"; // 108
     std::cout << objmodel.getMeshes()[0]->getIndicies()->size() << "\n";    // 36
-    std::cout << objmodel.getMeshes()[0]->getUV()->size() << "\n";  // 72
+    std::cout << objmodel.getMeshes()[0]->getUV()->size() << "\n";  // 72*/
     //exit(0);
     
-    uint32_t poly_count = 0;
+    /*uint32_t poly_count = 0;
     for (HateEngine::Mesh* m : objmodel.getMeshes()) {
         poly_count += m->getIndicies()->size() / 3;
-    }
+    }*/
     
-    std::cout << "Poly count: " << poly_count << std::endl;
+    //std::cout << "Poly count: " << poly_count << std::endl;
 
-    lvl.addObjectRef(&objmodel);
+    //lvl.addObjectRef(&objmodel);
 
 
     std::cout << glmodel.getGlobalPosition().x << " "
@@ -278,8 +285,8 @@ int main() {
     //HateEngine::LabelUI label;
     //label.text = "Hello, World!";
     HateEngine::WidgetUI fps_widget;
-    fps_widget.position = {0, 0};
-    fps_widget.size = {200, 100, 1.5};
+    fps_widget.position = {150, -100, 1, HateEngine::CoordsUI::CenterLeft, HateEngine::CoordsUI::Pixels};
+    fps_widget.size = {300, 200, 1, HateEngine::CoordsUI::TopLeft, HateEngine::CoordsUI::Pixels};
     fps_widget.color.w = 0;
     //fps_widget.has_background = true;
     fps_widget.has_border = true;
@@ -295,11 +302,18 @@ int main() {
     HateEngine::ButtonUI button([] (HateEngine::Engine *engine) {
         std::cout << "Hello, World!\n";
     });
+    
+    HateEngine::CheckboxUI checkbox;
+    checkbox.position = {-40, -20, 1, HateEngine::CoordsUI::CenterRight, HateEngine::CoordsUI::Pixels};
+    checkbox.size = {200, 40, 1, HateEngine::CoordsUI::TopLeft, HateEngine::CoordsUI::Pixels};
+    checkbox.text = "Test/Тест";
+    
 
 
 
     fps_widget.addObjectRef(&fps_label);
     fps_widget.addObjectRef(&button);
+    fps_widget.addObjectRef(&checkbox);
 
     
     lvl.addObjectRef(&fps_widget);
@@ -315,9 +329,11 @@ int main() {
     //glfwGetPrimaryMonitor();
     glfwGetMonitorContentScale(glfwGetPrimaryMonitor(), &xscale, &yscale);
     std::cout << "Content scale: " << xscale << " " << yscale << "\n";
+    //while (true) {}
     game.Run();
     int p = glfwGetPlatform();
     std::cout << p << " | " << GLFW_PLATFORM_WAYLAND << "\n";
+    
 }
 
 int frames_count = 0;

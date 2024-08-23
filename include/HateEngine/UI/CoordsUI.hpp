@@ -8,6 +8,11 @@ namespace HateEngine {
             TopRight,
             BottomLeft,
             BottomRight,
+            Center,
+            CenterLeft,
+            CenterRight,
+            CenterTop,
+            CenterBottom,
         };
 
         enum Units {

@@ -14,7 +14,7 @@ namespace HateEngine {
         UUID uuid;
 
     public:
-        enum Type { Widget, Label, Button };
+        enum Type { Widget, Label, Button, CheckboxUI };
 
     private:
         Type type;
