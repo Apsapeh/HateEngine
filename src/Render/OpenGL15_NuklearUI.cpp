@@ -160,7 +160,7 @@ void OpenGL15::DrawNuklearUI(std::unordered_map<UUID, Level::SceneUIWidget>* wid
 
                     if (nk_button_label(&ctx, button->text.c_str())) {
                         if (button->on_click != nullptr)
-                            button->on_click(this->engine);
+                            button->call_on_click(this->engine);
                     }
                 } else if (obj->type == ObjectUI::Type::Checkbox) {
                     CheckboxUI* checkbox = (CheckboxUI*) obj;

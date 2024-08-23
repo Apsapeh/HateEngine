@@ -298,7 +298,13 @@ int main() {
     fps_label.text = "FPS: 0";
     //fps_label.text_align = HateEngine::LabelUI::Wrap;
 
-
+    int a = 0;
+    /*HateEngine::ButtonUI button([] (HateEngine::Engine *engine, void* a) {
+        *static_cast<int*>(a) += 1;
+        std::cout << "a: " << *static_cast<int*>(a) << "\n";
+        std::cout << "Hello, World!\n";
+    }, &a);*/
+    
     HateEngine::ButtonUI button([] (HateEngine::Engine *engine) {
         std::cout << "Hello, World!\n";
     });

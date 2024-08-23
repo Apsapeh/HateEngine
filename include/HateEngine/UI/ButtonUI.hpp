@@ -10,21 +10,19 @@ namespace HateEngine {
         //enum TextAlign { Left, Center, Right };
 
         // glm::ivec2 size = {100, 100};
-        void (*on_click)(HateEngine::Engine* engine) = nullptr;
+        void (*on_click)(HateEngine::Engine* engine, void* data_p) = nullptr;
+        void* data_p = nullptr;
         glm::ivec3 color = {0, 0, 0};
         //TextAlign text_align = Left;
 
     public:
         std::string text = "";
 
-        ButtonUI(const ButtonUI& btn) : ObjectUI(btn) {
-            text = btn.text;
-            on_click = btn.on_click;
-            color = btn.color;
-            //text_align = btn.text_align;
-        }
+        ButtonUI(const ButtonUI& btn);
+        ButtonUI(void (*on_click)(HateEngine::Engine* engine, void* data_p), void* data_p);
         ButtonUI(void (*on_click)(HateEngine::Engine* engine));
-
+        
+        void call_on_click(HateEngine::Engine* engine) const;
         // LabelUI();
     };
 } // namespace HateEngine
