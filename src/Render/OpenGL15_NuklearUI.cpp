@@ -67,8 +67,7 @@ void OpenGL15::initNuklearUI() {
     // &config);
 
     font = nk_font_atlas_add_from_file(
-        //&atlas, "examples/Assets/Comfortaa-Regular.ttf", 18, &config
-            &atlas, "examples/Assets/NanumGothic-Regular.ttf", 18, &config
+        &atlas, "examples/Assets/Comfortaa-Regular.ttf", 18, &config
     );
     image = nk_font_atlas_bake(&atlas, &w, &h, NK_FONT_ATLAS_RGBA32);
     device_upload_atlas(image, w, h);
