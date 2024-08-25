@@ -24,9 +24,14 @@ target("HateEngine")
     if is_plat("windows") then
         add_defines("and=&&", "or=||", "not=!", "_WIN32_WINNT=0x0501")
     end
+    
+    if is_plat("linux") then
+        set_toolchains("clang")
+    end
 
     set_kind("$(kind)")
     set_languages("cxx11")
+    --set_exceptions("no-cxx")
     add_includedirs(
         "deps","include"
     )
@@ -68,7 +73,9 @@ target("Example_1")
     end
 
     if is_plat("linux") then
+        set_toolchains("clang")
         add_ldflags("-static-libstdc++ -static-libgcc")
+        
     end
     set_enabled(has_config("build_examples") == true)
     set_kind("binary")
@@ -76,6 +83,7 @@ target("Example_1")
         "examples/*.cpp"
     )
     set_languages("cxx11")
+    --set_exceptions("no-cxx")
     add_includedirs("include")
 
     add_deps("HateEngine")

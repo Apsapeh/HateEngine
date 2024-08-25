@@ -2,11 +2,11 @@
 
 #include "../globalStaticParams.hpp"
 
-#define DESTRUCTOR_DELETE_POINTERS(ptr_obj) \
-    for (const auto& obj: ptr_obj) { \
-        if (not obj.second.is_ref) \
-            delete obj.second.obj; \
-    } \
+#define DESTRUCTOR_DELETE_POINTERS(ptr_obj)                                                        \
+    for (const auto& obj: ptr_obj) {                                                               \
+        if (not obj.second.is_ref)                                                                 \
+            delete obj.second.obj;                                                                 \
+    }                                                                                              \
     ptr_obj.clear();
 
 using namespace HateEngine;

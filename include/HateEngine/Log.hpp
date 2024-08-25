@@ -1,15 +1,19 @@
 #pragma once
 #include <string>
 
-#define HATE_DEBUG(msg) HateEngine::Log::Debug(msg, __FILE__, __LINE__);
 #define HATE_INFO(msg) HateEngine::Log::Info(msg, __FILE__, __LINE__);
 #define HATE_WARNING(msg) HateEngine::Log::Warning(msg, __FILE__, __LINE__);
 #define HATE_ERROR(msg) HateEngine::Log::Error(msg, __FILE__, __LINE__);
 #define HATE_FATAL(msg) HateEngine::Log::Fatal(msg, __FILE__, __LINE__);
 
+#ifdef __HATE_ENGINE_DEBUG
+#define HATE_DEBUG(msg) HateEngine::Log::Debug(msg, __FILE__, __LINE__);
 #define HATE_DEBUG_F(msg, ...)                                                                     \
     HateEngine::Log::Debug(HateEngine::LogFn::__log_format(msg, __VA_ARGS__), __FILE__, __LINE__);
-
+#else
+#define HATE_DEBUG(msg) ;
+#define HATE_DEBUG_F(msg, ...) ;
+#endif
 
 namespace HateEngine {
     namespace Log {

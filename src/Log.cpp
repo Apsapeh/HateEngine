@@ -40,11 +40,11 @@ std::string LogFn::__log_message_template(
 }
 
 void Log::Debug(std::string msg, std::string file, unsigned int line) {
-#ifdef __HATE_ENGINE_DEBUG
+    // #ifdef __HATE_ENGINE_DEBUG
     std::cout << termcolor::reset << termcolor::green
               << LogFn::__log_message_template("DEBUG", msg, file, line) << termcolor::reset
               << "\n";
-#endif
+    // #endif
 }
 
 void Log::Info(std::string msg, std::string file, unsigned int line) {

@@ -45,7 +45,7 @@ const reactphysics3d::PhysicsWorld* PhysEngine::getPhysicsWorld() const {
 }
 
 UUID PhysEngine::addObjectClone(const PhysicalBody& object) {
-    PhysicalBody* new_obj;
+    PhysicalBody* new_obj = nullptr;
     // FIX ME: ADD obj copy
     physBodies[new_obj->getUUID()] = {new_obj, false};
     HATE_WARNING("addObjectClone is not implemented for PhysicalBody");

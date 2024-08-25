@@ -82,6 +82,7 @@ int main() {
     HATE_INFO("Info message");
     HATE_WARNING("Warning message");
     HATE_ERROR("Error message");
+    HATE_DEBUG("Hello");
     //HATE_FATAL("Fatal message");
     
     //floor.setRotation(20, 0, 0);
@@ -331,7 +332,7 @@ int main() {
     game.setProcessLoop(_process);
     game.setFixedProcessLoop(_physics_process);
     game.setInputEvent(_input_event);
-    //lvl.setCameraRef(&camera);
+    lvl.setCameraRef(&camera);
     float xscale, yscale;
     //glfwGetPrimaryMonitor();
     glfwGetMonitorContentScale(glfwGetPrimaryMonitor(), &xscale, &yscale);

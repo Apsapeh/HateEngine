@@ -23,7 +23,7 @@ namespace HateEngine {
 
     public:
         PhysEngine();
-        
+
         ~PhysEngine();
 
         /**

@@ -153,7 +153,7 @@ static void Load(tgModel& model, std::vector<Mesh*>* meshes, std::vector<Texture
 
             // =====> Get Base Color <=====
             const auto& material_index = primitive.material;
-            std::cout << "Material index: " << material_index << std::endl;
+            // std::cout << "Material index: " << material_index << std::endl;
             if (material_index != -1) {
                 const auto& material = model.materials[material_index];
                 if (material.values.find("baseColorTexture") != material.values.end()) {
@@ -166,11 +166,12 @@ static void Load(tgModel& model, std::vector<Mesh*>* meshes, std::vector<Texture
 
             // TODO: Add scale, rotation, translation
 
-            std::cout << "LOAD\n";
+            // std::cout << "LOAD\n";
 
             // =====> Set Mesh Properties <=====
             if (mesh_properties.count(model_mesh_counter) != 0) {
-                std::cout << "Mesh properties: " << model_mesh.name << std::endl;
+                // std::cout << "Mesh properties: " << model_mesh.name << std::endl;
+                // HATE_DEBUG_F("Mesh properties: %s")
                 const auto& node = mesh_properties[model_mesh_counter];
 
                 if (node.scale.size() == 3)
