@@ -285,8 +285,9 @@ inline void OpenGL15::renderCamera(Camera* camera) {
     glLoadMatrixf(glm::value_ptr(mat));
 }
 
-inline void
-OpenGL15::renderLight(std::vector<Light*>* lights_vec, const std::vector<int>& indicies) {
+inline void OpenGL15::renderLight(
+        std::vector<Light*>* lights_vec, const std::vector<int>& indicies
+) {
     // std::cout << "Lights: " << lights_vec->size() << "\n";
     for (int i = 0; i < indicies.size(); ++i) {
         int index = indicies[i];

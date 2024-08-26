@@ -1,4 +1,5 @@
 #include "GLFW/glfw3.h"
+#include "HateEngine/Objects/Physics/CapsuleShape.hpp"
 #include "glm/ext/vector_float2.hpp"
 #include "glm/ext/vector_float3.hpp"
 
@@ -24,6 +25,7 @@
 #include <glm/gtx/quaternion.hpp>
 #include <iostream>
 #include <HateEngine/Objects/Physics/SphereShape.hpp>
+#include <HateEngine/Resources/UIFont.hpp>
 
 #include <HateEngine/UI/WidgetUI.hpp>
 #include <HateEngine/UI/LabelUI.hpp>
@@ -60,6 +62,8 @@ HateEngine::Particles *part;
 HateEngine::LabelUI fps_label;
 HateEngine::WidgetUI* fps_widget_ptr = nullptr;
 HateEngine::CubeMesh test2;
+HateEngine::PhysicalBody playerBody(HateEngine::PhysicalBody::DynamicBody);
+
 int main() {
     std::cout << "Hello\n";
     
@@ -112,9 +116,10 @@ int main() {
     //std::cout << sizeof(game) << "\n";
     //while(true) {}
     
-    game.setMouseCapture(false);
+    game.setMouseCapture(true);
     //std::cout << "\n\n\n\n" << glfwGetInputMode(game.window, GLFW_CURSOR) << "\n\n\n\n";
     game.setOneThreadMode(true);
+    game.setVSync(false);
     // Setting textures for the cube and floor meshes
 
 
@@ -129,6 +134,12 @@ int main() {
     HateEngine::Texture tex("examples/Assets/brick.png",
                             HateEngine::Texture::Repeat,
                             HateEngine::Texture::Nearest);
+    
+    HateEngine::Texture tex2("examples/Assets/UV_test.png");
+    HateEngine::CubeMesh uv_test_cube;
+    uv_test_cube.setTexture(&tex2);
+    uv_test_cube.setPosition(0, 5, 0);
+    lvl.addObjectRef(&uv_test_cube);
 
     //HateEngine::GLTFModel glmodel2("examples/Assets/ignore/bolg.glb");
 
@@ -252,6 +263,15 @@ int main() {
     // std::cout << part->getPosition().z << "\n";
     // game.addObjectClone(cube_part);
 
+    
+
+    HateEngine::PhysicalBody floorBody(HateEngine::PhysicalBody::StaticBody);
+    floorBody.setPosition(0, 0, 0);
+    HateEngine::BoxShape floorShape({25, 1, 25}, {0, 0, 0}, {0, 0, 0});
+    floorBody.addCollisionShapeRef(&floorShape);
+    //floorBody.rotate(20, 0, 0);
+    floorBody.bindObj(&floor);
+    
     HateEngine::PhysicalBody rigidBody(HateEngine::PhysicalBody::DynamicBody);
     rigidBody.setPosition(0, 5, 0);
     rigidBody.rotate(48, 22,36);
@@ -263,16 +283,27 @@ int main() {
     rigidBody.bindObj(&mesh1);
     //rigidBody.bindObj(&camera);
     //rigidBody.bindObj(&glmodel);
-
-    HateEngine::PhysicalBody floorBody(HateEngine::PhysicalBody::StaticBody);
-    floorBody.setPosition(0, 0, 0);
-    HateEngine::BoxShape floorShape({25, 1, 25}, {0, 0, 0}, {0, 0, 0});
-    floorBody.addCollisionShapeRef(&floorShape);
-    //floorBody.rotate(20, 0, 0);
-    floorBody.bindObj(&floor);
+    
+    //HateEngine::CubeMesh playerCubeMesh;
+    HateEngine::GLTFModel playerCapsuleMesh("examples/Assets/capsule.glb");
+    playerCapsuleMesh.rotate(0, 0, 0);
+    
+    playerBody.setPosition(0, 3, 0);
+    playerBody.rotate(0, 0, 0);
+    HateEngine::CapsuleShape capsuleShape(0.5, 2);
+    playerBody.addCollisionShapeRef(&capsuleShape);
+    playerBody.bindObj(&playerCapsuleMesh);
 
     lvl.getPhysEngine()->addObjectRef(&rigidBody);
+    lvl.getPhysEngine()->addObjectRef(&playerBody);
     lvl.getPhysEngine()->addObjectRef(&floorBody);
+    playerBody.reactRigidBody->setAngularLockAxisFactor({0, 0, 0});
+    //playerBody.reactRigidBody->setLinearVelocity({2, 0.1, 2});
+    capsuleShape.reactCollider->getMaterial().setFrictionCoefficient(0);
+    
+    
+    
+    lvl.addObjectRef(&playerCapsuleMesh);
 
 
 
@@ -291,12 +322,21 @@ int main() {
     fps_widget.color.w = 0;
     //fps_widget.has_background = true;
     fps_widget.has_border = true;
+    
+    HateEngine::UIFont* f = new HateEngine::UIFont("examples/Assets/Comfortaa-Regular.ttf", 36);
+    HateEngine::UIFont* f_2 = new HateEngine::UIFont("examples/Assets/NanumGothic-Regular.ttf", 12);
 
     fps_widget_ptr = &fps_widget;
 
-    fps_label.color = {255, 0, 0};
+    fps_label.text_color = {255, 0, 0, 128};
+    fps_label.setFont(f);
     fps_label.size = {150, 60};
     fps_label.text = "FPS: 0";
+    
+    HateEngine::LabelUI label;
+    label.text = "Hello, World!";
+    label.setFont(f_2);
+    label.position = {0, -label.size.y/2, 1, HateEngine::CoordsUI::Center, HateEngine::CoordsUI::Percent};
     //fps_label.text_align = HateEngine::LabelUI::Wrap;
 
     int a = 0;
@@ -320,6 +360,7 @@ int main() {
 
     fps_widget.addObjectRef(&fps_label);
     //fps_widget.addObjectRef(&button);
+    fps_widget.addObjectClone(label);
     fps_widget.addObjectClone(button);
     fps_widget.addObjectRef(&checkbox);
 
@@ -441,6 +482,12 @@ void _physics_process(HateEngine::Engine *engine, double delta) {
         engine->setMouseCapture(false);
     if (engine->Input.isKeyPressed(GLFW_KEY_U))
         engine->setMouseCapture(true);
+        
+    glm::vec2 raw_dir = engine->Input.getVector(GLFW_KEY_LEFT, GLFW_KEY_RIGHT, GLFW_KEY_UP, GLFW_KEY_DOWN) * 5;
+    float pb_x = playerBody.reactRigidBody->getLinearVelocity().x;
+    float pb_y = playerBody.reactRigidBody->getLinearVelocity().y;
+    float pb_z = playerBody.reactRigidBody->getLinearVelocity().z;
+    playerBody.reactRigidBody->setLinearVelocity({-raw_dir.y, pb_y, raw_dir.x});
 
     if (engine->Input.isKeyPressed(GLFW_KEY_P)) {
         GLFWmonitor *monitor = glfwGetPrimaryMonitor();

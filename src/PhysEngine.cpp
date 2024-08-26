@@ -15,6 +15,7 @@ reactphysics3d::PhysicsCommon PhysEngine::physicsCommon;
 
 PhysEngine::PhysEngine() {
     this->physicsWorld = physicsCommon.createPhysicsWorld();
+    //this->physicsWorld->setIsDebugRenderingEnabled(true);
 
     // Change the number of iterations of the position solver
     // this->physicsWorld->setNbIterationsPositionSolver(16);

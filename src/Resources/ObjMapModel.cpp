@@ -118,7 +118,6 @@ void ObjMapModel::parseObj(std::string data) {
                 // HATE_DEBUG_F("Indices: %s", words[i].c_str())
                 // HATE_DEBUG_F("Line: %s", line.c_str())
 
-                // TODO: ONLY VERTICES
                 int32_t v_i = std::stoi(indices[0]);
                 v_indices.push_back(v_i - (v_i > 0 ? 1 : 0));
 

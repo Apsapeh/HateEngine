@@ -10,8 +10,9 @@ LabelUI::LabelUI(const LabelUI& lbl) : ObjectUI(lbl) {
     this->color = lbl.color;
     this->text_align = lbl.text_align;
     this->text = lbl.text;
+    this->font = lbl.font;
 }
 
 LabelUI::LabelUI() : ObjectUI(Type::Label) {
-    this->size = {100, 100};
+    this->size = {100, 18};
 }

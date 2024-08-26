@@ -16,6 +16,7 @@
 #include <HateEngine/UI/CheckboxUI.hpp>
 #include <HateEngine/UI/CoordsUI.hpp>
 #include <HateEngine/UI/ObjectUI.hpp>
+#include <HateEngine/Resources/UIFont.hpp>
 #include <glm/ext/matrix_clip_space.hpp>
 #include <glm/ext/vector_int2.hpp>
 #include "HateEngine/Resources/Level.hpp"
@@ -32,7 +33,7 @@
 
 using namespace HateEngine;
 
-static void device_upload_atlas(const void* image, int width, int height);
+static unsigned int device_upload_atlas(const void* image, int width, int height);
 static void draw(int width, int height);
 static void pump_input(struct nk_context* ctx, GLFWwindow* win);
 
@@ -42,13 +43,14 @@ static void pump_input(struct nk_context* ctx, GLFWwindow* win);
 nk_context ctx;
 nk_font_atlas atlas;
 
-unsigned int font_tex = 0;
+// unsigned int font_tex = 0;
 nk_draw_null_texture tex_null;
 struct your_vertex {
     float pos[2]; // important to keep it to 2 floats
     float uv[2];
     unsigned char col[4];
 };
+
 
 void OpenGL15::initNuklearUI() {
     const void* image;
@@ -62,29 +64,75 @@ void OpenGL15::initNuklearUI() {
 
     nk_font_atlas_init_default(&atlas);
     nk_font_atlas_begin(&atlas);
-    // font = nk_font_atlas_add_default(&atlas, 18, &config);
+    font = nk_font_atlas_add_default(&atlas, 18, &config);
     // font = nk_font_atlas_add_from_file(&atlas, "/Users/ghost/Desktop/C++
     // Projects/Projects/Nuklear_GLFW3_GL1_Driver/OpenSans-Regular.ttf", 18,
     // &config);
 
-    font = nk_font_atlas_add_from_file(
+    /*font = nk_font_atlas_add_from_file(
             &atlas, "examples/Assets/Comfortaa-Regular.ttf", 18, &config
-    );
+    );*/
     image = nk_font_atlas_bake(&atlas, &w, &h, NK_FONT_ATLAS_RGBA32);
-    device_upload_atlas(image, w, h);
+    unsigned int font_tex = device_upload_atlas(image, w, h);
     nk_font_atlas_end(&atlas, nk_handle_id((int) font_tex), &tex_null);
     nk_init_default(&ctx, &font->handle);
 }
 
-static void device_upload_atlas(const void* image, int width, int height) {
-    glGenTextures(1, &font_tex);
-    glBindTexture(GL_TEXTURE_2D, font_tex);
+static unsigned int device_upload_atlas(const void* image, int width, int height) {
+    unsigned int font_id = 0;
+    glGenTextures(1, &font_id);
+    glBindTexture(GL_TEXTURE_2D, font_id);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     glTexImage2D(
             GL_TEXTURE_2D, 0, GL_RGBA, (GLsizei) width, (GLsizei) height, 0, GL_RGBA,
             GL_UNSIGNED_BYTE, image
     );
+    return font_id;
+}
+
+// nk_font_atlas atlas;
+
+struct UIFontRAPI_Data {
+    nk_font* font;
+    nk_font_atlas atlas;
+    nk_draw_null_texture null;
+};
+
+void OpenGL15::loadFont(UIFont* font) {
+    struct nk_font_config config = nk_font_config(font->pixel_height);
+    config.oversample_h = 1;
+    config.oversample_v = 1;
+    config.range = nk_font_cyrillic_glyph_ranges();
+
+    UIFontRAPI_Data* rapi_data = new UIFontRAPI_Data;
+
+    memset(&rapi_data->atlas, 0, sizeof(nk_font_atlas));
+
+    nk_font_atlas_init_default(&rapi_data->atlas);
+    nk_font_atlas_begin(&rapi_data->atlas);
+
+    nk_font* fnt = nk_font_atlas_add_from_memory(
+            &rapi_data->atlas, font->data.data(), font->data.size(), font->pixel_height, &config
+    );
+
+    int w, h;
+    const void* image = nk_font_atlas_bake(&rapi_data->atlas, &w, &h, NK_FONT_ATLAS_RGBA32);
+    unsigned int font_tex = device_upload_atlas(image, w, h);
+    nk_font_atlas_end(&rapi_data->atlas, nk_handle_id((int) font_tex), &rapi_data->null);
+
+
+    font->is_loaded = true;
+    font->textureGL_ID = font_tex;
+    rapi_data->font = fnt;
+    font->render_api_data = rapi_data;
+    // nk_init_default(&ctx, &font->handle);
+}
+
+void OpenGL15::unloadFont(UIFont* font) {
+    nk_font_atlas_clear(&((UIFontRAPI_Data*) font->render_api_data)->atlas);
+    glDeleteTextures(1, &font->textureGL_ID);
+    delete (UIFontRAPI_Data*) font->render_api_data;
 }
 
 void OpenGL15::DrawNuklearUI(std::unordered_map<UUID, Level::SceneUIWidget>* widgets) {
@@ -126,22 +174,32 @@ void OpenGL15::DrawNuklearUI(std::unordered_map<UUID, Level::SceneUIWidget>* wid
             )) {
             nk_layout_space_begin(&ctx, NK_STATIC, (int) size.y, INT_MAX);
 
+
             for (const auto& child: widget->elements) {
                 const ObjectUI* obj = child.second.obj;
                 const CoordsUI::CoordsData obj_size = obj->size.getTopLeftCoords(size.x, size.y);
                 const CoordsUI::CoordsData obj_position = obj->position.getCoords(size.x, size.y);
 
-                // nk_layout_row_static(&ctx, 30, 700, 1);
-                // nk_layout_space_begin(&ctx, NK_STATIC, (int)obj_size.y,
-                // INT_MAX);
                 nk_layout_space_push(
                         &ctx, nk_rect(obj_position.x, obj_position.y, obj_size.x, obj_size.y)
                 );
 
+                nk_style_push_font(&ctx, ctx.style.font);
+
+                ctx.style.text.color =
+                        nk_rgba(obj->text_color.x, obj->text_color.y, obj->text_color.z,
+                                obj->text_color.w);
+
+                // const nk_user_font* prev_font = ctx.style.font;
+                if (obj->font != nullptr) {
+                    if (not obj->font->is_loaded)
+                        obj->font->Load(loadFont, unloadFont);
+
+                    ctx.style.font = &((UIFontRAPI_Data*) obj->font->render_api_data)->font->handle;
+                }
+
                 if (obj->type == ObjectUI::Type::Label) {
                     const LabelUI* label = (LabelUI*) obj;
-
-                    ctx.style.text.color = nk_rgb(label->color.x, label->color.y, label->color.z);
 
                     if (label->text_align == LabelUI::TextAlign::Wrap) {
                         nk_label_wrap(&ctx, label->text.c_str());
@@ -156,6 +214,9 @@ void OpenGL15::DrawNuklearUI(std::unordered_map<UUID, Level::SceneUIWidget>* wid
                     else if (label->text_align == LabelUI::TextAlign::Right)
                         text_flags = NK_TEXT_RIGHT;
                     nk_label(&ctx, label->text.c_str(), text_flags);
+                    // ctx.style.font = prev_font;
+
+
                 } else if (obj->type == ObjectUI::Type::Button) {
                     const ButtonUI* button = (ButtonUI*) obj;
 
@@ -163,8 +224,11 @@ void OpenGL15::DrawNuklearUI(std::unordered_map<UUID, Level::SceneUIWidget>* wid
                         if (button->on_click != nullptr) {
                             button->call_on_click(this->engine);
                             // Because the level can be changed in the callback
-                            if (start_level != engine->getLevel())
+                            if (start_level != engine->getLevel()) {
+                                nk_layout_space_end(&ctx);
+                                nk_end(&ctx);
                                 return;
+                            }
                         }
                     }
                 } else if (obj->type == ObjectUI::Type::Checkbox) {
@@ -174,6 +238,7 @@ void OpenGL15::DrawNuklearUI(std::unordered_map<UUID, Level::SceneUIWidget>* wid
                     nk_checkbox_label(&ctx, checkbox->text.c_str(), &checked);
                     checkbox->set_checked(checked);
                 }
+                nk_style_pop_font(&ctx);
             }
             nk_layout_space_end(&ctx);
         }

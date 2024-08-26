@@ -8,6 +8,7 @@
 #include "../Objects/Particles.hpp"
 #include "../Resources/Level.hpp"
 #include "../Resources/Texture.hpp"
+#include "../Resources/UIFont.hpp"
 
 namespace HateEngine {
     class OpenGL15 {
@@ -25,9 +26,10 @@ namespace HateEngine {
          * \param particles  Vector of particles
          * \param lights  Vector of lights
          */
-        inline void
-        Draw3D(Camera* camera, std::vector<Mesh*>* meshes, std::vector<Particles*>* particles,
-               std::vector<Light*>* lights);
+        inline void Draw3D(
+                Camera* camera, std::vector<Mesh*>* meshes, std::vector<Particles*>* particles,
+                std::vector<Light*>* lights
+        );
 
         void DrawNuklearUI(std::unordered_map<UUID, Level::SceneUIWidget>* widgets);
 
@@ -70,5 +72,8 @@ namespace HateEngine {
 
         static void loadTexture(Texture* texture_ptr);
         static void unloadTexture(Texture* texture_ptr);
+
+        static void loadFont(UIFont* font_ptr);
+        static void unloadFont(UIFont* font_ptr);
     };
 } // namespace HateEngine

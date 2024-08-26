@@ -11,6 +11,10 @@ ObjectUI::ObjectUI(const ObjectUI& obj) {
     this->position = obj.position;
     this->size = obj.size;
     this->type = obj.type;
+    this->font = obj.font;
+    this->text = obj.text;
+    this->color = obj.color;
+    this->text_color = obj.text_color;
 }
 
 ObjectUI::ObjectUI(Type type) {
@@ -26,6 +30,30 @@ void ObjectUI::zoom(float delta) {
     this->size.scale += delta;
     this->position.scale += delta;
 }
+
+void ObjectUI::setFont(UIFont* font, bool autosize) {
+    this->font = font;
+    if (autosize) {
+        this->size.y = font->getPixelHeight();
+    }
+}
+
+void ObjectUI::removeFont() {
+    this->font = nullptr;
+}
+
+UIFont* ObjectUI::getFont() const {
+    return this->font;
+}
+
+void ObjectUI::setText(const std::string& text) {
+    this->text = text;
+}
+
+std::string ObjectUI::getText() const {
+    return this->text;
+}
+
 
 UUID ObjectUI::getUUID() const {
     return uuid;

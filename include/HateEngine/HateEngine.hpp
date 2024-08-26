@@ -32,6 +32,7 @@ namespace HateEngine {
             InputEventMouseScroll
         };
 
+
         struct SceneObject {
             Object* obj;
             // UUID_Generator::UUID id;
@@ -59,6 +60,7 @@ namespace HateEngine {
         int64_t physicsEngineIterateDelayMCS;
 
         bool isOneThread = false;
+        bool isVSync = true;
 
         glm::ivec2 resolution = {0, 0};
         float aspectRatio;
@@ -82,10 +84,13 @@ namespace HateEngine {
 
         void setResolution(int width, int height);
         void setOneThreadMode(bool mode);
+        void setVSync(bool mode);
         void setMouseCapture(bool capture);
 
         glm::ivec2 getResolution();
         float getAspectRatio();
+        bool getOneThreadMode();
+        bool getVSync();
 
         void setProcessLoop(void (*func)(Engine*, double));
         void setFixedProcessLoop(void (*func)(Engine*, double));

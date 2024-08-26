@@ -58,7 +58,8 @@ Engine::Engine(std::string window_lbl, int width, int height) : Input(this) {
 
     glfwSetWindowUserPointer(this->window, this);
     glfwMakeContextCurrent(this->window);
-    glfwSwapInterval(0);
+    glfwSwapInterval(this->isVSync);
+
     // glfwWindowHint(GLFW_DECORATED, false);
     // glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
@@ -67,7 +68,7 @@ Engine::Engine(std::string window_lbl, int width, int height) : Input(this) {
         // th->frameBufferSizeChange(win, w, h);
         //  XXX: If will be few render APIs, this code should be in
         //  RenderAPI class
-        glViewport(0, 0, w, h);
+        // glViewport(0, 0, w, h);
 
         th->setResolution(w, h);
         // std::cout << "Framebuffer size: " << w << "x" << h << std::endl;
@@ -244,6 +245,11 @@ void Engine::setOneThreadMode(bool mode) {
     this->isOneThread = mode;
 }
 
+void Engine::setVSync(bool vsync) {
+    glfwSwapInterval(vsync);
+    this->isVSync = vsync;
+}
+
 void Engine::setMouseCapture(bool capture) {
     if (capture)
         glfwSetInputMode(this->window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
@@ -257,6 +263,14 @@ glm::ivec2 Engine::getResolution() {
 
 float Engine::getAspectRatio() {
     return this->aspectRatio;
+}
+
+bool Engine::getOneThreadMode() {
+    return this->isOneThread;
+}
+
+bool Engine::getVSync() {
+    return this->isVSync;
 }
 
 void Engine::threadFixedProcessLoop() {

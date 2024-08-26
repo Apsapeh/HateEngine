@@ -6,6 +6,15 @@
 #define HATE_ERROR(msg) HateEngine::Log::Error(msg, __FILE__, __LINE__);
 #define HATE_FATAL(msg) HateEngine::Log::Fatal(msg, __FILE__, __LINE__);
 
+#define HATE_INFO_F(msg, ...)                                                                      \
+    HateEngine::Log::Info(HateEngine::LogFn::__log_format(msg, __VA_ARGS__), __FILE__, __LINE__);
+#define HATE_WARNING_F(msg, ...)                                                                   \
+    HateEngine::Log::Warning(HateEngine::LogFn::__log_format(msg, __VA_ARGS__), __FILE__, __LINE__);
+#define HATE_ERROR_F(msg, ...)                                                                     \
+    HateEngine::Log::Error(HateEngine::LogFn::__log_format(msg, __VA_ARGS__), __FILE__, __LINE__);
+#define HATE_FATAL_F(msg, ...)                                                                     \
+    HateEngine::Log::Fatal(HateEngine::LogFn::__log_format(msg, __VA_ARGS__), __FILE__, __LINE__);
+
 #ifdef __HATE_ENGINE_DEBUG
 #define HATE_DEBUG(msg) HateEngine::Log::Debug(msg, __FILE__, __LINE__);
 #define HATE_DEBUG_F(msg, ...)                                                                     \

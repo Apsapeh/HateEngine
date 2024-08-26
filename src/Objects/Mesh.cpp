@@ -13,7 +13,6 @@ Mesh::Mesh(std::vector<float> vert, std::vector<uint32_t> ind, std::vector<float
     this->normals = std::move(norm);
 }
 
-// FIXME: DIRTY HACK
 Mesh::Mesh(const Mesh& mesh, bool copy_texture) {
     parent_position = mesh.parent_position;
     parent_rotation_matrix = mesh.parent_rotation_matrix;

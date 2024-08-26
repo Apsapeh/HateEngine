@@ -47,8 +47,9 @@ namespace HateEngine {
                 TexWrap tex_wrap = Repeat, TexFiltering tex_filtering = Linear, bool mipmap = true,
                 float mipmap_bias = -1.0f, bool autoload = true);
         ~Texture();
-        bool
-        Load(void (*API_loader)(Texture* texture_ptr), void (*API_unloader)(Texture* texture_ptr));
+        bool Load(
+                void (*API_loader)(Texture* texture_ptr), void (*API_unloader)(Texture* texture_ptr)
+        );
         void Unload();
         uint32_t getTextureID();
 

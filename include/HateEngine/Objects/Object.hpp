@@ -80,8 +80,9 @@ namespace HateEngine {
          * \param obj Object to bind
          * \return UUID of binded object
          */
-        UUID
-        bindObj(Object* obj, bool bind_pos = true, bool bind_rot = true, bool bind_scale = true);
+        UUID bindObj(
+                Object* obj, bool bind_pos = true, bool bind_rot = true, bool bind_scale = true
+        );
 
         /**
          * Unbind object by UUID

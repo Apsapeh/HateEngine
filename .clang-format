@@ -59,4 +59,5 @@ TabWidth: 4
 AllowShortFunctionsOnASingleLine: None
 AlignAfterOpenBracket: BlockIndent
 PointerAlignment: Left
+PenaltyReturnTypeOnItsOwnLine: 200
 ...

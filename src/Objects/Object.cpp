@@ -1,8 +1,6 @@
 #include <HateEngine/Objects/Object.hpp>
 // #include <cmath>
 
-// TODO: Добавить дочерние Object, которые наследуют перемещение, вращение и
-// подобное
 
 using namespace HateEngine;
 
@@ -110,7 +108,7 @@ glm::vec3 Object::getPosition() const {
 }
 
 glm::vec3 Object::getRotationEuler() const {
-    // FIXME Z coord may be wrong
+    // XXX Z coord may be wrong
     glm::vec3 rot;
     float tmp_1, tmp_2;
     // glm::extractEulerAngleYXZ(rotation_matrix, rot.y, rot.x, rot.z); //

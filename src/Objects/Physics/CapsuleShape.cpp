@@ -9,7 +9,7 @@
 using namespace HateEngine;
 
 CapsuleShape::CapsuleShape(float radius, float height, glm::vec3 pos, glm::vec3 rot) :
-    CollisionShape(Sphere, pos, rot) {
+    CollisionShape(Capsule, pos, rot) {
     changeRadius(radius);
     changeHeight(height);
 }
@@ -23,10 +23,10 @@ void CapsuleShape::changeRadius(float radius) {
 }
 
 void CapsuleShape::changeHeight(float height) {
-    this->height = height;
+    this->height = height - this->radius * 2;
 
     if (reactShape != nullptr) {
-        ((reactphysics3d::CapsuleShape*) reactShape)->setHeight(height);
+        ((reactphysics3d::CapsuleShape*) reactShape)->setHeight(this->height);
     }
 }
 

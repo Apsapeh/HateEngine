@@ -3,9 +3,6 @@
 using namespace HateEngine;
 
 CheckboxUI::CheckboxUI(const CheckboxUI& checkbox) : ObjectUI(checkbox) {
-    this->color = checkbox.color;
-    this->text = checkbox.text;
-    this->text_align = checkbox.text_align;
     this->is_checked = checkbox.is_checked;
 }
 

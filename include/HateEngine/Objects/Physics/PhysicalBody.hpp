@@ -62,6 +62,11 @@ namespace HateEngine {
         void rotate(float x, float y, float z);
         void rotate(glm::vec3 vec);
 
+        void setLinearVelocity(glm::vec3 vec);
+        void setLinearVelocity(float x, float y, float z);
+
+        glm::vec3 getLinearVelocity() const;
+
         /**
          * Adds a collision shape to the body by copying the object
          * @param shape CollisionShape

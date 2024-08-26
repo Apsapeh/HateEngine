@@ -7,6 +7,8 @@
 #include <glm/glm.hpp>
 #include "../Utilities/UUID.hpp"
 #include "CoordsUI.hpp"
+#include "../Resources/UIFont.hpp"
+
 
 namespace HateEngine {
     class ObjectUI {
@@ -16,10 +18,17 @@ namespace HateEngine {
     public:
         enum Type { Widget, Label, Button, Checkbox };
 
+        std::string text = "";
+        glm::ivec4 color = {255, 255, 255, 255};
+        glm::ivec4 text_color = {0, 0, 0, 255};
+
     private:
         Type type;
 
     protected:
+        UIFont* font = nullptr;
+
+
         ObjectUI(const ObjectUI& obj);
         ObjectUI(Type type);
 
@@ -29,6 +38,13 @@ namespace HateEngine {
 
         void setScale(float scale);
         void zoom(float delta);
+
+        void setFont(UIFont* font, bool autosize = false);
+        void removeFont();
+        UIFont* getFont() const;
+
+        void setText(const std::string& text);
+        std::string getText() const;
 
         UUID getUUID() const;
     };
