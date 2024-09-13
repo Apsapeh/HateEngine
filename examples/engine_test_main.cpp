@@ -47,6 +47,7 @@ HateEngine::CubeMesh xAxMesh;
 //HateEngine::GLTFModel glmodel("examples/Assets/billy-plane-sep.glb");
 HateEngine::GLTFModel glmodel("examples/Assets/romb.glb");
     HateEngine::GLTFModel test_glmodel("examples/Assets/SHOTGUN4.glb");
+    HateEngine::GLTFModel playerCapsuleMesh("examples/Assets/capsule.glb");
 
 
 const int WIDTH = 800;
@@ -107,7 +108,8 @@ int main() {
     //test_glmodel.setVisible(false);
 
 
-    camera.bindObj(&test_glmodel);
+    //camera.bindObj(&test_glmodel);
+    playerCapsuleMesh.bindObj(&test_glmodel);
     
 
     std::cout << "Camera uuid: " << camera.getUUID().getU64() << std::endl;
@@ -285,7 +287,6 @@ int main() {
     //rigidBody.bindObj(&glmodel);
     
     //HateEngine::CubeMesh playerCubeMesh;
-    HateEngine::GLTFModel playerCapsuleMesh("examples/Assets/capsule.glb");
     playerCapsuleMesh.rotate(0, 0, 0);
     
     playerBody.setPosition(0, 3, 0);
@@ -368,7 +369,8 @@ int main() {
     lvl.addObjectRef(&fps_widget);
     //lvl.addObjectRef(&ui);
 
-
+    playerCapsuleMesh.bindObj(&camera);
+    
 
     game.setProcessLoop(_process);
     game.setFixedProcessLoop(_physics_process);
@@ -405,7 +407,7 @@ void _process(HateEngine::Engine *engine, double delta) {
     if (raw_dir.x != 0 or raw_dir.y != 0) {
         glm::vec2 dir = raw_dir * glm::vec2(delta * 60) * speed; 
 
-        glm::vec3 cam_rot = glm::radians(camera.getRotationEuler());
+        glm::vec3 cam_rot = glm::radians(camera.getGlobalRotationEuler());
         
         // Full free movement with mouse up and down
         camera.offset(cos(cam_rot.y) * dir.y * cos(cam_rot.x) * 0.1,
@@ -540,6 +542,7 @@ void _input_event(HateEngine::Engine *engine,
         }
 
         camera.rotate(0, xoffset, 0);
+        //playerCapsuleMesh.rotate(0, xoffset, 0);
         camera.rotate(yoffset, 0, 0, false);
         //camera.setRotationMatrix(glm::yawPitchRoll(event.position.x*0.01f, event.position.y*0.01f,0.0f));
         

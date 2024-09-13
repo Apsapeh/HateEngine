@@ -277,7 +277,7 @@ inline void OpenGL15::renderCamera(Camera* camera) {
     glMatrixMode(GL_PROJECTION);
     glLoadMatrixf(glm::value_ptr(Mp));
 
-    glm::mat4 mat = camera->getGlobalRotationMatrix();
+    glm::mat4 mat = camera->getRotationMatrix();
 
     mat = glm::translate(mat, -camera->getGlobalPosition());
 
