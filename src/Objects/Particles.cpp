@@ -8,8 +8,7 @@ using namespace HateEngine;
 
 Particle::Particle(
         uint32_t index, const Mesh& mesh, glm::vec3 pos, float lifetime, bool del_on_time
-) :
-    Mesh(mesh) {
+) : Mesh(mesh) {
     // std::cout << pos.x << " | " << pos.y << " | " << pos.z << "\n";
     this->parent_position = pos;
     this->index = index;

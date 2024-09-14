@@ -112,11 +112,10 @@ void Camera::setParentScale(glm::vec3 vec) {
 
 void Camera::setParentRotationMatrix(const glm::mat4& mat) {
     // std::cout << "Camera::setParentRotationMatrix" << std::endl;
-     //this->parent_rotation_matrix = glm::scale(mat, glm::vec3(-1, 1, -1));
-    //this->parent_rotation_matrix = glm::inverse(mat);
+    // this->parent_rotation_matrix = glm::scale(mat, glm::vec3(-1, 1, -1));
+    // this->parent_rotation_matrix = glm::inverse(mat);
     root_obj.setParentRotationMatrix(mat);
     this->parent_rotation_matrix = mat;
-    
 }
 
 void Camera::setRotationMatrix(glm::mat4 mat) {

@@ -16,7 +16,7 @@ reactphysics3d::PhysicsCommon PhysEngine::physicsCommon;
 
 PhysEngine::PhysEngine() {
     this->physicsWorld = physicsCommon.createPhysicsWorld();
-    //this->physicsWorld->setIsDebugRenderingEnabled(true);
+    // this->physicsWorld->setIsDebugRenderingEnabled(true);
     reactphysics3d::Ray ray({0, 0, 0}, {1, 1, 1});
     // Change the number of iterations of the position solver
     // this->physicsWorld->setNbIterationsPositionSolver(16);
@@ -42,7 +42,9 @@ void PhysEngine::IteratePhysics(float delta) {
     }
 }
 
-void PhysEngine::getRayCastCollisions(glm::vec3 startPos, glm::vec3 endPos, reactphysics3d::RaycastCallback* callback) {
+void PhysEngine::getRayCastCollisions(
+        glm::vec3 startPos, glm::vec3 endPos, reactphysics3d::RaycastCallback* callback
+) {
     reactphysics3d::Ray ray({startPos.z, startPos.y, startPos.x}, {endPos.z, endPos.y, endPos.x});
     physicsWorld->raycast(ray, callback);
 }
@@ -132,4 +134,3 @@ bool PhysEngine::removeObject(UUID uuid) {
     }
     return false;
 }
-

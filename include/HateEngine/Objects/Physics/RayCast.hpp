@@ -20,17 +20,14 @@ namespace HateEngine {
         RayCastCallback rayCastCallback;
         float length = 1.0f;
         //                      legth/2, width/2, height/2
-        //glm::vec3 reactRightSize = {.5f, .5f, .5f};
+        // glm::vec3 reactRightSize = {.5f, .5f, .5f};
 
     public:
-        RayCast(
-                PhysEngine* physEngine, float length = 1.0f
-        );
+        RayCast(PhysEngine* physEngine, float length = 1.0f);
 
-        //void changeSize(float width, float height, float length);
+        // void changeSize(float width, float height, float length);
 
         void cast();
         bool isCollide();
-
     };
 } // namespace HateEngine

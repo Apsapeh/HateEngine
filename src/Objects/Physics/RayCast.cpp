@@ -8,14 +8,15 @@
 using namespace HateEngine;
 
 reactphysics3d::decimal RayCastCallback::notifyRaycastHit(const reactphysics3d::RaycastInfo& info) {
- 
 
 
-        HATE_DEBUG_F("Hit point : %f %f %f \n", info.worldPoint.z, info.worldPoint.y, info.worldPoint.x);
- 
-        // Return a fraction of 1.0 to gather all hits
-        return reactphysics3d::decimal(0.0);
-    }
+    HATE_DEBUG_F(
+            "Hit point : %f %f %f \n", info.worldPoint.z, info.worldPoint.y, info.worldPoint.x
+    );
+
+    // Return a fraction of 1.0 to gather all hits
+    return reactphysics3d::decimal(0.0);
+}
 
 RayCast::RayCast(PhysEngine* physEngine, float length) {
     this->physEngine = physEngine;

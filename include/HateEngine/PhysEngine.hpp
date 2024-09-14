@@ -10,6 +10,7 @@
 namespace HateEngine {
     class PhysEngine {
         friend class RayCast;
+
     public:
         struct PhysBodyObject {
             PhysicalBody* obj;
@@ -23,8 +24,10 @@ namespace HateEngine {
         // std::vector<PhysBodyObject> physBodies;
         std::unordered_map<UUID, PhysBodyObject> physBodies;
 
-    protected: 
-        void getRayCastCollisions(glm::vec3 startPos, glm::vec3 endPos, reactphysics3d::RaycastCallback* callback);
+    protected:
+        void getRayCastCollisions(
+                glm::vec3 startPos, glm::vec3 endPos, reactphysics3d::RaycastCallback* callback
+        );
 
     public:
         PhysEngine();
