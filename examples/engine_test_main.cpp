@@ -25,6 +25,7 @@
 #include <glm/gtx/quaternion.hpp>
 #include <iostream>
 #include <HateEngine/Objects/Physics/SphereShape.hpp>
+#include <HateEngine/Objects/Physics/RayCast.hpp>
 #include <HateEngine/Resources/UIFont.hpp>
 
 #include <HateEngine/UI/WidgetUI.hpp>
@@ -59,6 +60,7 @@ HateEngine::Light sun(HateEngine::Light::DirectionalLight);
 HateEngine::Light light(HateEngine::Light::OmniLight);
 
 HateEngine::Particles *part;
+HateEngine::RayCast* ray;
 
 HateEngine::LabelUI fps_label;
 HateEngine::WidgetUI* fps_widget_ptr = nullptr;
@@ -308,6 +310,11 @@ int main() {
 
 
 
+    // RayCast test
+    ray = new HateEngine::RayCast(lvl.getPhysEngine(), 1.0f);
+
+
+
     // UI TEST
     HateEngine::WidgetUI ui;
     ui.has_border = true;
@@ -432,6 +439,7 @@ void _process(HateEngine::Engine *engine, double delta) {
 glm::vec3 cam_dir;
 
 void _physics_process(HateEngine::Engine *engine, double delta) {
+    ray->cast();
     //std::cout << engine->getResolution().x << " | " << engine->getResolution().y << "\n";
     test_glmodel.rotate(1, 0, 0);
     //std::cout << camera.getRotationEuler().x << " " << camera.getRotationEuler().y << " " << camera.getRotationEuler().z << "\n";
