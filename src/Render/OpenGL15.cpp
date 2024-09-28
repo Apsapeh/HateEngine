@@ -223,8 +223,10 @@ void OpenGL15::render(const Mesh* mesh, std::vector<Light*>* lights_vec) {
             float max_light_render_dist = mesh->getCustomMaxLightDist();
             if (max_light_render_dist == 0)
                 max_light_render_dist = this->maxLightRenderDist;
-            light_indicies =
-                    getNearestLights(lights_vec, mesh->getGlobalPosition(), max_light_render_dist);
+            light_indicies = getNearestLights(
+                    lights_vec, mesh->getGlobalPosition(),
+                    max_light_render_dist + mesh->getAABBRadius()
+            );
             renderLight(lights_vec, light_indicies);
         } else {
             glDisable(GL_LIGHTING);
@@ -376,4 +378,8 @@ void OpenGL15::unloadTexture(Texture* texture_ptr) {
     texture_ptr->textureGL_ID = 0;
 }
 
+
+void OpenGL15::setMaxLightRenderDist(float dist) {
+    this->maxLightRenderDist = dist;
+}
 //============================ End 3D ============================

@@ -1,5 +1,6 @@
 #include <HateEngine/Objects/Mesh.hpp>
 #include <algorithm>
+#include <cstdint>
 #include <utility>
 
 using namespace HateEngine;
@@ -11,6 +12,8 @@ Mesh::Mesh(std::vector<float> vert, std::vector<uint32_t> ind, std::vector<float
     this->verticies = std::move(vert);
     this->indicies = std::move(ind);
     this->normals = std::move(norm);
+
+    updateCenterMaxSize();
 }
 
 Mesh::Mesh(const Mesh& mesh, bool copy_texture) {
@@ -27,6 +30,8 @@ Mesh::Mesh(const Mesh& mesh, bool copy_texture) {
     texture = mesh.texture;
     UV = mesh.UV;
 
+    updateCenterMaxSize();
+
     if (copy_texture and mesh.texture != nullptr)
         texture = new Texture(*mesh.texture, true);
 }
@@ -34,8 +39,25 @@ Mesh::Mesh(const Mesh& mesh, bool copy_texture) {
 Mesh::~Mesh() {
 }
 
+void Mesh::updateCenterMaxSize() {
+    glm::vec3 min;
+    glm::vec3 max;
+    for (uint32_t i = 0; i < verticies.size(); i += 3) {
+        min.x = std::min(min.x, verticies[i]);
+        min.y = std::min(min.y, verticies[i + 1]);
+        min.z = std::min(min.z, verticies[i + 2]);
+
+        max.x = std::max(max.x, verticies[i]);
+        max.y = std::max(max.y, verticies[i + 1]);
+        max.z = std::max(max.z, verticies[i + 2]);
+    }
+
+    this->center_max_size = glm::length(max - min) / 2;
+}
+
 void Mesh::setVertices(std::vector<float> vec) {
     this->verticies = std::move(vec);
+    updateCenterMaxSize();
 }
 
 void Mesh::setIndicies(std::vector<uint32_t> vec) {
@@ -72,6 +94,10 @@ void Mesh::disableLightShading() {
 }
 bool Mesh::isLightShading() const {
     return this->is_shaded;
+}
+
+float Mesh::getAABBRadius() const {
+    return this->center_max_size;
 }
 
 const std::vector<float>* Mesh::getVertices() const {

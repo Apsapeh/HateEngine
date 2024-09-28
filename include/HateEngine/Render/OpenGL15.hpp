@@ -15,9 +15,8 @@ namespace HateEngine {
     public:
         OpenGL15(Engine* engine);
 
-        void Render(
-
-        );
+        void Render();
+        void setMaxLightRenderDist(float dist);
 
     private:
         /**
@@ -35,7 +34,7 @@ namespace HateEngine {
 
         Engine* engine = nullptr;
         uint8_t maxLightCount = 8;
-        float maxLightRenderDist = 2500; // TODO: Make it configurable
+        float maxLightRenderDist = 25;
         float UIScale = 1.0f;
 
         void initNuklearUI();

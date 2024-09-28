@@ -7,14 +7,17 @@
 namespace HateEngine {
     // Object -> Mesh
     class Mesh : public Object {
-    protected:
+    private:
         std::vector<float> verticies;
         std::vector<uint32_t> indicies;
         std::vector<float> normals;
         Texture* texture = nullptr;
         std::vector<float> UV = {};
         float max_light_dist = 0;
+        float center_max_size = 0;
         bool is_shaded = true;
+
+        void updateCenterMaxSize();
 
     public:
         ~Mesh();
@@ -35,6 +38,7 @@ namespace HateEngine {
         void enableLightShading();
         void disableLightShading();
         bool isLightShading() const;
+        float getAABBRadius() const;
 
         const std::vector<float>* getVertices() const;
         const std::vector<uint32_t>* getIndicies() const;
