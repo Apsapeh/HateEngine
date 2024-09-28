@@ -31,7 +31,6 @@ PhysEngine::~PhysEngine() {
     physicsCommon.destroyPhysicsWorld(physicsWorld);
 }
 
-// FIXME: Add destructor
 
 void PhysEngine::IteratePhysics(float delta) {
     physicsWorld->update(delta);

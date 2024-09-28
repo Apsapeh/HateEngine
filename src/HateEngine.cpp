@@ -27,7 +27,6 @@
     pthread_setschedparam(pthread_self(), SCHED_RR, &sch_params);
 #elif _WIN32
 #include <windows.h>
-// FIXME: I don't, it's correct or not
 #define SET_THREAD_HIGH_PRIORITY                                                                   \
     SetPriorityClass(GetCurrentProcess(), HIGH_PRIORITY_CLASS);                                    \
     SetThreadPriority(GetCurrentThread(), THREAD_PRIORITY_TIME_CRITICAL);
@@ -51,10 +50,10 @@ Engine::Engine(std::string window_lbl, int width, int height) : Input(this) {
     }
 
     float xscale, yscale;
-    // glfwGetWindowContentScale(this->window, &xscale, &yscale);
+    glfwGetWindowContentScale(this->window, &xscale, &yscale);
 
-    // FIXME: Баги с масштабированием
     this->setResolution(width, height);
+    this->displayScale = glm::ivec2(xscale, yscale);
 
     glfwSetWindowUserPointer(this->window, this);
     glfwMakeContextCurrent(this->window);
@@ -65,10 +64,6 @@ Engine::Engine(std::string window_lbl, int width, int height) : Input(this) {
 
     glfwSetFramebufferSizeCallback(this->window, [](GLFWwindow* win, int w, int h) {
         Engine* th = static_cast<Engine*>(glfwGetWindowUserPointer(win));
-        // th->frameBufferSizeChange(win, w, h);
-        //  XXX: If will be few render APIs, this code should be in
-        //  RenderAPI class
-        // glViewport(0, 0, w, h);
 
         th->setResolution(w, h);
         // std::cout << "Framebuffer size: " << w << "x" << h << std::endl;
@@ -259,6 +254,10 @@ void Engine::setMouseCapture(bool capture) {
 
 glm::ivec2 Engine::getResolution() {
     return this->resolution;
+}
+
+glm::ivec2 Engine::getDisplayScale() {
+    return this->displayScale;
 }
 
 float Engine::getAspectRatio() {

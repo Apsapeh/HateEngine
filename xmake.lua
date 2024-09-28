@@ -51,14 +51,17 @@ target("HateEngine")
         set_policy("build.merge_archive", true)
         set_symbols("hidden")
         set_fpmodels("fast")
-        set_optimize("aggressive")
+        --set_optimize("aggressive")
     end
 
     set_warnings("pedantic")
     if has_config("show_warnings") then
-        set_warnings("everything", "pedantic")
+        --set_warnings("everything", "pedantic")
         
     end
+
+    -- add_cxxflags("-mmacosx-version-min=10.13 -stdlib=libc++", {force=true})
+    -- add_ldflags("-mmacosx-version-min=10.13 -stdlib=libc++", {force=true})
     
     -- after_link(function (target)
     --     print(target:info()) -- тут дальше можно вычленить linkdirs чтоб объединить glfw и reactphysics в hateengine
@@ -97,13 +100,15 @@ target("Example_1")
     end
 
     set_rundir("$(projectdir)")
+    -- add_cxxflags("-mmacosx-version-min=10.13 -stdlib=libc++", {force=true})
+    -- add_ldflags("-mmacosx-version-min=10.13 -stdlib=libc++", {force=true})
 
 
     if is_mode("debug") then
         set_symbols("debug")
         set_optimize("none")
         add_defines("__HATE_ENGINE_DEBUG")
-        set_warnings("everything")
+        --set_warnings("everything")
     elseif is_mode("release") then
         --set_policy("build.merge_archive", true)
         set_symbols("hidden")
@@ -113,5 +118,5 @@ target("Example_1")
     end
     
     if has_config("show_warnings") then
-        set_warnings("everything")
+        --set_warnings("everything")
     end

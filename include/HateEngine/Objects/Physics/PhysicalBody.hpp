@@ -90,6 +90,12 @@ namespace HateEngine {
          * found
          */
         bool delCollisionShape(UUID uuid);
+
+        /**
+         * Gets a pointer to the collision shapes
+         * @return A pointer to the collision shapes
+         */
+        std::unordered_map<UUID, ShapeObject> const* getShapes();
     };
 
 } // namespace HateEngine

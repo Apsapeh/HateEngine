@@ -111,9 +111,6 @@ glm::vec3 Object::getRotationEuler() const {
     // XXX Z coord may be wrong
     glm::vec3 rot;
     float tmp_1, tmp_2;
-    // glm::extractEulerAngleYXZ(rotation_matrix, rot.y, rot.x, rot.z); //
-    // return global rotation glm::extractEulerAngleZXY(rotation_matrix, rot.z,
-    // rot.x, rot.y);
 
     glm::extractEulerAngleXZY(rotation_matrix, rot.x, tmp_1, tmp_2); // x
     // glm::extractEulerAngleYXZ(rotation_matrix, rot.y, tmp_1, tmp_2);
@@ -121,17 +118,8 @@ glm::vec3 Object::getRotationEuler() const {
 
     rot *= -1;
 
-    // Changes the Y rotation detection limit from [-PI/2, PI/2] to [-P, P]
-    /*bool bad = rotation_matrix[0][0] == 0 and rotation_matrix[0][2] == 0;
-    if (not bad)
-        rot.y = atan2(rotation_matrix[0][0], -rotation_matrix[0][2]);
-    else
-        rot.y = atan2(rotation_matrix[1][0], -rotation_matrix[1][2]);*/
     rot = glm::degrees(rot);
     rot.y += 90.0f;
-
-    /*if (rot.y < 0)
-        rot.y += 360.0f;*/
 
     return rot;
 }
@@ -153,7 +141,7 @@ glm::vec3 Object::getGlobalPosition() const {
 }
 
 glm::vec3 Object::getGlobalRotationEuler() const {
-    glm::vec3 rot;
+    /*glm::vec3 rot;
     glm::mat4 global_rotation = getGlobalRotationMatrix();
     glm::extractEulerAngleXYZ(global_rotation, rot.x, rot.y, rot.z);
     rot *= -1;
@@ -165,7 +153,33 @@ glm::vec3 Object::getGlobalRotationEuler() const {
     else
         rot.y = atan2(global_rotation[1][0], -global_rotation[1][2]);
 
-    return glm::degrees(rot);
+    return glm::degrees(rot);*/
+    glm::vec3 rot;
+    float tmp_1, tmp_2;
+    // glm::extractEulerAngleYXZ(rotation_matrix, rot.y, rot.x, rot.z); //
+    // return global rotation glm::extractEulerAngleZXY(rotation_matrix, rot.z,
+    // rot.x, rot.y);
+
+    glm::mat4 global_rotation = getGlobalRotationMatrix();
+    glm::extractEulerAngleXZY(global_rotation, rot.x, tmp_1, tmp_2); // x
+    // glm::extractEulerAngleYXZ(rotation_matrix, rot.y, tmp_1, tmp_2);
+    glm::extractEulerAngleZXY(global_rotation, rot.z, tmp_1, rot.y); // y, z = 0
+
+    rot *= -1;
+
+    // Changes the Y rotation detection limit from [-PI/2, PI/2] to [-P, P]
+    /*bool bad = rotation_matrix[0][0] == 0 and rotation_matrix[0][2] == 0;
+    if (not bad)
+        rot.y = atan2(rotation_matrix[0][0], -rotation_matrix[0][2]);
+    else
+        rot.y = atan2(rotation_matrix[1][0], -rotation_matrix[1][2]);*/
+    rot = glm::degrees(rot);
+    rot.y += 90.0f;
+
+    /*if (rot.y < 0)
+        rot.y += 360.0f;*/
+
+    return rot;
 }
 
 glm::mat4 Object::getGlobalRotationMatrix() const {

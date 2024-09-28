@@ -63,6 +63,7 @@ namespace HateEngine {
         bool isVSync = true;
 
         glm::ivec2 resolution = {0, 0};
+        glm::ivec2 displayScale = {0, 0};
         float aspectRatio;
         Level* level;
 
@@ -88,6 +89,7 @@ namespace HateEngine {
         void setMouseCapture(bool capture);
 
         glm::ivec2 getResolution();
+        glm::ivec2 getDisplayScale();
         float getAspectRatio();
         bool getOneThreadMode();
         bool getVSync();

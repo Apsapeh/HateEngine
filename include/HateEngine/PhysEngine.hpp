@@ -10,6 +10,7 @@
 namespace HateEngine {
     class PhysEngine {
         friend class RayCast;
+        friend class RayCastCallback;
 
     public:
         struct PhysBodyObject {

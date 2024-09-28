@@ -9,6 +9,7 @@ PhysicalBody::PhysicalBody(BodyType bodyType) {
     this->bodyType = bodyType;
 }
 
+
 PhysicalBody::~PhysicalBody() {
     for (auto& obj: shapes) {
         if (not obj.second.is_ref)
@@ -108,6 +109,11 @@ bool PhysicalBody::delCollisionShape(UUID uuid) {
     }
     return false;
 }
+
+std::unordered_map<UUID, PhysicalBody::ShapeObject> const* PhysicalBody::getShapes() {
+    return &shapes;
+}
+
 
 void PhysicalBody::setPosition(glm::vec3 vec) {
     Object::setPosition(vec);
