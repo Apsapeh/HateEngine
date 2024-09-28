@@ -3,8 +3,6 @@
 #include <cstdint>
 #include <mutex>
 #include <string>
-#include <unordered_map>
-#include "Objects/Camera.hpp"
 // #include "Utilities/UUID_Generator.hpp"
 #include "Resources/Level.hpp"
 
@@ -59,13 +57,20 @@ namespace HateEngine {
         uint16_t physicsEngineIterateLoopRefreshRate = 120;
         int64_t physicsEngineIterateDelayMCS;
 
+        bool isRunned = false;
+
         bool isOneThread = false;
         bool isVSync = true;
+        bool isMouseCaptured = false;
 
         glm::ivec2 resolution = {0, 0};
         glm::ivec2 displayScale = {0, 0};
         float aspectRatio;
         Level* level;
+
+        std::string windowTitle = "";
+        bool needChangeMouseCaptureMode = false;
+        bool needChangeWindowTitle = false;
 
         // Scene objects
         // std::unordered_map<UUID_Generator::UUID, SceneObject> objects;
@@ -93,6 +98,7 @@ namespace HateEngine {
         float getAspectRatio();
         bool getOneThreadMode();
         bool getVSync();
+        bool getMouseCapture();
 
         void setProcessLoop(void (*func)(Engine*, double));
         void setFixedProcessLoop(void (*func)(Engine*, double));

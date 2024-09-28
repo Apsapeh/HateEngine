@@ -39,6 +39,7 @@ using namespace HateEngine;
 
 Engine::Engine(std::string window_lbl, int width, int height) : Input(this) {
     // glfwInitHint(GLFW_PLATFORM, GLFW_PLATFORM_WAYLAND);
+    this->windowTitle = window_lbl;
     glfwInit();
     // Create window
     GLFWmonitor* monitor = NULL;
@@ -154,6 +155,7 @@ Engine::Engine(std::string window_lbl, int width, int height) : Input(this) {
 
 void Engine::Run() {
     SET_THREAD_HIGH_PRIORITY
+    this->isRunned = true;
     std::thread* fixedProcessThread = nullptr;
     std::thread* physicsEngineProcessThread = nullptr;
     if (not this->isOneThread) {
@@ -176,6 +178,20 @@ void Engine::Run() {
         delta = glfwGetTime() - oldTime;
         oldTime = glfwGetTime();
         glfwPollEvents();
+
+        /// Thread safety GLFW calls
+        if (this->needChangeMouseCaptureMode) {
+            glfwSetInputMode(
+                    this->window, GLFW_CURSOR,
+                    this->isMouseCaptured ? GLFW_CURSOR_DISABLED : GLFW_CURSOR_NORMAL
+            );
+            this->needChangeMouseCaptureMode = false;
+        }
+        if (this->needChangeWindowTitle) {
+            glfwSetWindowTitle(this->window, this->windowTitle.c_str());
+            this->needChangeWindowTitle = false;
+        }
+        ///
 
         // meshesMutex.lock();
         if (this->processLoop != nullptr)
@@ -237,6 +253,8 @@ void Engine::setResolution(int width, int height) {
 }
 
 void Engine::setOneThreadMode(bool mode) {
+    if (this->isRunned)
+        HATE_ERROR("Engine::setOneThreadMode should be called before Engine::Run");
     this->isOneThread = mode;
 }
 
@@ -246,10 +264,12 @@ void Engine::setVSync(bool vsync) {
 }
 
 void Engine::setMouseCapture(bool capture) {
-    if (capture)
+    /*if (capture)
         glfwSetInputMode(this->window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
     else
-        glfwSetInputMode(this->window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+        glfwSetInputMode(this->window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);*/
+    this->isMouseCaptured = capture;
+    this->needChangeMouseCaptureMode = true;
 }
 
 glm::ivec2 Engine::getResolution() {
@@ -270,6 +290,10 @@ bool Engine::getOneThreadMode() {
 
 bool Engine::getVSync() {
     return this->isVSync;
+}
+
+bool Engine::getMouseCapture() {
+    return this->isMouseCaptured;
 }
 
 void Engine::threadFixedProcessLoop() {
@@ -316,7 +340,9 @@ void Engine::threadPhysicsEngineIterateLoop() {
 }
 
 void Engine::changeWindowTitle(std::string title) {
-    glfwSetWindowTitle(this->window, title.c_str());
+    // glfwSetWindowTitle(this->window, title.c_str());
+    this->windowTitle = title;
+    glfwSetWindowTitle(this->window, this->windowTitle.c_str());
 }
 
 void Engine::setProcessLoop(void (*func)(Engine*, double)) {
