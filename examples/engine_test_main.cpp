@@ -46,7 +46,7 @@ HateEngine::CubeMesh mesh2;
 HateEngine::CubeMesh xAxMesh;
 // HateEngine::GLTFModel glmodel("examples/Assets/employee.glb");
 // HateEngine::GLTFModel glmodel("examples/Assets/billy-plane-sep.glb");
-HateEngine::GLTFModel glmodel("examples/Assets/romb.glb");
+HateEngine::GLTFModel glmodel("examples/Assets/fire.glb");
 HateEngine::GLTFModel test_glmodel("examples/Assets/SHOTGUN4.glb");
 HateEngine::GLTFModel playerCapsuleMesh("examples/Assets/capsule.glb");
 
