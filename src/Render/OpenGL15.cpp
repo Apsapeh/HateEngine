@@ -5,6 +5,7 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
+#include "HateEngine/Resources/GLTFAnimationPlayer.hpp"
 #include "HateEngine/Resources/Level.hpp"
 #include "glm/ext/matrix_float4x4.hpp"
 #include "glm/fwd.hpp"
@@ -95,7 +96,10 @@ void OpenGL15::Render() {
 
     // glMatrixMode(GL_PROJECTION);
     glPushMatrix();
-    this->Draw3D(level->camera, &level->meshes, &level->particles, &level->lights);
+    this->Draw3D(
+            level->camera, &level->meshes, &level->animationPlayers, &level->particles,
+            &level->lights
+    );
     // glFlush();
     // glMatrixMode(GL_PROJECTION);
     glPopMatrix();
@@ -185,7 +189,8 @@ void OpenGL15::Render() {
 }
 
 void OpenGL15::Draw3D(
-        Camera* camera, std::vector<Mesh*>* meshes, std::vector<Particles*>* particles,
+        Camera* camera, std::vector<Mesh*>* meshes,
+        std::vector<GLTFAnimationPlayer*>* animation_players, std::vector<Particles*>* particles,
         std::vector<Light*>* lights
 ) {
     glEnable(GL_DEPTH_TEST);
@@ -203,6 +208,11 @@ void OpenGL15::Draw3D(
 
     for (const auto obj: *meshes)
         render(obj, lights);
+
+    for (const auto s: *animation_players) {
+        for (const auto& mesh: *s->getMeshes())
+            render(mesh, lights);
+    }
 
     for (const auto* s: *particles) {
         for (const auto& particle: s->particlesVector)

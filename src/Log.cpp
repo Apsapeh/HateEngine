@@ -9,8 +9,12 @@ using namespace HateEngine;
 
 // Example: 09-08-2024 18:04:15.115 [INFO] [src/main.cpp@10] Hello World!
 
-static char* buffer = new char[4096];
+static char* buffer = nullptr;
 std::string LogFn::__log_format(const std::string msg, ...) {
+    if (buffer == nullptr) {
+        buffer = new char[4096];
+    }
+
     va_list args;
     va_start(args, msg);
     vsnprintf(buffer, 4096, msg.c_str(), args);
@@ -67,6 +71,6 @@ void Log::Error(std::string msg, std::string file, unsigned int line) {
 void Log::Fatal(std::string msg, std::string file, unsigned int line) {
     std::cerr << termcolor::reset << termcolor::on_red
               << LogFn::__log_message_template("FATAL", msg, file, line) << termcolor::reset
-              << "\n";
+              << std::endl;
     exit(1);
 }

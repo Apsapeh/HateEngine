@@ -29,6 +29,7 @@ Mesh::Mesh(const Mesh& mesh, bool copy_texture) {
     normals = mesh.normals;
     texture = mesh.texture;
     UV = mesh.UV;
+    name = mesh.name;
 
     updateCenterMaxSize();
 
@@ -53,6 +54,14 @@ void Mesh::updateCenterMaxSize() {
     }
 
     this->center_max_size = glm::length(max - min) / 2;
+}
+
+void Mesh::setName(std::string name) {
+    this->name = name;
+}
+
+const std::string Mesh::getName() {
+    return name;
 }
 
 void Mesh::setVertices(std::vector<float> vec) {

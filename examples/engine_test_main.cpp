@@ -1,5 +1,6 @@
 #include "GLFW/glfw3.h"
 #include "HateEngine/Objects/Physics/CapsuleShape.hpp"
+#include "HateEngine/Resources/GLTFAnimationPlayer.hpp"
 #include "glm/ext/vector_float2.hpp"
 #include "glm/ext/vector_float3.hpp"
 
@@ -46,7 +47,8 @@ HateEngine::CubeMesh mesh2;
 HateEngine::CubeMesh xAxMesh;
 // HateEngine::GLTFModel glmodel("examples/Assets/employee.glb");
 // HateEngine::GLTFModel glmodel("examples/Assets/billy-plane-sep.glb");
-HateEngine::GLTFModel glmodel("examples/Assets/ignore/fire.glb");
+// HateEngine::GLTFModel glmodel("examples/Assets/ignore/fire.glb");
+HateEngine::GLTFModel dance_animation("examples/Assets/ignore/dance.glb");
 HateEngine::GLTFModel test_glmodel("examples/Assets/SHOTGUN4.glb");
 HateEngine::GLTFModel playerCapsuleMesh("examples/Assets/capsule.glb");
 
@@ -124,7 +126,7 @@ int main() {
 
     game.setMouseCapture(true);
     // std::cout << "\n\n\n\n" << glfwGetInputMode(game.window, GLFW_CURSOR) << "\n\n\n\n";
-    game.setOneThreadMode(true);
+    game.setOneThreadMode(false);
     game.setVSync(true);
     // Setting textures for the cube and floor meshes
 
@@ -181,8 +183,8 @@ int main() {
     // lvl.addObjectRef(&objmodel);
 
 
-    std::cout << glmodel.getGlobalPosition().x << " " << glmodel.getGlobalPosition().y << " "
-              << glmodel.getGlobalPosition().z << "\n";
+    /*std::cout << glmodel.getGlobalPosition().x << " " << glmodel.getGlobalPosition().y << " "
+              << glmodel.getGlobalPosition().z << "\n";*/
 
     floor.setTexture(&tex_floor);
     floor.setUV({
@@ -205,13 +207,21 @@ int main() {
     // lvl.addObjectRef(&xAxMesh);
     lvl.addObjectRef(&floor);
     lvl.addObjectRef(&sun);
-    lvl.addObjectRef(&glmodel);
+
+    HateEngine::GLTFAnimationPlayer anim_player(&dance_animation);
+    anim_player.offset(5, 0, 5);
+    anim_player.setFPS(60);
+    anim_player.setLoop(true);
+    anim_player.play("dance_man");
+    lvl.addObjectRef(&anim_player);
+
+    // lvl.addObjectRef(&glmodel);
 
     // print glmodel meshes id
 
 
-    glmodel.offset({30, 0, 30});
-    // glmodel.getMeshes()[0]->disableLightShading();
+    // glmodel.offset({0, 1, 0});
+    //  glmodel.getMeshes()[0]->disableLightShading();
 
     // light.setPosition({0, 2, 0});
     // l
@@ -320,9 +330,7 @@ int main() {
     // HateEngine::LabelUI label;
     // label.text = "Hello, World!";
     HateEngine::WidgetUI fps_widget;
-    fps_widget.position = {
-            150, -100, 1, HateEngine::CoordsUI::CenterLeft, HateEngine::CoordsUI::Pixels
-    };
+    fps_widget.position = {0, 0, 1, HateEngine::CoordsUI::TopLeft, HateEngine::CoordsUI::Pixels};
     fps_widget.size = {300, 200, 1, HateEngine::CoordsUI::TopLeft, HateEngine::CoordsUI::Pixels};
     fps_widget.color.w = 0;
     // fps_widget.has_background = true;
@@ -406,6 +414,20 @@ void _process(HateEngine::Engine* engine, double delta) {
         fps_time = 0.0;
     }
 
+
+    if (engine->Input.isKeyPressed(GLFW_KEY_P)) {
+        GLFWmonitor* monitor = glfwGetPrimaryMonitor();
+        const GLFWvidmode* mode = glfwGetVideoMode(monitor);
+
+        glfwWindowHint(GLFW_RED_BITS, mode->redBits);
+        glfwWindowHint(GLFW_GREEN_BITS, mode->greenBits);
+        glfwWindowHint(GLFW_BLUE_BITS, mode->blueBits);
+        glfwWindowHint(GLFW_REFRESH_RATE, mode->refreshRate);
+        glfwSetWindowMonitor(
+                engine->window, monitor, 0, 0, mode->width, mode->height, mode->refreshRate
+        );
+    }
+
     glm::vec2 raw_dir = engine->Input.getVector(GLFW_KEY_A, GLFW_KEY_D, GLFW_KEY_W, GLFW_KEY_S);
     if (raw_dir.x != 0 or raw_dir.y != 0) {
         glm::vec2 dir = raw_dir * glm::vec2(delta * 60) * speed;
@@ -441,9 +463,9 @@ void _physics_process(HateEngine::Engine* engine, double delta) {
                 rayCastInfo.worldPoint.z
         );
     }
-    //HATE_DEBUG_F("Y: %f", rigidBody.getPosition().y);
-    // ray->isCollide();
-    // std::cout << engine->getResolution().x << " | " << engine->getResolution().y << "\n";
+    // HATE_DEBUG_F("Y: %f", rigidBody.getPosition().y);
+    //  ray->isCollide();
+    //  std::cout << engine->getResolution().x << " | " << engine->getResolution().y << "\n";
     test_glmodel.rotate(1, 0, 0);
     // std::cout << camera.getRotationEuler().x << " " << camera.getRotationEuler().y << " " <<
     // camera.getRotationEuler().z << "\n"; std::cout << "FPS: " << 1.0 / delta << "\n";
@@ -502,23 +524,11 @@ void _physics_process(HateEngine::Engine* engine, double delta) {
     float pb_z = playerBody.reactRigidBody->getLinearVelocity().z;
     playerBody.reactRigidBody->setLinearVelocity({-raw_dir.y, pb_y, raw_dir.x});
 
-    if (engine->Input.isKeyPressed(GLFW_KEY_P)) {
-        GLFWmonitor* monitor = glfwGetPrimaryMonitor();
-        const GLFWvidmode* mode = glfwGetVideoMode(monitor);
-
-        glfwWindowHint(GLFW_RED_BITS, mode->redBits);
-        glfwWindowHint(GLFW_GREEN_BITS, mode->greenBits);
-        glfwWindowHint(GLFW_BLUE_BITS, mode->blueBits);
-        glfwWindowHint(GLFW_REFRESH_RATE, mode->refreshRate);
-        glfwSetWindowMonitor(
-                engine->window, monitor, 0, 0, mode->width, mode->height, mode->refreshRate
-        );
-    }
 
     glm::vec2 glmodel_rot =
             engine->Input.getVector(GLFW_KEY_LEFT, GLFW_KEY_RIGHT, GLFW_KEY_UP, GLFW_KEY_DOWN);
-    glmodel.rotate(0, glmodel_rot.x, 0);
-    // glmodel.offset(0, glmodel_rot.y / 10, 0);
+    // glmodel.rotate(0, glmodel_rot.x, 0);
+    //  glmodel.offset(0, glmodel_rot.y / 10, 0);
 
 
     /*std::cout << "GLOBAL POS: " << glmodel.getGlobalPosition().x << " " <<

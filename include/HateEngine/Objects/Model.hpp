@@ -5,9 +5,15 @@
 
 namespace HateEngine {
     class Model : public Object {
+        friend class GLTFAnimationPlayer;
+
     protected:
         std::vector<Mesh*> meshes;
         std::vector<Texture> textures;
+
+        void setParentPosition(glm::vec3 vec) override;
+        void setParentScale(glm::vec3 vec) override;
+        void setParentRotationMatrix(const glm::mat4& mat) override;
 
     public:
         Model();

@@ -14,6 +14,7 @@ namespace HateEngine {
         friend OpenGL15;
         friend PhysicalBody;
         friend class Camera;
+        friend class Model;
 
     private:
         UUID uuid;

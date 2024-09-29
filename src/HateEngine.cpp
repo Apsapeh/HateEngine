@@ -229,6 +229,10 @@ void Engine::Run() {
             }
         }
 
+        for (auto& obj: level->animationPlayers) {
+            obj->Update(delta);
+        }
+
         ogl.Render();
 
         glfwSwapBuffers(this->window);

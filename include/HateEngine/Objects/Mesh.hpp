@@ -16,6 +16,7 @@ namespace HateEngine {
         float max_light_dist = 0;
         float center_max_size = 0;
         bool is_shaded = true;
+        std::string name = "";
 
         void updateCenterMaxSize();
 
@@ -24,6 +25,9 @@ namespace HateEngine {
         Mesh();
         Mesh(std::vector<float> vert, std::vector<uint32_t> ind, std::vector<float> norm);
         Mesh(const Mesh& mesh, bool copy_texture = false);
+
+        void setName(std::string name);
+        const std::string getName();
 
         void setVertices(std::vector<float> vec);
         void setIndicies(std::vector<uint32_t> vec);

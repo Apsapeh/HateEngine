@@ -81,6 +81,10 @@ static void Load(tgModel& model, std::vector<Mesh*>* meshes, std::vector<Texture
         for (const auto& primitive: model_mesh.primitives) {
             Mesh* mesh = new Mesh();
 
+            // model_mesh.name
+            // HATE_DEBUG_F("Mesh name: %s", model_mesh.name.c_str())
+            // std::cout << "Mesh name: " << model_mesh.name << std::endl;
+
             const auto& attributes = primitive.attributes;
 
             // =====> Get Verticies <=====
@@ -171,8 +175,10 @@ static void Load(tgModel& model, std::vector<Mesh*>* meshes, std::vector<Texture
             // =====> Set Mesh Properties <=====
             if (mesh_properties.count(model_mesh_counter) != 0) {
                 // std::cout << "Mesh properties: " << model_mesh.name << std::endl;
-                // HATE_DEBUG_F("Mesh properties: %s")
+
                 const auto& node = mesh_properties[model_mesh_counter];
+                mesh->setName(node.name);
+                HATE_DEBUG_F("Mesh name: %s", node.name.c_str());
 
                 if (node.scale.size() == 3)
                     mesh->setScale({node.scale[0], node.scale[1], node.scale[2]});
@@ -180,11 +186,20 @@ static void Load(tgModel& model, std::vector<Mesh*>* meshes, std::vector<Texture
                     mesh->setPosition(
                             {node.translation[0], node.translation[1], node.translation[2]}
                     );
-                    
-                HATE_FATAL_F("Rotation size: %d", node.rotation.size())
-                // if (node.rotation.size() == 4)
-                // mesh->setRotationMatrix({node.rotation[0], node.rotation[1],
-                // node.rotation[2], node.rotation[3]});
+
+                // HATE_DEBUG_F("Rotation size: %d", (int)node.rotation.size())
+                if (node.rotation.size() == 4) {
+                    glm::quat q = glm::quat(
+                            node.rotation[3], node.rotation[0], node.rotation[1], node.rotation[2]
+                    );
+                    // to matrix
+                    glm::mat4 rot = glm::mat4_cast(q);
+                    mesh->setRotationMatrix(rot);
+                }
+                // std::cout << "Rotation size: " << node.rotation.size() << std::endl;
+                //  if (node.rotation.size() == 4)
+                //  mesh->setRotationMatrix({node.rotation[0], node.rotation[1],
+                //  node.rotation[2], node.rotation[3]});
             }
 
             meshes->push_back(mesh);

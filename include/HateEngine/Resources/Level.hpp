@@ -9,6 +9,7 @@
 #include "../PhysEngine.hpp"
 #include "../UI/WidgetUI.hpp"
 #include "../Utilities/UUID.hpp"
+#include "HateEngine/Resources/GLTFAnimationPlayer.hpp"
 
 namespace HateEngine {
     class Level {
@@ -46,11 +47,14 @@ namespace HateEngine {
         // 3D renderable objects
         std::unordered_map<UUID, SceneObject> meshes_obj;
         std::unordered_map<UUID, SceneObject> models_obj;
+        std::unordered_map<UUID, SceneObject> animationPlayers_obj;
         std::unordered_map<UUID, SceneObject> particles_obj;
         std::unordered_map<UUID, SceneObject> lights_obj;
 
         // This vector should be generated from meshes_obj, models_obj
         std::vector<Mesh*> meshes;
+        // This vector should be generated from animationPlayers_obj
+        std::vector<GLTFAnimationPlayer*> animationPlayers;
         // This vector should be generated from particles_obj
         std::vector<Particles*> particles;
         // This vector should be generated from lights_obj
@@ -72,10 +76,12 @@ namespace HateEngine {
         std::mutex uiWidgetsMutex;
         std::mutex meshesMutex;
         std::mutex modelsMutex;
+        std::mutex animationPlayersMutex;
         std::mutex particlesMutex;
         std::mutex lightsMutex;
 
         void updateMeshesVector();
+        void updateAnimationPlayersVector();
         void updateParticlesVector();
         void updateLightsVector();
 
@@ -114,6 +120,7 @@ namespace HateEngine {
         UUID addObjectRef(Mesh* object);
         UUID addObjectRef(Light* object);
         UUID addObjectRef(Model* object);
+        UUID addObjectRef(GLTFAnimationPlayer* object);
 
         bool removeObject(const UUID& uuid);
     };

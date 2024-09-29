@@ -32,4 +32,32 @@ Model::~Model() {
     for (const auto m: this->meshes) {
         delete m;
     }
+
+    for (auto& t: this->textures) {
+        t.Unload();
+    }
+}
+
+
+void Model::setParentPosition(glm::vec3 vec) {
+    Object::setParentPosition(vec);
+
+    // for (auto& m: this->meshes)
+    //     m->setParentPosition(vec);
+}
+
+void Model::setParentScale(glm::vec3 vec) {
+    Object::setParentScale(vec);
+    /*for (auto& m: this->meshes)
+        m->setParentScale(vec);*/
+    // root_obj.setParentScale(vec);
+}
+
+void Model::setParentRotationMatrix(const glm::mat4& mat) {
+    // std::cout << "Camera::setParentRotationMatrix" << std::endl;
+    // this->parent_rotation_matrix = glm::scale(mat, glm::vec3(-1, 1, -1));
+    // this->parent_rotation_matrix = glm::inverse(mat);
+    // root_obj.setParentRotationMatrix(mat);
+    // this->parent_rotation_matrix = mat;
+    Object::setParentRotationMatrix(mat);
 }

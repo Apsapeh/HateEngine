@@ -9,6 +9,7 @@
 #include "../Resources/Level.hpp"
 #include "../Resources/Texture.hpp"
 #include "../Resources/UIFont.hpp"
+#include "HateEngine/Resources/GLTFAnimationPlayer.hpp"
 
 namespace HateEngine {
     class OpenGL15 {
@@ -26,8 +27,9 @@ namespace HateEngine {
          * \param lights  Vector of lights
          */
         inline void Draw3D(
-                Camera* camera, std::vector<Mesh*>* meshes, std::vector<Particles*>* particles,
-                std::vector<Light*>* lights
+                Camera* camera, std::vector<Mesh*>* meshes,
+                std::vector<GLTFAnimationPlayer*>* animation_plyaers,
+                std::vector<Particles*>* particles, std::vector<Light*>* lights
         );
 
         void DrawNuklearUI(std::unordered_map<UUID, Level::SceneUIWidget>* widgets);

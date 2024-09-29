@@ -99,7 +99,6 @@ void Camera::setRotation(float x, float y, float z) {
     setRotation({x, y, z});
 }
 
-#include <iostream>
 void Camera::setParentPosition(glm::vec3 vec) {
     Object::setParentPosition(vec);
     root_obj.setPosition(getGlobalPosition());

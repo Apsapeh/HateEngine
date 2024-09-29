@@ -1,11 +1,16 @@
 #include <HateEngine/Resources/Level.hpp>
 
 #include "../globalStaticParams.hpp"
+#include "HateEngine/Objects/Light/Light.hpp"
+#include "HateEngine/Objects/Model.hpp"
+#include "HateEngine/Objects/Particles.hpp"
+#include "HateEngine/Resources/GLTFAnimationPlayer.hpp"
+#include "HateEngine/UI/WidgetUI.hpp"
 
-#define DESTRUCTOR_DELETE_POINTERS(ptr_obj)                                                        \
+#define DESTRUCTOR_DELETE_POINTERS(ptr_obj, type)                                                  \
     for (const auto& obj: ptr_obj) {                                                               \
         if (not obj.second.is_ref)                                                                 \
-            delete obj.second.obj;                                                                 \
+            delete (type*) obj.second.obj;                                                         \
     }                                                                                              \
     ptr_obj.clear();
 
@@ -15,11 +20,12 @@ Level::Level() {
 }
 
 Level::~Level() {
-    DESTRUCTOR_DELETE_POINTERS(ui_widgets)
-    DESTRUCTOR_DELETE_POINTERS(meshes_obj)
-    DESTRUCTOR_DELETE_POINTERS(models_obj)
-    DESTRUCTOR_DELETE_POINTERS(particles_obj)
-    DESTRUCTOR_DELETE_POINTERS(lights_obj)
+    DESTRUCTOR_DELETE_POINTERS(ui_widgets, WidgetUI)
+    DESTRUCTOR_DELETE_POINTERS(meshes_obj, Mesh)
+    DESTRUCTOR_DELETE_POINTERS(models_obj, Model)
+    DESTRUCTOR_DELETE_POINTERS(animationPlayers_obj, GLTFAnimationPlayer)
+    DESTRUCTOR_DELETE_POINTERS(particles_obj, Particles)
+    DESTRUCTOR_DELETE_POINTERS(lights_obj, Light)
 }
 
 void Level::setCameraRef(Camera* camera) {
@@ -128,6 +134,13 @@ UUID Level::addObjectRef(Model* object) {
     return object->getUUID();
 }
 
+UUID Level::addObjectRef(GLTFAnimationPlayer* object) {
+    std::lock_guard<std::mutex> guard(animationPlayersMutex);
+    animationPlayers_obj[object->getUUID()] = {object, true};
+    updateAnimationPlayersVector();
+    return object->getUUID();
+}
+
 bool Level::removeObject(const UUID& uuid) {
     std::lock_guard<std::mutex> ui_guard(uiWidgetsMutex);
     std::lock_guard<std::mutex> mesh_guard(meshesMutex);
@@ -137,36 +150,49 @@ bool Level::removeObject(const UUID& uuid) {
 
     if (ui_widgets.count(uuid) == 1) {
         if (!ui_widgets[uuid].is_ref)
-            delete ui_widgets[uuid].obj;
+            delete (WidgetUI*) ui_widgets[uuid].obj;
         ui_widgets.erase(uuid);
+        // updateUIWidgetsVector();
         return true;
     }
 
     if (meshes_obj.count(uuid) == 1) {
         if (!meshes_obj[uuid].is_ref)
-            delete meshes_obj[uuid].obj;
+            delete (Mesh*) meshes_obj[uuid].obj;
         meshes_obj.erase(uuid);
+        updateMeshesVector();
         return true;
     }
 
     if (models_obj.count(uuid) == 1) {
         if (!models_obj[uuid].is_ref)
-            delete models_obj[uuid].obj;
+            delete (Model*) models_obj[uuid].obj;
         models_obj.erase(uuid);
+        updateMeshesVector();
+        return true;
+    }
+
+    if (animationPlayers_obj.count(uuid) == 1) {
+        if (!animationPlayers_obj[uuid].is_ref)
+            delete (GLTFAnimationPlayer*) animationPlayers_obj[uuid].obj;
+        animationPlayers_obj.erase(uuid);
+        updateAnimationPlayersVector();
         return true;
     }
 
     if (particles_obj.count(uuid) == 1) {
         if (!particles_obj[uuid].is_ref)
-            delete particles_obj[uuid].obj;
+            delete (Particles*) particles_obj[uuid].obj;
         particles_obj.erase(uuid);
+        updateParticlesVector();
         return true;
     }
 
     if (lights_obj.count(uuid) == 1) {
         if (!lights_obj[uuid].is_ref)
-            delete lights_obj[uuid].obj;
+            delete (Light*) lights_obj[uuid].obj;
         lights_obj.erase(uuid);
+        updateLightsVector();
         return true;
     }
 
@@ -184,6 +210,14 @@ void Level::updateMeshesVector() {
         meshes.insert(meshes.end(), model_meshes.begin(), model_meshes.end());
     }
     meshes.shrink_to_fit();
+}
+
+void Level::updateAnimationPlayersVector() {
+    animationPlayers.clear();
+    animationPlayers.reserve(this->animationPlayers_obj.size());
+    for (const auto& obj: animationPlayers_obj)
+        animationPlayers.push_back((GLTFAnimationPlayer*) obj.second.obj);
+    animationPlayers.shrink_to_fit();
 }
 
 void Level::updateParticlesVector() {
