@@ -180,6 +180,8 @@ static void Load(tgModel& model, std::vector<Mesh*>* meshes, std::vector<Texture
                     mesh->setPosition(
                             {node.translation[0], node.translation[1], node.translation[2]}
                     );
+                    
+                HATE_FATAL_F("Rotation size: %d", node.rotation.size())
                 // if (node.rotation.size() == 4)
                 // mesh->setRotationMatrix({node.rotation[0], node.rotation[1],
                 // node.rotation[2], node.rotation[3]});

@@ -46,7 +46,7 @@ HateEngine::CubeMesh mesh2;
 HateEngine::CubeMesh xAxMesh;
 // HateEngine::GLTFModel glmodel("examples/Assets/employee.glb");
 // HateEngine::GLTFModel glmodel("examples/Assets/billy-plane-sep.glb");
-HateEngine::GLTFModel glmodel("examples/Assets/fire.glb");
+HateEngine::GLTFModel glmodel("examples/Assets/ignore/fire.glb");
 HateEngine::GLTFModel test_glmodel("examples/Assets/SHOTGUN4.glb");
 HateEngine::GLTFModel playerCapsuleMesh("examples/Assets/capsule.glb");
 
@@ -441,7 +441,7 @@ void _physics_process(HateEngine::Engine* engine, double delta) {
                 rayCastInfo.worldPoint.z
         );
     }
-    HATE_DEBUG_F("Y: %f", rigidBody.getPosition().y);
+    //HATE_DEBUG_F("Y: %f", rigidBody.getPosition().y);
     // ray->isCollide();
     // std::cout << engine->getResolution().x << " | " << engine->getResolution().y << "\n";
     test_glmodel.rotate(1, 0, 0);

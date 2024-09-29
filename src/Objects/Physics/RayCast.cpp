@@ -69,8 +69,8 @@ void RayCast::cast(bool once) {
 
     glm::vec3 startPos = {global_pos.x, global_pos.y, global_pos.z};
     glm::vec3 endPos = {global_pos.x - dir.x, global_pos.y - dir.y, global_pos.z - dir.z};
-    HATE_WARNING_F("Yaw : %f Pitch : %f", global_rot.y, global_rot.x);
-    HATE_WARNING_F("DIr : %f %f %f", dir.x, dir.y, dir.z);
+    //HATE_WARNING_F("Yaw : %f Pitch : %f", global_rot.y, global_rot.x);
+    //HATE_WARNING_F("DIr : %f %f %f", dir.x, dir.y, dir.z);
 
     this->rayCastCallback.oneCast = once;
     this->rayCastCallback.hits.clear();
