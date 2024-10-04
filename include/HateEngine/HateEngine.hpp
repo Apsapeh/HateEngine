@@ -62,15 +62,17 @@ namespace HateEngine {
         bool isOneThread = false;
         bool isVSync = true;
         bool isMouseCaptured = false;
+        bool isFullScreen = false;
 
         glm::ivec2 resolution = {0, 0};
-        glm::ivec2 displayScale = {0, 0};
+        glm::vec2 displayScale = {0.0f, 0.0f};
         float aspectRatio;
         Level* level;
 
         std::string windowTitle = "";
         bool needChangeMouseCaptureMode = false;
         bool needChangeWindowTitle = false;
+        bool needChangeFullScreenMode = false;
 
         // Scene objects
         // std::unordered_map<UUID_Generator::UUID, SceneObject> objects;
@@ -92,13 +94,15 @@ namespace HateEngine {
         void setOneThreadMode(bool mode);
         void setVSync(bool mode);
         void setMouseCapture(bool capture);
+        void setFullScreen(bool fullScreen);
 
         glm::ivec2 getResolution();
-        glm::ivec2 getDisplayScale();
+        glm::vec2 getDisplayScale();
         float getAspectRatio();
         bool getOneThreadMode();
         bool getVSync();
         bool getMouseCapture();
+        bool getFullScreen();
 
         void setProcessLoop(void (*func)(Engine*, double));
         void setFixedProcessLoop(void (*func)(Engine*, double));

@@ -11,10 +11,6 @@ namespace HateEngine {
         std::vector<Mesh*> meshes;
         std::vector<Texture> textures;
 
-        void setParentPosition(glm::vec3 vec) override;
-        void setParentScale(glm::vec3 vec) override;
-        void setParentRotationMatrix(const glm::mat4& mat) override;
-
     public:
         Model();
         Model(const Model& model, bool copy_textures = false);

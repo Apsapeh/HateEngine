@@ -20,7 +20,6 @@
 #include <HateEngine/Resources/HERFile.hpp>
 #include <HateEngine/Resources/ObjMapModel.hpp>
 #include <cmath>
-#include <cstdint>
 #include <glm/ext.hpp>
 #include <glm/glm.hpp>
 #include <glm/gtx/quaternion.hpp>
@@ -48,7 +47,6 @@ HateEngine::CubeMesh xAxMesh;
 // HateEngine::GLTFModel glmodel("examples/Assets/employee.glb");
 // HateEngine::GLTFModel glmodel("examples/Assets/billy-plane-sep.glb");
 // HateEngine::GLTFModel glmodel("examples/Assets/ignore/fire.glb");
-HateEngine::GLTFModel dance_animation("examples/Assets/ignore/dance.glb");
 HateEngine::GLTFModel test_glmodel("examples/Assets/SHOTGUN4.glb");
 HateEngine::GLTFModel playerCapsuleMesh("examples/Assets/capsule.glb");
 
@@ -127,7 +125,7 @@ int main() {
     game.setMouseCapture(true);
     // std::cout << "\n\n\n\n" << glfwGetInputMode(game.window, GLFW_CURSOR) << "\n\n\n\n";
     game.setOneThreadMode(false);
-    game.setVSync(true);
+    game.setVSync(false);
     // Setting textures for the cube and floor meshes
 
 
@@ -208,6 +206,7 @@ int main() {
     lvl.addObjectRef(&floor);
     lvl.addObjectRef(&sun);
 
+    HateEngine::GLTFModel dance_animation("examples/Assets/ignore/dance.glb");
     HateEngine::GLTFAnimationPlayer anim_player(&dance_animation);
     anim_player.offset(5, 0, 5);
     anim_player.setFPS(60);
@@ -415,7 +414,7 @@ void _process(HateEngine::Engine* engine, double delta) {
     }
 
 
-    if (engine->Input.isKeyPressed(GLFW_KEY_P)) {
+    /*if (engine->Input.isKeyPressed(GLFW_KEY_P)) {
         GLFWmonitor* monitor = glfwGetPrimaryMonitor();
         const GLFWvidmode* mode = glfwGetVideoMode(monitor);
 
@@ -426,7 +425,7 @@ void _process(HateEngine::Engine* engine, double delta) {
         glfwSetWindowMonitor(
                 engine->window, monitor, 0, 0, mode->width, mode->height, mode->refreshRate
         );
-    }
+    }*/
 
     glm::vec2 raw_dir = engine->Input.getVector(GLFW_KEY_A, GLFW_KEY_D, GLFW_KEY_W, GLFW_KEY_S);
     if (raw_dir.x != 0 or raw_dir.y != 0) {
@@ -454,6 +453,10 @@ void _process(HateEngine::Engine* engine, double delta) {
 glm::vec3 cam_dir;
 
 void _physics_process(HateEngine::Engine* engine, double delta) {
+    /*HATE_ERROR_F(
+            "W: %d H: %d X: %f Y: %f", engine->getResolution().x, engine->getResolution().y,
+            engine->getDisplayScale().x, engine->getDisplayScale().y
+    );*/
     HateEngine::RayCastInfo rayCastInfo;
     if (ray->isCollide(&rayCastInfo)) {
         // HATE_DEBUG("Is collide: true");
@@ -517,6 +520,9 @@ void _physics_process(HateEngine::Engine* engine, double delta) {
     if (engine->Input.isKeyPressed(GLFW_KEY_U))
         engine->setMouseCapture(true);
 
+    /*if (engine->Input.isKeyPressed(GLFW_KEY_P))
+        engine->setFullScreen(!engine->getFullScreen());*/
+
     glm::vec2 raw_dir =
             engine->Input.getVector(GLFW_KEY_LEFT, GLFW_KEY_RIGHT, GLFW_KEY_UP, GLFW_KEY_DOWN) * 5;
     float pb_x = playerBody.reactRigidBody->getLinearVelocity().x;
@@ -570,5 +576,12 @@ void _input_event(HateEngine::Engine* engine, HateEngine::Engine::InputEventInfo
         else
             speed *= 1.1;
         // fps_widget_ptr->zoom(0.1);
+    }
+
+    if (event.type == HateEngine::Engine::InputEventKey) {
+        if (event.key == GLFW_KEY_P && event.action == GLFW_PRESS) {
+            engine->setFullScreen(!engine->getFullScreen());
+            HATE_WARNING("Toggled fullscreen")
+        }
     }
 }

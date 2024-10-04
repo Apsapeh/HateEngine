@@ -3,7 +3,6 @@
 #include <glm/matrix.hpp>
 #include <glm/vec3.hpp>
 #include <unordered_map>
-#include <vector>
 #include "../Utilities/UUID.hpp"
 
 namespace HateEngine {
@@ -14,7 +13,6 @@ namespace HateEngine {
         friend OpenGL15;
         friend PhysicalBody;
         friend class Camera;
-        friend class Model;
 
     private:
         UUID uuid;

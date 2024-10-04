@@ -50,11 +50,12 @@ Engine::Engine(std::string window_lbl, int width, int height) : Input(this) {
         glfwTerminate();
     }
 
-    float xscale, yscale;
-    glfwGetWindowContentScale(this->window, &xscale, &yscale);
+    // float xscale, yscale;
 
     this->setResolution(width, height);
-    this->displayScale = glm::ivec2(xscale, yscale);
+    // this->setResolution(, )
+    this->resolution = {(float) width, (float) height};
+
 
     glfwSetWindowUserPointer(this->window, this);
     glfwMakeContextCurrent(this->window);
@@ -191,6 +192,23 @@ void Engine::Run() {
             glfwSetWindowTitle(this->window, this->windowTitle.c_str());
             this->needChangeWindowTitle = false;
         }
+        if (this->needChangeFullScreenMode) {
+            if (this->isFullScreen) {
+                GLFWmonitor* monitor = glfwGetPrimaryMonitor();
+                const GLFWvidmode* mode = glfwGetVideoMode(monitor);
+
+                glfwWindowHint(GLFW_RED_BITS, mode->redBits);
+                glfwWindowHint(GLFW_GREEN_BITS, mode->greenBits);
+                glfwWindowHint(GLFW_BLUE_BITS, mode->blueBits);
+                glfwWindowHint(GLFW_REFRESH_RATE, mode->refreshRate);
+                glfwSetWindowMonitor(
+                        this->window, monitor, 0, 0, mode->width, mode->height, mode->refreshRate
+                );
+            } else
+                glfwSetWindowMonitor(this->window, nullptr, 0, 0, 800, 600, GLFW_DONT_CARE);
+
+            this->needChangeFullScreenMode = false;
+        }
         ///
 
         // meshesMutex.lock();
@@ -252,7 +270,10 @@ void Engine::setResolution(int width, int height) {
     HATE_WARNING("Engine::setResolution not implemented");
 
     // FIXME: Implement setResolution
-    this->resolution = glm::ivec2(width, height);
+    float xscale, yscale;
+    glfwGetWindowContentScale(this->window, &xscale, &yscale);
+    this->displayScale = glm::vec2(xscale, yscale);
+    this->resolution = glm::ivec2((float) width / xscale, (float) height / yscale);
     this->aspectRatio = (float) width / (float) height;
 }
 
@@ -276,11 +297,16 @@ void Engine::setMouseCapture(bool capture) {
     this->needChangeMouseCaptureMode = true;
 }
 
+void Engine::setFullScreen(bool fullScreen) {
+    this->isFullScreen = fullScreen;
+    this->needChangeFullScreenMode = true;
+}
+
 glm::ivec2 Engine::getResolution() {
     return this->resolution;
 }
 
-glm::ivec2 Engine::getDisplayScale() {
+glm::vec2 Engine::getDisplayScale() {
     return this->displayScale;
 }
 
@@ -298,6 +324,10 @@ bool Engine::getVSync() {
 
 bool Engine::getMouseCapture() {
     return this->isMouseCaptured;
+}
+
+bool Engine::getFullScreen() {
+    return this->isFullScreen;
 }
 
 void Engine::threadFixedProcessLoop() {

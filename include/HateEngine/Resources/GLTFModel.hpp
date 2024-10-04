@@ -1,11 +1,7 @@
 #pragma once
 #include <cstdint>
 #include <string>
-#include <vector>
-#include "../Objects/Mesh.hpp"
 #include "../Objects/Model.hpp"
-#include "../Objects/Object.hpp"
-#include "Texture.hpp"
 
 namespace HateEngine {
     class GLTFModel : public Model {

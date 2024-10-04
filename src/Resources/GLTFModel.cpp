@@ -1,6 +1,5 @@
 #include <HateEngine/Log.hpp>
 #include <HateEngine/Resources/GLTFModel.hpp>
-#include <iostream>
 #include <unordered_map>
 
 #define TINYGLTF_IMPLEMENTATION

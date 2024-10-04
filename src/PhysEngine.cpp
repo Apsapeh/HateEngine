@@ -7,7 +7,6 @@
 #include "HateEngine/Objects/Physics/CapsuleShape.hpp"
 #include "HateEngine/Objects/Physics/CollisionShape.hpp"
 #include "HateEngine/Objects/Physics/SphereShape.hpp"
-#include "globalStaticParams.hpp"
 #include "reactphysics3d/mathematics/Ray.h"
 
 using namespace HateEngine;

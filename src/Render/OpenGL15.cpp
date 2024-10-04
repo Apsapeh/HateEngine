@@ -82,7 +82,8 @@ void OpenGL15::Render() {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     // glViewport(0+, 0, render_width, render_height);
     glm::ivec2 resolution = this->engine->getResolution();
-    glm::ivec2 displayScale = this->engine->getDisplayScale();
+    glm::vec2 displayScale = this->engine->getDisplayScale();
+    // glm::vec2 displayScale = {1, 1};
     glViewport(0, 0, resolution.x * displayScale.x, resolution.y * displayScale.y);
     // glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 

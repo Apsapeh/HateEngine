@@ -4,10 +4,8 @@
 #include <vector>
 #include <unordered_map>
 #include "../Objects/Mesh.hpp"
-#include "../Objects/Model.hpp"
 #include "../Objects/Object.hpp"
 #include "HateEngine/Resources/GLTFModel.hpp"
-#include "Texture.hpp"
 
 namespace HateEngine {
     struct GLTFAnimation {

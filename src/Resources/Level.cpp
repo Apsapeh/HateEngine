@@ -1,6 +1,5 @@
 #include <HateEngine/Resources/Level.hpp>
 
-#include "../globalStaticParams.hpp"
 #include "HateEngine/Objects/Light/Light.hpp"
 #include "HateEngine/Objects/Model.hpp"
 #include "HateEngine/Objects/Particles.hpp"
