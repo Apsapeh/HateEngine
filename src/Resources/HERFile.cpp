@@ -4,8 +4,7 @@
 #include <HateEngine/Resources/HERFile.hpp>
 #include <fstream>
 #include <iostream>
-
-#include "HateEngine/Resources/Texture.hpp"
+#include "HateEngine/Log.hpp"
 
 using namespace HateEngine;
 
@@ -30,6 +29,10 @@ Texture HERResource::asTexture(
     return Texture(
             this->data, width, height, textureFormat, tex_wrap, tex_filtering, mipmap, mipmap_bias
     );
+}
+
+GLTFModel HERResource::asGLBModel() {
+    return GLTFModel(this->data.data(), this->data.size());
 }
 
 HERFile::HERFile(std::string path, std::string password) {

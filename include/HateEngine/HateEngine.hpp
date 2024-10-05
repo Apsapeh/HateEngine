@@ -18,6 +18,7 @@ namespace HateEngine {
             glm::vec2 getVector(int left, int right, int up, int down);
             // bool isKeyPressed(int key);
         };
+
         friend class InputClass;
 
     public:

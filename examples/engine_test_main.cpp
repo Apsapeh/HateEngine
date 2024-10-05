@@ -47,7 +47,8 @@ HateEngine::CubeMesh xAxMesh;
 // HateEngine::GLTFModel glmodel("examples/Assets/employee.glb");
 // HateEngine::GLTFModel glmodel("examples/Assets/billy-plane-sep.glb");
 // HateEngine::GLTFModel glmodel("examples/Assets/ignore/fire.glb");
-HateEngine::GLTFModel test_glmodel("examples/Assets/SHOTGUN4.glb");
+// HateEngine::GLTFModel test_glmodel("examples/Assets/SHOTGUN4.glb");
+HateEngine::GLTFModel* test_glmodel;
 HateEngine::GLTFModel playerCapsuleMesh("examples/Assets/capsule.glb");
 
 
@@ -106,14 +107,11 @@ int main() {
 
     mesh2.setPosition(3, 3, 3);
 
-    test_glmodel.offset(0.5, -0.5, -2);
-    test_glmodel.setScale(0.25, 0.25, 0.25);
-    test_glmodel.setRotation(0, 180, 0);
+
     // test_glmodel.setVisible(false);
 
 
     // camera.bindObj(&test_glmodel);
-    playerCapsuleMesh.bindObj(&test_glmodel);
 
 
     std::cout << "Camera uuid: " << camera.getUUID().getU64() << std::endl;
@@ -131,6 +129,14 @@ int main() {
 
     HateEngine::HERFile herfile("examples/Assets/test.her", "password");
     HateEngine::Texture tex_floor = herfile["ground.png"].asTexture();
+    HateEngine::GLTFModel her_model = herfile["shotgun.glb"].asGLBModel();
+    test_glmodel = &her_model;
+
+    playerCapsuleMesh.bindObj(test_glmodel);
+
+    test_glmodel->offset(0.5, -0.5, -2);
+    test_glmodel->setScale(0.25, 0.25, 0.25);
+    test_glmodel->setRotation(0, 180, 0);
 
 
     // HateEngine::Texture tex_floor("examples/Assets/ground.png");
@@ -150,7 +156,7 @@ int main() {
     // HateEngine::GLTFModel glmodel2("examples/Assets/ignore/bolg.glb");
 
     game.setLevelRef(&lvl);
-    lvl.addObjectRef(&test_glmodel);
+    lvl.addObjectRef(test_glmodel);
     // HateEngine::CubeMesh test_mesh;
     // HateEngine::Level level2;
     // level2.addObjectRef(&test2);
@@ -469,7 +475,7 @@ void _physics_process(HateEngine::Engine* engine, double delta) {
     // HATE_DEBUG_F("Y: %f", rigidBody.getPosition().y);
     //  ray->isCollide();
     //  std::cout << engine->getResolution().x << " | " << engine->getResolution().y << "\n";
-    test_glmodel.rotate(1, 0, 0);
+    test_glmodel->rotate(1, 0, 0);
     // std::cout << camera.getRotationEuler().x << " " << camera.getRotationEuler().y << " " <<
     // camera.getRotationEuler().z << "\n"; std::cout << "FPS: " << 1.0 / delta << "\n";
     glm::vec3 mesh1_r = mesh1.getGlobalRotationEuler();

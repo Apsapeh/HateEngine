@@ -5,3 +5,8 @@ pack_path = "test.her"
 path = "ground.png"
 name = "ground.png"
 is_relative = true
+
+[[resources]]
+path = "/Users/ghost/CLionProjects/HateEngine/examples/Assets/SHOTGUN4.glb"
+name = "shotgun.glb"
+is_relative = false

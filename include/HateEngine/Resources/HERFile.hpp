@@ -4,7 +4,8 @@
 #include <unordered_map>
 #include <vector>
 
-#include <HateEngine/Resources/Texture.hpp>
+#include "Texture.hpp"
+#include "GLTFModel.hpp"
 
 namespace HateEngine {
     class HERResource {
@@ -18,6 +19,7 @@ namespace HateEngine {
                 Texture::TexFiltering tex_filtering = Texture::Linear, bool mipmap = true,
                 float mipmap_bias = -1.0f, bool autoload = true
         );
+        GLTFModel asGLBModel();
     };
 
     class HERFile {
