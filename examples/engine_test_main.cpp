@@ -261,12 +261,12 @@ int main() {
 
     snow_mesh.setTexture(&snow_tex);
     // snow_mesh.setSize(0.8, 0.8, 0.8);
-    //snow_mesh.setPosition(0, 5, 0);
+    // snow_mesh.setPosition(0, 5, 0);
     // lvl.addObjectRef(&snow_mesh);
     //  tomato.setScale({0.05, 0.05, 0.05});
-    HateEngine::Particles cube_part((HateEngine::Mesh) snow_mesh, 10000, pa_set, -1);
+    HateEngine::Particles cube_part((HateEngine::Mesh) snow_mesh, 100, pa_set);
     cube_part.calculateFunc = [](HateEngine::Particle* p, double delta) {
-        /*if (p->data.count("vel") == 0)
+        if (p->data.count("vel") == 0)
             p->data["vel"] = (void*) new glm::vec3(0, 0, 0);
         //((glm::vec3*)(p->data["vel"]))->y += delta * -9.8;
         ((glm::vec3*) (p->data["vel"]))->y -= delta * 9.8;
@@ -274,7 +274,7 @@ int main() {
         // std::cout << ((glm::vec3*)(p->data["vel"]))->y << "\n";
         // std::cout << float(delta * 9.8) << "\n";
         // std::cout << ((glm::vec3*)(p->data["vel"]))->y << "\n";
-        glm::vec3 off = *((glm::vec3*) (p->data["vel"])) * glm::vec3(delta);*/
+        glm::vec3 off = *((glm::vec3*) (p->data["vel"])) * glm::vec3(delta);
         // std::cout << off << "\n";
         // p->offset(off);
         p->offset({0, -0.25 * delta, 0});
@@ -283,13 +283,13 @@ int main() {
     };
 
     cube_part.onParticleDelete = [](HateEngine::Particle* p) {
-        //delete (glm::vec3*) p->data["vel"];
+        delete (glm::vec3*) p->data["vel"];
     };
-    
+
     cube_part.setPosition(4, 4, 4);
 
     cube_part.play();
-    
+
     cube_part_ptr = &cube_part;
     lvl.addObjectRef(&cube_part);
 
@@ -548,7 +548,7 @@ void _physics_process(HateEngine::Engine* engine, double delta) {
         cube_part_ptr->reset();
         cube_part_ptr->play();
     }
-        
+
 
     if (engine->Input.isKeyPressed(GLFW_KEY_Y))
         engine->setMouseCapture(false);

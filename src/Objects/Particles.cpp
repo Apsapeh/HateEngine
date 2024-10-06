@@ -40,7 +40,8 @@ Particle::Particle(const Particle& particle) : Mesh(particle) {
     index = particle.index;
 }
 
-Particle::Particle() {}
+Particle::Particle() {
+}
 
 
 // ===============> Particles <===============
@@ -60,14 +61,12 @@ Particles::Particles(
             std::uniform_real_distribution<float>(settings.min_offset.y, settings.max_offset.y);
     this->posZ_dist =
             std::uniform_real_distribution<float>(settings.min_offset.z, settings.max_offset.z);
-    //particlesVector.reserve(particles_count);
-    particles = new Particle[particles_count];
+    particlesVector.reserve(particles_count);
 }
 
 Particles::~Particles() {
-    /*for (Particle& p: particlesVector)
-        onParticleDelete(&p);*/
-    delete[] particles;
+    for (Particle& p: particlesVector)
+        onParticleDelete(&p);
 }
 
 // #include <iostream>
@@ -78,60 +77,16 @@ void Particles::Update(double delta) {
     std::lock_guard<std::mutex> lock(this->particlesMutex);
 
     elapsedTime += delta;
-    // if (particlesVector.size() < this->maxParticles) {
-    //     if (this->spawnDelay <= 0) {
-    //         for (uint32_t i = 0; i < this->maxParticles - particlesVector.size(); ++i) {
-    //             Particle particle(i, mesh, life_dist(gen), this->set.delete_on_end_of_life);
-    //             particle.setPosition({posX_dist(gen), posY_dist(gen), posZ_dist(gen)});
-    //             particlesVector.push_back(std::move(particle));
-    //             bindObj(&particlesVector[particlesVector.size() - 1]);
-    //         }
-    //     } else {
-    //         while (particlesVector.size() < this->maxParticles and elapsedTime >= this->spawnDelay
-    //         ) {
-    //             Particle particle(
-    //                     particlesVector.size(), mesh, life_dist(gen),
-    //                     this->set.delete_on_end_of_life
-    //             );
-    //             particle.setPosition({posX_dist(gen), posY_dist(gen), posZ_dist(gen)});
-    //             particlesVector.push_back(std::move(particle));
-    //             bindObj(&particlesVector[particlesVector.size() - 1]);
-    //             elapsedTime -= this->spawnDelay;
-    //         }
-    //     }
-    // }
-
-    // for (auto it = particlesVector.begin(); it < particlesVector.end(); ++it) {
-    //     Particle* p = &*it;
-    //     // std::cout << p->index << " -- " << p->lostLifetime << "\n";
-    //     calculateFunc(p, delta);
-    //     if (p->lostLifetime >= 0) {
-    //         p->lostLifetime -= (float) delta;
-    //         if (p->isAlive and p->lostLifetime <= 0) {
-    //             if (p->deleteOnEndOfLife) {
-    //                 p->visible = false;
-    //                 unbindObj(p->getUUID());
-    //             } else {
-    //                 p->lostLifetime = p->lifetime;
-    //                 p->position = glm::vec3{posX_dist(gen), posY_dist(gen), posZ_dist(gen)};
-    //             }
-    //         }
-    //     }
-    // }
-    // 
-    
-    
-    if (particles_count < this->maxParticles) {
+    if (particlesVector.size() < this->maxParticles) {
         if (this->spawnDelay <= 0) {
-            for (uint32_t i = 0; i < this->maxParticles - particles_count; ++i) {
+            for (uint32_t i = 0; i < this->maxParticles - particlesVector.size(); ++i) {
                 Particle particle(i, mesh, life_dist(gen), this->set.delete_on_end_of_life);
                 particle.setPosition({posX_dist(gen), posY_dist(gen), posZ_dist(gen)});
-                particles[particles_count] = std::move(particle);
-                bindObj(particles+particles_count);
-                particles_count++;
+                particlesVector.push_back(std::move(particle));
+                bindObj(&particlesVector[particlesVector.size() - 1]);
             }
         } else {
-            /*while (particlesVector.size() < this->maxParticles and elapsedTime >= this->spawnDelay
+            while (particlesVector.size() < this->maxParticles and elapsedTime >= this->spawnDelay
             ) {
                 Particle particle(
                         particlesVector.size(), mesh, life_dist(gen),
@@ -141,12 +96,12 @@ void Particles::Update(double delta) {
                 particlesVector.push_back(std::move(particle));
                 bindObj(&particlesVector[particlesVector.size() - 1]);
                 elapsedTime -= this->spawnDelay;
-            }*/
+            }
         }
     }
 
-    for (int i = 0; i < particles_count; i++) {
-        Particle* p = particles + i;
+    for (auto it = particlesVector.begin(); it < particlesVector.end(); ++it) {
+        Particle* p = &*it;
         // std::cout << p->index << " -- " << p->lostLifetime << "\n";
         calculateFunc(p, delta);
         if (p->lostLifetime >= 0) {
@@ -174,16 +129,14 @@ void Particles::pause() {
 
 void Particles::reset() {
     std::lock_guard<std::mutex> lock(this->particlesMutex);
-    for (int i = 0; i < particles_count; i++) {
-        onParticleDelete(particles + i);
-    }
-    //particlesVector.clear();
-    particles_count = 0;
+    for (Particle& p: particlesVector)
+        onParticleDelete(&p);
+    particlesVector.clear();
+    bindedObjects.clear();
     this->is_pause = true;
     this->elapsedTime = 0;
 }
 
 std::vector<Particle>* Particles::getParticles() {
-    //return &particlesVector;
-    return nullptr;
+    return &particlesVector;
 }

@@ -44,10 +44,6 @@ namespace HateEngine {
         Particle(uint32_t index, const Mesh& mesh, float lifetime = 1.0, bool del_on_time = true);
         Particle(const Particle& particle);
         Particle();
-        Particle& operator=(Particle&& other) {
-            this->~Particle();
-            return *new (this) Particle(other);
-        }
     };
 
 
@@ -64,16 +60,14 @@ namespace HateEngine {
         float elapsedTime = 0;
         const Mesh mesh;
         std::mutex particlesMutex;
-        //std::vector<Particle> particlesVector;
-        
+        std::vector<Particle> particlesVector;
+
         Particle::ParticleSettings set;
         bool is_pause = true;
         uint32_t maxParticles = 0;
         float spawnDelay = 0;
 
     public:
-    Particle* particles = nullptr;
-    uint32_t particles_count = 0;
         void (*calculateFunc)(Particle*, double) = [](Particle* p, double d) {
             p->offset(0, -9.8f * (float) d, 0);
         };
@@ -90,7 +84,7 @@ namespace HateEngine {
         void play();
         void pause();
         void reset();
-        
+
         std::vector<Particle>* getParticles();
     };
 } // namespace HateEngine
