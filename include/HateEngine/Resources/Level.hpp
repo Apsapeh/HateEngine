@@ -121,6 +121,7 @@ namespace HateEngine {
         UUID addObjectRef(Light* object);
         UUID addObjectRef(Model* object);
         UUID addObjectRef(GLTFAnimationPlayer* object);
+        UUID addObjectRef(Particles* object);
 
         bool removeObject(const UUID& uuid);
     };

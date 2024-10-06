@@ -69,6 +69,8 @@ HateEngine::CubeMesh test2;
 HateEngine::PhysicalBody playerBody(HateEngine::PhysicalBody::DynamicBody);
 HateEngine::PhysicalBody rigidBody(HateEngine::PhysicalBody::DynamicBody);
 
+HateEngine::Particles* cube_part_ptr;
+
 
 int main() {
     std::cout << "Hello\n";
@@ -122,7 +124,7 @@ int main() {
 
     game.setMouseCapture(true);
     // std::cout << "\n\n\n\n" << glfwGetInputMode(game.window, GLFW_CURSOR) << "\n\n\n\n";
-    game.setOneThreadMode(false);
+    game.setOneThreadMode(true);
     game.setVSync(false);
     // Setting textures for the cube and floor meshes
 
@@ -219,6 +221,11 @@ int main() {
     anim_player.setLoop(true);
     anim_player.play("dance_man");
     lvl.addObjectRef(&anim_player);
+    // lvl.addObjectRef(&dance_animation);
+    /* for (auto& mesh : dance_animation.getMeshes()) {
+         mesh->disableLightShading();
+         mesh->enableCustomMaxLightDist(2500);
+     }*/
 
     // lvl.addObjectRef(&glmodel);
 
@@ -244,36 +251,47 @@ int main() {
     });
 
     // game.addObjectRef(&tomato2);
-    HateEngine::Particle::ParticleSettings pa_set = {6.0f, 6.0f, false, {0, 4, 0}, {4, 4, 4}};
+    HateEngine::Particle::ParticleSettings pa_set = {6.0f, 6.0f, false, {0, 0, 0}, {4, 0, 4}};
 
     HateEngine::Texture snow_tex(
             "examples/Assets/snow.png", HateEngine::Texture::Clamp, HateEngine::Texture::Linear
     );
     HateEngine::CubeMesh snow_mesh;
-    snow_mesh.setSize(0.01, 0.01, 0.01);
+    snow_mesh.setSize(0.05, 0.05, 0.05);
 
     snow_mesh.setTexture(&snow_tex);
     // snow_mesh.setSize(0.8, 0.8, 0.8);
-    snow_mesh.setPosition(0, 5, 0);
+    //snow_mesh.setPosition(0, 5, 0);
     // lvl.addObjectRef(&snow_mesh);
     //  tomato.setScale({0.05, 0.05, 0.05});
-    // HateEngine::Particles cube_part((HateEngine::Mesh)snow_mesh, 100, pa_set);
-    /*cube_part.calculateFunc =  [] (HateEngine::Particle* p, double delta) {
-        if (p->data.count("vel") == 0)
+    HateEngine::Particles cube_part((HateEngine::Mesh) snow_mesh, 10000, pa_set, -1);
+    cube_part.calculateFunc = [](HateEngine::Particle* p, double delta) {
+        /*if (p->data.count("vel") == 0)
             p->data["vel"] = (void*) new glm::vec3(0, 0, 0);
         //((glm::vec3*)(p->data["vel"]))->y += delta * -9.8;
-        ((glm::vec3*)(p->data["vel"]))->y -= delta * 9.8;
-        //if (p->index == 0)
-            //std::cout << ((glm::vec3*)(p->data["vel"]))->y << "\n";
-            //std::cout << float(delta * 9.8) << "\n";
-        //std::cout << ((glm::vec3*)(p->data["vel"]))->y << "\n";
-        glm::vec3 off = *((glm::vec3*)(p->data["vel"])) * glm::vec3(delta);
-        //std::cout << off << "\n";
-        //p->offset(off);
+        ((glm::vec3*) (p->data["vel"]))->y -= delta * 9.8;
+        // if (p->index == 0)
+        // std::cout << ((glm::vec3*)(p->data["vel"]))->y << "\n";
+        // std::cout << float(delta * 9.8) << "\n";
+        // std::cout << ((glm::vec3*)(p->data["vel"]))->y << "\n";
+        glm::vec3 off = *((glm::vec3*) (p->data["vel"])) * glm::vec3(delta);*/
+        // std::cout << off << "\n";
+        // p->offset(off);
         p->offset({0, -0.25 * delta, 0});
 
-        //std::cout <<
-    };*/
+        // std::cout <<
+    };
+
+    cube_part.onParticleDelete = [](HateEngine::Particle* p) {
+        //delete (glm::vec3*) p->data["vel"];
+    };
+    
+    cube_part.setPosition(4, 4, 4);
+
+    cube_part.play();
+    
+    cube_part_ptr = &cube_part;
+    lvl.addObjectRef(&cube_part);
 
     /*cube_part.setPosition(0, 3, 0);
     cube_part.pause = true;*/
@@ -515,11 +533,22 @@ void _physics_process(HateEngine::Engine* engine, double delta) {
     if (engine->Input.isKeyPressed(GLFW_KEY_Q))
         mesh2.rotate({0.0, 1, 0.0});
 
-    if (engine->Input.isKeyPressed(GLFW_KEY_E))
-        camera.rotate(0, 0.5, 0);
+    if (engine->Input.isKeyPressed(GLFW_KEY_E)) {
+        std::vector<HateEngine::Mesh> meshes = {};
+        meshes.reserve(64535);
+        for (int i = 0; i < 64535; ++i) {
+            meshes.push_back(HateEngine::Mesh(mesh2));
+        }
+        HATE_INFO_F("Meshes size: %d", meshes.size());
+        HATE_INFO_F("Meshes capacity: %d", meshes.capacity());
+        HATE_INFO_F("LAST UUID: %llu\n", meshes.back().getUUID().getU64());
+    }
 
-    if (engine->Input.isKeyPressed(GLFW_KEY_T))
-        xAxMesh.rotate(0, 0, 0);
+    if (engine->Input.isKeyPressed(GLFW_KEY_T)) {
+        cube_part_ptr->reset();
+        cube_part_ptr->play();
+    }
+        
 
     if (engine->Input.isKeyPressed(GLFW_KEY_Y))
         engine->setMouseCapture(false);

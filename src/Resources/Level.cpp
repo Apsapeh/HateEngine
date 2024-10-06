@@ -140,6 +140,13 @@ UUID Level::addObjectRef(GLTFAnimationPlayer* object) {
     return object->getUUID();
 }
 
+UUID Level::addObjectRef(Particles* object) {
+    std::lock_guard<std::mutex> guard(particlesMutex);
+    particles_obj[object->getUUID()] = {object, true};
+    updateParticlesVector();
+    return object->getUUID();
+}
+
 bool Level::removeObject(const UUID& uuid) {
     std::lock_guard<std::mutex> ui_guard(uiWidgetsMutex);
     std::lock_guard<std::mutex> mesh_guard(meshesMutex);

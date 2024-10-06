@@ -170,8 +170,8 @@ void Engine::Run() {
 
     glfwSwapBuffers(this->window);
     double oldTime = glfwGetTime();
-    double fixed_process_loop_delta = -glfwGetTime();
-    double physics_engine_iterate_loop_delta = -glfwGetTime();
+    double fixed_process_loop_delta = 0;
+    double physics_engine_iterate_loop_delta = 0;
     double delta = 0.0;
     double fixed_process_loop_delay = 1.0 / this->fixedLoopRefreshRate;
     double physics_engine_iterate_loop_delay = 1.0 / this->physicsEngineIterateLoopRefreshRate;
@@ -222,6 +222,10 @@ void Engine::Run() {
             fixed_process_loop_delta += delta;
             physics_engine_iterate_loop_delta += delta;
 
+            for (auto& obj: this->level->particles) {
+                obj->Update(delta);
+            }
+
             if (this->fixedProcessLoop != nullptr and
                 fixed_process_loop_delta >= fixed_process_loop_delay) {
                 this->fixedProcessLoop(this, fixed_process_loop_delta);
@@ -232,8 +236,8 @@ void Engine::Run() {
 
             if (physics_engine_iterate_loop_delta >= physics_engine_iterate_loop_delay) {
                 // uint32_t i = 0;
-                // std::cout << "Physics Engine Iteration: " <<
-                // physics_engine_iterate_loop_delta << std::endl;
+                /*std::cout << "Physics Engine Iteration: " <<
+                physics_engine_iterate_loop_delta << std::endl;*/
                 while (physics_engine_iterate_loop_delta - 0.0001 > 0.0f) {
                     float d = physics_engine_iterate_loop_delay;
                     if (physics_engine_iterate_loop_delta < d)
@@ -343,8 +347,9 @@ void Engine::threadFixedProcessLoop() {
         // std::cout << d / 10<< "\n";
         delta = glfwGetTime() - oldTime;
         oldTime = glfwGetTime();
-        // physicsWorld->update((float)delta);
-        // std::cout << rbody->getTransform().getGlobalPosition().y << "\n";
+        for (auto& obj: level->particles) {
+            obj->Update(delta);
+        }
 
         // meshesMutex.lock();
         fixedProcessLoop(this, delta);

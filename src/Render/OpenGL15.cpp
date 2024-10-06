@@ -215,9 +215,12 @@ void OpenGL15::Draw3D(
             render(mesh, lights);
     }
 
-    for (const auto* s: *particles) {
-        for (const auto& particle: s->particlesVector)
-            render((const Mesh*) &particle, lights);
+    for (auto* s: *particles) {
+        /*for (const auto& particle: *s->getParticles())
+            render((const Mesh*) &particle, lights);*/
+        for (int i=0; i < s->particles_count; ++i) {
+            render((const Mesh*) &s->particles[i], lights);
+        }
     }
 
     glDisable(GL_DEPTH_TEST);
