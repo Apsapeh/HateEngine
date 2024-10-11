@@ -1,4 +1,5 @@
 #include "GLFW/glfw3.h"
+#include "HateEngine/Input.hpp"
 #include "HateEngine/Objects/Physics/CapsuleShape.hpp"
 #include "HateEngine/Resources/GLTFAnimationPlayer.hpp"
 #include "glm/ext/vector_float2.hpp"
@@ -450,8 +451,11 @@ void _process(HateEngine::Engine* engine, double delta) {
                 engine->window, monitor, 0, 0, mode->width, mode->height, mode->refreshRate
         );
     }*/
+    
+    camera.lookAt(mesh1.getGlobalPosition());
+    test_glmodel->lookAt(camera.getGlobalPosition());
 
-    glm::vec2 raw_dir = engine->Input.getVector(GLFW_KEY_A, GLFW_KEY_D, GLFW_KEY_W, GLFW_KEY_S);
+    glm::vec2 raw_dir = engine->Input.getVector(HateEngine::A, HateEngine::D, HateEngine::W, HateEngine::S);
     if (raw_dir.x != 0 or raw_dir.y != 0) {
         glm::vec2 dir = raw_dir * glm::vec2(delta * 60) * speed;
 
@@ -468,9 +472,9 @@ void _process(HateEngine::Engine* engine, double delta) {
         camera.offset(cos(cam_rot.y) * fabs(dir.x) * 0.1, 0, -sin(cam_rot.y) * fabs(dir.x) * 0.1);
     }
 
-    if (engine->Input.isKeyPressed(GLFW_KEY_LEFT_CONTROL))
+    if (engine->Input.isKeyPressed(HateEngine::LEFT_CONTROL))
         camera.offset(0, -0.1 * speed * delta * 60, 0);
-    if (engine->Input.isKeyPressed(GLFW_KEY_SPACE))
+    if (engine->Input.isKeyPressed(HateEngine::SPACE))
         camera.offset(0, 0.1 * speed * delta * 60, 0);
 }
 
@@ -522,7 +526,7 @@ void _physics_process(HateEngine::Engine* engine, double delta) {
 
     // mesh1.setPosition(rbodyPosVect.z, rbodyPosVect.y, rbodyPosVect.x);
 
-    if (engine->Input.isKeyPressed(GLFW_KEY_ESCAPE))
+    if (engine->Input.isKeyPressed(HateEngine::ESCAPE))
         engine->Exit();
 
 
@@ -530,10 +534,10 @@ void _physics_process(HateEngine::Engine* engine, double delta) {
         rbody_body->setLinearVelocity({0, -1, 0});*/
 
 
-    if (engine->Input.isKeyPressed(GLFW_KEY_Q))
+    if (engine->Input.isKeyPressed(HateEngine::Q))
         mesh2.rotate({0.0, 1, 0.0});
 
-    if (engine->Input.isKeyPressed(GLFW_KEY_E)) {
+    if (engine->Input.isKeyPressed(HateEngine::E)) {
         std::vector<HateEngine::Mesh> meshes = {};
         meshes.reserve(64535);
         for (int i = 0; i < 64535; ++i) {
@@ -544,22 +548,22 @@ void _physics_process(HateEngine::Engine* engine, double delta) {
         HATE_INFO_F("LAST UUID: %llu\n", meshes.back().getUUID().getU64());
     }
 
-    if (engine->Input.isKeyPressed(GLFW_KEY_T)) {
+    if (engine->Input.isKeyPressed(HateEngine::T)) {
         cube_part_ptr->reset();
         cube_part_ptr->play();
     }
 
 
-    if (engine->Input.isKeyPressed(GLFW_KEY_Y))
+    if (engine->Input.isKeyPressed(HateEngine::Y))
         engine->setMouseCapture(false);
-    if (engine->Input.isKeyPressed(GLFW_KEY_U))
+    if (engine->Input.isKeyPressed(HateEngine::U))
         engine->setMouseCapture(true);
 
     /*if (engine->Input.isKeyPressed(GLFW_KEY_P))
         engine->setFullScreen(!engine->getFullScreen());*/
 
     glm::vec2 raw_dir =
-            engine->Input.getVector(GLFW_KEY_LEFT, GLFW_KEY_RIGHT, GLFW_KEY_UP, GLFW_KEY_DOWN) * 5;
+            engine->Input.getVector(HateEngine::LEFT, HateEngine::RIGHT, HateEngine::UP, HateEngine::DOWN) * 5;
     float pb_x = playerBody.reactRigidBody->getLinearVelocity().x;
     float pb_y = playerBody.reactRigidBody->getLinearVelocity().y;
     float pb_z = playerBody.reactRigidBody->getLinearVelocity().z;
@@ -567,7 +571,7 @@ void _physics_process(HateEngine::Engine* engine, double delta) {
 
 
     glm::vec2 glmodel_rot =
-            engine->Input.getVector(GLFW_KEY_LEFT, GLFW_KEY_RIGHT, GLFW_KEY_UP, GLFW_KEY_DOWN);
+            engine->Input.getVector(HateEngine::LEFT, HateEngine::RIGHT, HateEngine::UP, HateEngine::DOWN);
     // glmodel.rotate(0, glmodel_rot.x, 0);
     //  glmodel.offset(0, glmodel_rot.y / 10, 0);
 

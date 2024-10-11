@@ -59,6 +59,8 @@ namespace HateEngine {
         void setRotation(glm::vec3 vec);
         void setRotation(float x, float y, float z);
         void setRotationMatrix(glm::mat4 mat) override;
+        void lookAt(glm::vec3 vec);
+        void lookAt(float x, float y, float z);
         void offset(glm::vec3 vec);
         void offset(float x, float y, float z);
         void rotate(glm::vec3 vec, bool global = true);

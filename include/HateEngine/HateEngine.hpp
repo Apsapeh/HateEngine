@@ -5,19 +5,11 @@
 #include <string>
 // #include "Utilities/UUID_Generator.hpp"
 #include "Resources/Level.hpp"
+#include "Input.hpp"
 
 namespace HateEngine {
     class Engine {
     private:
-        class InputClass {
-            Engine* engine;
-
-        public:
-            InputClass(Engine*);
-            bool isKeyPressed(int key);
-            glm::vec2 getVector(int left, int right, int up, int down);
-            // bool isKeyPressed(int key);
-        };
 
         friend class InputClass;
 

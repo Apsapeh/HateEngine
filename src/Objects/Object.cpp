@@ -70,6 +70,23 @@ void Object::setVisible(bool vis) {
     this->visible = vis;
 }
 
+void Object::lookAt(glm::vec3 target) {
+    glm::vec3 direction = glm::normalize(target - getGlobalPosition());
+    glm::vec3 right = glm::normalize(glm::cross({0, 1, 0}, direction));
+    glm::vec3 new_up = glm::cross(direction, right);
+
+    glm::mat4 rotation(1);
+    rotation[0] = glm::vec4(right, 0);
+    rotation[1] = glm::vec4(new_up, 0);
+    rotation[2] = glm::vec4(direction, 0);
+
+    setRotationMatrix(rotation);
+}
+
+void Object::lookAt(float x, float y, float z) {
+    lookAt({x, y, z});
+}
+
 void Object::offset(glm::vec3 vec) {
     setPosition(vec + this->position);
 }

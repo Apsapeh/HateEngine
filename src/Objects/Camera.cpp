@@ -130,6 +130,25 @@ void Camera::setPosition(float x, float y, float z) {
     setPosition({x, y, z});
 }
 
+void Camera::lookAt(glm::vec3 point) {
+    glm::vec3 direction = glm::normalize(point - getGlobalPosition()) * -1.0f;
+    glm::vec3 right = glm::normalize(glm::cross({0, 1, 0}, direction));
+    glm::vec3 new_up = glm::cross(direction, right);
+
+    glm::mat4 rotation(1);
+    rotation[0] = glm::vec4(right, 0);
+    rotation[1] = glm::vec4(new_up, 0);
+    rotation[2] = glm::vec4(direction, 0);
+
+    setRotationMatrix(glm::inverse(rotation));
+    
+    root_obj.lookAt(point);
+}
+
+void Camera::lookAt(float x, float y, float z) {
+    lookAt({x, y, z});
+}
+
 void Camera::offset(glm::vec3 vec) {
     Object::offset(vec);
     root_obj.offset(vec);
