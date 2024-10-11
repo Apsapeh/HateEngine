@@ -55,7 +55,7 @@ namespace HateEngine {
         void setScale(glm::vec3 vec);
         void setScale(float x, float y, float z);
         void setVisible(bool);
-        
+
         void lookAt(glm::vec3 vec);
         void lookAt(float x, float y, float z);
 

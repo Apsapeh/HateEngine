@@ -5,6 +5,7 @@
 #include "../Objects/Mesh.hpp"
 #include "../Objects/Model.hpp"
 #include "../Objects/Object.hpp"
+#include "../Objects/BillboardMesh.hpp"
 #include "../Objects/Particles.hpp"
 #include "../PhysEngine.hpp"
 #include "../UI/WidgetUI.hpp"
@@ -47,6 +48,7 @@ namespace HateEngine {
         // 3D renderable objects
         std::unordered_map<UUID, SceneObject> meshes_obj;
         std::unordered_map<UUID, SceneObject> models_obj;
+        std::unordered_map<UUID, SceneObject> billboards_obj;
         std::unordered_map<UUID, SceneObject> animationPlayers_obj;
         std::unordered_map<UUID, SceneObject> particles_obj;
         std::unordered_map<UUID, SceneObject> lights_obj;
@@ -76,6 +78,7 @@ namespace HateEngine {
         std::mutex uiWidgetsMutex;
         std::mutex meshesMutex;
         std::mutex modelsMutex;
+        std::mutex billboardsMutex;
         std::mutex animationPlayersMutex;
         std::mutex particlesMutex;
         std::mutex lightsMutex;
@@ -92,6 +95,8 @@ namespace HateEngine {
 
         Level();
         ~Level();
+        
+        void Update(double delta);
 
         void setCameraRef(Camera* camera);
         Camera* getCameraRef();
@@ -118,6 +123,7 @@ namespace HateEngine {
         // UUID_Generator::UUID addObjectRef(Object* object);
         UUID addObjectRef(WidgetUI* object);
         UUID addObjectRef(Mesh* object);
+        UUID addObjectRef(BillboardMesh* object);
         UUID addObjectRef(Light* object);
         UUID addObjectRef(Model* object);
         UUID addObjectRef(GLTFAnimationPlayer* object);

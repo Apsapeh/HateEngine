@@ -1,5 +1,7 @@
 #include <HateEngine/Resources/Level.hpp>
+#include <mutex>
 
+#include "HateEngine/Objects/BillboardMesh.hpp"
 #include "HateEngine/Objects/Light/Light.hpp"
 #include "HateEngine/Objects/Model.hpp"
 #include "HateEngine/Objects/Particles.hpp"
@@ -25,6 +27,13 @@ Level::~Level() {
     DESTRUCTOR_DELETE_POINTERS(animationPlayers_obj, GLTFAnimationPlayer)
     DESTRUCTOR_DELETE_POINTERS(particles_obj, Particles)
     DESTRUCTOR_DELETE_POINTERS(lights_obj, Light)
+}
+
+void Level::Update(double delta) {
+    for (auto& obj: this->particles)
+        obj->Update(delta);
+    for (auto& obj: this->billboards_obj)
+        ((BillboardMesh*)(obj.second.obj))->Update();
 }
 
 void Level::setCameraRef(Camera* camera) {
@@ -119,6 +128,13 @@ UUID Level::addObjectRef(Mesh* object) {
     return object->getUUID();
 }
 
+UUID Level::addObjectRef(BillboardMesh* object) {
+    std::lock_guard<std::mutex> guard(billboardsMutex);
+    billboards_obj[object->getUUID()] = {object, true};
+    updateMeshesVector();
+    return object->getUUID();
+}
+
 UUID Level::addObjectRef(Light* object) {
     std::lock_guard<std::mutex> guard(lightsMutex);
     lights_obj[object->getUUID()] = {object, true};
@@ -151,6 +167,8 @@ bool Level::removeObject(const UUID& uuid) {
     std::lock_guard<std::mutex> ui_guard(uiWidgetsMutex);
     std::lock_guard<std::mutex> mesh_guard(meshesMutex);
     std::lock_guard<std::mutex> model_guard(modelsMutex);
+    std::lock_guard<std::mutex> billboard_guard(billboardsMutex);
+    std::lock_guard<std::mutex> animation_guard(animationPlayersMutex);
     std::lock_guard<std::mutex> particles_guard(particlesMutex);
     std::lock_guard<std::mutex> lights_guard(lightsMutex);
 
@@ -174,6 +192,14 @@ bool Level::removeObject(const UUID& uuid) {
         if (!models_obj[uuid].is_ref)
             delete (Model*) models_obj[uuid].obj;
         models_obj.erase(uuid);
+        updateMeshesVector();
+        return true;
+    }
+    
+    if (billboards_obj.count(uuid) == 1) {
+        if (!billboards_obj[uuid].is_ref)
+            delete (BillboardMesh*) billboards_obj[uuid].obj;
+        billboards_obj.erase(uuid);
         updateMeshesVector();
         return true;
     }
@@ -215,6 +241,8 @@ void Level::updateMeshesVector() {
         auto model_meshes = ((Model*) obj.second.obj)->getMeshes();
         meshes.insert(meshes.end(), model_meshes.begin(), model_meshes.end());
     }
+    for (const auto& obj: billboards_obj)
+        meshes.push_back((Mesh*) obj.second.obj);
     meshes.shrink_to_fit();
 }
 

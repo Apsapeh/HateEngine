@@ -141,7 +141,7 @@ void Camera::lookAt(glm::vec3 point) {
     rotation[2] = glm::vec4(direction, 0);
 
     setRotationMatrix(glm::inverse(rotation));
-    
+
     root_obj.lookAt(point);
 }
 

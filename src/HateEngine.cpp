@@ -222,9 +222,8 @@ void Engine::Run() {
             fixed_process_loop_delta += delta;
             physics_engine_iterate_loop_delta += delta;
 
-            for (auto& obj: this->level->particles) {
-                obj->Update(delta);
-            }
+            
+            this->level->Update(delta);
 
             if (this->fixedProcessLoop != nullptr and
                 fixed_process_loop_delta >= fixed_process_loop_delay) {
@@ -347,9 +346,7 @@ void Engine::threadFixedProcessLoop() {
         // std::cout << d / 10<< "\n";
         delta = glfwGetTime() - oldTime;
         oldTime = glfwGetTime();
-        for (auto& obj: level->particles) {
-            obj->Update(delta);
-        }
+        this->level->Update(delta);
 
         // meshesMutex.lock();
         fixedProcessLoop(this, delta);

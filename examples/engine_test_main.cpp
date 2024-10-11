@@ -15,6 +15,7 @@
 #include <HateEngine/Objects/Light/DirectionalLight.hpp>
 #include <HateEngine/Objects/Mesh.hpp>
 #include <HateEngine/Objects/Particles.hpp>
+#include <HateEngine/Objects/BillboardMesh.hpp>
 #include <HateEngine/Resources/GLTFModel.hpp>
 #include <HateEngine/Resources/Texture.hpp>
 #include <HateEngine/Resources/Level.hpp>
@@ -72,6 +73,9 @@ HateEngine::PhysicalBody rigidBody(HateEngine::PhysicalBody::DynamicBody);
 
 HateEngine::Particles* cube_part_ptr;
 
+HateEngine::BillboardMesh billboardMesh;
+
+
 
 int main() {
     std::cout << "Hello\n";
@@ -89,6 +93,8 @@ int main() {
     mesh1.setRotation(0, 0, 0);
     mesh1.setSize(1, 1, 1);
 
+    billboardMesh.offset(-4, 4, -4);
+    
     HateEngine::CubeMesh floor;
     floor.setPosition(0, 0, 0);
     floor.setSize(25, 1, 25);
@@ -166,6 +172,10 @@ int main() {
     // level2.setCameraRef(&camera);
     // game.setLevelRef(&level2);
 
+    
+    billboardMesh.setTexture(&tex2);
+    billboardMesh.setTarget(&camera);
+    lvl.addObjectRef(&billboardMesh);
 
     // HateEngine::ObjMapModel objmodel("examples/Assets/unnamed.obj",
     // "examples/Assets/unnamed.map"); HateEngine::ObjMapModel objmodel("examples/Assets/cube.obj",
@@ -451,11 +461,12 @@ void _process(HateEngine::Engine* engine, double delta) {
                 engine->window, monitor, 0, 0, mode->width, mode->height, mode->refreshRate
         );
     }*/
-    
-    camera.lookAt(mesh1.getGlobalPosition());
-    test_glmodel->lookAt(camera.getGlobalPosition());
 
-    glm::vec2 raw_dir = engine->Input.getVector(HateEngine::A, HateEngine::D, HateEngine::W, HateEngine::S);
+    //camera.lookAt(mesh1.getGlobalPosition());
+    //test_glmodel->lookAt(camera.getGlobalPosition());
+
+    glm::vec2 raw_dir =
+            engine->Input.getVector(HateEngine::A, HateEngine::D, HateEngine::W, HateEngine::S);
     if (raw_dir.x != 0 or raw_dir.y != 0) {
         glm::vec2 dir = raw_dir * glm::vec2(delta * 60) * speed;
 
@@ -563,15 +574,19 @@ void _physics_process(HateEngine::Engine* engine, double delta) {
         engine->setFullScreen(!engine->getFullScreen());*/
 
     glm::vec2 raw_dir =
-            engine->Input.getVector(HateEngine::LEFT, HateEngine::RIGHT, HateEngine::UP, HateEngine::DOWN) * 5;
+            engine->Input.getVector(
+                    HateEngine::LEFT, HateEngine::RIGHT, HateEngine::UP, HateEngine::DOWN
+            ) *
+            5;
     float pb_x = playerBody.reactRigidBody->getLinearVelocity().x;
     float pb_y = playerBody.reactRigidBody->getLinearVelocity().y;
     float pb_z = playerBody.reactRigidBody->getLinearVelocity().z;
     playerBody.reactRigidBody->setLinearVelocity({-raw_dir.y, pb_y, raw_dir.x});
 
 
-    glm::vec2 glmodel_rot =
-            engine->Input.getVector(HateEngine::LEFT, HateEngine::RIGHT, HateEngine::UP, HateEngine::DOWN);
+    glm::vec2 glmodel_rot = engine->Input.getVector(
+            HateEngine::LEFT, HateEngine::RIGHT, HateEngine::UP, HateEngine::DOWN
+    );
     // glmodel.rotate(0, glmodel_rot.x, 0);
     //  glmodel.offset(0, glmodel_rot.y / 10, 0);
 

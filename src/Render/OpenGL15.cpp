@@ -211,8 +211,9 @@ void OpenGL15::Draw3D(
         render(obj, lights);
 
     for (const auto s: *animation_players) {
-        for (const auto& mesh: *s->getMeshes())
-            render(mesh, lights);
+        if (s->visible and s->isPlaying())
+            for (const auto& mesh: *s->getMeshes())
+                render(mesh, lights);
     }
 
     for (auto* s: *particles) {

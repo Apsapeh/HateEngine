@@ -10,7 +10,6 @@
 namespace HateEngine {
     class Engine {
     private:
-
         friend class InputClass;
 
     public:

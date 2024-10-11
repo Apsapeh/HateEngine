@@ -127,14 +127,12 @@ namespace HateEngine {
         RIGHT_SUPER = 347,
         MENU = 348,
     };
-    
+
     class Engine;
     class InputClass {
     public:
-        struct Action {
-            
-        };
-        
+        struct Action {};
+
     private:
         Engine* engine;
 
