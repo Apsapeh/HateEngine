@@ -194,6 +194,8 @@ void OpenGL15::Draw3D(
         std::vector<GLTFAnimationPlayer*>* animation_players, std::vector<Particles*>* particles,
         std::vector<Light*>* lights
 ) {
+    glEnable(GL_BLEND);
+
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_CULL_FACE);
 

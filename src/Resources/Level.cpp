@@ -33,7 +33,7 @@ void Level::Update(double delta) {
     for (auto& obj: this->particles)
         obj->Update(delta);
     for (auto& obj: this->billboards_obj)
-        ((BillboardMesh*)(obj.second.obj))->Update();
+        ((BillboardMesh*) (obj.second.obj))->Update();
 }
 
 void Level::setCameraRef(Camera* camera) {
@@ -195,7 +195,7 @@ bool Level::removeObject(const UUID& uuid) {
         updateMeshesVector();
         return true;
     }
-    
+
     if (billboards_obj.count(uuid) == 1) {
         if (!billboards_obj[uuid].is_ref)
             delete (BillboardMesh*) billboards_obj[uuid].obj;

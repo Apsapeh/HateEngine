@@ -95,7 +95,7 @@ namespace HateEngine {
 
         Level();
         ~Level();
-        
+
         void Update(double delta);
 
         void setCameraRef(Camera* camera);

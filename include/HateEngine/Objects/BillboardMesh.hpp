@@ -4,6 +4,7 @@
 namespace HateEngine {
     class BillboardMesh : public Mesh {
         Object* target;
+
     public:
         BillboardMesh();
         void Update();

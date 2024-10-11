@@ -222,7 +222,7 @@ void Engine::Run() {
             fixed_process_loop_delta += delta;
             physics_engine_iterate_loop_delta += delta;
 
-            
+
             this->level->Update(delta);
 
             if (this->fixedProcessLoop != nullptr and

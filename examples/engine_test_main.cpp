@@ -76,7 +76,6 @@ HateEngine::Particles* cube_part_ptr;
 HateEngine::BillboardMesh billboardMesh;
 
 
-
 int main() {
     std::cout << "Hello\n";
 
@@ -94,7 +93,7 @@ int main() {
     mesh1.setSize(1, 1, 1);
 
     billboardMesh.offset(-4, 4, -4);
-    
+
     HateEngine::CubeMesh floor;
     floor.setPosition(0, 0, 0);
     floor.setSize(25, 1, 25);
@@ -172,8 +171,11 @@ int main() {
     // level2.setCameraRef(&camera);
     // game.setLevelRef(&level2);
 
-    
-    billboardMesh.setTexture(&tex2);
+
+    HateEngine::Texture campfire_tex("examples/Assets/campfire.png");
+    uv_test_cube.setTexture(&campfire_tex);
+
+    billboardMesh.setTexture(&campfire_tex);
     billboardMesh.setTarget(&camera);
     lvl.addObjectRef(&billboardMesh);
 
@@ -462,8 +464,8 @@ void _process(HateEngine::Engine* engine, double delta) {
         );
     }*/
 
-    //camera.lookAt(mesh1.getGlobalPosition());
-    //test_glmodel->lookAt(camera.getGlobalPosition());
+    // camera.lookAt(mesh1.getGlobalPosition());
+    // test_glmodel->lookAt(camera.getGlobalPosition());
 
     glm::vec2 raw_dir =
             engine->Input.getVector(HateEngine::A, HateEngine::D, HateEngine::W, HateEngine::S);
