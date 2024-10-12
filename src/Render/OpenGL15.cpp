@@ -96,6 +96,7 @@ void OpenGL15::Render() {
     glFogf(GL_FOG_START, level->settings.fog_start);
     glFogf(GL_FOG_END, level->settings.fog_end);
     glFogfv(GL_FOG_COLOR, level->settings.fog_color);
+    glDisable(GL_FOG);
 
     // glMatrixMode(GL_PROJECTION);
     glPushMatrix();
