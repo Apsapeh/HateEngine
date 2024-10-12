@@ -1,0 +1,159 @@
+\doxysection{Hate\+Engine\+::Label\+UI Class Reference}
+\hypertarget{class_hate_engine_1_1_label_u_i}{}\label{class_hate_engine_1_1_label_u_i}\index{HateEngine::LabelUI@{HateEngine::LabelUI}}
+
+
+{\ttfamily \#include $<$Label\+UI.\+hpp$>$}
+
+Inheritance diagram for Hate\+Engine\+::Label\+UI\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{class_hate_engine_1_1_label_u_i}
+\end{center}
+\end{figure}
+\doxysubsubsection*{Public Types}
+\begin{DoxyCompactItemize}
+\item 
+enum \mbox{\hyperlink{class_hate_engine_1_1_label_u_i_a6198e8b42e28b3d11d7ac749e35d8c50}{Text\+Align}} \{ \mbox{\hyperlink{class_hate_engine_1_1_label_u_i_a6198e8b42e28b3d11d7ac749e35d8c50a20eb87e3013d7f1d66c5b3d8fe227125}{Left}}
+, \mbox{\hyperlink{class_hate_engine_1_1_label_u_i_a6198e8b42e28b3d11d7ac749e35d8c50a9ab97bd02f5dd1eecafded03fe94e3e5}{Center}}
+, \mbox{\hyperlink{class_hate_engine_1_1_label_u_i_a6198e8b42e28b3d11d7ac749e35d8c50a2a6313b66d08b171283acc9c8650ceed}{Right}}
+, \mbox{\hyperlink{class_hate_engine_1_1_label_u_i_a6198e8b42e28b3d11d7ac749e35d8c50a43d59469baf2d0665e79b3f72389e088}{Wrap}}
+ \}
+\end{DoxyCompactItemize}
+\doxysubsection*{Public Types inherited from \mbox{\hyperlink{class_hate_engine_1_1_object_u_i}{Hate\+Engine\+::\+Object\+UI}}}
+\begin{DoxyCompactItemize}
+\item 
+enum \mbox{\hyperlink{class_hate_engine_1_1_object_u_i_af6a7c5f47975621e1676c8df1cdac971}{Type}} \{ \mbox{\hyperlink{class_hate_engine_1_1_object_u_i_af6a7c5f47975621e1676c8df1cdac971a700ae74e26dc0c50884e98123916af9d}{Widget}}
+, \mbox{\hyperlink{class_hate_engine_1_1_object_u_i_af6a7c5f47975621e1676c8df1cdac971a2cbeabbaedb58226f251f790d2748d3a}{Label}}
+, \mbox{\hyperlink{class_hate_engine_1_1_object_u_i_af6a7c5f47975621e1676c8df1cdac971af1cf6cf2488f508819163c5125e61425}{Button}}
+, \mbox{\hyperlink{class_hate_engine_1_1_object_u_i_af6a7c5f47975621e1676c8df1cdac971add5b6f237829270398bc558ff446bf54}{Checkbox}}
+ \}
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{class_hate_engine_1_1_label_u_i_a84c5ac9e04317423108ec9e035b37905}{Label\+UI}} (const \mbox{\hyperlink{class_hate_engine_1_1_label_u_i}{Label\+UI}} \&lbl)
+\item 
+\mbox{\hyperlink{class_hate_engine_1_1_label_u_i_a1ae947ac1cbe1fc61793627d3fe3af89}{Label\+UI}} ()
+\end{DoxyCompactItemize}
+\doxysubsection*{Public Member Functions inherited from \mbox{\hyperlink{class_hate_engine_1_1_object_u_i}{Hate\+Engine\+::\+Object\+UI}}}
+\begin{DoxyCompactItemize}
+\item 
+void \mbox{\hyperlink{class_hate_engine_1_1_object_u_i_ac89807f3c6fe647e1540f700e043f841}{set\+Scale}} (float scale)
+\item 
+void \mbox{\hyperlink{class_hate_engine_1_1_object_u_i_a379110e2e7e7e410f236c505e017abb4}{zoom}} (float delta)
+\item 
+void \mbox{\hyperlink{class_hate_engine_1_1_object_u_i_a2f458376d4e138894bdf406a2b3f60d5}{set\+Font}} (\mbox{\hyperlink{class_hate_engine_1_1_u_i_font}{UIFont}} \texorpdfstring{$\ast$}{*}\mbox{\hyperlink{class_hate_engine_1_1_object_u_i_a0bcae7c7d7fef3bdd487477e98eeace8}{font}}, bool autosize=false)
+\item 
+void \mbox{\hyperlink{class_hate_engine_1_1_object_u_i_a80b1cb6d71af9b1cf96eb1f313cd0caf}{remove\+Font}} ()
+\item 
+\mbox{\hyperlink{class_hate_engine_1_1_u_i_font}{UIFont}} \texorpdfstring{$\ast$}{*} \mbox{\hyperlink{class_hate_engine_1_1_object_u_i_a769a8b0316a94dbc75c7d046a181cded}{get\+Font}} () const
+\item 
+void \mbox{\hyperlink{class_hate_engine_1_1_object_u_i_aa1968cee21590c2dfa3beb178e518214}{set\+Text}} (const std\+::string \&\mbox{\hyperlink{class_hate_engine_1_1_object_u_i_ab8975edd98559a212089ad93bcdeaefd}{text}})
+\item 
+std\+::string \mbox{\hyperlink{class_hate_engine_1_1_object_u_i_aaa3e27bdc3131788cd549daf73673d4f}{get\+Text}} () const
+\item 
+\mbox{\hyperlink{class_hate_engine_1_1_u_u_i_d}{UUID}} \mbox{\hyperlink{class_hate_engine_1_1_object_u_i_aba19024b388f0807b6a35ae9a9584c08}{get\+UUID}} () const
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+glm\+::ivec3 \mbox{\hyperlink{class_hate_engine_1_1_label_u_i_a3ac99031e4500a9a60a38048b9793d30}{color}} = \{0, 0, 0\}
+\item 
+\mbox{\hyperlink{class_hate_engine_1_1_label_u_i_a6198e8b42e28b3d11d7ac749e35d8c50}{Text\+Align}} \mbox{\hyperlink{class_hate_engine_1_1_label_u_i_acee0025f36c97fe76e3c903c8d0896cc}{text\+\_\+align}} = \mbox{\hyperlink{class_hate_engine_1_1_label_u_i_a6198e8b42e28b3d11d7ac749e35d8c50a20eb87e3013d7f1d66c5b3d8fe227125}{Left}}
+\item 
+std\+::string \mbox{\hyperlink{class_hate_engine_1_1_label_u_i_aef6e53a62605719d42a83ce83e9aac4b}{text}} = "{}"{}
+\end{DoxyCompactItemize}
+\doxysubsection*{Public Attributes inherited from \mbox{\hyperlink{class_hate_engine_1_1_object_u_i}{Hate\+Engine\+::\+Object\+UI}}}
+\begin{DoxyCompactItemize}
+\item 
+std\+::string \mbox{\hyperlink{class_hate_engine_1_1_object_u_i_ab8975edd98559a212089ad93bcdeaefd}{text}} = "{}"{}
+\item 
+glm\+::ivec4 \mbox{\hyperlink{class_hate_engine_1_1_object_u_i_a4e7f9c74d130d878d1c7e2a50f731f04}{color}} = \{255, 255, 255, 255\}
+\item 
+glm\+::ivec4 \mbox{\hyperlink{class_hate_engine_1_1_object_u_i_a64790701c753a858467297c7a48205c1}{text\+\_\+color}} = \{0, 0, 0, 255\}
+\item 
+\mbox{\hyperlink{class_hate_engine_1_1_coords_u_i}{Coords\+UI}} \mbox{\hyperlink{class_hate_engine_1_1_object_u_i_afc27c764ef3414d0823a6fdf63976648}{position}} = \{0, 0\}
+\item 
+\mbox{\hyperlink{class_hate_engine_1_1_coords_u_i}{Coords\+UI}} \mbox{\hyperlink{class_hate_engine_1_1_object_u_i_a2fbe78364f57c2cbed6b97dbcba43abb}{size}} = \{0, 0\}
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Additional Inherited Members}
+\doxysubsection*{Protected Member Functions inherited from \mbox{\hyperlink{class_hate_engine_1_1_object_u_i}{Hate\+Engine\+::\+Object\+UI}}}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{class_hate_engine_1_1_object_u_i_a2d89c1bf3f83958a9879d3eb9987e6f8}{Object\+UI}} (const \mbox{\hyperlink{class_hate_engine_1_1_object_u_i}{Object\+UI}} \&obj)
+\item 
+\mbox{\hyperlink{class_hate_engine_1_1_object_u_i_aed0a54e2e9183fb1ec54b9abca910497}{Object\+UI}} (\mbox{\hyperlink{class_hate_engine_1_1_object_u_i_af6a7c5f47975621e1676c8df1cdac971}{Type}} type)
+\end{DoxyCompactItemize}
+\doxysubsection*{Protected Attributes inherited from \mbox{\hyperlink{class_hate_engine_1_1_object_u_i}{Hate\+Engine\+::\+Object\+UI}}}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{class_hate_engine_1_1_u_i_font}{UIFont}} \texorpdfstring{$\ast$}{*} \mbox{\hyperlink{class_hate_engine_1_1_object_u_i_a0bcae7c7d7fef3bdd487477e98eeace8}{font}} = nullptr
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Member Enumeration Documentation}
+\Hypertarget{class_hate_engine_1_1_label_u_i_a6198e8b42e28b3d11d7ac749e35d8c50}\label{class_hate_engine_1_1_label_u_i_a6198e8b42e28b3d11d7ac749e35d8c50} 
+\index{HateEngine::LabelUI@{HateEngine::LabelUI}!TextAlign@{TextAlign}}
+\index{TextAlign@{TextAlign}!HateEngine::LabelUI@{HateEngine::LabelUI}}
+\doxysubsubsection{\texorpdfstring{TextAlign}{TextAlign}}
+{\footnotesize\ttfamily enum \mbox{\hyperlink{class_hate_engine_1_1_label_u_i_a6198e8b42e28b3d11d7ac749e35d8c50}{Hate\+Engine\+::\+Label\+UI\+::\+Text\+Align}}}
+
+\begin{DoxyEnumFields}{Enumerator}
+\raisebox{\heightof{T}}[0pt][0pt]{\index{Left@{Left}!HateEngine::LabelUI@{HateEngine::LabelUI}}\index{HateEngine::LabelUI@{HateEngine::LabelUI}!Left@{Left}}}\Hypertarget{class_hate_engine_1_1_label_u_i_a6198e8b42e28b3d11d7ac749e35d8c50a20eb87e3013d7f1d66c5b3d8fe227125}\label{class_hate_engine_1_1_label_u_i_a6198e8b42e28b3d11d7ac749e35d8c50a20eb87e3013d7f1d66c5b3d8fe227125} 
+Left&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{Center@{Center}!HateEngine::LabelUI@{HateEngine::LabelUI}}\index{HateEngine::LabelUI@{HateEngine::LabelUI}!Center@{Center}}}\Hypertarget{class_hate_engine_1_1_label_u_i_a6198e8b42e28b3d11d7ac749e35d8c50a9ab97bd02f5dd1eecafded03fe94e3e5}\label{class_hate_engine_1_1_label_u_i_a6198e8b42e28b3d11d7ac749e35d8c50a9ab97bd02f5dd1eecafded03fe94e3e5} 
+Center&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{Right@{Right}!HateEngine::LabelUI@{HateEngine::LabelUI}}\index{HateEngine::LabelUI@{HateEngine::LabelUI}!Right@{Right}}}\Hypertarget{class_hate_engine_1_1_label_u_i_a6198e8b42e28b3d11d7ac749e35d8c50a2a6313b66d08b171283acc9c8650ceed}\label{class_hate_engine_1_1_label_u_i_a6198e8b42e28b3d11d7ac749e35d8c50a2a6313b66d08b171283acc9c8650ceed} 
+Right&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{Wrap@{Wrap}!HateEngine::LabelUI@{HateEngine::LabelUI}}\index{HateEngine::LabelUI@{HateEngine::LabelUI}!Wrap@{Wrap}}}\Hypertarget{class_hate_engine_1_1_label_u_i_a6198e8b42e28b3d11d7ac749e35d8c50a43d59469baf2d0665e79b3f72389e088}\label{class_hate_engine_1_1_label_u_i_a6198e8b42e28b3d11d7ac749e35d8c50a43d59469baf2d0665e79b3f72389e088} 
+Wrap&\\
+\hline
+
+\end{DoxyEnumFields}
+
+
+\doxysubsection{Constructor \& Destructor Documentation}
+\Hypertarget{class_hate_engine_1_1_label_u_i_a84c5ac9e04317423108ec9e035b37905}\label{class_hate_engine_1_1_label_u_i_a84c5ac9e04317423108ec9e035b37905} 
+\index{HateEngine::LabelUI@{HateEngine::LabelUI}!LabelUI@{LabelUI}}
+\index{LabelUI@{LabelUI}!HateEngine::LabelUI@{HateEngine::LabelUI}}
+\doxysubsubsection{\texorpdfstring{LabelUI()}{LabelUI()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily Hate\+Engine\+::\+Label\+UI\+::\+Label\+UI (\begin{DoxyParamCaption}\item[{const \mbox{\hyperlink{class_hate_engine_1_1_label_u_i}{Label\+UI}} \&}]{lbl }\end{DoxyParamCaption})}
+
+\Hypertarget{class_hate_engine_1_1_label_u_i_a1ae947ac1cbe1fc61793627d3fe3af89}\label{class_hate_engine_1_1_label_u_i_a1ae947ac1cbe1fc61793627d3fe3af89} 
+\index{HateEngine::LabelUI@{HateEngine::LabelUI}!LabelUI@{LabelUI}}
+\index{LabelUI@{LabelUI}!HateEngine::LabelUI@{HateEngine::LabelUI}}
+\doxysubsubsection{\texorpdfstring{LabelUI()}{LabelUI()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily Hate\+Engine\+::\+Label\+UI\+::\+Label\+UI (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+\doxysubsection{Member Data Documentation}
+\Hypertarget{class_hate_engine_1_1_label_u_i_a3ac99031e4500a9a60a38048b9793d30}\label{class_hate_engine_1_1_label_u_i_a3ac99031e4500a9a60a38048b9793d30} 
+\index{HateEngine::LabelUI@{HateEngine::LabelUI}!color@{color}}
+\index{color@{color}!HateEngine::LabelUI@{HateEngine::LabelUI}}
+\doxysubsubsection{\texorpdfstring{color}{color}}
+{\footnotesize\ttfamily glm\+::ivec3 Hate\+Engine\+::\+Label\+UI\+::color = \{0, 0, 0\}}
+
+\Hypertarget{class_hate_engine_1_1_label_u_i_aef6e53a62605719d42a83ce83e9aac4b}\label{class_hate_engine_1_1_label_u_i_aef6e53a62605719d42a83ce83e9aac4b} 
+\index{HateEngine::LabelUI@{HateEngine::LabelUI}!text@{text}}
+\index{text@{text}!HateEngine::LabelUI@{HateEngine::LabelUI}}
+\doxysubsubsection{\texorpdfstring{text}{text}}
+{\footnotesize\ttfamily std\+::string Hate\+Engine\+::\+Label\+UI\+::text = "{}"{}}
+
+\Hypertarget{class_hate_engine_1_1_label_u_i_acee0025f36c97fe76e3c903c8d0896cc}\label{class_hate_engine_1_1_label_u_i_acee0025f36c97fe76e3c903c8d0896cc} 
+\index{HateEngine::LabelUI@{HateEngine::LabelUI}!text\_align@{text\_align}}
+\index{text\_align@{text\_align}!HateEngine::LabelUI@{HateEngine::LabelUI}}
+\doxysubsubsection{\texorpdfstring{text\_align}{text\_align}}
+{\footnotesize\ttfamily \mbox{\hyperlink{class_hate_engine_1_1_label_u_i_a6198e8b42e28b3d11d7ac749e35d8c50}{Text\+Align}} Hate\+Engine\+::\+Label\+UI\+::text\+\_\+align = \mbox{\hyperlink{class_hate_engine_1_1_label_u_i_a6198e8b42e28b3d11d7ac749e35d8c50a20eb87e3013d7f1d66c5b3d8fe227125}{Left}}}
+
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+include/\+Hate\+Engine/\+UI/\mbox{\hyperlink{_label_u_i_8hpp}{Label\+UI.\+hpp}}\end{DoxyCompactItemize}

@@ -1,0 +1,57 @@
+\doxysection{Object\+UI.\+hpp}
+\hypertarget{_object_u_i_8hpp_source}{}\label{_object_u_i_8hpp_source}\index{include/HateEngine/UI/ObjectUI.hpp@{include/HateEngine/UI/ObjectUI.hpp}}
+\mbox{\hyperlink{_object_u_i_8hpp}{Go to the documentation of this file.}}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{comment}{//}}
+\DoxyCodeLine{00002\ \textcolor{comment}{//\ Created\ by\ Тимофей\ Кириченко\ on\ 12.05.2024.}}
+\DoxyCodeLine{00003\ \textcolor{comment}{//}}
+\DoxyCodeLine{00004\ }
+\DoxyCodeLine{00005\ \textcolor{preprocessor}{\#pragma\ once}}
+\DoxyCodeLine{00006\ }
+\DoxyCodeLine{00007\ \textcolor{preprocessor}{\#include\ <glm/glm.hpp>}}
+\DoxyCodeLine{00008\ \textcolor{preprocessor}{\#include\ "{}\mbox{\hyperlink{_u_u_i_d_8hpp}{../Utilities/UUID.hpp}}"{}}}
+\DoxyCodeLine{00009\ \textcolor{preprocessor}{\#include\ "{}\mbox{\hyperlink{_coords_u_i_8hpp}{CoordsUI.hpp}}"{}}}
+\DoxyCodeLine{00010\ \textcolor{preprocessor}{\#include\ "{}\mbox{\hyperlink{_u_i_font_8hpp}{../Resources/UIFont.hpp}}"{}}}
+\DoxyCodeLine{00011\ }
+\DoxyCodeLine{00012\ }
+\DoxyCodeLine{00013\ \textcolor{keyword}{namespace\ }\mbox{\hyperlink{namespace_hate_engine}{HateEngine}}\ \{}
+\DoxyCodeLine{00014\ \ \ \ \ \textcolor{keyword}{class\ }\mbox{\hyperlink{class_hate_engine_1_1_object_u_i}{ObjectUI}}\ \{}
+\DoxyCodeLine{00015\ \ \ \ \ \ \ \ \ \textcolor{keyword}{friend}\ \textcolor{keyword}{class\ }\mbox{\hyperlink{class_hate_engine_1_1_open_g_l15}{OpenGL15}};}
+\DoxyCodeLine{00016\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{class_hate_engine_1_1_u_u_i_d}{UUID}}\ uuid;}
+\DoxyCodeLine{00017\ }
+\DoxyCodeLine{00018\ \ \ \ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00019\ \ \ \ \ \ \ \ \ \textcolor{keyword}{enum}\ \mbox{\hyperlink{class_hate_engine_1_1_object_u_i_af6a7c5f47975621e1676c8df1cdac971}{Type}}\ \{\ \mbox{\hyperlink{class_hate_engine_1_1_object_u_i_af6a7c5f47975621e1676c8df1cdac971a700ae74e26dc0c50884e98123916af9d}{Widget}},\ \mbox{\hyperlink{class_hate_engine_1_1_object_u_i_af6a7c5f47975621e1676c8df1cdac971a2cbeabbaedb58226f251f790d2748d3a}{Label}},\ \mbox{\hyperlink{class_hate_engine_1_1_object_u_i_af6a7c5f47975621e1676c8df1cdac971af1cf6cf2488f508819163c5125e61425}{Button}},\ \mbox{\hyperlink{class_hate_engine_1_1_object_u_i_af6a7c5f47975621e1676c8df1cdac971add5b6f237829270398bc558ff446bf54}{Checkbox}}\ \};}
+\DoxyCodeLine{00020\ }
+\DoxyCodeLine{00021\ \ \ \ \ \ \ \ \ std::string\ \mbox{\hyperlink{class_hate_engine_1_1_object_u_i_ab8975edd98559a212089ad93bcdeaefd}{text}}\ =\ \textcolor{stringliteral}{"{}"{}};}
+\DoxyCodeLine{00022\ \ \ \ \ \ \ \ \ glm::ivec4\ \mbox{\hyperlink{class_hate_engine_1_1_object_u_i_a4e7f9c74d130d878d1c7e2a50f731f04}{color}}\ =\ \{255,\ 255,\ 255,\ 255\};}
+\DoxyCodeLine{00023\ \ \ \ \ \ \ \ \ glm::ivec4\ \mbox{\hyperlink{class_hate_engine_1_1_object_u_i_a64790701c753a858467297c7a48205c1}{text\_color}}\ =\ \{0,\ 0,\ 0,\ 255\};}
+\DoxyCodeLine{00024\ }
+\DoxyCodeLine{00025\ \ \ \ \ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00026\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{class_hate_engine_1_1_object_u_i_af6a7c5f47975621e1676c8df1cdac971}{Type}}\ type;}
+\DoxyCodeLine{00027\ }
+\DoxyCodeLine{00028\ \ \ \ \ \textcolor{keyword}{protected}:}
+\DoxyCodeLine{00029\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{class_hate_engine_1_1_u_i_font}{UIFont}}*\ \mbox{\hyperlink{class_hate_engine_1_1_object_u_i_a0bcae7c7d7fef3bdd487477e98eeace8}{font}}\ =\ \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{00030\ }
+\DoxyCodeLine{00031\ }
+\DoxyCodeLine{00032\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{class_hate_engine_1_1_object_u_i_a2d89c1bf3f83958a9879d3eb9987e6f8}{ObjectUI}}(\textcolor{keyword}{const}\ \mbox{\hyperlink{class_hate_engine_1_1_object_u_i}{ObjectUI}}\&\ obj);}
+\DoxyCodeLine{00033\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{class_hate_engine_1_1_object_u_i_aed0a54e2e9183fb1ec54b9abca910497}{ObjectUI}}(\mbox{\hyperlink{class_hate_engine_1_1_object_u_i_af6a7c5f47975621e1676c8df1cdac971}{Type}}\ type);}
+\DoxyCodeLine{00034\ }
+\DoxyCodeLine{00035\ \ \ \ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00036\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{class_hate_engine_1_1_coords_u_i}{CoordsUI}}\ \mbox{\hyperlink{class_hate_engine_1_1_object_u_i_afc27c764ef3414d0823a6fdf63976648}{position}}\ =\ \{0,\ 0\};}
+\DoxyCodeLine{00037\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{class_hate_engine_1_1_coords_u_i}{CoordsUI}}\ \mbox{\hyperlink{class_hate_engine_1_1_object_u_i_a2fbe78364f57c2cbed6b97dbcba43abb}{size}}\ =\ \{0,\ 0\};}
+\DoxyCodeLine{00038\ }
+\DoxyCodeLine{00039\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{class_hate_engine_1_1_object_u_i_ac89807f3c6fe647e1540f700e043f841}{setScale}}(\textcolor{keywordtype}{float}\ scale);}
+\DoxyCodeLine{00040\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{class_hate_engine_1_1_object_u_i_a379110e2e7e7e410f236c505e017abb4}{zoom}}(\textcolor{keywordtype}{float}\ delta);}
+\DoxyCodeLine{00041\ }
+\DoxyCodeLine{00042\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{class_hate_engine_1_1_object_u_i_a2f458376d4e138894bdf406a2b3f60d5}{setFont}}(\mbox{\hyperlink{class_hate_engine_1_1_u_i_font}{UIFont}}*\ \mbox{\hyperlink{class_hate_engine_1_1_object_u_i_a0bcae7c7d7fef3bdd487477e98eeace8}{font}},\ \textcolor{keywordtype}{bool}\ autosize\ =\ \textcolor{keyword}{false});}
+\DoxyCodeLine{00043\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{class_hate_engine_1_1_object_u_i_a80b1cb6d71af9b1cf96eb1f313cd0caf}{removeFont}}();}
+\DoxyCodeLine{00044\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{class_hate_engine_1_1_u_i_font}{UIFont}}*\ \mbox{\hyperlink{class_hate_engine_1_1_object_u_i_a769a8b0316a94dbc75c7d046a181cded}{getFont}}()\ \textcolor{keyword}{const};}
+\DoxyCodeLine{00045\ }
+\DoxyCodeLine{00046\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{class_hate_engine_1_1_object_u_i_aa1968cee21590c2dfa3beb178e518214}{setText}}(\textcolor{keyword}{const}\ std::string\&\ \mbox{\hyperlink{class_hate_engine_1_1_object_u_i_ab8975edd98559a212089ad93bcdeaefd}{text}});}
+\DoxyCodeLine{00047\ \ \ \ \ \ \ \ \ std::string\ \mbox{\hyperlink{class_hate_engine_1_1_object_u_i_aaa3e27bdc3131788cd549daf73673d4f}{getText}}()\ \textcolor{keyword}{const};}
+\DoxyCodeLine{00048\ }
+\DoxyCodeLine{00049\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{class_hate_engine_1_1_u_u_i_d}{UUID}}\ \mbox{\hyperlink{class_hate_engine_1_1_object_u_i_aba19024b388f0807b6a35ae9a9584c08}{getUUID}}()\ \textcolor{keyword}{const};}
+\DoxyCodeLine{00050\ \ \ \ \ \};}
+\DoxyCodeLine{00051\ \}\ \textcolor{comment}{//\ namespace\ HateEngine}}
+
+\end{DoxyCode}

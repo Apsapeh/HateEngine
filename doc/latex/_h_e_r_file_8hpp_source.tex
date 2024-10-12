@@ -1,0 +1,49 @@
+\doxysection{HERFile.\+hpp}
+\hypertarget{_h_e_r_file_8hpp_source}{}\label{_h_e_r_file_8hpp_source}\index{include/HateEngine/Resources/HERFile.hpp@{include/HateEngine/Resources/HERFile.hpp}}
+\mbox{\hyperlink{_h_e_r_file_8hpp}{Go to the documentation of this file.}}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{preprocessor}{\#pragma\ once}}
+\DoxyCodeLine{00002\ \textcolor{preprocessor}{\#include\ <cstdint>}}
+\DoxyCodeLine{00003\ \textcolor{preprocessor}{\#include\ <string>}}
+\DoxyCodeLine{00004\ \textcolor{preprocessor}{\#include\ <unordered\_map>}}
+\DoxyCodeLine{00005\ \textcolor{preprocessor}{\#include\ <vector>}}
+\DoxyCodeLine{00006\ }
+\DoxyCodeLine{00007\ \textcolor{preprocessor}{\#include\ "{}\mbox{\hyperlink{_texture_8hpp}{Texture.hpp}}"{}}}
+\DoxyCodeLine{00008\ \textcolor{preprocessor}{\#include\ "{}\mbox{\hyperlink{_g_l_t_f_model_8hpp}{GLTFModel.hpp}}"{}}}
+\DoxyCodeLine{00009\ }
+\DoxyCodeLine{00010\ \textcolor{keyword}{namespace\ }\mbox{\hyperlink{namespace_hate_engine}{HateEngine}}\ \{}
+\DoxyCodeLine{00011\ \ \ \ \ \textcolor{keyword}{class\ }\mbox{\hyperlink{class_hate_engine_1_1_h_e_r_resource}{HERResource}}\ \{}
+\DoxyCodeLine{00012\ \ \ \ \ \ \ \ \ \textcolor{keyword}{friend}\ \textcolor{keyword}{class\ }\mbox{\hyperlink{class_hate_engine_1_1_h_e_r_file}{HERFile}};}
+\DoxyCodeLine{00013\ \ \ \ \ \ \ \ \ std::vector<uint8\_t>\ data;}
+\DoxyCodeLine{00014\ }
+\DoxyCodeLine{00015\ \ \ \ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00016\ \ \ \ \ \ \ \ \ std::vector<uint8\_t>*\ \mbox{\hyperlink{class_hate_engine_1_1_h_e_r_resource_abeb15d137ec1a69f2741efc2cc49b889}{getRawData}}();}
+\DoxyCodeLine{00017\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{class_hate_engine_1_1_texture}{Texture}}\ \mbox{\hyperlink{class_hate_engine_1_1_h_e_r_resource_aea8200c2324c56d94cd48f86de2725a0}{asTexture}}(}
+\DoxyCodeLine{00018\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{class_hate_engine_1_1_texture_a4e98343d48bd09003e1c6953a9b37a89}{Texture::TexWrap}}\ tex\_wrap\ =\ \mbox{\hyperlink{class_hate_engine_1_1_texture_a4e98343d48bd09003e1c6953a9b37a89ac7f06924119de0190225e5388708876a}{Texture::Repeat}},}
+\DoxyCodeLine{00019\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{class_hate_engine_1_1_texture_a9dd856dacbbad62123050a4326a900aa}{Texture::TexFiltering}}\ tex\_filtering\ =\ \mbox{\hyperlink{class_hate_engine_1_1_texture_a9dd856dacbbad62123050a4326a900aaa0a4cc6b690321f47fad3868d7ad67a11}{Texture::Linear}},\ \textcolor{keywordtype}{bool}\ mipmap\ =\ \textcolor{keyword}{true},}
+\DoxyCodeLine{00020\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{float}\ mipmap\_bias\ =\ -\/1.0f,\ \textcolor{keywordtype}{bool}\ autoload\ =\ \textcolor{keyword}{true}}
+\DoxyCodeLine{00021\ \ \ \ \ \ \ \ \ );}
+\DoxyCodeLine{00022\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{class_hate_engine_1_1_g_l_t_f_model}{GLTFModel}}\ \mbox{\hyperlink{class_hate_engine_1_1_h_e_r_resource_a37390cfc3b19cc324ecdbfe727d53473}{asGLBModel}}();}
+\DoxyCodeLine{00023\ \ \ \ \ \};}
+\DoxyCodeLine{00024\ }
+\DoxyCodeLine{00025\ \ \ \ \ \textcolor{keyword}{class\ }\mbox{\hyperlink{class_hate_engine_1_1_h_e_r_file}{HERFile}}\ \{}
+\DoxyCodeLine{00026\ \ \ \ \ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00027\ \ \ \ \ \ \ \ \ \textcolor{keyword}{struct\ }HERResourceRaw\ \{}
+\DoxyCodeLine{00028\ \ \ \ \ \ \ \ \ \ \ \ \ uint64\_t\ originalSize;}
+\DoxyCodeLine{00029\ \ \ \ \ \ \ \ \ \ \ \ \ uint64\_t\ alignedSize;}
+\DoxyCodeLine{00030\ \ \ \ \ \ \ \ \ \ \ \ \ uint64\_t\ offset;}
+\DoxyCodeLine{00031\ \ \ \ \ \ \ \ \ \};}
+\DoxyCodeLine{00032\ \ \ \ \ \ \ \ \ std::string\ path;}
+\DoxyCodeLine{00033\ \ \ \ \ \ \ \ \ std::string\ password;}
+\DoxyCodeLine{00034\ \ \ \ \ \ \ \ \ uint64\_t\ dataPointer;}
+\DoxyCodeLine{00035\ }
+\DoxyCodeLine{00036\ \ \ \ \ \ \ \ \ std::unordered\_map<std::string,\ HERResourceRaw>\ resources;}
+\DoxyCodeLine{00037\ }
+\DoxyCodeLine{00038\ \ \ \ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00039\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{class_hate_engine_1_1_h_e_r_file_a5b15f4d38ec7077614e3a6ba0a027e7b}{HERFile}}(std::string\ path,\ std::string\ password);}
+\DoxyCodeLine{00040\ }
+\DoxyCodeLine{00041\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{class_hate_engine_1_1_h_e_r_resource}{HERResource}}\ \mbox{\hyperlink{class_hate_engine_1_1_h_e_r_file_aea01b13165ae13c415d8350ba0bf77e2}{operator[]}}(std::string\ key);}
+\DoxyCodeLine{00042\ \ \ \ \ \};}
+\DoxyCodeLine{00043\ \}\ \textcolor{comment}{//\ namespace\ HateEngine}}
+
+\end{DoxyCode}

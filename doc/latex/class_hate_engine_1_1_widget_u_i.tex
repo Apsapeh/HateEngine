@@ -1,0 +1,260 @@
+\doxysection{Hate\+Engine\+::Widget\+UI Class Reference}
+\hypertarget{class_hate_engine_1_1_widget_u_i}{}\label{class_hate_engine_1_1_widget_u_i}\index{HateEngine::WidgetUI@{HateEngine::WidgetUI}}
+
+
+{\ttfamily \#include $<$Widget\+UI.\+hpp$>$}
+
+Inheritance diagram for Hate\+Engine\+::Widget\+UI\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{class_hate_engine_1_1_widget_u_i}
+\end{center}
+\end{figure}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{class_hate_engine_1_1_widget_u_i_a5a382ffe01e5c5de3b62c49712bdc129}{Widget\+UI}} ()
+\item 
+\mbox{\hyperlink{class_hate_engine_1_1_u_u_i_d}{UUID}} \mbox{\hyperlink{class_hate_engine_1_1_widget_u_i_a6a2f7c4ce011fa3203ef11b179062e7b}{add\+Object\+Ref}} (\mbox{\hyperlink{class_hate_engine_1_1_object_u_i}{Object\+UI}} \texorpdfstring{$\ast$}{*}obj)
+\item 
+\mbox{\hyperlink{class_hate_engine_1_1_u_u_i_d}{UUID}} \mbox{\hyperlink{class_hate_engine_1_1_widget_u_i_a3222f43ee47eb4b24ea1967678ce7349}{add\+Object\+Clone}} (\mbox{\hyperlink{class_hate_engine_1_1_label_u_i}{Label\+UI}} \&lbl)
+\item 
+\mbox{\hyperlink{class_hate_engine_1_1_u_u_i_d}{UUID}} \mbox{\hyperlink{class_hate_engine_1_1_widget_u_i_a799749cebbae4ff8b3d245aa09793a54}{add\+Object\+Clone}} (\mbox{\hyperlink{class_hate_engine_1_1_button_u_i}{Button\+UI}} \&obj)
+\item 
+\mbox{\hyperlink{class_hate_engine_1_1_u_u_i_d}{UUID}} \mbox{\hyperlink{class_hate_engine_1_1_widget_u_i_a7b6fff94bbeeb1490e394965b43cca45}{add\+Object\+Clone}} (\mbox{\hyperlink{class_hate_engine_1_1_checkbox_u_i}{Checkbox\+UI}} \&ckbox)
+\item 
+bool \mbox{\hyperlink{class_hate_engine_1_1_widget_u_i_af3ea0e22b9d4a16ad98fc8912dc1c23d}{remove\+Object\+Ref}} (const \mbox{\hyperlink{class_hate_engine_1_1_u_u_i_d}{UUID}} \&uuid)
+\end{DoxyCompactItemize}
+\doxysubsection*{Public Member Functions inherited from \mbox{\hyperlink{class_hate_engine_1_1_object_u_i}{Hate\+Engine\+::\+Object\+UI}}}
+\begin{DoxyCompactItemize}
+\item 
+void \mbox{\hyperlink{class_hate_engine_1_1_object_u_i_ac89807f3c6fe647e1540f700e043f841}{set\+Scale}} (float scale)
+\item 
+void \mbox{\hyperlink{class_hate_engine_1_1_object_u_i_a379110e2e7e7e410f236c505e017abb4}{zoom}} (float delta)
+\item 
+void \mbox{\hyperlink{class_hate_engine_1_1_object_u_i_a2f458376d4e138894bdf406a2b3f60d5}{set\+Font}} (\mbox{\hyperlink{class_hate_engine_1_1_u_i_font}{UIFont}} \texorpdfstring{$\ast$}{*}\mbox{\hyperlink{class_hate_engine_1_1_object_u_i_a0bcae7c7d7fef3bdd487477e98eeace8}{font}}, bool autosize=false)
+\item 
+void \mbox{\hyperlink{class_hate_engine_1_1_object_u_i_a80b1cb6d71af9b1cf96eb1f313cd0caf}{remove\+Font}} ()
+\item 
+\mbox{\hyperlink{class_hate_engine_1_1_u_i_font}{UIFont}} \texorpdfstring{$\ast$}{*} \mbox{\hyperlink{class_hate_engine_1_1_object_u_i_a769a8b0316a94dbc75c7d046a181cded}{get\+Font}} () const
+\item 
+void \mbox{\hyperlink{class_hate_engine_1_1_object_u_i_aa1968cee21590c2dfa3beb178e518214}{set\+Text}} (const std\+::string \&\mbox{\hyperlink{class_hate_engine_1_1_object_u_i_ab8975edd98559a212089ad93bcdeaefd}{text}})
+\item 
+std\+::string \mbox{\hyperlink{class_hate_engine_1_1_object_u_i_aaa3e27bdc3131788cd549daf73673d4f}{get\+Text}} () const
+\item 
+\mbox{\hyperlink{class_hate_engine_1_1_u_u_i_d}{UUID}} \mbox{\hyperlink{class_hate_engine_1_1_object_u_i_aba19024b388f0807b6a35ae9a9584c08}{get\+UUID}} () const
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+glm\+::ivec4 \mbox{\hyperlink{class_hate_engine_1_1_widget_u_i_af09a61ab161cca725b82148724cf8250}{color}} = \{0, 0, 0, 125\}
+\item 
+std\+::string \mbox{\hyperlink{class_hate_engine_1_1_widget_u_i_aec6f771bf47af42f4d785ab1ba80c98e}{title}} = "{}Widget"{}
+\item 
+bool \mbox{\hyperlink{class_hate_engine_1_1_widget_u_i_ad4d27cb93f060b5bc7872ec1804b55d2}{has\+\_\+border}} = false
+\item 
+bool \mbox{\hyperlink{class_hate_engine_1_1_widget_u_i_af4af2991096c847becb5cf56b3caf456}{is\+\_\+movable}} = false
+\item 
+bool \mbox{\hyperlink{class_hate_engine_1_1_widget_u_i_a3c577decab9e032b9ff817dede77a570}{is\+\_\+scalable}} = false
+\item 
+bool \mbox{\hyperlink{class_hate_engine_1_1_widget_u_i_a28fe4901b00a05dad81bb1f036af2eec}{is\+\_\+closable}} = false
+\item 
+bool \mbox{\hyperlink{class_hate_engine_1_1_widget_u_i_ae8c95532ca7c01ed8bd240478beb4b73}{is\+\_\+minimizable}} = false
+\item 
+bool \mbox{\hyperlink{class_hate_engine_1_1_widget_u_i_a872c0d8208a06ac7a845923cdf6c3ed7}{has\+\_\+scrollbar}} = false
+\item 
+bool \mbox{\hyperlink{class_hate_engine_1_1_widget_u_i_ad1705a76eeafad57b9a5758766455754}{has\+\_\+title}} = false
+\item 
+bool \mbox{\hyperlink{class_hate_engine_1_1_widget_u_i_af34488ec5e58f6ac63bd226e493dfdcf}{is\+\_\+scroll\+\_\+autohide}} = false
+\item 
+bool \mbox{\hyperlink{class_hate_engine_1_1_widget_u_i_aa8d644147c7e52a4646fe5f7b61a686a}{has\+\_\+background}} = true
+\item 
+bool \mbox{\hyperlink{class_hate_engine_1_1_widget_u_i_aa2d04ac18960df6bc0ae83014a3adf4e}{is\+\_\+scalable\+\_\+left}} = false
+\item 
+bool \mbox{\hyperlink{class_hate_engine_1_1_widget_u_i_a220fcedb12e488617210ffb07c60ea92}{has\+\_\+input}} = true
+\item 
+bool \mbox{\hyperlink{class_hate_engine_1_1_widget_u_i_abe073e2f032329eea36f3c75ea8ef576}{is\+\_\+interactive}} = true
+\end{DoxyCompactItemize}
+\doxysubsection*{Public Attributes inherited from \mbox{\hyperlink{class_hate_engine_1_1_object_u_i}{Hate\+Engine\+::\+Object\+UI}}}
+\begin{DoxyCompactItemize}
+\item 
+std\+::string \mbox{\hyperlink{class_hate_engine_1_1_object_u_i_ab8975edd98559a212089ad93bcdeaefd}{text}} = "{}"{}
+\item 
+glm\+::ivec4 \mbox{\hyperlink{class_hate_engine_1_1_object_u_i_a4e7f9c74d130d878d1c7e2a50f731f04}{color}} = \{255, 255, 255, 255\}
+\item 
+glm\+::ivec4 \mbox{\hyperlink{class_hate_engine_1_1_object_u_i_a64790701c753a858467297c7a48205c1}{text\+\_\+color}} = \{0, 0, 0, 255\}
+\item 
+\mbox{\hyperlink{class_hate_engine_1_1_coords_u_i}{Coords\+UI}} \mbox{\hyperlink{class_hate_engine_1_1_object_u_i_afc27c764ef3414d0823a6fdf63976648}{position}} = \{0, 0\}
+\item 
+\mbox{\hyperlink{class_hate_engine_1_1_coords_u_i}{Coords\+UI}} \mbox{\hyperlink{class_hate_engine_1_1_object_u_i_a2fbe78364f57c2cbed6b97dbcba43abb}{size}} = \{0, 0\}
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Friends}
+\begin{DoxyCompactItemize}
+\item 
+class \mbox{\hyperlink{class_hate_engine_1_1_widget_u_i_ac53a5e8d8330b1e12a202f45d4855717}{Open\+GL15}}
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Additional Inherited Members}
+\doxysubsection*{Public Types inherited from \mbox{\hyperlink{class_hate_engine_1_1_object_u_i}{Hate\+Engine\+::\+Object\+UI}}}
+\begin{DoxyCompactItemize}
+\item 
+enum \mbox{\hyperlink{class_hate_engine_1_1_object_u_i_af6a7c5f47975621e1676c8df1cdac971}{Type}} \{ \mbox{\hyperlink{class_hate_engine_1_1_object_u_i_af6a7c5f47975621e1676c8df1cdac971a700ae74e26dc0c50884e98123916af9d}{Widget}}
+, \mbox{\hyperlink{class_hate_engine_1_1_object_u_i_af6a7c5f47975621e1676c8df1cdac971a2cbeabbaedb58226f251f790d2748d3a}{Label}}
+, \mbox{\hyperlink{class_hate_engine_1_1_object_u_i_af6a7c5f47975621e1676c8df1cdac971af1cf6cf2488f508819163c5125e61425}{Button}}
+, \mbox{\hyperlink{class_hate_engine_1_1_object_u_i_af6a7c5f47975621e1676c8df1cdac971add5b6f237829270398bc558ff446bf54}{Checkbox}}
+ \}
+\end{DoxyCompactItemize}
+\doxysubsection*{Protected Member Functions inherited from \mbox{\hyperlink{class_hate_engine_1_1_object_u_i}{Hate\+Engine\+::\+Object\+UI}}}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{class_hate_engine_1_1_object_u_i_a2d89c1bf3f83958a9879d3eb9987e6f8}{Object\+UI}} (const \mbox{\hyperlink{class_hate_engine_1_1_object_u_i}{Object\+UI}} \&obj)
+\item 
+\mbox{\hyperlink{class_hate_engine_1_1_object_u_i_aed0a54e2e9183fb1ec54b9abca910497}{Object\+UI}} (\mbox{\hyperlink{class_hate_engine_1_1_object_u_i_af6a7c5f47975621e1676c8df1cdac971}{Type}} type)
+\end{DoxyCompactItemize}
+\doxysubsection*{Protected Attributes inherited from \mbox{\hyperlink{class_hate_engine_1_1_object_u_i}{Hate\+Engine\+::\+Object\+UI}}}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{class_hate_engine_1_1_u_i_font}{UIFont}} \texorpdfstring{$\ast$}{*} \mbox{\hyperlink{class_hate_engine_1_1_object_u_i_a0bcae7c7d7fef3bdd487477e98eeace8}{font}} = nullptr
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Constructor \& Destructor Documentation}
+\Hypertarget{class_hate_engine_1_1_widget_u_i_a5a382ffe01e5c5de3b62c49712bdc129}\label{class_hate_engine_1_1_widget_u_i_a5a382ffe01e5c5de3b62c49712bdc129} 
+\index{HateEngine::WidgetUI@{HateEngine::WidgetUI}!WidgetUI@{WidgetUI}}
+\index{WidgetUI@{WidgetUI}!HateEngine::WidgetUI@{HateEngine::WidgetUI}}
+\doxysubsubsection{\texorpdfstring{WidgetUI()}{WidgetUI()}}
+{\footnotesize\ttfamily Hate\+Engine\+::\+Widget\+UI\+::\+Widget\+UI (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+\doxysubsection{Member Function Documentation}
+\Hypertarget{class_hate_engine_1_1_widget_u_i_a799749cebbae4ff8b3d245aa09793a54}\label{class_hate_engine_1_1_widget_u_i_a799749cebbae4ff8b3d245aa09793a54} 
+\index{HateEngine::WidgetUI@{HateEngine::WidgetUI}!addObjectClone@{addObjectClone}}
+\index{addObjectClone@{addObjectClone}!HateEngine::WidgetUI@{HateEngine::WidgetUI}}
+\doxysubsubsection{\texorpdfstring{addObjectClone()}{addObjectClone()}\hspace{0.1cm}{\footnotesize\ttfamily [1/3]}}
+{\footnotesize\ttfamily \mbox{\hyperlink{class_hate_engine_1_1_u_u_i_d}{UUID}} Hate\+Engine\+::\+Widget\+UI\+::add\+Object\+Clone (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{class_hate_engine_1_1_button_u_i}{Button\+UI}} \&}]{obj }\end{DoxyParamCaption})}
+
+\Hypertarget{class_hate_engine_1_1_widget_u_i_a7b6fff94bbeeb1490e394965b43cca45}\label{class_hate_engine_1_1_widget_u_i_a7b6fff94bbeeb1490e394965b43cca45} 
+\index{HateEngine::WidgetUI@{HateEngine::WidgetUI}!addObjectClone@{addObjectClone}}
+\index{addObjectClone@{addObjectClone}!HateEngine::WidgetUI@{HateEngine::WidgetUI}}
+\doxysubsubsection{\texorpdfstring{addObjectClone()}{addObjectClone()}\hspace{0.1cm}{\footnotesize\ttfamily [2/3]}}
+{\footnotesize\ttfamily \mbox{\hyperlink{class_hate_engine_1_1_u_u_i_d}{UUID}} Hate\+Engine\+::\+Widget\+UI\+::add\+Object\+Clone (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{class_hate_engine_1_1_checkbox_u_i}{Checkbox\+UI}} \&}]{ckbox }\end{DoxyParamCaption})}
+
+\Hypertarget{class_hate_engine_1_1_widget_u_i_a3222f43ee47eb4b24ea1967678ce7349}\label{class_hate_engine_1_1_widget_u_i_a3222f43ee47eb4b24ea1967678ce7349} 
+\index{HateEngine::WidgetUI@{HateEngine::WidgetUI}!addObjectClone@{addObjectClone}}
+\index{addObjectClone@{addObjectClone}!HateEngine::WidgetUI@{HateEngine::WidgetUI}}
+\doxysubsubsection{\texorpdfstring{addObjectClone()}{addObjectClone()}\hspace{0.1cm}{\footnotesize\ttfamily [3/3]}}
+{\footnotesize\ttfamily \mbox{\hyperlink{class_hate_engine_1_1_u_u_i_d}{UUID}} Hate\+Engine\+::\+Widget\+UI\+::add\+Object\+Clone (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{class_hate_engine_1_1_label_u_i}{Label\+UI}} \&}]{lbl }\end{DoxyParamCaption})}
+
+\Hypertarget{class_hate_engine_1_1_widget_u_i_a6a2f7c4ce011fa3203ef11b179062e7b}\label{class_hate_engine_1_1_widget_u_i_a6a2f7c4ce011fa3203ef11b179062e7b} 
+\index{HateEngine::WidgetUI@{HateEngine::WidgetUI}!addObjectRef@{addObjectRef}}
+\index{addObjectRef@{addObjectRef}!HateEngine::WidgetUI@{HateEngine::WidgetUI}}
+\doxysubsubsection{\texorpdfstring{addObjectRef()}{addObjectRef()}}
+{\footnotesize\ttfamily \mbox{\hyperlink{class_hate_engine_1_1_u_u_i_d}{UUID}} Hate\+Engine\+::\+Widget\+UI\+::add\+Object\+Ref (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{class_hate_engine_1_1_object_u_i}{Object\+UI}} \texorpdfstring{$\ast$}{*}}]{obj }\end{DoxyParamCaption})}
+
+\Hypertarget{class_hate_engine_1_1_widget_u_i_af3ea0e22b9d4a16ad98fc8912dc1c23d}\label{class_hate_engine_1_1_widget_u_i_af3ea0e22b9d4a16ad98fc8912dc1c23d} 
+\index{HateEngine::WidgetUI@{HateEngine::WidgetUI}!removeObjectRef@{removeObjectRef}}
+\index{removeObjectRef@{removeObjectRef}!HateEngine::WidgetUI@{HateEngine::WidgetUI}}
+\doxysubsubsection{\texorpdfstring{removeObjectRef()}{removeObjectRef()}}
+{\footnotesize\ttfamily bool Hate\+Engine\+::\+Widget\+UI\+::remove\+Object\+Ref (\begin{DoxyParamCaption}\item[{const \mbox{\hyperlink{class_hate_engine_1_1_u_u_i_d}{UUID}} \&}]{uuid }\end{DoxyParamCaption})}
+
+
+
+\doxysubsection{Friends And Related Symbol Documentation}
+\Hypertarget{class_hate_engine_1_1_widget_u_i_ac53a5e8d8330b1e12a202f45d4855717}\label{class_hate_engine_1_1_widget_u_i_ac53a5e8d8330b1e12a202f45d4855717} 
+\index{HateEngine::WidgetUI@{HateEngine::WidgetUI}!OpenGL15@{OpenGL15}}
+\index{OpenGL15@{OpenGL15}!HateEngine::WidgetUI@{HateEngine::WidgetUI}}
+\doxysubsubsection{\texorpdfstring{OpenGL15}{OpenGL15}}
+{\footnotesize\ttfamily friend class \mbox{\hyperlink{class_hate_engine_1_1_open_g_l15}{Open\+GL15}}\hspace{0.3cm}{\ttfamily [friend]}}
+
+
+
+\doxysubsection{Member Data Documentation}
+\Hypertarget{class_hate_engine_1_1_widget_u_i_af09a61ab161cca725b82148724cf8250}\label{class_hate_engine_1_1_widget_u_i_af09a61ab161cca725b82148724cf8250} 
+\index{HateEngine::WidgetUI@{HateEngine::WidgetUI}!color@{color}}
+\index{color@{color}!HateEngine::WidgetUI@{HateEngine::WidgetUI}}
+\doxysubsubsection{\texorpdfstring{color}{color}}
+{\footnotesize\ttfamily glm\+::ivec4 Hate\+Engine\+::\+Widget\+UI\+::color = \{0, 0, 0, 125\}}
+
+\Hypertarget{class_hate_engine_1_1_widget_u_i_aa8d644147c7e52a4646fe5f7b61a686a}\label{class_hate_engine_1_1_widget_u_i_aa8d644147c7e52a4646fe5f7b61a686a} 
+\index{HateEngine::WidgetUI@{HateEngine::WidgetUI}!has\_background@{has\_background}}
+\index{has\_background@{has\_background}!HateEngine::WidgetUI@{HateEngine::WidgetUI}}
+\doxysubsubsection{\texorpdfstring{has\_background}{has\_background}}
+{\footnotesize\ttfamily bool Hate\+Engine\+::\+Widget\+UI\+::has\+\_\+background = true}
+
+\Hypertarget{class_hate_engine_1_1_widget_u_i_ad4d27cb93f060b5bc7872ec1804b55d2}\label{class_hate_engine_1_1_widget_u_i_ad4d27cb93f060b5bc7872ec1804b55d2} 
+\index{HateEngine::WidgetUI@{HateEngine::WidgetUI}!has\_border@{has\_border}}
+\index{has\_border@{has\_border}!HateEngine::WidgetUI@{HateEngine::WidgetUI}}
+\doxysubsubsection{\texorpdfstring{has\_border}{has\_border}}
+{\footnotesize\ttfamily bool Hate\+Engine\+::\+Widget\+UI\+::has\+\_\+border = false}
+
+\Hypertarget{class_hate_engine_1_1_widget_u_i_a220fcedb12e488617210ffb07c60ea92}\label{class_hate_engine_1_1_widget_u_i_a220fcedb12e488617210ffb07c60ea92} 
+\index{HateEngine::WidgetUI@{HateEngine::WidgetUI}!has\_input@{has\_input}}
+\index{has\_input@{has\_input}!HateEngine::WidgetUI@{HateEngine::WidgetUI}}
+\doxysubsubsection{\texorpdfstring{has\_input}{has\_input}}
+{\footnotesize\ttfamily bool Hate\+Engine\+::\+Widget\+UI\+::has\+\_\+input = true}
+
+\Hypertarget{class_hate_engine_1_1_widget_u_i_a872c0d8208a06ac7a845923cdf6c3ed7}\label{class_hate_engine_1_1_widget_u_i_a872c0d8208a06ac7a845923cdf6c3ed7} 
+\index{HateEngine::WidgetUI@{HateEngine::WidgetUI}!has\_scrollbar@{has\_scrollbar}}
+\index{has\_scrollbar@{has\_scrollbar}!HateEngine::WidgetUI@{HateEngine::WidgetUI}}
+\doxysubsubsection{\texorpdfstring{has\_scrollbar}{has\_scrollbar}}
+{\footnotesize\ttfamily bool Hate\+Engine\+::\+Widget\+UI\+::has\+\_\+scrollbar = false}
+
+\Hypertarget{class_hate_engine_1_1_widget_u_i_ad1705a76eeafad57b9a5758766455754}\label{class_hate_engine_1_1_widget_u_i_ad1705a76eeafad57b9a5758766455754} 
+\index{HateEngine::WidgetUI@{HateEngine::WidgetUI}!has\_title@{has\_title}}
+\index{has\_title@{has\_title}!HateEngine::WidgetUI@{HateEngine::WidgetUI}}
+\doxysubsubsection{\texorpdfstring{has\_title}{has\_title}}
+{\footnotesize\ttfamily bool Hate\+Engine\+::\+Widget\+UI\+::has\+\_\+title = false}
+
+\Hypertarget{class_hate_engine_1_1_widget_u_i_a28fe4901b00a05dad81bb1f036af2eec}\label{class_hate_engine_1_1_widget_u_i_a28fe4901b00a05dad81bb1f036af2eec} 
+\index{HateEngine::WidgetUI@{HateEngine::WidgetUI}!is\_closable@{is\_closable}}
+\index{is\_closable@{is\_closable}!HateEngine::WidgetUI@{HateEngine::WidgetUI}}
+\doxysubsubsection{\texorpdfstring{is\_closable}{is\_closable}}
+{\footnotesize\ttfamily bool Hate\+Engine\+::\+Widget\+UI\+::is\+\_\+closable = false}
+
+\Hypertarget{class_hate_engine_1_1_widget_u_i_abe073e2f032329eea36f3c75ea8ef576}\label{class_hate_engine_1_1_widget_u_i_abe073e2f032329eea36f3c75ea8ef576} 
+\index{HateEngine::WidgetUI@{HateEngine::WidgetUI}!is\_interactive@{is\_interactive}}
+\index{is\_interactive@{is\_interactive}!HateEngine::WidgetUI@{HateEngine::WidgetUI}}
+\doxysubsubsection{\texorpdfstring{is\_interactive}{is\_interactive}}
+{\footnotesize\ttfamily bool Hate\+Engine\+::\+Widget\+UI\+::is\+\_\+interactive = true}
+
+\Hypertarget{class_hate_engine_1_1_widget_u_i_ae8c95532ca7c01ed8bd240478beb4b73}\label{class_hate_engine_1_1_widget_u_i_ae8c95532ca7c01ed8bd240478beb4b73} 
+\index{HateEngine::WidgetUI@{HateEngine::WidgetUI}!is\_minimizable@{is\_minimizable}}
+\index{is\_minimizable@{is\_minimizable}!HateEngine::WidgetUI@{HateEngine::WidgetUI}}
+\doxysubsubsection{\texorpdfstring{is\_minimizable}{is\_minimizable}}
+{\footnotesize\ttfamily bool Hate\+Engine\+::\+Widget\+UI\+::is\+\_\+minimizable = false}
+
+\Hypertarget{class_hate_engine_1_1_widget_u_i_af4af2991096c847becb5cf56b3caf456}\label{class_hate_engine_1_1_widget_u_i_af4af2991096c847becb5cf56b3caf456} 
+\index{HateEngine::WidgetUI@{HateEngine::WidgetUI}!is\_movable@{is\_movable}}
+\index{is\_movable@{is\_movable}!HateEngine::WidgetUI@{HateEngine::WidgetUI}}
+\doxysubsubsection{\texorpdfstring{is\_movable}{is\_movable}}
+{\footnotesize\ttfamily bool Hate\+Engine\+::\+Widget\+UI\+::is\+\_\+movable = false}
+
+\Hypertarget{class_hate_engine_1_1_widget_u_i_a3c577decab9e032b9ff817dede77a570}\label{class_hate_engine_1_1_widget_u_i_a3c577decab9e032b9ff817dede77a570} 
+\index{HateEngine::WidgetUI@{HateEngine::WidgetUI}!is\_scalable@{is\_scalable}}
+\index{is\_scalable@{is\_scalable}!HateEngine::WidgetUI@{HateEngine::WidgetUI}}
+\doxysubsubsection{\texorpdfstring{is\_scalable}{is\_scalable}}
+{\footnotesize\ttfamily bool Hate\+Engine\+::\+Widget\+UI\+::is\+\_\+scalable = false}
+
+\Hypertarget{class_hate_engine_1_1_widget_u_i_aa2d04ac18960df6bc0ae83014a3adf4e}\label{class_hate_engine_1_1_widget_u_i_aa2d04ac18960df6bc0ae83014a3adf4e} 
+\index{HateEngine::WidgetUI@{HateEngine::WidgetUI}!is\_scalable\_left@{is\_scalable\_left}}
+\index{is\_scalable\_left@{is\_scalable\_left}!HateEngine::WidgetUI@{HateEngine::WidgetUI}}
+\doxysubsubsection{\texorpdfstring{is\_scalable\_left}{is\_scalable\_left}}
+{\footnotesize\ttfamily bool Hate\+Engine\+::\+Widget\+UI\+::is\+\_\+scalable\+\_\+left = false}
+
+\Hypertarget{class_hate_engine_1_1_widget_u_i_af34488ec5e58f6ac63bd226e493dfdcf}\label{class_hate_engine_1_1_widget_u_i_af34488ec5e58f6ac63bd226e493dfdcf} 
+\index{HateEngine::WidgetUI@{HateEngine::WidgetUI}!is\_scroll\_autohide@{is\_scroll\_autohide}}
+\index{is\_scroll\_autohide@{is\_scroll\_autohide}!HateEngine::WidgetUI@{HateEngine::WidgetUI}}
+\doxysubsubsection{\texorpdfstring{is\_scroll\_autohide}{is\_scroll\_autohide}}
+{\footnotesize\ttfamily bool Hate\+Engine\+::\+Widget\+UI\+::is\+\_\+scroll\+\_\+autohide = false}
+
+\Hypertarget{class_hate_engine_1_1_widget_u_i_aec6f771bf47af42f4d785ab1ba80c98e}\label{class_hate_engine_1_1_widget_u_i_aec6f771bf47af42f4d785ab1ba80c98e} 
+\index{HateEngine::WidgetUI@{HateEngine::WidgetUI}!title@{title}}
+\index{title@{title}!HateEngine::WidgetUI@{HateEngine::WidgetUI}}
+\doxysubsubsection{\texorpdfstring{title}{title}}
+{\footnotesize\ttfamily std\+::string Hate\+Engine\+::\+Widget\+UI\+::title = "{}Widget"{}}
+
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+include/\+Hate\+Engine/\+UI/\mbox{\hyperlink{_widget_u_i_8hpp}{Widget\+UI.\+hpp}}\end{DoxyCompactItemize}

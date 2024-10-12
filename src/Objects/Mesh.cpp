@@ -95,6 +95,14 @@ void Mesh::disableCustomMaxLightDist() {
     this->max_light_dist = 0;
 }
 
+void Mesh::setCorrectTransparency(bool correct) {
+    this->correct_transparency = correct;
+}
+
+bool Mesh::getCorrectTransparency() const {
+    return this->correct_transparency;
+}
+
 void Mesh::enableLightShading() {
     this->is_shaded = true;
 }

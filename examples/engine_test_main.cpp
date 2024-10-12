@@ -174,9 +174,11 @@ int main() {
 
     HateEngine::Texture campfire_tex("examples/Assets/campfire.png");
     uv_test_cube.setTexture(&campfire_tex);
+    uv_test_cube.setCorrectTransparency(true);
 
     billboardMesh.setTexture(&campfire_tex);
     billboardMesh.setTarget(&camera);
+    billboardMesh.setCorrectTransparency(true);
     lvl.addObjectRef(&billboardMesh);
 
     // HateEngine::ObjMapModel objmodel("examples/Assets/unnamed.obj",

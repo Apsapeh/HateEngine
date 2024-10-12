@@ -1,0 +1,115 @@
+\doxysection{include/\+Hate\+Engine/\+Log.hpp File Reference}
+\hypertarget{_log_8hpp}{}\label{_log_8hpp}\index{include/HateEngine/Log.hpp@{include/HateEngine/Log.hpp}}
+{\ttfamily \#include $<$string$>$}\newline
+\doxysubsubsection*{Namespaces}
+\begin{DoxyCompactItemize}
+\item 
+namespace \mbox{\hyperlink{namespace_hate_engine}{Hate\+Engine}}
+\item 
+namespace \mbox{\hyperlink{namespace_hate_engine_1_1_log}{Hate\+Engine\+::\+Log}}
+\item 
+namespace \mbox{\hyperlink{namespace_hate_engine_1_1_log_fn}{Hate\+Engine\+::\+Log\+Fn}}
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Macros}
+\begin{DoxyCompactItemize}
+\item 
+\#define \mbox{\hyperlink{_log_8hpp_ae5d5eacf72081413edec8a57d0b1b37a}{HATE\+\_\+\+INFO}}(msg)~\mbox{\hyperlink{namespace_hate_engine_1_1_log_a6544f80604ee04ed3519770e5e7e080c}{Hate\+Engine\+::\+Log\+::\+Info}}(msg, \+\_\+\+\_\+\+FILE\+\_\+\+\_\+, \+\_\+\+\_\+\+LINE\+\_\+\+\_\+);
+\item 
+\#define \mbox{\hyperlink{_log_8hpp_ae877f5b8282961356927d40604e624f7}{HATE\+\_\+\+WARNING}}(msg)~\mbox{\hyperlink{namespace_hate_engine_1_1_log_a649a2555b073425505422468290ecf92}{Hate\+Engine\+::\+Log\+::\+Warning}}(msg, \+\_\+\+\_\+\+FILE\+\_\+\+\_\+, \+\_\+\+\_\+\+LINE\+\_\+\+\_\+);
+\item 
+\#define \mbox{\hyperlink{_log_8hpp_a6911a1c02ae24b9c099f09115f61d8e6}{HATE\+\_\+\+ERROR}}(msg)~\mbox{\hyperlink{namespace_hate_engine_1_1_log_a07791e299d33b89e7701f3401734ed98}{Hate\+Engine\+::\+Log\+::\+Error}}(msg, \+\_\+\+\_\+\+FILE\+\_\+\+\_\+, \+\_\+\+\_\+\+LINE\+\_\+\+\_\+);
+\item 
+\#define \mbox{\hyperlink{_log_8hpp_ac79519de45ee4169c177408c3b7d4f43}{HATE\+\_\+\+FATAL}}(msg)~\mbox{\hyperlink{namespace_hate_engine_1_1_log_aebfa5dc7af2abd1adbb91ffdf2163653}{Hate\+Engine\+::\+Log\+::\+Fatal}}(msg, \+\_\+\+\_\+\+FILE\+\_\+\+\_\+, \+\_\+\+\_\+\+LINE\+\_\+\+\_\+);
+\item 
+\#define \mbox{\hyperlink{_log_8hpp_ac426e4a5532a270a28a37fa3914a068a}{HATE\+\_\+\+INFO\+\_\+F}}(msg, ...)~    \mbox{\hyperlink{namespace_hate_engine_1_1_log_a6544f80604ee04ed3519770e5e7e080c}{Hate\+Engine\+::\+Log\+::\+Info}}(\mbox{\hyperlink{namespace_hate_engine_1_1_log_fn_adff43195ecd5bd045c314ebbcc8c0ba5}{Hate\+Engine\+::\+Log\+Fn\+::\+\_\+\+\_\+log\+\_\+format}}(msg, \+\_\+\+\_\+\+VA\+\_\+\+ARGS\+\_\+\+\_\+), \+\_\+\+\_\+\+FILE\+\_\+\+\_\+, \+\_\+\+\_\+\+LINE\+\_\+\+\_\+);
+\item 
+\#define \mbox{\hyperlink{_log_8hpp_ad38a59f7efd9724d00acefeeca230dd0}{HATE\+\_\+\+WARNING\+\_\+F}}(msg, ...)~    \mbox{\hyperlink{namespace_hate_engine_1_1_log_a649a2555b073425505422468290ecf92}{Hate\+Engine\+::\+Log\+::\+Warning}}(\mbox{\hyperlink{namespace_hate_engine_1_1_log_fn_adff43195ecd5bd045c314ebbcc8c0ba5}{Hate\+Engine\+::\+Log\+Fn\+::\+\_\+\+\_\+log\+\_\+format}}(msg, \+\_\+\+\_\+\+VA\+\_\+\+ARGS\+\_\+\+\_\+), \+\_\+\+\_\+\+FILE\+\_\+\+\_\+, \+\_\+\+\_\+\+LINE\+\_\+\+\_\+);
+\item 
+\#define \mbox{\hyperlink{_log_8hpp_a6ec76286585574e35508b3c946e340f6}{HATE\+\_\+\+ERROR\+\_\+F}}(msg, ...)~    \mbox{\hyperlink{namespace_hate_engine_1_1_log_a07791e299d33b89e7701f3401734ed98}{Hate\+Engine\+::\+Log\+::\+Error}}(\mbox{\hyperlink{namespace_hate_engine_1_1_log_fn_adff43195ecd5bd045c314ebbcc8c0ba5}{Hate\+Engine\+::\+Log\+Fn\+::\+\_\+\+\_\+log\+\_\+format}}(msg, \+\_\+\+\_\+\+VA\+\_\+\+ARGS\+\_\+\+\_\+), \+\_\+\+\_\+\+FILE\+\_\+\+\_\+, \+\_\+\+\_\+\+LINE\+\_\+\+\_\+);
+\item 
+\#define \mbox{\hyperlink{_log_8hpp_ae3701ce476bb256a74fbcb11228135ca}{HATE\+\_\+\+FATAL\+\_\+F}}(msg, ...)~    \mbox{\hyperlink{namespace_hate_engine_1_1_log_aebfa5dc7af2abd1adbb91ffdf2163653}{Hate\+Engine\+::\+Log\+::\+Fatal}}(\mbox{\hyperlink{namespace_hate_engine_1_1_log_fn_adff43195ecd5bd045c314ebbcc8c0ba5}{Hate\+Engine\+::\+Log\+Fn\+::\+\_\+\+\_\+log\+\_\+format}}(msg, \+\_\+\+\_\+\+VA\+\_\+\+ARGS\+\_\+\+\_\+), \+\_\+\+\_\+\+FILE\+\_\+\+\_\+, \+\_\+\+\_\+\+LINE\+\_\+\+\_\+);
+\item 
+\#define \mbox{\hyperlink{_log_8hpp_a7e50fc8b56282b67eaa961ce78d678df}{HATE\+\_\+\+DEBUG}}(msg)~;
+\item 
+\#define \mbox{\hyperlink{_log_8hpp_adade53dffcde2ba21a822f02f9224285}{HATE\+\_\+\+DEBUG\+\_\+F}}(msg, ...)~;
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+void \mbox{\hyperlink{namespace_hate_engine_1_1_log_aaaab9b71a3e370c6db3efe747d50dba9}{Hate\+Engine\+::\+Log\+::\+Debug}} (std\+::string msg, std\+::string file="{}"{}, unsigned int line=0)
+\item 
+void \mbox{\hyperlink{namespace_hate_engine_1_1_log_a6544f80604ee04ed3519770e5e7e080c}{Hate\+Engine\+::\+Log\+::\+Info}} (std\+::string msg, std\+::string file="{}"{}, unsigned int line=0)
+\item 
+void \mbox{\hyperlink{namespace_hate_engine_1_1_log_a649a2555b073425505422468290ecf92}{Hate\+Engine\+::\+Log\+::\+Warning}} (std\+::string msg, std\+::string file="{}"{}, unsigned int line=0)
+\item 
+void \mbox{\hyperlink{namespace_hate_engine_1_1_log_a07791e299d33b89e7701f3401734ed98}{Hate\+Engine\+::\+Log\+::\+Error}} (std\+::string msg, std\+::string file="{}"{}, unsigned int line=0)
+\item 
+void \mbox{\hyperlink{namespace_hate_engine_1_1_log_aebfa5dc7af2abd1adbb91ffdf2163653}{Hate\+Engine\+::\+Log\+::\+Fatal}} (std\+::string msg, std\+::string file="{}"{}, unsigned int line=0)
+\item 
+std\+::string \mbox{\hyperlink{namespace_hate_engine_1_1_log_fn_a8bfd62f85b7473582113fb4e8aa679ae}{Hate\+Engine\+::\+Log\+Fn\+::\+\_\+\+\_\+log\+\_\+message\+\_\+template}} (const std\+::string \&level, const std\+::string \&msg, const std\+::string \&file, unsigned int line)
+\item 
+std\+::string \mbox{\hyperlink{namespace_hate_engine_1_1_log_fn_adff43195ecd5bd045c314ebbcc8c0ba5}{Hate\+Engine\+::\+Log\+Fn\+::\+\_\+\+\_\+log\+\_\+format}} (const std\+::string msg,...)
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Macro Definition Documentation}
+\Hypertarget{_log_8hpp_a7e50fc8b56282b67eaa961ce78d678df}\label{_log_8hpp_a7e50fc8b56282b67eaa961ce78d678df} 
+\index{Log.hpp@{Log.hpp}!HATE\_DEBUG@{HATE\_DEBUG}}
+\index{HATE\_DEBUG@{HATE\_DEBUG}!Log.hpp@{Log.hpp}}
+\doxysubsubsection{\texorpdfstring{HATE\_DEBUG}{HATE\_DEBUG}}
+{\footnotesize\ttfamily \#define HATE\+\_\+\+DEBUG(\begin{DoxyParamCaption}\item[{}]{msg }\end{DoxyParamCaption})~;}
+
+\Hypertarget{_log_8hpp_adade53dffcde2ba21a822f02f9224285}\label{_log_8hpp_adade53dffcde2ba21a822f02f9224285} 
+\index{Log.hpp@{Log.hpp}!HATE\_DEBUG\_F@{HATE\_DEBUG\_F}}
+\index{HATE\_DEBUG\_F@{HATE\_DEBUG\_F}!Log.hpp@{Log.hpp}}
+\doxysubsubsection{\texorpdfstring{HATE\_DEBUG\_F}{HATE\_DEBUG\_F}}
+{\footnotesize\ttfamily \#define HATE\+\_\+\+DEBUG\+\_\+F(\begin{DoxyParamCaption}\item[{}]{msg,  }\item[{}]{... }\end{DoxyParamCaption})~;}
+
+\Hypertarget{_log_8hpp_a6911a1c02ae24b9c099f09115f61d8e6}\label{_log_8hpp_a6911a1c02ae24b9c099f09115f61d8e6} 
+\index{Log.hpp@{Log.hpp}!HATE\_ERROR@{HATE\_ERROR}}
+\index{HATE\_ERROR@{HATE\_ERROR}!Log.hpp@{Log.hpp}}
+\doxysubsubsection{\texorpdfstring{HATE\_ERROR}{HATE\_ERROR}}
+{\footnotesize\ttfamily \#define HATE\+\_\+\+ERROR(\begin{DoxyParamCaption}\item[{}]{msg }\end{DoxyParamCaption})~\mbox{\hyperlink{namespace_hate_engine_1_1_log_a07791e299d33b89e7701f3401734ed98}{Hate\+Engine\+::\+Log\+::\+Error}}(msg, \+\_\+\+\_\+\+FILE\+\_\+\+\_\+, \+\_\+\+\_\+\+LINE\+\_\+\+\_\+);}
+
+\Hypertarget{_log_8hpp_a6ec76286585574e35508b3c946e340f6}\label{_log_8hpp_a6ec76286585574e35508b3c946e340f6} 
+\index{Log.hpp@{Log.hpp}!HATE\_ERROR\_F@{HATE\_ERROR\_F}}
+\index{HATE\_ERROR\_F@{HATE\_ERROR\_F}!Log.hpp@{Log.hpp}}
+\doxysubsubsection{\texorpdfstring{HATE\_ERROR\_F}{HATE\_ERROR\_F}}
+{\footnotesize\ttfamily \#define HATE\+\_\+\+ERROR\+\_\+F(\begin{DoxyParamCaption}\item[{}]{msg,  }\item[{}]{... }\end{DoxyParamCaption})~    \mbox{\hyperlink{namespace_hate_engine_1_1_log_a07791e299d33b89e7701f3401734ed98}{Hate\+Engine\+::\+Log\+::\+Error}}(\mbox{\hyperlink{namespace_hate_engine_1_1_log_fn_adff43195ecd5bd045c314ebbcc8c0ba5}{Hate\+Engine\+::\+Log\+Fn\+::\+\_\+\+\_\+log\+\_\+format}}(msg, \+\_\+\+\_\+\+VA\+\_\+\+ARGS\+\_\+\+\_\+), \+\_\+\+\_\+\+FILE\+\_\+\+\_\+, \+\_\+\+\_\+\+LINE\+\_\+\+\_\+);}
+
+\Hypertarget{_log_8hpp_ac79519de45ee4169c177408c3b7d4f43}\label{_log_8hpp_ac79519de45ee4169c177408c3b7d4f43} 
+\index{Log.hpp@{Log.hpp}!HATE\_FATAL@{HATE\_FATAL}}
+\index{HATE\_FATAL@{HATE\_FATAL}!Log.hpp@{Log.hpp}}
+\doxysubsubsection{\texorpdfstring{HATE\_FATAL}{HATE\_FATAL}}
+{\footnotesize\ttfamily \#define HATE\+\_\+\+FATAL(\begin{DoxyParamCaption}\item[{}]{msg }\end{DoxyParamCaption})~\mbox{\hyperlink{namespace_hate_engine_1_1_log_aebfa5dc7af2abd1adbb91ffdf2163653}{Hate\+Engine\+::\+Log\+::\+Fatal}}(msg, \+\_\+\+\_\+\+FILE\+\_\+\+\_\+, \+\_\+\+\_\+\+LINE\+\_\+\+\_\+);}
+
+\Hypertarget{_log_8hpp_ae3701ce476bb256a74fbcb11228135ca}\label{_log_8hpp_ae3701ce476bb256a74fbcb11228135ca} 
+\index{Log.hpp@{Log.hpp}!HATE\_FATAL\_F@{HATE\_FATAL\_F}}
+\index{HATE\_FATAL\_F@{HATE\_FATAL\_F}!Log.hpp@{Log.hpp}}
+\doxysubsubsection{\texorpdfstring{HATE\_FATAL\_F}{HATE\_FATAL\_F}}
+{\footnotesize\ttfamily \#define HATE\+\_\+\+FATAL\+\_\+F(\begin{DoxyParamCaption}\item[{}]{msg,  }\item[{}]{... }\end{DoxyParamCaption})~    \mbox{\hyperlink{namespace_hate_engine_1_1_log_aebfa5dc7af2abd1adbb91ffdf2163653}{Hate\+Engine\+::\+Log\+::\+Fatal}}(\mbox{\hyperlink{namespace_hate_engine_1_1_log_fn_adff43195ecd5bd045c314ebbcc8c0ba5}{Hate\+Engine\+::\+Log\+Fn\+::\+\_\+\+\_\+log\+\_\+format}}(msg, \+\_\+\+\_\+\+VA\+\_\+\+ARGS\+\_\+\+\_\+), \+\_\+\+\_\+\+FILE\+\_\+\+\_\+, \+\_\+\+\_\+\+LINE\+\_\+\+\_\+);}
+
+\Hypertarget{_log_8hpp_ae5d5eacf72081413edec8a57d0b1b37a}\label{_log_8hpp_ae5d5eacf72081413edec8a57d0b1b37a} 
+\index{Log.hpp@{Log.hpp}!HATE\_INFO@{HATE\_INFO}}
+\index{HATE\_INFO@{HATE\_INFO}!Log.hpp@{Log.hpp}}
+\doxysubsubsection{\texorpdfstring{HATE\_INFO}{HATE\_INFO}}
+{\footnotesize\ttfamily \#define HATE\+\_\+\+INFO(\begin{DoxyParamCaption}\item[{}]{msg }\end{DoxyParamCaption})~\mbox{\hyperlink{namespace_hate_engine_1_1_log_a6544f80604ee04ed3519770e5e7e080c}{Hate\+Engine\+::\+Log\+::\+Info}}(msg, \+\_\+\+\_\+\+FILE\+\_\+\+\_\+, \+\_\+\+\_\+\+LINE\+\_\+\+\_\+);}
+
+\Hypertarget{_log_8hpp_ac426e4a5532a270a28a37fa3914a068a}\label{_log_8hpp_ac426e4a5532a270a28a37fa3914a068a} 
+\index{Log.hpp@{Log.hpp}!HATE\_INFO\_F@{HATE\_INFO\_F}}
+\index{HATE\_INFO\_F@{HATE\_INFO\_F}!Log.hpp@{Log.hpp}}
+\doxysubsubsection{\texorpdfstring{HATE\_INFO\_F}{HATE\_INFO\_F}}
+{\footnotesize\ttfamily \#define HATE\+\_\+\+INFO\+\_\+F(\begin{DoxyParamCaption}\item[{}]{msg,  }\item[{}]{... }\end{DoxyParamCaption})~    \mbox{\hyperlink{namespace_hate_engine_1_1_log_a6544f80604ee04ed3519770e5e7e080c}{Hate\+Engine\+::\+Log\+::\+Info}}(\mbox{\hyperlink{namespace_hate_engine_1_1_log_fn_adff43195ecd5bd045c314ebbcc8c0ba5}{Hate\+Engine\+::\+Log\+Fn\+::\+\_\+\+\_\+log\+\_\+format}}(msg, \+\_\+\+\_\+\+VA\+\_\+\+ARGS\+\_\+\+\_\+), \+\_\+\+\_\+\+FILE\+\_\+\+\_\+, \+\_\+\+\_\+\+LINE\+\_\+\+\_\+);}
+
+\Hypertarget{_log_8hpp_ae877f5b8282961356927d40604e624f7}\label{_log_8hpp_ae877f5b8282961356927d40604e624f7} 
+\index{Log.hpp@{Log.hpp}!HATE\_WARNING@{HATE\_WARNING}}
+\index{HATE\_WARNING@{HATE\_WARNING}!Log.hpp@{Log.hpp}}
+\doxysubsubsection{\texorpdfstring{HATE\_WARNING}{HATE\_WARNING}}
+{\footnotesize\ttfamily \#define HATE\+\_\+\+WARNING(\begin{DoxyParamCaption}\item[{}]{msg }\end{DoxyParamCaption})~\mbox{\hyperlink{namespace_hate_engine_1_1_log_a649a2555b073425505422468290ecf92}{Hate\+Engine\+::\+Log\+::\+Warning}}(msg, \+\_\+\+\_\+\+FILE\+\_\+\+\_\+, \+\_\+\+\_\+\+LINE\+\_\+\+\_\+);}
+
+\Hypertarget{_log_8hpp_ad38a59f7efd9724d00acefeeca230dd0}\label{_log_8hpp_ad38a59f7efd9724d00acefeeca230dd0} 
+\index{Log.hpp@{Log.hpp}!HATE\_WARNING\_F@{HATE\_WARNING\_F}}
+\index{HATE\_WARNING\_F@{HATE\_WARNING\_F}!Log.hpp@{Log.hpp}}
+\doxysubsubsection{\texorpdfstring{HATE\_WARNING\_F}{HATE\_WARNING\_F}}
+{\footnotesize\ttfamily \#define HATE\+\_\+\+WARNING\+\_\+F(\begin{DoxyParamCaption}\item[{}]{msg,  }\item[{}]{... }\end{DoxyParamCaption})~    \mbox{\hyperlink{namespace_hate_engine_1_1_log_a649a2555b073425505422468290ecf92}{Hate\+Engine\+::\+Log\+::\+Warning}}(\mbox{\hyperlink{namespace_hate_engine_1_1_log_fn_adff43195ecd5bd045c314ebbcc8c0ba5}{Hate\+Engine\+::\+Log\+Fn\+::\+\_\+\+\_\+log\+\_\+format}}(msg, \+\_\+\+\_\+\+VA\+\_\+\+ARGS\+\_\+\+\_\+), \+\_\+\+\_\+\+FILE\+\_\+\+\_\+, \+\_\+\+\_\+\+LINE\+\_\+\+\_\+);}
+

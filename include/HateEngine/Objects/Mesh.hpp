@@ -17,6 +17,8 @@ namespace HateEngine {
         float center_max_size = 0;
         bool is_shaded = true;
         std::string name = "";
+        // uint8_t draw_priority = 255;
+        bool correct_transparency = false;
 
         void updateCenterMaxSize();
 
@@ -38,6 +40,13 @@ namespace HateEngine {
         void enableCustomMaxLightDist(float dist);
         const float getCustomMaxLightDist() const;
         void disableCustomMaxLightDist();
+
+        /**
+         * @brief Enable or disable transparency correction by distance to camera.
+         * @brief ENABLE ONLY FOR TRANSPARENT OBJECTS
+         */
+        void setCorrectTransparency(bool correct);
+        bool getCorrectTransparency() const;
 
         void enableLightShading();
         void disableLightShading();

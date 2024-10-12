@@ -1,0 +1,37 @@
+\doxysection{UUID.\+hpp}
+\hypertarget{_u_u_i_d_8hpp_source}{}\label{_u_u_i_d_8hpp_source}\index{include/HateEngine/Utilities/UUID.hpp@{include/HateEngine/Utilities/UUID.hpp}}
+\mbox{\hyperlink{_u_u_i_d_8hpp}{Go to the documentation of this file.}}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{preprocessor}{\#pragma\ once}}
+\DoxyCodeLine{00002\ \textcolor{preprocessor}{\#include\ <cstdint>}}
+\DoxyCodeLine{00003\ \textcolor{preprocessor}{\#include\ <functional>}}
+\DoxyCodeLine{00004\ \textcolor{preprocessor}{\#include\ <mutex>}}
+\DoxyCodeLine{00005\ }
+\DoxyCodeLine{00006\ \textcolor{keyword}{namespace\ }\mbox{\hyperlink{namespace_hate_engine}{HateEngine}}\ \{}
+\DoxyCodeLine{00007\ \ \ \ \ \textcolor{keyword}{class\ }\mbox{\hyperlink{class_hate_engine_1_1_u_u_i_d}{UUID}}\ \{}
+\DoxyCodeLine{00008\ \ \ \ \ \ \ \ \ \textcolor{keyword}{friend}\ \textcolor{keyword}{struct\ }std::hash<\mbox{\hyperlink{class_hate_engine_1_1_u_u_i_d}{UUID}}>;}
+\DoxyCodeLine{00009\ }
+\DoxyCodeLine{00010\ \ \ \ \ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00011\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ uint64\_t\ counter;}
+\DoxyCodeLine{00012\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ std::mutex\ mutex;}
+\DoxyCodeLine{00013\ \ \ \ \ \ \ \ \ uint64\_t\ id;}
+\DoxyCodeLine{00014\ }
+\DoxyCodeLine{00015\ \ \ \ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00016\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{class_hate_engine_1_1_u_u_i_d_ae48191d73bb4a0a553ef9f168e5afd93}{UUID}}();}
+\DoxyCodeLine{00017\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{class_hate_engine_1_1_u_u_i_d_a0bee7cb00f57c569b20af6b3ddce8ff9}{UUID}}(\textcolor{keyword}{const}\ uint64\_t\&\ \textcolor{keywordtype}{id});}
+\DoxyCodeLine{00018\ }
+\DoxyCodeLine{00019\ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ uint64\_t\ \mbox{\hyperlink{class_hate_engine_1_1_u_u_i_d_ac7bf0335bcfa5aeae6f548b4fb18fb68}{getU64}}()\ \textcolor{keyword}{const};}
+\DoxyCodeLine{00020\ }
+\DoxyCodeLine{00021\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{bool}\ \mbox{\hyperlink{class_hate_engine_1_1_u_u_i_d_a7dd8892ee3882597affe259e75531327}{operator==}}(\textcolor{keyword}{const}\ \mbox{\hyperlink{class_hate_engine_1_1_u_u_i_d}{UUID}}\&\ other)\ \textcolor{keyword}{const};}
+\DoxyCodeLine{00022\ \ \ \ \ \};}
+\DoxyCodeLine{00023\ \}\ \textcolor{comment}{//\ namespace\ HateEngine}}
+\DoxyCodeLine{00024\ }
+\DoxyCodeLine{00025\ \textcolor{comment}{//\ Hash\ function\ for\ UUID}}
+\DoxyCodeLine{00026\ \textcolor{keyword}{template}<>}
+\DoxyCodeLine{00027\ \textcolor{keyword}{struct\ }std::hash<\mbox{\hyperlink{namespace_hate_engine}{HateEngine}}::UUID>\ \{}
+\DoxyCodeLine{00028\ \ \ \ \ std::size\_t\ \mbox{\hyperlink{structstd_1_1hash_3_01_hate_engine_1_1_u_u_i_d_01_4_a2680011f3354535692149ad36ce47e4b}{operator()}}(\textcolor{keyword}{const}\ \mbox{\hyperlink{class_hate_engine_1_1_u_u_i_d}{HateEngine::UUID}}\&\ k)\textcolor{keyword}{\ const\ }\{}
+\DoxyCodeLine{00029\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ std::hash<uint64\_t>()(k.id);}
+\DoxyCodeLine{00030\ \ \ \ \ \}}
+\DoxyCodeLine{00031\ \};}
+
+\end{DoxyCode}

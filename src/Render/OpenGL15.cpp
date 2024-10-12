@@ -1,3 +1,4 @@
+#include <cstdint>
 #include <glad/gl.h>
 
 #include <HateEngine/Render/OpenGL15.hpp>
@@ -9,6 +10,7 @@
 #include "HateEngine/Resources/Level.hpp"
 #include "glm/ext/matrix_float4x4.hpp"
 #include "glm/fwd.hpp"
+#include "glm/geometric.hpp"
 
 // Include OpenGL Utility header (glu.h)
 #ifdef __linux__
@@ -189,11 +191,14 @@ void OpenGL15::Render() {
     this->DrawNuklearUI(&level->ui_widgets);
 }
 
+
 void OpenGL15::Draw3D(
         Camera* camera, std::vector<Mesh*>* meshes,
         std::vector<GLTFAnimationPlayer*>* animation_players, std::vector<Particles*>* particles,
         std::vector<Light*>* lights
 ) {
+    std::vector<Mesh*> correct_buffer = {};
+
     glEnable(GL_BLEND);
 
     glEnable(GL_DEPTH_TEST);
@@ -209,19 +214,45 @@ void OpenGL15::Draw3D(
     glEnable(GL_LIGHTING);
     glDisable(GL_LIGHT0);
 
-    for (const auto obj: *meshes)
-        render(obj, lights);
 
     for (const auto s: *animation_players) {
         if (s->visible and s->isPlaying())
-            for (const auto& mesh: *s->getMeshes())
-                render(mesh, lights);
+            for (const auto& mesh: *s->getMeshes()) {
+                if (mesh->getCorrectTransparency())
+                    correct_buffer.push_back(mesh);
+                else
+                    render(mesh, lights);
+            }
     }
 
     for (auto* s: *particles) {
-        for (const auto& particle: *s->getParticles())
-            render((const Mesh*) &particle, lights);
+        for (const auto& particle: *s->getParticles()) {
+            if (particle.getCorrectTransparency())
+                correct_buffer.push_back((Mesh*) &particle);
+            else
+                render((const Mesh*) &particle, lights);
+        }
     }
+
+    for (const auto obj: *meshes) {
+        if (obj->getCorrectTransparency())
+            correct_buffer.push_back(obj);
+        else
+            render(obj, lights);
+    }
+
+    glm::vec3 camera_pos = camera->getGlobalPosition();
+
+    std::sort(correct_buffer.begin(), correct_buffer.end(), [camera_pos](Mesh* a, Mesh* b) {
+        return glm::distance(a->getGlobalPosition() + a->getAABBRadius(), camera_pos) >
+               glm::distance(b->getGlobalPosition() + b->getAABBRadius(), camera_pos);
+    });
+
+    for (const auto obj: correct_buffer) {
+        render(obj, lights);
+    }
+
+    correct_buffer.clear();
 
     glDisable(GL_DEPTH_TEST);
     glDisable(GL_CULL_FACE);
