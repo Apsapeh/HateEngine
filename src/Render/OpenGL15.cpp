@@ -192,12 +192,12 @@ void OpenGL15::Render() {
 }
 
 
+std::vector<Mesh*> correct_buffer = {};
 void OpenGL15::Draw3D(
         Camera* camera, std::vector<Mesh*>* meshes,
         std::vector<GLTFAnimationPlayer*>* animation_players, std::vector<Particles*>* particles,
         std::vector<Light*>* lights
 ) {
-    std::vector<Mesh*> correct_buffer = {};
 
     glEnable(GL_BLEND);
 
@@ -241,8 +241,8 @@ void OpenGL15::Draw3D(
             render(obj, lights);
     }
 
+    // Render transparent objects in correct order
     glm::vec3 camera_pos = camera->getGlobalPosition();
-
     std::sort(correct_buffer.begin(), correct_buffer.end(), [camera_pos](Mesh* a, Mesh* b) {
         return glm::distance(a->getGlobalPosition() + a->getAABBRadius(), camera_pos) >
                glm::distance(b->getGlobalPosition() + b->getAABBRadius(), camera_pos);
@@ -262,6 +262,9 @@ void OpenGL15::Draw3D(
 void OpenGL15::render(const Mesh* mesh, std::vector<Light*>* lights_vec) {
     if (mesh->getVisible()) {
         glPushMatrix();
+
+        if (!mesh->getFaceCulling())
+            glDisable(GL_CULL_FACE);
 
         std::vector<int> light_indicies;
         if (mesh->isLightShading()) {
@@ -315,6 +318,9 @@ void OpenGL15::render(const Mesh* mesh, std::vector<Light*>* lights_vec) {
 
         if (mesh->isLightShading())
             glEnable(GL_LIGHTING);
+
+        if (!mesh->getFaceCulling())
+            glEnable(GL_CULL_FACE);
     }
 }
 

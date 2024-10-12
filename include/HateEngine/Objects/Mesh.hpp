@@ -19,6 +19,7 @@ namespace HateEngine {
         std::string name = "";
         // uint8_t draw_priority = 255;
         bool correct_transparency = false;
+        bool face_culling = true;
 
         void updateCenterMaxSize();
 
@@ -47,6 +48,9 @@ namespace HateEngine {
          */
         void setCorrectTransparency(bool correct);
         bool getCorrectTransparency() const;
+
+        void setFaceCulling(bool cull);
+        bool getFaceCulling() const;
 
         void enableLightShading();
         void disableLightShading();

@@ -1,6 +1,8 @@
 #pragma once
 #include <GLFW/glfw3.h>
 #include <glm/glm.hpp>
+#include <string>
+#include <unordered_map>
 
 namespace HateEngine {
     enum Key {
@@ -130,16 +132,22 @@ namespace HateEngine {
 
     class Engine;
     class InputClass {
-    public:
-        struct Action {};
-
     private:
         Engine* engine;
+        std::unordered_map<std::string, std::vector<Key>> actions_map;
 
     public:
         InputClass(Engine*);
         bool isKeyPressed(Key key);
         glm::vec2 getVector(Key left, Key right, Key up, Key down);
+        
+        bool isActionPressed(std::string action);
+        glm::vec2 getVectorAction(std::string left, std::string right, std::string up, std::string down);
+        
+        void addKeyToAction(std::string action, Key key);
+        bool removeKeyFromAction(std::string action, Key key);
+        bool removeAction(std::string action);
+        std::vector<Key> getActionKeys(std::string action);
         // bool isKeyPressed(int key);
     };
 } // namespace HateEngine

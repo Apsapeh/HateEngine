@@ -9,4 +9,5 @@
 /examples/Assets/ignore/
 /.lapce/
 /.cache/
+/doc/
 compile_commands.json

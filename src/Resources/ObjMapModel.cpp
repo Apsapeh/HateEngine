@@ -276,7 +276,7 @@ void ObjMapModel::parseObj(std::string data) {
             // HATE_DEBUG_F("[%f, %f] - [%f, %f]", start_tex.x, end_tex.x, start_tex.y, end_tex.y);
             // HATE_DEBUG_F("{%f, %f} - {%f, %f}", poly_min.x, poly_max.x, poly_min.y, poly_max.y);
 
-            float step = 0.5f;
+            float step = 500.0f;
 
             std::vector<glm::vec2> grid;
             grid.reserve(
@@ -482,8 +482,37 @@ void ObjMapModel::parseObj(std::string data) {
 
         // HATE_DEBUG_F("Indi. size: %lu | UV size: %lu | %d", mesh_indicies.size(),
         // mesh_UVs.size(), mesh_UVs.size() == mesh_indicies.size()*2)
+        //
+        
+        // Calculate mesh offset
+        glm::vec3 min_coords = {
+                std::numeric_limits<float>::max(), std::numeric_limits<float>::max(),
+                std::numeric_limits<float>::max()
+        };
+        glm::vec3 max_coords = {
+                std::numeric_limits<float>::min(), std::numeric_limits<float>::min(),
+                std::numeric_limits<float>::min()
+        };
+        for (uint32_t i = 0; i < mesh_vertices.size(); i += 3) {
+            min_coords.x = std::min(min_coords.x, mesh_vertices[i]);
+            min_coords.y = std::min(min_coords.y, mesh_vertices[i + 1]);
+            min_coords.z = std::min(min_coords.z, mesh_vertices[i + 2]);
+
+            max_coords.x = std::max(max_coords.x, mesh_vertices[i]);
+            max_coords.y = std::max(max_coords.y, mesh_vertices[i + 1]);
+            max_coords.z = std::max(max_coords.z, mesh_vertices[i + 2]);
+        }
+        
+        glm::vec3 center = (min_coords + max_coords) / 2.0f;
+        for (uint32_t i = 0; i < mesh_vertices.size(); i += 3) {
+            mesh_vertices[i] -= center.x;
+            mesh_vertices[i + 1] -= center.y;
+            mesh_vertices[i + 2] -= center.z;
+        }
+        
 
         Mesh* mesh = new Mesh(mesh_vertices, mesh_indicies, mesh_normals);
+        mesh->setPosition(center);
         mesh->setUV(mesh_UVs);
         Texture* texture = new Texture("examples/Assets/brick.png");
         mesh->setTexture(texture);

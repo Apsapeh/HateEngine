@@ -103,6 +103,14 @@ bool Mesh::getCorrectTransparency() const {
     return this->correct_transparency;
 }
 
+void Mesh::setFaceCulling(bool cull) {
+    this->face_culling = cull;
+}
+
+bool Mesh::getFaceCulling() const {
+    return this->face_culling;
+}
+
 void Mesh::enableLightShading() {
     this->is_shaded = true;
 }

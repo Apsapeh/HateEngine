@@ -132,6 +132,18 @@ int main() {
     // std::cout << "\n\n\n\n" << glfwGetInputMode(game.window, GLFW_CURSOR) << "\n\n\n\n";
     game.setOneThreadMode(true);
     game.setVSync(false);
+    
+    game.Input.addKeyToAction("forward", HateEngine::W);
+    game.Input.addKeyToAction("forward", HateEngine::KP_8);
+    game.Input.addKeyToAction("backward", HateEngine::S);
+    game.Input.addKeyToAction("backward", HateEngine::KP_5);
+    game.Input.addKeyToAction("left", HateEngine::A);
+    game.Input.addKeyToAction("left", HateEngine::KP_4);
+    game.Input.addKeyToAction("right", HateEngine::D);
+    game.Input.addKeyToAction("right", HateEngine::KP_6);
+    game.Input.addKeyToAction("up", HateEngine::SPACE);
+    game.Input.addKeyToAction("down", HateEngine::LEFT_CONTROL);
+    game.Input.addKeyToAction("down", HateEngine::LEFT_SUPER);
     // Setting textures for the cube and floor meshes
 
 
@@ -175,19 +187,28 @@ int main() {
     HateEngine::Texture campfire_tex("examples/Assets/campfire.png");
     uv_test_cube.setTexture(&campfire_tex);
     uv_test_cube.setCorrectTransparency(true);
+    uv_test_cube.setFaceCulling(false);
 
     billboardMesh.setTexture(&campfire_tex);
     billboardMesh.setTarget(&camera);
     billboardMesh.setCorrectTransparency(true);
     lvl.addObjectRef(&billboardMesh);
 
-    // HateEngine::ObjMapModel objmodel("examples/Assets/unnamed.obj",
-    // "examples/Assets/unnamed.map"); HateEngine::ObjMapModel objmodel("examples/Assets/cube.obj",
-    // "examples/Assets/unnamed.map"); HateEngine::ObjMapModel
-    // objmodel("examples/Assets/gayman.obj", "examples/Assets/unnamed.map"); HATE_FATAL("Fatal
-    // message") exit(0);
+    HateEngine::GLTFModel house("examples/Assets/ignore/ahouse.glb");
+    lvl.addObjectRef(&house);
 
+    for (auto& m: house.getMeshes()) {
+        m->setCorrectTransparency(true);
+        m->setFaceCulling(false);
+    }
 
+    HateEngine::ObjMapModel objmodel("examples/Assets/unnamed.obj", "examples/Assets/unnamed.map");
+
+    lvl.addObjectRef(&objmodel);
+    for (auto& m: objmodel.getMeshes()) {
+        std::cout << "POS: " << m->getPosition().x << " " << m->getPosition().y << " "
+                  << m->getPosition().z << std::endl;
+    }
     /*std::cout << "Mesh count: " << objmodel.getMeshes().size() << std::endl;
     std::cout << objmodel.getMeshes()[0]->getVertices()->size() << "\n"; // 108
     std::cout << objmodel.getMeshes()[0]->getIndicies()->size() << "\n";    // 36
@@ -470,7 +491,8 @@ void _process(HateEngine::Engine* engine, double delta) {
     // test_glmodel->lookAt(camera.getGlobalPosition());
 
     glm::vec2 raw_dir =
-            engine->Input.getVector(HateEngine::A, HateEngine::D, HateEngine::W, HateEngine::S);
+            //engine->Input.getVector(HateEngine::A, HateEngine::D, HateEngine::W, HateEngine::S);
+            engine->Input.getVectorAction("left", "right", "forward", "backward");
     if (raw_dir.x != 0 or raw_dir.y != 0) {
         glm::vec2 dir = raw_dir * glm::vec2(delta * 60) * speed;
 
@@ -487,9 +509,9 @@ void _process(HateEngine::Engine* engine, double delta) {
         camera.offset(cos(cam_rot.y) * fabs(dir.x) * 0.1, 0, -sin(cam_rot.y) * fabs(dir.x) * 0.1);
     }
 
-    if (engine->Input.isKeyPressed(HateEngine::LEFT_CONTROL))
+    if (engine->Input.isActionPressed("down"))
         camera.offset(0, -0.1 * speed * delta * 60, 0);
-    if (engine->Input.isKeyPressed(HateEngine::SPACE))
+    if (engine->Input.isActionPressed("up"))
         camera.offset(0, 0.1 * speed * delta * 60, 0);
 }
 
@@ -620,9 +642,10 @@ void _input_event(HateEngine::Engine* engine, HateEngine::Engine::InputEventInfo
             is_first_iter = false;
         }
 
-        camera.rotate(0, xoffset, 0);
-        // playerCapsuleMesh.rotate(0, xoffset, 0);
-        camera.rotate(yoffset, 0, 0, false);
+        if (engine->getMouseCapture()) {
+            camera.rotate(0, xoffset, 0);
+            camera.rotate(yoffset, 0, 0, false);
+        }
         // camera.setRotationMatrix(glm::yawPitchRoll(event.position.x*0.01f,
         // event.position.y*0.01f,0.0f));
     }
