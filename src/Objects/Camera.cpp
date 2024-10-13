@@ -114,13 +114,29 @@ void Camera::setParentRotationMatrix(const glm::mat4& mat) {
     // this->parent_rotation_matrix = glm::scale(mat, glm::vec3(-1, 1, -1));
     // this->parent_rotation_matrix = glm::inverse(mat);
     root_obj.setParentRotationMatrix(mat);
-    this->parent_rotation_matrix = mat;
+    this->parent_rotation_matrix = glm::inverse(mat);
 }
 
 void Camera::setRotationMatrix(glm::mat4 mat) {
     Object::setRotationMatrix(mat);
     // root_obj.setRotationMatrix(mat);
 }
+
+
+glm::vec3 Camera::getGlobalRotationEuler() const {
+    glm::vec3 r = root_obj.getGlobalRotationEuler();
+    r.y -= 90.0f;
+    r *= -1;
+    r.y += 90.0f;
+    return r;
+}
+
+glm::mat4 Camera::getGlobalRotationMatrix() const {
+    if (not binded)
+        return this->rotation_matrix;
+    return glm::inverse(this->parent_rotation_matrix * this->rotation_matrix);
+}
+
 
 void Camera::setPosition(const glm::vec3 value) {
     Object::setPosition(value);
@@ -158,8 +174,8 @@ void Camera::offset(float x, float y, float z) {
 }
 
 void Camera::rotate(glm::vec3 vec, bool global) {
-    Object::rotate(-vec, global);
-    root_obj.rotate(vec, not global);
+    Object::rotate(vec, not global);
+    root_obj.rotate(vec, global);
     // glm::vec3 rot = this->getGlobalRotationEuler();
     // root_obj.setRotation(glm::vec3(-rot.x, -rot.y, 0));
 }

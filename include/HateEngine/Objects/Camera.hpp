@@ -51,6 +51,9 @@ namespace HateEngine {
          * found
          */
         bool unbindObj(UUID uuid);
+        
+        glm::vec3 getGlobalRotationEuler() const;
+        glm::mat4 getGlobalRotationMatrix() const;
 
         /*void setRotation(glm::vec3 vec);
         void setRotation(float x, float y, float z);*/

@@ -96,7 +96,7 @@ void OpenGL15::Render() {
     glFogf(GL_FOG_START, level->settings.fog_start);
     glFogf(GL_FOG_END, level->settings.fog_end);
     glFogfv(GL_FOG_COLOR, level->settings.fog_color);
-    glDisable(GL_FOG);
+    
 
     // glMatrixMode(GL_PROJECTION);
     glPushMatrix();
@@ -334,7 +334,7 @@ inline void OpenGL15::renderCamera(Camera* camera) {
     glMatrixMode(GL_PROJECTION);
     glLoadMatrixf(glm::value_ptr(Mp));
 
-    glm::mat4 mat = camera->getRotationMatrix();
+    glm::mat4 mat = camera->getGlobalRotationMatrix();
 
     mat = glm::translate(mat, -camera->getGlobalPosition());
 

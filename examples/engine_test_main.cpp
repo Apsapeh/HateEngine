@@ -75,6 +75,8 @@ HateEngine::Particles* cube_part_ptr;
 
 HateEngine::BillboardMesh billboardMesh;
 
+HateEngine::Object head;
+
 
 int main() {
     std::cout << "Hello\n";
@@ -194,13 +196,13 @@ int main() {
     billboardMesh.setCorrectTransparency(true);
     lvl.addObjectRef(&billboardMesh);
 
-    HateEngine::GLTFModel house("examples/Assets/ignore/ahouse.glb");
-    lvl.addObjectRef(&house);
+    //HateEngine::GLTFModel house("examples/Assets/ignore/ahouse.glb");
+    //lvl.addObjectRef(&house);
 
-    for (auto& m: house.getMeshes()) {
+    /*for (auto& m: house.getMeshes()) {
         m->setCorrectTransparency(true);
         m->setFaceCulling(false);
-    }
+    }*/
 
     HateEngine::ObjMapModel objmodel("examples/Assets/unnamed.obj", "examples/Assets/unnamed.map");
 
@@ -313,7 +315,11 @@ int main() {
         glm::vec3 off = *((glm::vec3*) (p->data["vel"])) * glm::vec3(delta);
         // std::cout << off << "\n";
         // p->offset(off);
-        p->offset({0, -0.25 * delta, 0});
+        p->offset({0, -0.1 * delta, 0});
+        glm::vec3 scale = p->getScale() * 0.99;
+        
+        p->setScale(scale);
+        
 
         // std::cout <<
     };
@@ -440,7 +446,8 @@ int main() {
     lvl.addObjectRef(&fps_widget);
     // lvl.addObjectRef(&ui);
 
-    playerCapsuleMesh.bindObj(&camera);
+    //playerCapsuleMesh.bindObj(&camera);
+    head.bindObj(&camera);
 
 
     game.setProcessLoop(_process);
@@ -496,7 +503,7 @@ void _process(HateEngine::Engine* engine, double delta) {
     if (raw_dir.x != 0 or raw_dir.y != 0) {
         glm::vec2 dir = raw_dir * glm::vec2(delta * 60) * speed;
 
-        glm::vec3 cam_rot = glm::radians(camera.getRotationEuler());
+        glm::vec3 cam_rot = glm::radians(camera.getGlobalRotationEuler());
 
         // Full free movement with mouse up and down
         camera.offset(
@@ -508,7 +515,7 @@ void _process(HateEngine::Engine* engine, double delta) {
 
         camera.offset(cos(cam_rot.y) * fabs(dir.x) * 0.1, 0, -sin(cam_rot.y) * fabs(dir.x) * 0.1);
     }
-
+    
     if (engine->Input.isActionPressed("down"))
         camera.offset(0, -0.1 * speed * delta * 60, 0);
     if (engine->Input.isActionPressed("up"))
@@ -572,7 +579,7 @@ void _physics_process(HateEngine::Engine* engine, double delta) {
 
 
     if (engine->Input.isKeyPressed(HateEngine::Q))
-        mesh2.rotate({0.0, 1, 0.0});
+        head.rotate(0, 1, 0);
 
     if (engine->Input.isKeyPressed(HateEngine::E)) {
         std::vector<HateEngine::Mesh> meshes = {};
@@ -643,7 +650,7 @@ void _input_event(HateEngine::Engine* engine, HateEngine::Engine::InputEventInfo
         }
 
         if (engine->getMouseCapture()) {
-            camera.rotate(0, xoffset, 0);
+            camera.rotate(0, xoffset, 0, true);
             camera.rotate(yoffset, 0, 0, false);
         }
         // camera.setRotationMatrix(glm::yawPitchRoll(event.position.x*0.01f,

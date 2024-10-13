@@ -113,6 +113,7 @@ void Particles::Update(double delta) {
                 } else {
                     p->lostLifetime = p->lifetime;
                     p->position = glm::vec3{posX_dist(gen), posY_dist(gen), posZ_dist(gen)};
+                    p->scale = {1, 1, 1};
                 }
             }
         }
