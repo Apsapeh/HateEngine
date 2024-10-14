@@ -8,6 +8,7 @@
 #include "HateEngine/Objects/Light/Light.hpp"
 #include "HateEngine/Objects/Object.hpp"
 #include "HateEngine/Objects/Physics/BoxShape.hpp"
+#include "glm/fwd.hpp"
 #include <HateEngine/Log.hpp>
 #include <HateEngine/HateEngine.hpp>
 #include <HateEngine/Objects/Camera.hpp>
@@ -134,7 +135,7 @@ int main() {
     // std::cout << "\n\n\n\n" << glfwGetInputMode(game.window, GLFW_CURSOR) << "\n\n\n\n";
     game.setOneThreadMode(true);
     game.setVSync(false);
-    
+
     game.Input.addKeyToAction("forward", HateEngine::W);
     game.Input.addKeyToAction("forward", HateEngine::KP_8);
     game.Input.addKeyToAction("backward", HateEngine::S);
@@ -196,8 +197,8 @@ int main() {
     billboardMesh.setCorrectTransparency(true);
     lvl.addObjectRef(&billboardMesh);
 
-    //HateEngine::GLTFModel house("examples/Assets/ignore/ahouse.glb");
-    //lvl.addObjectRef(&house);
+    // HateEngine::GLTFModel house("examples/Assets/ignore/ahouse.glb");
+    // lvl.addObjectRef(&house);
 
     /*for (auto& m: house.getMeshes()) {
         m->setCorrectTransparency(true);
@@ -317,9 +318,9 @@ int main() {
         // p->offset(off);
         p->offset({0, -0.1 * delta, 0});
         glm::vec3 scale = p->getScale() * 0.99;
-        
+
         p->setScale(scale);
-        
+
 
         // std::cout <<
     };
@@ -446,8 +447,9 @@ int main() {
     lvl.addObjectRef(&fps_widget);
     // lvl.addObjectRef(&ui);
 
-    //playerCapsuleMesh.bindObj(&camera);
+    // playerCapsuleMesh.bindObj(&camera);
     head.bindObj(&camera);
+    head.bindObj(&uv_test_cube);
 
 
     game.setProcessLoop(_process);
@@ -496,14 +498,23 @@ void _process(HateEngine::Engine* engine, double delta) {
 
     // camera.lookAt(mesh1.getGlobalPosition());
     // test_glmodel->lookAt(camera.getGlobalPosition());
+    //
+    glm::vec3 cam_rot = camera.getRotationEuler();
+    HATE_INFO_F("Camera rotation: %f | %f | %f", cam_rot.x, cam_rot.y, cam_rot.z);
 
     glm::vec2 raw_dir =
-            //engine->Input.getVector(HateEngine::A, HateEngine::D, HateEngine::W, HateEngine::S);
+            // engine->Input.getVector(HateEngine::A, HateEngine::D, HateEngine::W, HateEngine::S);
             engine->Input.getVectorAction("left", "right", "forward", "backward");
     if (raw_dir.x != 0 or raw_dir.y != 0) {
         glm::vec2 dir = raw_dir * glm::vec2(delta * 60) * speed;
 
-        glm::vec3 cam_rot = glm::radians(camera.getGlobalRotationEuler());
+        glm::vec3 cam_rot = glm::radians(camera.getRotationEuler());
+
+        /*camera.offset(
+            cos(cam_rot.y) * dir.y * delta * speed,
+            0,
+            -sin(cam_rot.y) * dir.y * delta * speed
+        );*/
 
         // Full free movement with mouse up and down
         camera.offset(
@@ -515,7 +526,7 @@ void _process(HateEngine::Engine* engine, double delta) {
 
         camera.offset(cos(cam_rot.y) * fabs(dir.x) * 0.1, 0, -sin(cam_rot.y) * fabs(dir.x) * 0.1);
     }
-    
+
     if (engine->Input.isActionPressed("down"))
         camera.offset(0, -0.1 * speed * delta * 60, 0);
     if (engine->Input.isActionPressed("up"))
@@ -650,8 +661,8 @@ void _input_event(HateEngine::Engine* engine, HateEngine::Engine::InputEventInfo
         }
 
         if (engine->getMouseCapture()) {
-            camera.rotate(0, xoffset, 0, true);
-            camera.rotate(yoffset, 0, 0, false);
+            camera.rotate(0, -xoffset, 0, false);
+            camera.rotate(-yoffset, 0, 0, true);
         }
         // camera.setRotationMatrix(glm::yawPitchRoll(event.position.x*0.01f,
         // event.position.y*0.01f,0.0f));
@@ -667,7 +678,7 @@ void _input_event(HateEngine::Engine* engine, HateEngine::Engine::InputEventInfo
     }
 
     if (event.type == HateEngine::Engine::InputEventKey) {
-        if (event.key == GLFW_KEY_P && event.action == GLFW_PRESS) {
+        if (event.key == HateEngine::P && event.isPressed) {
             engine->setFullScreen(!engine->getFullScreen());
             HATE_WARNING("Toggled fullscreen")
         }

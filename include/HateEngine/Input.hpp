@@ -141,10 +141,12 @@ namespace HateEngine {
         InputClass(Engine*);
         bool isKeyPressed(Key key);
         glm::vec2 getVector(Key left, Key right, Key up, Key down);
-        
+
         bool isActionPressed(std::string action);
-        glm::vec2 getVectorAction(std::string left, std::string right, std::string up, std::string down);
-        
+        glm::vec2 getVectorAction(
+                std::string left, std::string right, std::string up, std::string down
+        );
+
         void addKeyToAction(std::string action, Key key);
         bool removeKeyFromAction(std::string action, Key key);
         bool removeAction(std::string action);

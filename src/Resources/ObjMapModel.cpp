@@ -483,7 +483,7 @@ void ObjMapModel::parseObj(std::string data) {
         // HATE_DEBUG_F("Indi. size: %lu | UV size: %lu | %d", mesh_indicies.size(),
         // mesh_UVs.size(), mesh_UVs.size() == mesh_indicies.size()*2)
         //
-        
+
         // Calculate mesh offset
         glm::vec3 min_coords = {
                 std::numeric_limits<float>::max(), std::numeric_limits<float>::max(),
@@ -502,14 +502,14 @@ void ObjMapModel::parseObj(std::string data) {
             max_coords.y = std::max(max_coords.y, mesh_vertices[i + 1]);
             max_coords.z = std::max(max_coords.z, mesh_vertices[i + 2]);
         }
-        
+
         glm::vec3 center = (min_coords + max_coords) / 2.0f;
         for (uint32_t i = 0; i < mesh_vertices.size(); i += 3) {
             mesh_vertices[i] -= center.x;
             mesh_vertices[i + 1] -= center.y;
             mesh_vertices[i + 2] -= center.z;
         }
-        
+
 
         Mesh* mesh = new Mesh(mesh_vertices, mesh_indicies, mesh_normals);
         mesh->setPosition(center);

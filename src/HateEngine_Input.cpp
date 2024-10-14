@@ -27,13 +27,15 @@ bool InputClass::isActionPressed(std::string action) {
         HATE_WARNING_F("Action %s not found", action.c_str())
         return false;
     }
-    for (auto key : this->actions_map[action])
+    for (auto key: this->actions_map[action])
         if (isKeyPressed(key))
             return true;
     return false;
 }
 
-glm::vec2 InputClass::getVectorAction(std::string left, std::string right, std::string up, std::string down) {
+glm::vec2 InputClass::getVectorAction(
+        std::string left, std::string right, std::string up, std::string down
+) {
     glm::vec2 vec;
     vec.x = isActionPressed(right) - isActionPressed(left);
     vec.y = isActionPressed(up) - isActionPressed(down);

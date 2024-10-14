@@ -95,7 +95,7 @@ void Object::offset(float x, float y, float z) {
 }
 
 void Object::rotate(glm::vec3 vec, bool global) {
-    vec = -glm::radians(vec);
+    vec = glm::radians(vec);
     if (global) {
         rotation_matrix = glm::rotate(rotation_matrix, vec.y, {0, 1, 0});
         rotation_matrix = glm::rotate(rotation_matrix, vec.x, {1, 0, 0});
@@ -125,7 +125,7 @@ glm::vec3 Object::getPosition() const {
 }
 
 glm::vec3 Object::getRotationEuler() const {
-    // XXX Z coord may be wrong
+    /*// XXX Z coord may be wrong
     glm::vec3 rot;
     float tmp_1, tmp_2;
 
@@ -137,6 +137,37 @@ glm::vec3 Object::getRotationEuler() const {
 
     rot = glm::degrees(rot);
     rot.y += 90.0f;
+
+    return rot;*/
+
+    glm::vec3 rot;
+    float tmp_1, tmp_2;
+    // glm::extractEulerAngleYXZ(rotation_matrix, rot.y, rot.x, rot.z); //
+    // return global rotation glm::extractEulerAngleZXY(rotation_matrix, rot.z,
+    // rot.x, rot.y);
+
+    glm::mat4 global_rotation = getRotationMatrix();
+    // glm::extractEulerAngleZXY(global_rotation, rot.z, rot.x, rot.y); // y
+    glm::extractEulerAngleYZX(global_rotation, rot.y, rot.z, rot.x); //
+
+
+    // glm::extractEulerAngleXZY(global_rotation, rot.x, tmp_1, tmp_2); // x
+    //  glm::extractEulerAngleYXZ(rotation_matrix, rot.y, tmp_1, tmp_2);
+    // glm::extractEulerAngleZXY(global_rotation, rot.z, tmp_1, rot.y); // y, z = 0
+
+    // rot *= -1;
+
+    // Changes the Y rotation detection limit from [-PI/2, PI/2] to [-P, P]
+    /*bool bad = rotation_matrix[0][0] == 0 and rotation_matrix[0][2] == 0;
+    if (not bad)
+        rot.y = atan2(rotation_matrix[0][0], -rotation_matrix[0][2]);
+    else
+        rot.y = atan2(rotation_matrix[1][0], -rotation_matrix[1][2]);*/
+    rot = glm::degrees(rot);
+    rot.y += 90.0f;
+
+    /*if (rot.y < 0)
+        rot.y += 360.0f;*/
 
     return rot;
 }
@@ -178,11 +209,15 @@ glm::vec3 Object::getGlobalRotationEuler() const {
     // rot.x, rot.y);
 
     glm::mat4 global_rotation = getGlobalRotationMatrix();
-    glm::extractEulerAngleXZY(global_rotation, rot.x, tmp_1, tmp_2); // x
-    // glm::extractEulerAngleYXZ(rotation_matrix, rot.y, tmp_1, tmp_2);
-    glm::extractEulerAngleZXY(global_rotation, rot.z, tmp_1, rot.y); // y, z = 0
+    // glm::extractEulerAngleZXY(global_rotation, rot.z, rot.x, rot.y); // y
+    glm::extractEulerAngleYZX(global_rotation, rot.y, rot.z, rot.x); //
 
-    rot *= -1;
+
+    // glm::extractEulerAngleXZY(global_rotation, rot.x, tmp_1, tmp_2); // x
+    //  glm::extractEulerAngleYXZ(rotation_matrix, rot.y, tmp_1, tmp_2);
+    // glm::extractEulerAngleZXY(global_rotation, rot.z, tmp_1, rot.y); // y, z = 0
+
+    // rot *= -1;
 
     // Changes the Y rotation detection limit from [-PI/2, PI/2] to [-P, P]
     /*bool bad = rotation_matrix[0][0] == 0 and rotation_matrix[0][2] == 0;

@@ -89,7 +89,7 @@ Engine::Engine(std::string window_lbl, int width, int height) : Input(this) {
             info.type = InputEventType::InputEventKey;
             info.key = key;
             info.scancode = scancode;
-            info.action = action;
+            info.isPressed = action == GLFW_PRESS;
             info.mods = mods;
             th->inputEventFunc(th, info);
         }
@@ -102,7 +102,7 @@ Engine::Engine(std::string window_lbl, int width, int height) : Input(this) {
             info.type = InputEventType::InputEventMouseButton;
             info.key = button;
             info.scancode = button;
-            info.action = action;
+            info.isPressed = action == GLFW_PRESS;
             info.mods = mods;
             th->inputEventFunc(th, info);
         }

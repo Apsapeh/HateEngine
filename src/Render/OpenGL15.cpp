@@ -11,6 +11,7 @@
 #include "glm/ext/matrix_float4x4.hpp"
 #include "glm/fwd.hpp"
 #include "glm/geometric.hpp"
+#include "glm/matrix.hpp"
 
 // Include OpenGL Utility header (glu.h)
 #ifdef __linux__
@@ -96,7 +97,7 @@ void OpenGL15::Render() {
     glFogf(GL_FOG_START, level->settings.fog_start);
     glFogf(GL_FOG_END, level->settings.fog_end);
     glFogfv(GL_FOG_COLOR, level->settings.fog_color);
-    
+
 
     // glMatrixMode(GL_PROJECTION);
     glPushMatrix();
@@ -335,8 +336,9 @@ inline void OpenGL15::renderCamera(Camera* camera) {
     glLoadMatrixf(glm::value_ptr(Mp));
 
     glm::mat4 mat = camera->getGlobalRotationMatrix();
-
+    mat = glm::transpose(mat); // Invert rotation matrix
     mat = glm::translate(mat, -camera->getGlobalPosition());
+    glm::mat3 rot = glm::mat3(mat);
 
     glMatrixMode(GL_MODELVIEW);
     glLoadMatrixf(glm::value_ptr(mat));
