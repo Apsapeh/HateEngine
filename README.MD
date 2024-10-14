@@ -1,5 +1,11 @@
+<!-- ![logo](readme_res/logo.png =100x) -->
+<img src="readme_res/logo.png" alt="drawing" width="400" style="display: block; margin: 0 auto"/>
+
 # Why?
 ### This engine is developed for a boomer shooter - Arx Infernus. <br /> Unity is a piece of shit, Godot is a very cool engine, but it's use OpenGL 2 and doesn't support Windows XP
+
+# Some Examples
+## [YouTube Playlist](https://www.youtube.com/playlist?list=PLcj730HQ_3uWg2s6zLx-olq6rEzHnq53T)
 
 <br />
 
@@ -24,7 +30,7 @@
 ```sh
 $ xmake
 ```
-### Build with ал examples
+### Build with аn examples
 ```sh
 $ xmake f -m release --build_examples=true
 $ xmake
