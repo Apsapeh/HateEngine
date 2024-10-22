@@ -91,7 +91,7 @@ void OpenGL15::Render() {
     // glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     // Fog
-    glEnable(GL_FOG);
+    //glEnable(GL_FOG);
     glFogi(GL_FOG_MODE, fog_modes[level->settings.fog_mode]);
     glFogf(GL_FOG_DENSITY, level->settings.fog_density);
     glFogf(GL_FOG_START, level->settings.fog_start);
@@ -101,10 +101,11 @@ void OpenGL15::Render() {
 
     // glMatrixMode(GL_PROJECTION);
     glPushMatrix();
-    this->Draw3D(
-            level->camera, &level->meshes, &level->animationPlayers, &level->particles,
-            &level->lights
-    );
+    if (level->camera != nullptr)
+        this->Draw3D(
+                level->camera, &level->meshes, &level->animationPlayers, &level->particles,
+                &level->lights
+        );
     // glFlush();
     // glMatrixMode(GL_PROJECTION);
     glPopMatrix();
@@ -206,13 +207,11 @@ void OpenGL15::Draw3D(
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_CULL_FACE);
 
-    if (camera != nullptr) {
         renderCamera(camera);
         if (camera->isSkyBoxEnabled()) {
             std::vector<Light*> n;
             render(camera->getSkyBox(), &n);
         }
-    }
     glEnable(GL_LIGHTING);
     glDisable(GL_LIGHT0);
 
@@ -244,12 +243,12 @@ void OpenGL15::Draw3D(
     }
 
     // Render transparent objects in correct order
-    glm::vec3 camera_pos = camera->getGlobalPosition();
-    std::sort(correct_buffer.begin(), correct_buffer.end(), [camera_pos](Mesh* a, Mesh* b) {
-        return glm::distance(a->getGlobalPosition() + a->getAABBRadius(), camera_pos) >
-               glm::distance(b->getGlobalPosition() + b->getAABBRadius(), camera_pos);
-    });
-
+        glm::vec3 camera_pos = camera->getGlobalPosition();
+        std::sort(correct_buffer.begin(), correct_buffer.end(), [camera_pos](Mesh* a, Mesh* b) {
+            return glm::distance(a->getGlobalPosition() + a->getAABBRadius(), camera_pos) >
+                   glm::distance(b->getGlobalPosition() + b->getAABBRadius(), camera_pos);
+        });
+    
     for (const auto obj: correct_buffer) {
         render(obj, lights);
     }

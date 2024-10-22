@@ -205,13 +205,13 @@ int main() {
         m->setFaceCulling(false);
     }*/
 
-    HateEngine::ObjMapModel objmodel("examples/Assets/unnamed.obj", "examples/Assets/unnamed.map");
+    // HateEngine::ObjMapModel objmodel("examples/Assets/unnamed.obj", "examples/Assets/unnamed.map");
 
-    lvl.addObjectRef(&objmodel);
-    for (auto& m: objmodel.getMeshes()) {
+    //lvl.addObjectRef(&objmodel);
+    /*for (auto& m: objmodel.getMeshes()) {
         std::cout << "POS: " << m->getPosition().x << " " << m->getPosition().y << " "
                   << m->getPosition().z << std::endl;
-    }
+    }*/
     /*std::cout << "Mesh count: " << objmodel.getMeshes().size() << std::endl;
     std::cout << objmodel.getMeshes()[0]->getVertices()->size() << "\n"; // 108
     std::cout << objmodel.getMeshes()[0]->getIndicies()->size() << "\n";    // 36
