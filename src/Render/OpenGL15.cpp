@@ -79,8 +79,8 @@ uint32_t fr_texture1 = 0;
 void OpenGL15::Render() {
     HateEngine::Level* level = this->engine->getLevel();
     glClearColor(
-            level->settings.background_color[0], level->settings.background_color[1],
-            level->settings.background_color[2], level->settings.background_color[3]
+            level->backgroundColor.r, level->backgroundColor.g, level->backgroundColor.b,
+            level->backgroundColor.a
     );
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     // glViewport(0+, 0, render_width, render_height);
@@ -91,13 +91,14 @@ void OpenGL15::Render() {
     // glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     // Fog
-    //glEnable(GL_FOG);
-    glFogi(GL_FOG_MODE, fog_modes[level->settings.fog_mode]);
-    glFogf(GL_FOG_DENSITY, level->settings.fog_density);
-    glFogf(GL_FOG_START, level->settings.fog_start);
-    glFogf(GL_FOG_END, level->settings.fog_end);
-    glFogfv(GL_FOG_COLOR, level->settings.fog_color);
+    // glEnable(GL_FOG);
+    glFogi(GL_FOG_MODE, fog_modes[level->fogMode]);
+    glFogf(GL_FOG_DENSITY, level->fogDensity);
+    glFogf(GL_FOG_START, level->fogStart);
+    glFogf(GL_FOG_END, level->fogEnd);
+    glFogfv(GL_FOG_COLOR, &level->fogColor.r);
 
+    glLightModelfv(GL_LIGHT_MODEL_AMBIENT, &level->calculatedAmbientLight.r);
 
     // glMatrixMode(GL_PROJECTION);
     glPushMatrix();
@@ -207,11 +208,11 @@ void OpenGL15::Draw3D(
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_CULL_FACE);
 
-        renderCamera(camera);
-        if (camera->isSkyBoxEnabled()) {
-            std::vector<Light*> n;
-            render(camera->getSkyBox(), &n);
-        }
+    renderCamera(camera);
+    if (camera->isSkyBoxEnabled()) {
+        std::vector<Light*> n;
+        render(camera->getSkyBox(), &n);
+    }
     glEnable(GL_LIGHTING);
     glDisable(GL_LIGHT0);
 
@@ -243,12 +244,12 @@ void OpenGL15::Draw3D(
     }
 
     // Render transparent objects in correct order
-        glm::vec3 camera_pos = camera->getGlobalPosition();
-        std::sort(correct_buffer.begin(), correct_buffer.end(), [camera_pos](Mesh* a, Mesh* b) {
-            return glm::distance(a->getGlobalPosition() + a->getAABBRadius(), camera_pos) >
-                   glm::distance(b->getGlobalPosition() + b->getAABBRadius(), camera_pos);
-        });
-    
+    glm::vec3 camera_pos = camera->getGlobalPosition();
+    std::sort(correct_buffer.begin(), correct_buffer.end(), [camera_pos](Mesh* a, Mesh* b) {
+        return glm::distance(a->getGlobalPosition() + a->getAABBRadius(), camera_pos) >
+               glm::distance(b->getGlobalPosition() + b->getAABBRadius(), camera_pos);
+    });
+
     for (const auto obj: correct_buffer) {
         render(obj, lights);
     }

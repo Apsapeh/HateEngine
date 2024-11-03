@@ -1,5 +1,7 @@
 #pragma once
 
+#include <array>
+
 #include "../Objects/Camera.hpp"
 #include "../Objects/Light/Light.hpp"
 #include "../Objects/Mesh.hpp"
@@ -11,6 +13,7 @@
 #include "../UI/WidgetUI.hpp"
 #include "../Utilities/UUID.hpp"
 #include "HateEngine/Resources/GLTFAnimationPlayer.hpp"
+#include "glm/ext/vector_float4.hpp"
 
 namespace HateEngine {
     class Level {
@@ -19,14 +22,6 @@ namespace HateEngine {
 
     public:
         enum FogMode { LINEAR, EXPONENTIAL, EXPONENTIAL_SQUARED };
-        struct LevelSettings {
-            FogMode fog_mode = EXPONENTIAL;
-            float fog_density = 0.0f;
-            float fog_start = 0.0f;
-            float fog_end = 0.0f;
-            float fog_color[4] = {0.5f, 0.5f, 0.5f, 1.0f};
-            float background_color[4] = {0.5f, 0.5f, 0.5f, 0.0f};
-        };
 
         struct SceneUIWidget {
             WidgetUI* obj;
@@ -41,6 +36,20 @@ namespace HateEngine {
             Object* obj;
             bool is_ref;
         };
+
+        /*   Settings   */
+        FogMode fogMode = EXPONENTIAL;
+        float fogDensity = 0.0f;
+        float fogStart = 0.0f;
+        float fogEnd = 0.0f;
+        glm::vec4 fogColor = {0.5f, 0.5f, 0.5f, 1.0f};
+        glm::vec4 backgroundColor = {0.5f, 0.5f, 0.5f, 0.0f};
+
+        // Ambient light
+        glm::vec4 calculatedAmbientLight = {1.0f, 1.0f, 1.0f, 1.0f};
+        glm::vec3 ambientLightColor = {1.0f, 1.0f, 1.0f};
+        float ambientLightIntensity = 1.0f;
+        void updateAmbientLight(); // Recalculate the ambient light
 
         // UI
         std::unordered_map<UUID, SceneUIWidget> ui_widgets;
@@ -91,8 +100,6 @@ namespace HateEngine {
         // 2D renderable objects
 
     public:
-        LevelSettings settings;
-
         Level();
         ~Level();
 
@@ -115,6 +122,29 @@ namespace HateEngine {
         void setFixedProcessLoop(void (*fixedProcessLoop)(void* engine, double delta));
 
         PhysEngine* getPhysEngine();
+
+        /*   Settings   */
+        void setFogMode(FogMode mode);
+        void setFogDensity(float density);
+        void setFogStart(float start);
+        void setFogEnd(float end);
+        void setFogColor(glm::vec4 color);
+        void setFogColor(float r, float g, float b, float a);
+        void setBackgroundColor(glm::vec4 color);
+        void setBackgroundColor(float r, float g, float b, float a);
+        void setAmbientLightColor(glm::vec3 color);
+        void setAmbientLightColor(float r, float g, float b);
+        void setAmbientLightIntensity(float intensity);
+
+        FogMode getFogMode();
+        float getFogDensity();
+        float getFogStart();
+        float getFogEnd();
+        glm::vec4 getFogColor();
+        glm::vec4 getBackgroundColor();
+        glm::vec3 getAmbientLightColor();
+        float getAmbientLightIntensity();
+
 
         UUID addObjectClone(const Mesh& object, bool copy_tex = false);
         // UUID_Generator::UUID addObjectClone(Particles object);

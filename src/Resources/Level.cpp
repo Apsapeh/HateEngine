@@ -60,6 +60,96 @@ PhysEngine* Level::getPhysEngine() {
     return &this->physEngine;
 }
 
+
+/*   Settings   */
+
+void Level::setFogMode(FogMode mode) {
+    this->fogMode = mode;
+}
+
+void Level::setFogDensity(float density) {
+    this->fogDensity = density;
+}
+
+void Level::setFogStart(float start) {
+    this->fogStart = start;
+}
+
+void Level::setFogEnd(float end) {
+    this->fogEnd = end;
+}
+
+void Level::setFogColor(glm::vec4 color) {
+    this->fogColor = color;
+}
+
+void Level::setFogColor(float r, float g, float b, float a) {
+    this->setFogColor({r, g, b, a});
+}
+
+void Level::setBackgroundColor(glm::vec4 color) {
+    this->backgroundColor = color;
+}
+
+void Level::setBackgroundColor(float r, float g, float b, float a) {
+    this->setBackgroundColor({r, g, b, a});
+}
+
+void Level::setAmbientLightColor(glm::vec3 color) {
+    this->ambientLightColor = color;
+    this->updateAmbientLight();
+}
+
+void Level::setAmbientLightColor(float r, float g, float b) {
+    this->setAmbientLightColor({r, g, b});
+}
+
+void Level::setAmbientLightIntensity(float intensity) {
+    this->ambientLightIntensity = intensity;
+    this->updateAmbientLight();
+}
+
+
+Level::FogMode Level::getFogMode() {
+    return this->fogMode;
+}
+
+float Level::getFogDensity() {
+    return this->fogDensity;
+}
+
+float Level::getFogStart() {
+    return this->fogStart;
+}
+
+float Level::getFogEnd() {
+    return this->fogEnd;
+}
+
+glm::vec4 Level::getFogColor() {
+    return this->fogColor;
+}
+
+glm::vec4 Level::getBackgroundColor() {
+    return this->backgroundColor;
+}
+
+glm::vec3 Level::getAmbientLightColor() {
+    return this->ambientLightColor;
+}
+
+float Level::getAmbientLightIntensity() {
+    return this->ambientLightIntensity;
+}
+// Settings end
+
+void Level::updateAmbientLight() {
+    this->calculatedAmbientLight[0] = this->ambientLightColor[0] * this->ambientLightIntensity;
+    this->calculatedAmbientLight[1] = this->ambientLightColor[1] * this->ambientLightIntensity;
+    this->calculatedAmbientLight[2] = this->ambientLightColor[2] * this->ambientLightIntensity;
+}
+
+
 // TODO: Add mutexes
 // TODO: Add Particles, Model
 

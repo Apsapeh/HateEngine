@@ -58,7 +58,7 @@ void RayCast::cast(bool once) {
     }
 
     glm::vec3 global_pos = this->getGlobalPosition();
-    glm::vec3 global_rot = this->getRotationEuler();
+    glm::vec3 global_rot = this->getGlobalRotationEuler();
     float yaw = glm::radians(global_rot.y);
     float pitch = glm::radians(global_rot.x);
     glm::vec3 dir;

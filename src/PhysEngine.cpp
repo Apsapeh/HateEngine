@@ -11,12 +11,15 @@
 
 using namespace HateEngine;
 
-reactphysics3d::PhysicsCommon PhysEngine::physicsCommon;
+reactphysics3d::PhysicsCommon* PhysEngine::physicsCommon = nullptr;
 
 PhysEngine::PhysEngine() {
-    this->physicsWorld = physicsCommon.createPhysicsWorld();
+    if (physicsCommon == nullptr) {
+        physicsCommon = new reactphysics3d::PhysicsCommon();
+    }
+    this->physicsWorld = physicsCommon->createPhysicsWorld();
     // this->physicsWorld->setIsDebugRenderingEnabled(true);
-    reactphysics3d::Ray ray({0, 0, 0}, {1, 1, 1});
+    // reactphysics3d::Ray ray({0, 0, 0}, {1, 1, 1});
     // Change the number of iterations of the position solver
     // this->physicsWorld->setNbIterationsPositionSolver(16);
     // physicsWorld->setIsDebugRenderingEnabled(true);
@@ -27,7 +30,7 @@ PhysEngine::~PhysEngine() {
         if (not body_pair.second.is_ref)
             delete body_pair.second.obj;
     }
-    physicsCommon.destroyPhysicsWorld(physicsWorld);
+    physicsCommon->destroyPhysicsWorld(physicsWorld);
 }
 
 
@@ -86,17 +89,17 @@ UUID PhysEngine::addObjectRef(PhysicalBody* object) {
         CollisionShape::ShapeEnum shape_type = shape_pair.second.shape->shapeType;
         if (shape_type == CollisionShape::Box) {
             BoxShape* shape = (BoxShape*) shape_pair.second.shape;
-            react_shape = physicsCommon.createBoxShape(
+            react_shape = physicsCommon->createBoxShape(
                     {shape->reactRightSize.x, shape->reactRightSize.y, shape->reactRightSize.z}
             );
             shape->reactShape = react_shape;
         } else if (shape_type == CollisionShape::Sphere) {
             SphereShape* shape = (SphereShape*) shape_pair.second.shape;
-            react_shape = physicsCommon.createSphereShape(shape->getRadius());
+            react_shape = physicsCommon->createSphereShape(shape->getRadius());
             shape->reactShape = react_shape;
         } else if (shape_type == CollisionShape::Capsule) {
             CapsuleShape* shape = (CapsuleShape*) shape_pair.second.shape;
-            react_shape = physicsCommon.createCapsuleShape(shape->getRadius(), shape->getHeight());
+            react_shape = physicsCommon->createCapsuleShape(shape->getRadius(), shape->getHeight());
             shape->reactShape = react_shape;
         } else {
             HATE_WARNING(

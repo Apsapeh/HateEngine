@@ -59,6 +59,7 @@ const int WIDTH = 800;
 const int HEIGHT = 600;
 
 // HateEngine::CubeMesh meshes[22500];
+HateEngine::Level lvl;
 HateEngine::Camera camera(60, 600);
 HateEngine::Light sun(HateEngine::Light::DirectionalLight);
 HateEngine::Light light(HateEngine::Light::OmniLight);
@@ -163,7 +164,6 @@ int main() {
 
 
     // HateEngine::Texture tex_floor("examples/Assets/ground.png");
-    HateEngine::Level lvl;
     //    HateEngine::GLTFModel glmodel("examples/Assets/ignore/R.glb");
     // HateEngine::GLTFModel glmodel("examples/Assets/employee.glb");
     HateEngine::Texture tex(
@@ -205,9 +205,10 @@ int main() {
         m->setFaceCulling(false);
     }*/
 
-    // HateEngine::ObjMapModel objmodel("examples/Assets/unnamed.obj", "examples/Assets/unnamed.map");
+    // HateEngine::ObjMapModel objmodel("examples/Assets/unnamed.obj",
+    // "examples/Assets/unnamed.map");
 
-    //lvl.addObjectRef(&objmodel);
+    // lvl.addObjectRef(&objmodel);
     /*for (auto& m: objmodel.getMeshes()) {
         std::cout << "POS: " << m->getPosition().x << " " << m->getPosition().y << " "
                   << m->getPosition().z << std::endl;
@@ -681,6 +682,13 @@ void _input_event(HateEngine::Engine* engine, HateEngine::Engine::InputEventInfo
         if (event.key == HateEngine::P && event.isPressed) {
             engine->setFullScreen(!engine->getFullScreen());
             HATE_WARNING("Toggled fullscreen")
+        }
+
+        if (event.key == HateEngine::KP_ADD && event.isPressed) {
+            lvl.setAmbientLightIntensity(lvl.getAmbientLightIntensity() + 0.1);
+        }
+        if (event.key == HateEngine::KP_SUBTRACT && event.isPressed) {
+            lvl.setAmbientLightIntensity(lvl.getAmbientLightIntensity() - 0.1);
         }
     }
 }

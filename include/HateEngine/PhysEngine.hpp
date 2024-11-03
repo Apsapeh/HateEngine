@@ -19,7 +19,7 @@ namespace HateEngine {
         };
 
     private:
-        static reactphysics3d::PhysicsCommon physicsCommon;
+        static reactphysics3d::PhysicsCommon* physicsCommon;
         reactphysics3d::PhysicsWorld* physicsWorld;
         UUID uuid;
         // std::vector<PhysBodyObject> physBodies;
