@@ -3,6 +3,7 @@
 #include "Object.hpp"
 #include "../AudioServer.hpp"
 #include "../Resources/Audio.hpp"
+#include "../Resources/AudioStream.hpp"
 #include "../AudioBus.hpp"
 #include "soloud.h"
 
@@ -14,8 +15,9 @@ namespace HateEngine {
     private:
         Type type;
         Audio* audio = nullptr;
+        AudioStream* audioStream = nullptr;
         AudioBus* bus = nullptr;
-        bool is_ref = false;
+        bool owns_audio = false;
         SoLoud::handle soloudHandle;
 
     protected:
@@ -26,7 +28,13 @@ namespace HateEngine {
 
         */
         // AudioPlayer(Audio& audio);
-        AudioPlayer(Audio* audio, AudioBus* bus = nullptr, Type type = Audio2D);
+        AudioPlayer(
+                Audio* audio, AudioBus* bus = nullptr, Type type = Audio2D, bool owns_audio = false
+        );
+        AudioPlayer(
+                AudioStream* audioStream, AudioBus* bus = nullptr, Type type = Audio2D,
+                bool owns_audio = false
+        );
         ~AudioPlayer();
 
         void play();

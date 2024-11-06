@@ -189,12 +189,11 @@ int main() {
     ambient_bus = new HateEngine::AudioBus();
     music_bus = new HateEngine::AudioBus();
 
-    HateEngine::Audio ambient = HateEngine::Audio("examples/Assets/Ignore/ambient.ogg");
-    HateEngine::Audio audio1 = herfile["audio.ogg"].asAudio();
-    HateEngine::Audio audio2 = HateEngine::Audio("examples/Assets/audio2.ogg");
+    HateEngine::AudioStream ambient = HateEngine::AudioStream("examples/Assets/Ignore/ambient.ogg");
+    HateEngine::AudioStream audio2 = HateEngine::AudioStream("examples/Assets/audio2.ogg");
 
     HateEngine::AudioPlayer ambientPlayer(&ambient, ambient_bus, HateEngine::AudioPlayer::Audio2D);
-    HateEngine::AudioPlayer audioPlayer1(&audio1, music_bus, HateEngine::AudioPlayer::Audio3D);
+    HateEngine::AudioPlayer audioPlayer1 = herfile["audio.ogg"].asAudioPlayerStream(music_bus, HateEngine::AudioPlayer::Audio3D);
     HateEngine::AudioPlayer audioPlayer2(&audio2, music_bus, HateEngine::AudioPlayer::Audio3D);
 
     audioPlayer1.setPosition(0, 2, 0);

@@ -2,6 +2,7 @@
 #include "HateEngine/Objects/Object.hpp"
 #include "HateEngine/Resources/Audio.hpp"
 #include "HateEngine/AudioServer.hpp"
+#include "soloud_audiosource.h"
 
 using namespace HateEngine;
 
@@ -16,31 +17,44 @@ void AudioPlayer::setParentPosition(glm::vec3 vec) {
     AudioServer::setAudio3DPosition(this->soloudHandle, pos.x, pos.y, pos.z);
 }
 
-AudioPlayer::AudioPlayer(Audio* audio, AudioBus* bus, Type type) {
+AudioPlayer::AudioPlayer(Audio* audio, AudioBus* bus, Type type, bool owns_audio) {
     this->audio = audio;
     this->bus = bus;
     this->type = type;
+    this->owns_audio = owns_audio;
+}
+AudioPlayer::AudioPlayer(AudioStream* audio, AudioBus* bus, Type type, bool owns_audio) {
+    this->audioStream = audio;
+    this->bus = bus;
+    this->type = type;
+    this->owns_audio = owns_audio;
 }
 
 AudioPlayer::~AudioPlayer() {
     AudioServer::stopAudio(this->soloudHandle);
-    if (is_ref)
+    if (owns_audio) {
         delete audio;
+        delete audioStream;
+    }
 }
 
 void AudioPlayer::play() {
+    SoLoud::AudioSource* audioSource;
+    if (audioStream != nullptr)
+        audioSource = audioStream->GetSoLoudWavStream();
+    else
+        audioSource = audio->GetSoLoudWav();
+
     if (type == Audio2D) {
         if (bus == nullptr)
-            this->soloudHandle = AudioServer::playAudio(*audio->GetSoLoudWav());
+            this->soloudHandle = AudioServer::playAudio(*audioSource);
         else
-            this->soloudHandle = bus->AudioPlayer_play(*audio->GetSoLoudWav());
+            this->soloudHandle = bus->AudioPlayer_play(*audioSource);
     } else {
         if (bus == nullptr)
-            this->soloudHandle =
-                    AudioServer::playAudio3D(*audio->GetSoLoudWav(), this->getGlobalPosition());
+            this->soloudHandle = AudioServer::playAudio3D(*audioSource, this->getGlobalPosition());
         else
-            this->soloudHandle =
-                    bus->AudioPlayer_play3D(*audio->GetSoLoudWav(), this->getGlobalPosition());
+            this->soloudHandle = bus->AudioPlayer_play3D(*audioSource, this->getGlobalPosition());
     }
     this->set3DAttenuation();
     this->set3DDopplerFactor();

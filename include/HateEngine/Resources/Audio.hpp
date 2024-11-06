@@ -3,8 +3,6 @@
 #include <string>
 #include <soloud_wav.h>
 
-#include <iostream>
-
 namespace HateEngine {
     class Audio {
         SoLoud::Wav soloudWav;

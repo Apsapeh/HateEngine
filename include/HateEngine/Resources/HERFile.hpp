@@ -4,9 +4,12 @@
 #include <unordered_map>
 #include <vector>
 
+#include "HateEngine/AudioBus.hpp"
 #include "Texture.hpp"
 #include "GLTFModel.hpp"
 #include "Audio.hpp"
+#include "AudioStream.hpp"
+#include "../Objects/AudioPlayer.hpp"
 
 namespace HateEngine {
     class HERResource {
@@ -22,6 +25,9 @@ namespace HateEngine {
         );
         GLTFModel asGLBModel();
         Audio asAudio();
+        AudioStream asAudioStream();
+        AudioPlayer asAudioPlayer(AudioBus* bus = nullptr, AudioPlayer::Type type = AudioPlayer::Audio2D);
+        AudioPlayer asAudioPlayerStream(AudioBus* bus = nullptr, AudioPlayer::Type type = AudioPlayer::Audio2D);
     };
 
     class HERFile {

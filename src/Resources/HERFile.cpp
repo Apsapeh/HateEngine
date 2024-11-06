@@ -5,6 +5,8 @@
 #include <fstream>
 #include <iostream>
 #include "HateEngine/Log.hpp"
+#include "HateEngine/Objects/AudioPlayer.hpp"
+#include "HateEngine/Resources/Audio.hpp"
 
 using namespace HateEngine;
 
@@ -37,6 +39,20 @@ GLTFModel HERResource::asGLBModel() {
 
 Audio HERResource::asAudio() {
     return Audio(this->data.data(), this->data.size(), "unknown");
+}
+
+AudioStream HERResource::asAudioStream() {
+    return AudioStream(this->data.data(), this->data.size(), "unknown");
+}
+
+AudioPlayer HERResource::asAudioPlayer(AudioBus* bus, AudioPlayer::Type type) {
+    Audio* audio = new Audio(this->data.data(), this->data.size(), "unknown");
+    return AudioPlayer(audio, bus, type, true);
+}
+
+AudioPlayer HERResource::asAudioPlayerStream(AudioBus* bus, AudioPlayer::Type type) {
+    AudioStream* audio = new AudioStream(this->data.data(), this->data.size(), "unknown");
+    return AudioPlayer(audio, bus, type, true);
 }
 
 
