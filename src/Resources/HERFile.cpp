@@ -35,6 +35,11 @@ GLTFModel HERResource::asGLBModel() {
     return GLTFModel(this->data.data(), this->data.size());
 }
 
+Audio HERResource::asAudio() {
+    return Audio(this->data.data(), this->data.size(), "unknown");
+}
+
+
 HERFile::HERFile(std::string path, std::string password) {
     this->path = path;
     this->password = password;

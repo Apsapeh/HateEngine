@@ -6,6 +6,7 @@
 
 #include "Texture.hpp"
 #include "GLTFModel.hpp"
+#include "Audio.hpp"
 
 namespace HateEngine {
     class HERResource {
@@ -20,6 +21,7 @@ namespace HateEngine {
                 float mipmap_bias = -1.0f, bool autoload = true
         );
         GLTFModel asGLBModel();
+        Audio asAudio();
     };
 
     class HERFile {

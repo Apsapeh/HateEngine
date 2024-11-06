@@ -1,15 +1,20 @@
 add_repositories("apsapeh-repo https://github.com/Apsapeh/xmake-repo.git")
 add_requires(
-    --"glfw 3.3.9",
     "glm 1.0.0", 
     "tinygltf 2.8.13", 
     "reactphysics3d 0.9.0", 
-    --"nuklear",
     "glu",
     "termcolor 5635ae00856eeddffcbf7091d13e2987abde91a2"
 )
 
 add_requires("glfw 3.4", {configs = {wayland = is_plat("linux")}})
+
+if is_plat("mingw") and is_arch("i386") then
+    add_requires("soloud", {configs = {cxflags = {"-DDISABLE_SSE", "-DDISABLE_SIMD"}}})
+else 
+    add_requires("soloud")
+end
+
 
 add_rules("mode.debug", "mode.release")
 
@@ -40,7 +45,7 @@ target("HateEngine")
         "deps/blowfish/blowfish.cpp",
         "src/**.cpp"
     )
-    add_packages("glfw", "glm", "tinygltf", "reactphysics3d", "glu", "termcolor")
+    add_packages("glfw", "glm", "tinygltf", "reactphysics3d", "glu", "termcolor", "soloud")
     add_defines("GLM_ENABLE_EXPERIMENTAL")
     
     if is_mode("debug") then
@@ -90,12 +95,12 @@ target("Example_1")
     add_includedirs("include")
 
     add_deps("HateEngine")
-    add_packages("glfw", "glm", "reactphysics3d", "ncvm")
+    add_packages("glfw", "glm", "reactphysics3d", "ncvm", "soloud")
     add_defines("GLM_ENABLE_EXPERIMENTAL")
 
     if is_plat("mingw") then 
         add_cxxflags("-specs=msvcr120.spec", {force=true})        
-        add_ldflags("-static -specs=msvcr120.spec", {force = true})
+        add_ldflags("-specs=msvcr120.spec -static-libstdc++ -static-libgcc", {force = true})
         --add_ldflags("-static")
     end
 

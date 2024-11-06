@@ -1,7 +1,8 @@
 #include "GLFW/glfw3.h"
+#include "HateEngine/AudioBus.hpp"
 #include "HateEngine/Input.hpp"
 #include "HateEngine/Objects/Physics/CapsuleShape.hpp"
-#include "HateEngine/Resources/GLTFAnimationPlayer.hpp"
+#include "HateEngine/Objects/GLTFAnimationPlayer.hpp"
 #include "glm/ext/vector_float2.hpp"
 #include "glm/ext/vector_float3.hpp"
 
@@ -35,6 +36,10 @@
 #include <HateEngine/UI/LabelUI.hpp>
 #include <HateEngine/UI/ButtonUI.hpp>
 #include <HateEngine/UI/CheckboxUI.hpp>
+
+#include <HateEngine/Resources/Audio.hpp>
+#include <HateEngine/Objects/AudioPlayer.hpp>
+#include <HateEngine/AudioServer.hpp>
 
 #define WINVER 0x0501
 #define _WIN32_WINNT 0x0501
@@ -80,7 +85,18 @@ HateEngine::BillboardMesh billboardMesh;
 HateEngine::Object head;
 
 
+// Audio
+HateEngine::AudioBus* ambient_bus = nullptr;
+HateEngine::AudioBus* music_bus = nullptr;
+
+// Audio UI
+HateEngine::LabelUI ambient_bus_volume_label;
+HateEngine::LabelUI music_bus_volume_label;
+
+
 int main() {
+
+
     std::cout << "Hello\n";
 
 
@@ -151,10 +167,52 @@ int main() {
     // Setting textures for the cube and floor meshes
 
 
+    // ambient_bus->addSource("examples/Assets/ambient.wav");
+    // music_bus->addSource("examples/Assets/soundtrack.mp3");
+
+
     HateEngine::HERFile herfile("examples/Assets/test.her", "password");
     HateEngine::Texture tex_floor = herfile["ground.png"].asTexture();
     HateEngine::GLTFModel her_model = herfile["shotgun.glb"].asGLBModel();
     test_glmodel = &her_model;
+
+
+    HateEngine::GLTFModel radioModel("examples/Assets/radio.glb");
+    radioModel.rotate(-90, 180, 0, true);
+    radioModel.setPosition(0, 2, 0);
+    radioModel.setScale(0.003, 0.003, 0.003);
+    lvl.addObjectRef(&radioModel);
+
+
+    /*========================> Audio Test <=========================*/
+    // Global pointers
+    ambient_bus = new HateEngine::AudioBus();
+    music_bus = new HateEngine::AudioBus();
+
+    HateEngine::Audio ambient = HateEngine::Audio("examples/Assets/Ignore/ambient.ogg");
+    HateEngine::Audio audio1 = herfile["audio.ogg"].asAudio();
+    HateEngine::Audio audio2 = HateEngine::Audio("examples/Assets/audio2.ogg");
+
+    HateEngine::AudioPlayer ambientPlayer(&ambient, ambient_bus, HateEngine::AudioPlayer::Audio2D);
+    HateEngine::AudioPlayer audioPlayer1(&audio1, music_bus, HateEngine::AudioPlayer::Audio3D);
+    HateEngine::AudioPlayer audioPlayer2(&audio2, music_bus, HateEngine::AudioPlayer::Audio3D);
+
+    audioPlayer1.setPosition(0, 2, 0);
+    playerCapsuleMesh.bindObj(&audioPlayer2);
+
+    ambientPlayer.play();
+    audioPlayer1.play();
+    audioPlayer2.play();
+
+    /*===============================================================*/
+
+
+    /*HateEngine::Audio* audio = new HateEngine::Audio("examples/Assets/audio.ogg");
+    // HateEngine::Audio audio = herfile["audio.ogg"].asAudio();
+    HATE_WARNING("WARNING");
+    HateEngine::AudioPlayer audioPlayer(audio, nullptr, HateEngine::AudioPlayer::Audio3D);
+    // delete audio;
+    audioPlayer.play();*/
 
     playerCapsuleMesh.bindObj(test_glmodel);
 
@@ -254,13 +312,15 @@ int main() {
     lvl.addObjectRef(&floor);
     lvl.addObjectRef(&sun);
 
-    HateEngine::GLTFModel dance_animation("examples/Assets/ignore/dance.glb");
+    /*HateEngine::GLTFModel dance_animation("examples/Assets/ignore/dance.glb");
     HateEngine::GLTFAnimationPlayer anim_player(&dance_animation);
     anim_player.offset(5, 0, 5);
     anim_player.setFPS(60);
     anim_player.setLoop(true);
     anim_player.play("dance_man");
-    lvl.addObjectRef(&anim_player);
+    lvl.addObjectRef(&anim_player);*/
+
+
     // lvl.addObjectRef(&dance_animation);
     /* for (auto& mesh : dance_animation.getMeshes()) {
          mesh->disableLightShading();
@@ -453,6 +513,65 @@ int main() {
     head.bindObj(&uv_test_cube);
 
 
+    // Audio UI
+    HateEngine::WidgetUI audio_widget;
+    audio_widget.position = {
+            255, 5, 1, HateEngine::CoordsUI::TopRight, HateEngine::CoordsUI::Pixels
+    };
+    audio_widget.size = {250, 55};
+    audio_widget.color.w = 0;
+    // fps_widget.has_background = true;
+    audio_widget.has_border = true;
+
+    audio_widget.addObjectRef(&ambient_bus_volume_label);
+    audio_widget.addObjectRef(&music_bus_volume_label);
+
+    ambient_bus_volume_label.size = {150, 20};
+    ambient_bus_volume_label.position = {5, 5};
+
+    music_bus_volume_label.size = {150, 20};
+    music_bus_volume_label.position = {5, 25};
+
+    HateEngine::ButtonUI inc_ambient_bus_volume_button([](HateEngine::Engine* engine) {
+        ambient_bus->setVolume(ambient_bus->getVolume() + 0.1);
+    });
+    inc_ambient_bus_volume_button.text = "+10";
+    inc_ambient_bus_volume_button.size = {40, 15};
+    inc_ambient_bus_volume_button.position = {150, 5};
+
+    HateEngine::ButtonUI dec_ambient_bus_volume_button([](HateEngine::Engine* engine) {
+        ambient_bus->setVolume(ambient_bus->getVolume() - 0.1);
+    });
+    dec_ambient_bus_volume_button.text = "-10";
+    dec_ambient_bus_volume_button.size = {40, 15};
+    dec_ambient_bus_volume_button.position = {200, 5};
+
+    audio_widget.addObjectRef(&inc_ambient_bus_volume_button);
+    audio_widget.addObjectRef(&dec_ambient_bus_volume_button);
+
+
+    HateEngine::ButtonUI inc_music_bus_volume_button([](HateEngine::Engine* engine) {
+        music_bus->setVolume(music_bus->getVolume() + 0.1);
+    });
+    inc_music_bus_volume_button.text = "+10";
+    inc_music_bus_volume_button.size = {40, 15};
+    inc_music_bus_volume_button.position = {150, 25};
+
+    HateEngine::ButtonUI dec_music_bus_volume_button([](HateEngine::Engine* engine) {
+        music_bus->setVolume(music_bus->getVolume() - 0.1);
+    });
+    dec_music_bus_volume_button.text = "-10";
+    dec_music_bus_volume_button.size = {40, 15};
+    dec_music_bus_volume_button.position = {200, 25};
+
+
+    audio_widget.addObjectRef(&inc_music_bus_volume_button);
+    audio_widget.addObjectRef(&dec_music_bus_volume_button);
+
+
+    lvl.addObjectRef(&audio_widget);
+
+
     game.setProcessLoop(_process);
     game.setFixedProcessLoop(_physics_process);
     game.setInputEvent(_input_event);
@@ -465,6 +584,7 @@ int main() {
     game.Run();
     int p = glfwGetPlatform();
     std::cout << p << " | " << GLFW_PLATFORM_WAYLAND << "\n";
+    // HateEngine::AudioServer::Deinit();
 }
 
 int frames_count = 0;
@@ -501,7 +621,7 @@ void _process(HateEngine::Engine* engine, double delta) {
     // test_glmodel->lookAt(camera.getGlobalPosition());
     //
     glm::vec3 cam_rot = camera.getRotationEuler();
-    HATE_INFO_F("Camera rotation: %f | %f | %f", cam_rot.x, cam_rot.y, cam_rot.z);
+    // HATE_INFO_F("Camera rotation: %f | %f | %f", cam_rot.x, cam_rot.y, cam_rot.z);
 
     glm::vec2 raw_dir =
             // engine->Input.getVector(HateEngine::A, HateEngine::D, HateEngine::W, HateEngine::S);
@@ -541,6 +661,10 @@ void _physics_process(HateEngine::Engine* engine, double delta) {
             "W: %d H: %d X: %f Y: %f", engine->getResolution().x, engine->getResolution().y,
             engine->getDisplayScale().x, engine->getDisplayScale().y
     );*/
+    glm::vec3 cam_global_pos = camera.getGlobalPosition();
+
+    // HATE_INFO_F("Camera position: %f | %f | %f", cam_global_pos.x, cam_global_pos.y,
+    // cam_global_pos.z);
     HateEngine::RayCastInfo rayCastInfo;
     if (ray->isCollide(&rayCastInfo)) {
         // HATE_DEBUG("Is collide: true");
@@ -558,6 +682,12 @@ void _physics_process(HateEngine::Engine* engine, double delta) {
     // camera.getRotationEuler().z << "\n"; std::cout << "FPS: " << 1.0 / delta << "\n";
     glm::vec3 mesh1_r = mesh1.getGlobalRotationEuler();
     // std::cout << mesh1_r.x << " " << mesh1_r.y << " " << mesh1_r.z << "\n";
+
+
+    ambient_bus_volume_label.text =
+            "Ambient: " + std::to_string(int(std::ceil(ambient_bus->getVolume() * 100)));
+    music_bus_volume_label.text =
+            "Music: " + std::to_string(int(std::ceil(music_bus->getVolume() * 100)));
 
 
     /*glm::vec2 dir = engine->Input.getVector(GLFW_KEY_A, GLFW_KEY_D, GLFW_KEY_W, GLFW_KEY_S) *

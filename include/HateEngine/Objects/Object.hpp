@@ -68,11 +68,13 @@ namespace HateEngine {
         glm::vec3 getRotationEuler() const;
         glm::mat4 getRotationMatrix() const;
         glm::vec3 getScale() const;
+        glm::vec3 getDirection() const;
 
         glm::vec3 getGlobalPosition() const;
         glm::vec3 getGlobalRotationEuler() const;
         glm::mat4 getGlobalRotationMatrix() const;
         glm::vec3 getGlobalScale() const;
+        glm::vec3 getGlobalDirection() const;
 
         bool getVisible() const;
         UUID getUUID() const;

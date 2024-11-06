@@ -6,7 +6,7 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-#include "HateEngine/Resources/GLTFAnimationPlayer.hpp"
+#include "HateEngine/Objects/GLTFAnimationPlayer.hpp"
 #include "HateEngine/Resources/Level.hpp"
 #include "glm/ext/matrix_float4x4.hpp"
 #include "glm/fwd.hpp"
@@ -91,7 +91,7 @@ void OpenGL15::Render() {
     // glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     // Fog
-    // glEnable(GL_FOG);
+    glEnable(GL_FOG);
     glFogi(GL_FOG_MODE, fog_modes[level->fogMode]);
     glFogf(GL_FOG_DENSITY, level->fogDensity);
     glFogf(GL_FOG_START, level->fogStart);

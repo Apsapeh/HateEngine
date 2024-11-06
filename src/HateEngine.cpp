@@ -5,9 +5,11 @@
 #include <HateEngine/HateEngine.hpp>
 #include <HateEngine/Log.hpp>
 #include <HateEngine/Render/OpenGL15.hpp>
+#include <HateEngine/AudioServer.hpp>
 #include <thread>
 
 #include "GLFW/glfw3.h"
+#include "HateEngine/AudioServer.hpp"
 #include "glm/ext/vector_float2.hpp"
 #include "globalStaticParams.hpp"
 
@@ -152,6 +154,7 @@ Engine::Engine(std::string window_lbl, int width, int height) : Input(this) {
     int64_t d_pp =
             std::chrono::duration_cast<std::chrono::microseconds>(t2 - t1).count() / 10 - physDelay;
     this->physicsEngineIterateDelayMCS = physDelay - d_pp;
+    AudioServer::Reinit();
 }
 
 void Engine::Run() {
@@ -254,6 +257,13 @@ void Engine::Run() {
             obj->Update(delta);
         }
 
+        if (this->level->camera != nullptr) {
+            AudioServer::setListener3DPosition(this->level->camera->getGlobalPosition());
+            AudioServer::setListener3DDirection(this->level->camera->getGlobalDirection());
+        }
+
+        AudioServer::Update3D();
+
         ogl.Render();
 
         glfwSwapBuffers(this->window);
@@ -263,6 +273,7 @@ void Engine::Run() {
         fixedProcessThread->join();
     if (physicsEngineProcessThread != nullptr and physicsEngineProcessThread->joinable())
         physicsEngineProcessThread->join();
+    AudioServer::Deinit();
 }
 
 void Engine::Exit() {

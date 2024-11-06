@@ -5,7 +5,7 @@
 #include "HateEngine/Objects/Light/Light.hpp"
 #include "HateEngine/Objects/Model.hpp"
 #include "HateEngine/Objects/Particles.hpp"
-#include "HateEngine/Resources/GLTFAnimationPlayer.hpp"
+#include "HateEngine/Objects/GLTFAnimationPlayer.hpp"
 #include "HateEngine/UI/WidgetUI.hpp"
 
 #define DESTRUCTOR_DELETE_POINTERS(ptr_obj, type)                                                  \

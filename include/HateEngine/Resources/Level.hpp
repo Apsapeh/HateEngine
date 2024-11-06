@@ -1,7 +1,5 @@
 #pragma once
 
-#include <array>
-
 #include "../Objects/Camera.hpp"
 #include "../Objects/Light/Light.hpp"
 #include "../Objects/Mesh.hpp"
@@ -12,7 +10,7 @@
 #include "../PhysEngine.hpp"
 #include "../UI/WidgetUI.hpp"
 #include "../Utilities/UUID.hpp"
-#include "HateEngine/Resources/GLTFAnimationPlayer.hpp"
+#include "HateEngine/Objects/GLTFAnimationPlayer.hpp"
 #include "glm/ext/vector_float4.hpp"
 
 namespace HateEngine {

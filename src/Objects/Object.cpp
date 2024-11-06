@@ -125,53 +125,37 @@ glm::vec3 Object::getPosition() const {
 }
 
 glm::vec3 Object::getRotationEuler() const {
-    /*// XXX Z coord may be wrong
-    glm::vec3 rot;
-    float tmp_1, tmp_2;
-
-    glm::extractEulerAngleXZY(rotation_matrix, rot.x, tmp_1, tmp_2); // x
-    // glm::extractEulerAngleYXZ(rotation_matrix, rot.y, tmp_1, tmp_2);
-    glm::extractEulerAngleZXY(rotation_matrix, rot.z, tmp_1, rot.y); // y, z = 0
-
-    rot *= -1;
-
-    rot = glm::degrees(rot);
-    rot.y += 90.0f;
-
-    return rot;*/
 
     glm::vec3 rot;
     float tmp_1, tmp_2;
-    // glm::extractEulerAngleYXZ(rotation_matrix, rot.y, rot.x, rot.z); //
-    // return global rotation glm::extractEulerAngleZXY(rotation_matrix, rot.z,
-    // rot.x, rot.y);
 
     glm::mat4 global_rotation = getRotationMatrix();
-    // glm::extractEulerAngleZXY(global_rotation, rot.z, rot.x, rot.y); // y
     glm::extractEulerAngleYZX(global_rotation, rot.y, rot.z, rot.x); //
 
-
-    // glm::extractEulerAngleXZY(global_rotation, rot.x, tmp_1, tmp_2); // x
-    //  glm::extractEulerAngleYXZ(rotation_matrix, rot.y, tmp_1, tmp_2);
-    // glm::extractEulerAngleZXY(global_rotation, rot.z, tmp_1, rot.y); // y, z = 0
-
-    // rot *= -1;
-
-    // Changes the Y rotation detection limit from [-PI/2, PI/2] to [-P, P]
-    /*bool bad = rotation_matrix[0][0] == 0 and rotation_matrix[0][2] == 0;
-    if (not bad)
-        rot.y = atan2(rotation_matrix[0][0], -rotation_matrix[0][2]);
-    else
-        rot.y = atan2(rotation_matrix[1][0], -rotation_matrix[1][2]);*/
     rot = glm::degrees(rot);
     rot.y += 90.0f;
-
-    /*if (rot.y < 0)
-        rot.y += 360.0f;*/
 
     return rot;
 }
 
+glm::vec3 Object::getDirection() const {
+    glm::vec3 rot = getRotationEuler();
+    glm::vec3 dir;
+    float yaw = glm::radians(-rot.y);
+    float pitch = glm::radians(rot.x);
+    dir.x = cos(pitch) * cos(yaw);
+    dir.y = sin(pitch);
+    dir.z = cos(pitch) * sin(yaw);
+
+    dir = glm::normalize(dir);
+    return dir;
+}
+
+
+/**
+ * @brief Get the local rotation matrix of the object
+ * @return The local rotation matrix of the object
+ */
 glm::mat4 Object::getRotationMatrix() const { //
     return this->rotation_matrix;
 }
@@ -189,47 +173,14 @@ glm::vec3 Object::getGlobalPosition() const {
 }
 
 glm::vec3 Object::getGlobalRotationEuler() const {
-    /*glm::vec3 rot;
-    glm::mat4 global_rotation = getGlobalRotationMatrix();
-    glm::extractEulerAngleXYZ(global_rotation, rot.x, rot.y, rot.z);
-    rot *= -1;
-
-    // Changes the Y rotation detection limit from [-PI/2, PI/2] to [-P, P]
-    bool bad = global_rotation[0][0] == 0 and global_rotation[0][2] == 0;
-    if (not bad)
-        rot.y = atan2(global_rotation[0][0], -global_rotation[0][2]);
-    else
-        rot.y = atan2(global_rotation[1][0], -global_rotation[1][2]);
-
-    return glm::degrees(rot);*/
     glm::vec3 rot;
     float tmp_1, tmp_2;
-    // glm::extractEulerAngleYXZ(rotation_matrix, rot.y, rot.x, rot.z); //
-    // return global rotation glm::extractEulerAngleZXY(rotation_matrix, rot.z,
-    // rot.x, rot.y);
 
     glm::mat4 global_rotation = getGlobalRotationMatrix();
-    // glm::extractEulerAngleZXY(global_rotation, rot.z, rot.x, rot.y); // y
     glm::extractEulerAngleYZX(global_rotation, rot.y, rot.z, rot.x); //
 
-
-    // glm::extractEulerAngleXZY(global_rotation, rot.x, tmp_1, tmp_2); // x
-    //  glm::extractEulerAngleYXZ(rotation_matrix, rot.y, tmp_1, tmp_2);
-    // glm::extractEulerAngleZXY(global_rotation, rot.z, tmp_1, rot.y); // y, z = 0
-
-    // rot *= -1;
-
-    // Changes the Y rotation detection limit from [-PI/2, PI/2] to [-P, P]
-    /*bool bad = rotation_matrix[0][0] == 0 and rotation_matrix[0][2] == 0;
-    if (not bad)
-        rot.y = atan2(rotation_matrix[0][0], -rotation_matrix[0][2]);
-    else
-        rot.y = atan2(rotation_matrix[1][0], -rotation_matrix[1][2]);*/
     rot = glm::degrees(rot);
     rot.y += 90.0f;
-
-    /*if (rot.y < 0)
-        rot.y += 360.0f;*/
 
     return rot;
 }
@@ -243,6 +194,20 @@ glm::mat4 Object::getGlobalRotationMatrix() const {
 glm::vec3 Object::getGlobalScale() const {
     return this->scale * this->parent_scale;
 }
+
+glm::vec3 Object::getGlobalDirection() const {
+    glm::vec3 rot = getGlobalRotationEuler();
+    glm::vec3 dir;
+    float yaw = glm::radians(-rot.y);
+    float pitch = glm::radians(rot.x);
+    dir.x = cos(pitch) * cos(yaw);
+    dir.y = sin(pitch);
+    dir.z = cos(pitch) * sin(yaw);
+
+    dir = glm::normalize(dir);
+    return dir;
+}
+
 
 bool Object::getVisible() const {
     return this->visible;

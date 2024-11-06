@@ -9,7 +9,7 @@
 #include "../Resources/Level.hpp"
 #include "../Resources/Texture.hpp"
 #include "../Resources/UIFont.hpp"
-#include "HateEngine/Resources/GLTFAnimationPlayer.hpp"
+#include "HateEngine/Objects/GLTFAnimationPlayer.hpp"
 
 namespace HateEngine {
     class OpenGL15 {
