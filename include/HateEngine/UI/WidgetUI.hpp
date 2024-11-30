@@ -9,6 +9,7 @@
 #include "ButtonUI.hpp"
 #include "CheckboxUI.hpp"
 #include "LabelUI.hpp"
+#include "ImageUI.hpp"
 #include "ObjectUI.hpp"
 
 namespace HateEngine {
@@ -19,7 +20,7 @@ namespace HateEngine {
             bool is_ref;
         };
 
-        std::unordered_map<UUID, Element> elements;
+        std::vector<Element> elements;
 
     public:
         // glm::vec2 size = {100, 100};
@@ -46,6 +47,7 @@ namespace HateEngine {
         UUID addObjectClone(LabelUI& lbl);
         UUID addObjectClone(ButtonUI& obj);
         UUID addObjectClone(CheckboxUI& ckbox);
+        UUID addObjectClone(ImageUI& img);
 
         bool removeObjectRef(const UUID& uuid);
     };

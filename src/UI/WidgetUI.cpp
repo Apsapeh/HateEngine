@@ -15,31 +15,52 @@ WidgetUI::WidgetUI() : ObjectUI(Type::Widget) {
 }
 
 UUID WidgetUI::addObjectRef(ObjectUI* obj) {
-    elements[obj->getUUID()] = {obj, true};
+    elements.push_back({obj, true});
     return obj->getUUID();
 }
 
 UUID WidgetUI::addObjectClone(LabelUI& obj) {
-    elements[obj.getUUID()] = {new LabelUI(obj), false};
+    elements.push_back({new LabelUI(obj), false});
     return obj.getUUID();
 }
 
 UUID WidgetUI::addObjectClone(ButtonUI& obj) {
-    elements[obj.getUUID()] = {new ButtonUI(obj), false};
+    elements.push_back({new ButtonUI(obj), false});
     return obj.getUUID();
 }
 
 UUID WidgetUI::addObjectClone(CheckboxUI& obj) {
-    elements[obj.getUUID()] = {new CheckboxUI(obj), false};
+    elements.push_back({new CheckboxUI(obj), false});
+    return obj.getUUID();
+}
+
+UUID WidgetUI::addObjectClone(ImageUI& obj) {
+    elements.push_back({new ImageUI(obj), false});
     return obj.getUUID();
 }
 
 bool WidgetUI::removeObjectRef(const UUID& uuid) {
-    if (elements.count(uuid) == 1) {
-        if (!elements[uuid].is_ref)
-            delete elements[uuid].obj;
-        elements.erase(uuid);
-        return true;
+    for (int i = 0; i < elements.size(); i++) {
+        if (elements[i].obj->getUUID() == uuid) {
+            if (!elements[i].is_ref) {
+                switch (elements[i].obj->getType()) {
+                    case ObjectUI::Type::Label:
+                        delete (LabelUI*) elements[i].obj;
+                        break;
+                    case ObjectUI::Type::Button:
+                        delete (ButtonUI*) elements[i].obj;
+                        break;
+                    case ObjectUI::Type::Checkbox:
+                        delete (CheckboxUI*) elements[i].obj;
+                        break;
+                    case ObjectUI::Type::Image:
+                        delete (ImageUI*) elements[i].obj;
+                        break;
+                }
+            }
+            elements.erase(elements.begin() + i);
+            return true;
+        }
     }
     return false;
 }

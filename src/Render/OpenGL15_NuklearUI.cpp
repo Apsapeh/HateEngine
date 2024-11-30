@@ -177,7 +177,7 @@ void OpenGL15::DrawNuklearUI(std::unordered_map<UUID, Level::SceneUIWidget>* wid
 
 
             for (const auto& child: widget->elements) {
-                const ObjectUI* obj = child.second.obj;
+                const ObjectUI* obj = child.obj;
                 const CoordsUI::CoordsData obj_size = obj->size.getTopLeftCoords(size.x, size.y);
                 const CoordsUI::CoordsData obj_position = obj->position.getCoords(size.x, size.y);
 

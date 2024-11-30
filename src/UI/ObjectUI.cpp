@@ -54,6 +54,9 @@ std::string ObjectUI::getText() const {
     return this->text;
 }
 
+ObjectUI::Type ObjectUI::getType() const {
+    return this->type;
+}
 
 UUID ObjectUI::getUUID() const {
     return uuid;

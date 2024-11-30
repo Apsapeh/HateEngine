@@ -46,6 +46,7 @@ namespace HateEngine {
         void setText(const std::string& text);
         std::string getText() const;
 
+        Type getType() const;
         UUID getUUID() const;
     };
 } // namespace HateEngine
