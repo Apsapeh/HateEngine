@@ -7,6 +7,7 @@
 #include <glm/gtc/type_ptr.hpp>
 
 #include "HateEngine/Objects/GLTFAnimationPlayer.hpp"
+#include "HateEngine/Objects/Model.hpp"
 #include "HateEngine/Resources/Level.hpp"
 #include "glm/ext/matrix_float4x4.hpp"
 #include "glm/fwd.hpp"
@@ -104,8 +105,8 @@ void OpenGL15::Render() {
     glPushMatrix();
     if (level->camera != nullptr)
         this->Draw3D(
-                level->camera, &level->meshes, &level->animationPlayers, &level->particles,
-                &level->lights
+                level->camera, &level->meshes, &level->models, &level->animationPlayers,
+                &level->particles, &level->lights
         );
     // glFlush();
     // glMatrixMode(GL_PROJECTION);
@@ -198,7 +199,7 @@ void OpenGL15::Render() {
 
 std::vector<Mesh*> correct_buffer = {};
 void OpenGL15::Draw3D(
-        Camera* camera, std::vector<Mesh*>* meshes,
+        Camera* camera, std::vector<Mesh*>* meshes, std::vector<Model*>* models,
         std::vector<GLTFAnimationPlayer*>* animation_players, std::vector<Particles*>* particles,
         std::vector<Light*>* lights
 ) {
@@ -241,6 +242,16 @@ void OpenGL15::Draw3D(
             correct_buffer.push_back(obj);
         else
             render(obj, lights);
+    }
+
+    for (const auto obj: *models) {
+        auto model_meshes = ((Model*) obj)->getMeshes(camera->getGlobalPosition());
+        for (const auto& mesh: model_meshes) {
+            if (mesh->getCorrectTransparency())
+                correct_buffer.push_back(mesh);
+            else
+                render(mesh, lights);
+        }
     }
 
     // Render transparent objects in correct order

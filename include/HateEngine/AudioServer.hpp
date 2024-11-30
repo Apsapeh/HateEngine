@@ -31,6 +31,7 @@ namespace HateEngine {
         /*====================> Settings <====================*/
         /*==========> Setters <==========*/
         // Global settings
+        static void setMaxActiveAudioPlayers(unsigned int max);
         static void fadeGlobalVolume(float volume, double duration);
         static void setGlobalVolume(float);
 
@@ -43,6 +44,7 @@ namespace HateEngine {
         static void resumeAudio(SoLoud::handle handle);
         static void scheduleAudioPause(SoLoud::handle handle, double duration);
         static void scheduleAudioStop(SoLoud::handle handle, double duration);
+        static void protectAudio(SoLoud::handle handle, bool protect);
 
         // Audio settings
         static void fadeAudioVolume(SoLoud::handle handle, float volume, double duration);
@@ -67,8 +69,10 @@ namespace HateEngine {
         static float getGlobalVolume();
 
         // Audio control
+        static bool isAudioPlaying(SoLoud::handle handle);
         static bool isAudioPaused(SoLoud::handle handle);
         static double getAudioStreamTime(SoLoud::handle handle);
+        static bool isAudioProtected(SoLoud::handle handle);
 
         // Audio settings
         static float getAudioVolume(SoLoud::handle handle);

@@ -16,15 +16,33 @@
 
 using namespace HateEngine;
 
+struct ObjFace {
+    std::vector<int32_t> indices;
+    float normal[3] = {0.0f, 0.0f, 0.0f};
+    std::vector<int32_t> tex_indices;
+};
+
+struct ObjObject {
+    std::string name;
+    std::vector<ObjFace> faces;
+};
+
+std::vector<Mesh*> generateLod(
+        std::vector<glm::vec3> vertices, std::vector<glm::vec2> tex_coords,
+        std::vector<ObjObject> objects, float step = 1.0f
+);
+
 std::vector<std::string> split(std::string str, char delimiter);
 
-ObjMapModel::ObjMapModel(std::string obj_filename, std::string map_file_name) {
+ObjMapModel::ObjMapModel(
+        std::string obj_filename, std::string map_file_name, float lod_dist, float lod_step
+) {
     std::ifstream file(obj_filename);
 
     std::string data((std::istreambuf_iterator<char>(file)), (std::istreambuf_iterator<char>()));
     // std::cout << data << "\n";
     auto t0 = std::chrono::high_resolution_clock::now();
-    parseObj(data);
+    parseObj(data, lod_dist, lod_step);
     auto t1 = std::chrono::high_resolution_clock::now();
     std::cout << "Parsing took: "
               << std::chrono::duration_cast<std::chrono::milliseconds>(t1 - t0).count() << " ms\n";
@@ -39,8 +57,6 @@ inline static bool isPointInPolygon(glm::vec2 point, std::vector<glm::vec2> poly
     bool is_in = 0;
 
     for (uint32_t i = 0; i < polygon.size(); i++) {
-        // std::cout << i << " - " << polygon[i].x << " " << polygon[i].y <<
-        // "\n";
         glm::vec2 a = polygon[i];
         glm::vec2 b;
         if (i == polygon.size() - 1)
@@ -57,7 +73,6 @@ inline static bool isPointInPolygon(glm::vec2 point, std::vector<glm::vec2> poly
             xByY = a.x + (b.x - a.x) * (point.y - a.y) / (b.y - a.y);
 
         if (std::abs(point.x - xByY) < 0.01f) {
-            // std::cout << xByY << "\n";
             return false;
         }
 
@@ -72,18 +87,8 @@ inline static bool isPointInPolygon(glm::vec2 point, std::vector<glm::vec2> poly
     return is_in;
 }
 
-struct ObjFace {
-    std::vector<int32_t> indices;
-    float normal[3] = {0.0f, 0.0f, 0.0f};
-    std::vector<int32_t> tex_indices;
-};
 
-struct ObjObject {
-    std::string name;
-    std::vector<ObjFace> faces;
-};
-
-void ObjMapModel::parseObj(std::string data) {
+void ObjMapModel::parseObj(std::string data, float lod_dist, float lod_step) {
     std::vector<glm::vec3> vertices;
     std::vector<glm::vec3> normals;
     std::vector<glm::vec2> tex_coords;
@@ -141,9 +146,6 @@ void ObjMapModel::parseObj(std::string data) {
                 }
             }
 
-            // current_obj->indices.push_back(v_indices);
-            // current_obj->normals.push_back({0.0f, 0.0f, 0.0f});
-            // current_obj->faces.push_back({v_indices, {0.0f, 0.0f, 0.0f}});
             ObjFace face;
             face.indices = v_indices;
             face.tex_indices = t_indices;
@@ -174,18 +176,16 @@ void ObjMapModel::parseObj(std::string data) {
         }
     }
 
-    std::cout << "Size: " << vertices.size() << "\n";
+    addLOD(0, generateLod(vertices, tex_coords, objects, lod_step));
+    addLOD(lod_dist, generateLod(vertices, tex_coords, objects, 1000000));
+}
 
-    /*for (auto obj : objects) {
-        std::cout << "Object: " << obj.name << "\n";
-        for (auto i : obj.indices) {
-            for (auto j : i) {
-                std::cout << j << " ";
-            }
-            std::cout << "\n";
-        }
-    }*/
 
+std::vector<Mesh*> generateLod(
+        std::vector<glm::vec3> vertices, std::vector<glm::vec2> tex_coords,
+        std::vector<ObjObject> objects, float step
+) {
+    std::vector<Mesh*> meshes;
     uint64_t c = 0;
     for (auto obj: objects) {
         std::vector<int32_t> all_indices;
@@ -269,14 +269,6 @@ void ObjMapModel::parseObj(std::string data) {
                     (end_tex.x - start_tex.x) / (poly_max.x - poly_min.x),
                     (end_tex.y - start_tex.y) / (poly_max.y - poly_min.y)
             };
-
-            HATE_DEBUG_F("%d | %d", poly.size(), face.tex_indices.size())
-            // HATE_DEBUG_F("x: %f, y: %f", UV_Vertex_K.x, UV_Vertex_K.y);
-
-            // HATE_DEBUG_F("[%f, %f] - [%f, %f]", start_tex.x, end_tex.x, start_tex.y, end_tex.y);
-            // HATE_DEBUG_F("{%f, %f} - {%f, %f}", poly_min.x, poly_max.x, poly_min.y, poly_max.y);
-
-            float step = 500.0f;
 
             std::vector<glm::vec2> grid;
             grid.reserve(
@@ -419,47 +411,11 @@ void ObjMapModel::parseObj(std::string data) {
                             }
                     );
 
-                    for (auto c: cell) {
-                        auto p = grid[c];
-                        // HATE_DEBUG_F("Cx: %f, Cy: %f", p.x, p.y);
-                    }
-                    // std::cout << std::endl;
-
-                    // cell.push_back(cell[0]);
-                    // HATE_DEBUG_F("Cell size: %d", cell.size());
                     for (uint32_t i = 2; i < cell.size(); ++i) {
                         mesh_indicies.push_back(mesh_vertices.size() / 3 + cell[0]);
                         mesh_indicies.push_back(mesh_vertices.size() / 3 + cell[i - 1]);
                         mesh_indicies.push_back(mesh_vertices.size() / 3 + cell[i]);
                     }
-
-                    /*for (const auto c : cell) {
-                        glm::vec2 p = grid[c] * UV_Vertex_K;
-                        mesh_UVs.push_back(p.x);
-                        mesh_UVs.push_back(p.y);
-                    }*/
-
-                    /*glm::vec2 p = grid[cell[0]] * UV_Vertex_K;
-
-                    mesh_UVs.push_back(p.x);
-                    mesh_UVs.push_back(p.y);
-                    HATE_DEBUG_F("x: %f | y: %f", p.x, p.y);
-                    p = grid[cell[1]] * UV_Vertex_K;
-                    mesh_UVs.push_back(p.x);
-                    mesh_UVs.push_back(p.y);
-                    HATE_DEBUG_F("x: %f | y: %f", p.x, p.y);
-
-                    p = grid[cell[2]] * UV_Vertex_K;
-                    mesh_UVs.push_back(p.x);
-                    mesh_UVs.push_back(p.y);
-                    HATE_DEBUG_F("x: %f | y: %f", p.x, p.y);
-                    std::cout << std::endl;
-
-                    p = grid[cell[3]] * UV_Vertex_K;
-                    mesh_UVs.push_back(p.x);
-                    mesh_UVs.push_back(p.y);
-                    HATE_DEBUG_F("x: %f | y: %f", p.x, p.y);
-                    std::cout << std::endl;*/
                 }
             }
 
@@ -479,10 +435,6 @@ void ObjMapModel::parseObj(std::string data) {
                 mesh_UVs.push_back(uv.y);
             }
         }
-
-        // HATE_DEBUG_F("Indi. size: %lu | UV size: %lu | %d", mesh_indicies.size(),
-        // mesh_UVs.size(), mesh_UVs.size() == mesh_indicies.size()*2)
-        //
 
         // Calculate mesh offset
         glm::vec3 min_coords = {
@@ -516,11 +468,13 @@ void ObjMapModel::parseObj(std::string data) {
         mesh->setUV(mesh_UVs);
         Texture* texture = new Texture("examples/Assets/brick.png");
         mesh->setTexture(texture);
-        // mesh->disableLightShading();
+        //  mesh->disableLightShading();
 
-        this->meshes.push_back(mesh);
+        meshes.push_back(mesh);
     }
+    return meshes;
 }
+
 
 /*==========================================================> SRING FUNCS
  * <==============================================================*/

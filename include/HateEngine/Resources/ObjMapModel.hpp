@@ -6,7 +6,7 @@ namespace HateEngine {
     class ObjMapModel : public Model {
 
     private:
-        void parseObj(std::string data);
+        void parseObj(std::string data, float lod_dist, float lod_step);
 
     public:
         /**
@@ -14,7 +14,10 @@ namespace HateEngine {
          *
          * @param str File name
          */
-        ObjMapModel(std::string obj_file_name, std::string map_file_name);
+        ObjMapModel(
+                std::string obj_file_name, std::string map_file_name, float lod_dist = 15,
+                float lod_step = 1.0
+        );
 
         /**
          * @brief Load model from memory as ASCII string (.gltf)

@@ -14,6 +14,7 @@ Mesh::Mesh(std::vector<float> vert, std::vector<uint32_t> ind, std::vector<float
     this->normals = std::move(norm);
 
     updateCenterMaxSize();
+    updateAABB();
 }
 
 Mesh::Mesh(const Mesh& mesh, bool copy_texture) {
@@ -32,6 +33,7 @@ Mesh::Mesh(const Mesh& mesh, bool copy_texture) {
     name = mesh.name;
 
     updateCenterMaxSize();
+    updateAABB();
 
     if (copy_texture and mesh.texture != nullptr)
         texture = new Texture(*mesh.texture, true);
@@ -41,8 +43,8 @@ Mesh::~Mesh() {
 }
 
 void Mesh::updateCenterMaxSize() {
-    glm::vec3 min;
-    glm::vec3 max;
+    glm::vec3 min = {verticies[0], verticies[1], verticies[2]};
+    glm::vec3 max = {verticies[0], verticies[1], verticies[2]};
     for (uint32_t i = 0; i < verticies.size(); i += 3) {
         min.x = std::min(min.x, verticies[i]);
         min.y = std::min(min.y, verticies[i + 1]);
@@ -56,6 +58,22 @@ void Mesh::updateCenterMaxSize() {
     this->center_max_size = glm::length(max - min) / 2;
 }
 
+void Mesh::updateAABB() {
+    glm::vec3 min = {verticies[0], verticies[1], verticies[2]};
+    glm::vec3 max = {verticies[0], verticies[1], verticies[2]};
+    for (uint32_t i = 0; i < verticies.size(); i += 3) {
+        min.x = std::min(min.x, verticies[i]);
+        min.y = std::min(min.y, verticies[i + 1]);
+        min.z = std::min(min.z, verticies[i + 2]);
+
+        max.x = std::max(max.x, verticies[i]);
+        max.y = std::max(max.y, verticies[i + 1]);
+        max.z = std::max(max.z, verticies[i + 2]);
+    }
+    this->AABB_min = min;
+    this->AABB_max = max;
+}
+
 void Mesh::setName(std::string name) {
     this->name = name;
 }
@@ -67,6 +85,7 @@ const std::string Mesh::getName() {
 void Mesh::setVertices(std::vector<float> vec) {
     this->verticies = std::move(vec);
     updateCenterMaxSize();
+    updateAABB();
 }
 
 void Mesh::setIndicies(std::vector<uint32_t> vec) {
@@ -123,6 +142,21 @@ bool Mesh::isLightShading() const {
 
 float Mesh::getAABBRadius() const {
     return this->center_max_size;
+}
+
+glm::vec3 Mesh::getAABBMin() const {
+    return this->AABB_min;
+}
+
+glm::vec3 Mesh::getAABBMax() const {
+    return this->AABB_max;
+}
+
+float Mesh::getAABBDistanceToPoint(glm::vec3 point) const {
+    glm::vec3 global_pos = Object::getGlobalPosition();
+    glm::vec3 clamped = glm::clamp(point, AABB_min + global_pos, AABB_max + global_pos);
+    glm::vec3 delta = point - clamped;
+    return glm::length(delta);
 }
 
 const std::vector<float>* Mesh::getVertices() const {

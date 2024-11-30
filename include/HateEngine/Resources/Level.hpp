@@ -60,8 +60,10 @@ namespace HateEngine {
         std::unordered_map<UUID, SceneObject> particles_obj;
         std::unordered_map<UUID, SceneObject> lights_obj;
 
-        // This vector should be generated from meshes_obj, models_obj
+        // This vector should be generated from meshes_obj
         std::vector<Mesh*> meshes;
+        // This vector should be generated from models_obj
+        std::vector<Model*> models;
         // This vector should be generated from animationPlayers_obj
         std::vector<GLTFAnimationPlayer*> animationPlayers;
         // This vector should be generated from particles_obj
@@ -91,6 +93,7 @@ namespace HateEngine {
         std::mutex lightsMutex;
 
         void updateMeshesVector();
+        void updateModelsVector();
         void updateAnimationPlayersVector();
         void updateParticlesVector();
         void updateLightsVector();

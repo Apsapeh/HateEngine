@@ -37,6 +37,10 @@ void AudioServer::Update3D() {
 /*====================> Settings <====================*/
 /*==========> Setters <==========*/
 // Global settings
+void AudioServer::setMaxActiveAudioPlayers(unsigned int max) {
+    soloudEngine.setMaxActiveVoiceCount(max);
+}
+
 void AudioServer::fadeGlobalVolume(float volume, double duration) {
     soloudEngine.fadeGlobalVolume(volume, duration);
 }
@@ -78,6 +82,10 @@ void AudioServer::scheduleAudioStop(SoLoud::handle handle, double duration) {
 
 void AudioServer::scheduleAudioPause(SoLoud::handle handle, double duration) {
     soloudEngine.schedulePause(handle, duration);
+}
+
+void AudioServer::protectAudio(SoLoud::handle handle, bool protect) {
+    soloudEngine.setProtectVoice(handle, protect);
 }
 
 
@@ -139,6 +147,10 @@ float AudioServer::getGlobalVolume() {
 }
 
 // Audio control
+bool AudioServer::isAudioPlaying(SoLoud::handle handle) {
+    return soloudEngine.isValidVoiceHandle(handle);
+}
+
 bool AudioServer::isAudioPaused(SoLoud::handle handle) {
     return soloudEngine.getPause(handle);
 }
@@ -147,6 +159,9 @@ double AudioServer::getAudioStreamTime(SoLoud::handle handle) {
     return soloudEngine.getStreamTime(handle);
 }
 
+bool AudioServer::isAudioProtected(SoLoud::handle handle) {
+    return soloudEngine.getProtectVoice(handle);
+}
 
 // Audio settings
 float AudioServer::getAudioVolume(SoLoud::handle handle) {

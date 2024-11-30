@@ -173,7 +173,7 @@ int main() {
 
     HateEngine::HERFile herfile("examples/Assets/test.her", "password");
     HateEngine::Texture tex_floor = herfile["ground.png"].asTexture();
-    HateEngine::GLTFModel her_model = herfile["shotgun.glb"].asGLBModel();
+    HateEngine::GLTFModel her_model = herfile["new_shotgun.glb"].asGLBModel();
     test_glmodel = &her_model;
 
 
@@ -193,7 +193,8 @@ int main() {
     HateEngine::AudioStream audio2 = HateEngine::AudioStream("examples/Assets/audio2.ogg");
 
     HateEngine::AudioPlayer ambientPlayer(&ambient, ambient_bus, HateEngine::AudioPlayer::Audio2D);
-    HateEngine::AudioPlayer audioPlayer1 = herfile["audio.ogg"].asAudioPlayerStream(music_bus, HateEngine::AudioPlayer::Audio3D);
+    HateEngine::AudioPlayer audioPlayer1 =
+            herfile["audio.ogg"].asAudioPlayerStream(music_bus, HateEngine::AudioPlayer::Audio3D);
     HateEngine::AudioPlayer audioPlayer2(&audio2, music_bus, HateEngine::AudioPlayer::Audio3D);
 
     audioPlayer1.setPosition(0, 2, 0);
@@ -262,10 +263,23 @@ int main() {
         m->setFaceCulling(false);
     }*/
 
-    // HateEngine::ObjMapModel objmodel("examples/Assets/unnamed.obj",
-    // "examples/Assets/unnamed.map");
+    HateEngine::ObjMapModel objmodel("examples/Assets/unnamed.obj", "examples/Assets/unnamed.map");
 
-    // lvl.addObjectRef(&objmodel);
+    for (auto& m: objmodel.getLOD(0)) {
+        glm::vec3 min = m->getAABBMin();
+        glm::vec3 max = m->getAABBMax();
+
+        glm::vec3 center = (min + max) / 2 + m->getGlobalPosition();
+        glm::vec3 size = max - min;
+
+        HateEngine::CubeMesh cube;
+        cube.setSize(size.x, size.y, size.z);
+        cube.setPosition(center.x, center.y, center.z);
+        // cube.setPosition(m->getGlobalPosition());
+        // lvl.addObjectClone(cube);
+    }
+
+    lvl.addObjectRef(&objmodel);
     /*for (auto& m: objmodel.getMeshes()) {
         std::cout << "POS: " << m->getPosition().x << " " << m->getPosition().y << " "
                   << m->getPosition().z << std::endl;

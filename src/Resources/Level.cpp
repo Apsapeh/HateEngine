@@ -235,7 +235,7 @@ UUID Level::addObjectRef(Light* object) {
 UUID Level::addObjectRef(Model* object) {
     std::lock_guard<std::mutex> guard(modelsMutex);
     models_obj[object->getUUID()] = {object, true};
-    updateMeshesVector();
+    updateModelsVector();
     return object->getUUID();
 }
 
@@ -324,16 +324,20 @@ bool Level::removeObject(const UUID& uuid) {
 /* =============> UPDATE RENDER VECTORS <============= */
 void Level::updateMeshesVector() {
     meshes.clear();
-    meshes.reserve(this->meshes_obj.size() + 5 * this->models_obj.size());
+    meshes.reserve(this->meshes_obj.size() + this->billboards_obj.size());
     for (const auto& obj: meshes_obj)
         meshes.push_back((Mesh*) (obj.second.obj));
-    for (const auto& obj: models_obj) {
-        auto model_meshes = ((Model*) obj.second.obj)->getMeshes();
-        meshes.insert(meshes.end(), model_meshes.begin(), model_meshes.end());
-    }
     for (const auto& obj: billboards_obj)
         meshes.push_back((Mesh*) obj.second.obj);
     meshes.shrink_to_fit();
+}
+
+void Level::updateModelsVector() {
+    models.clear();
+    models.reserve(this->models_obj.size());
+    for (const auto& obj: models_obj)
+        models.push_back((Model*) obj.second.obj);
+    models.shrink_to_fit();
 }
 
 void Level::updateAnimationPlayersVector() {

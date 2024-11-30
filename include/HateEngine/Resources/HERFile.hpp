@@ -26,8 +26,12 @@ namespace HateEngine {
         GLTFModel asGLBModel();
         Audio asAudio();
         AudioStream asAudioStream();
-        AudioPlayer asAudioPlayer(AudioBus* bus = nullptr, AudioPlayer::Type type = AudioPlayer::Audio2D);
-        AudioPlayer asAudioPlayerStream(AudioBus* bus = nullptr, AudioPlayer::Type type = AudioPlayer::Audio2D);
+        AudioPlayer asAudioPlayer(
+                AudioBus* bus = nullptr, AudioPlayer::Type type = AudioPlayer::Audio2D
+        );
+        AudioPlayer asAudioPlayerStream(
+                AudioBus* bus = nullptr, AudioPlayer::Type type = AudioPlayer::Audio2D
+        );
     };
 
     class HERFile {

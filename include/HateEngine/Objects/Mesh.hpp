@@ -3,6 +3,7 @@
 #include <vector>
 #include "../Resources/Texture.hpp"
 #include "Object.hpp"
+#include "glm/fwd.hpp"
 
 namespace HateEngine {
     // Object -> Mesh
@@ -15,6 +16,8 @@ namespace HateEngine {
         std::vector<float> UV = {};
         float max_light_dist = 0;
         float center_max_size = 0;
+        glm::vec3 AABB_min;
+        glm::vec3 AABB_max;
         bool is_shaded = true;
         std::string name = "";
         // uint8_t draw_priority = 255;
@@ -22,6 +25,7 @@ namespace HateEngine {
         bool face_culling = true;
 
         void updateCenterMaxSize();
+        void updateAABB();
 
     public:
         ~Mesh();
@@ -56,6 +60,9 @@ namespace HateEngine {
         void disableLightShading();
         bool isLightShading() const;
         float getAABBRadius() const;
+        glm::vec3 getAABBMin() const;
+        glm::vec3 getAABBMax() const;
+        float getAABBDistanceToPoint(glm::vec3 point) const;
 
         const std::vector<float>* getVertices() const;
         const std::vector<uint32_t>* getIndicies() const;
