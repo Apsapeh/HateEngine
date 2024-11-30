@@ -15,6 +15,7 @@ ObjectUI::ObjectUI(const ObjectUI& obj) {
     this->text = obj.text;
     this->color = obj.color;
     this->text_color = obj.text_color;
+    this->visible = obj.visible;
 }
 
 ObjectUI::ObjectUI(Type type) {

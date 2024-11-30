@@ -6,7 +6,6 @@
 using namespace HateEngine;
 
 /*ImageUI::ImageUI(const ImageUI& lbl) {
-
 }*/
 
 ImageUI::ImageUI(Texture* texture) : ObjectUI(Image) {

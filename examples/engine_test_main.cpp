@@ -475,7 +475,9 @@ int main() {
     fps_widget.size = {300, 200, 1, HateEngine::CoordsUI::TopLeft, HateEngine::CoordsUI::Pixels};
     fps_widget.color.w = 0;
     // fps_widget.has_background = true;
-    fps_widget.has_border = true;
+    fps_widget.has_border = false;
+    fps_widget.is_movable = true;
+    fps_widget.is_closable = true;
 
     HateEngine::UIFont* f = new HateEngine::UIFont("examples/Assets/Comfortaa-Regular.ttf", 36);
     HateEngine::UIFont* f_2 = new HateEngine::UIFont("examples/Assets/NanumGothic-Regular.ttf", 12);
@@ -504,6 +506,25 @@ int main() {
 
     HateEngine::ButtonUI button([](HateEngine::Engine* engine) { std::cout << "Hello, World!\n"; });
 
+    button.position = {100, 60};
+    // button.size = {100, 200};
+    HateEngine::Texture image_btn(
+            "examples/Assets/brick.png", HateEngine::Texture::Repeat, HateEngine::Texture::Nearest
+    );
+    HateEngine::Texture image_hover_btn(
+            "examples/Assets/campfire.png", HateEngine::Texture::Repeat,
+            HateEngine::Texture::Nearest
+    );
+    HateEngine::Texture image_press_btn(
+            "examples/Assets/UV_test.png", HateEngine::Texture::Repeat, HateEngine::Texture::Nearest
+    );
+    button.color = {255, 0, 0, 255};
+    button.text = "Button";
+    button.roundness = 0;
+    button.setNormalTexture(&image_btn);
+    button.setHoverTexture(&image_hover_btn);
+    button.setPressedTexture(&image_press_btn);
+
     HateEngine::CheckboxUI checkbox;
     checkbox.position = {
             -40, -20, 1, HateEngine::CoordsUI::CenterRight, HateEngine::CoordsUI::Pixels
@@ -523,13 +544,12 @@ int main() {
     };*/
     // image_ui.size = {200, 40, 1, HateEngine::CoordsUI::TopLeft, HateEngine::CoordsUI::Pixels};
 
-
     fps_widget.addObjectRef(&fps_label);
-    // fps_widget.addObjectRef(&button);
     fps_widget.addObjectClone(label);
-    fps_widget.addObjectClone(button);
+    // fps_widget.addObjectClone(button);
     fps_widget.addObjectRef(&checkbox);
-    fps_widget.addObjectRef(&image_ui);
+    fps_widget.addObjectClone(image_ui);
+    fps_widget.addObjectRef(&button);
 
 
     lvl.addObjectRef(&fps_widget);

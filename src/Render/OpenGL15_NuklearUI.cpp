@@ -20,6 +20,7 @@
 #include <HateEngine/Resources/UIFont.hpp>
 #include <glm/ext/matrix_clip_space.hpp>
 #include <glm/ext/vector_int2.hpp>
+#include "HateEngine/Log.hpp"
 #include "HateEngine/Resources/Level.hpp"
 
 #define NK_INCLUDE_FIXED_TYPES
@@ -77,6 +78,14 @@ void OpenGL15::initNuklearUI() {
     unsigned int font_tex = device_upload_atlas(image, w, h);
     nk_font_atlas_end(&atlas, nk_handle_id((int) font_tex), &tex_null);
     nk_init_default(&ctx, &font->handle);
+
+    // ctx.style.window.border = 1;
+    ctx.style.window.padding = nk_vec2(0, 0);
+    // ctx.style.window.header. = nk_vec2(0, 0);
+    ctx.style.button.border = 0;
+    ctx.style.button.padding = nk_vec2(0, 0);
+
+    ctx.style.text.padding = nk_vec2(0, 0);
 }
 
 static unsigned int device_upload_atlas(const void* image, int width, int height) {
@@ -181,6 +190,9 @@ void OpenGL15::DrawNuklearUI(std::unordered_map<UUID, Level::SceneUIWidget>* wid
                 const CoordsUI::CoordsData obj_size = obj->size.getTopLeftCoords(size.x, size.y);
                 const CoordsUI::CoordsData obj_position = obj->position.getCoords(size.x, size.y);
 
+                if (!obj->visible)
+                    continue;
+
                 nk_layout_space_push(
                         &ctx, nk_rect(obj_position.x, obj_position.y, obj_size.x, obj_size.y)
                 );
@@ -219,10 +231,101 @@ void OpenGL15::DrawNuklearUI(std::unordered_map<UUID, Level::SceneUIWidget>* wid
 
 
                 } else if (obj->type == ObjectUI::Type::Button) {
-                    const ButtonUI* button = (ButtonUI*) obj;
+                    ButtonUI* button = (ButtonUI*) obj;
 
-                    if (nk_button_label(&ctx, button->text.c_str())) {
-                        if (button->on_click != nullptr) {
+                    struct nk_rect widget_bounds = nk_window_get_bounds(&ctx);
+                    struct nk_rect bounds = {
+                            obj_position.x + widget_bounds.x, obj_position.y + widget_bounds.y,
+                            obj_size.x, obj_size.y
+                    };
+
+                    if (widget->has_border) {
+                        bounds.x += ctx.style.window.border;
+                        bounds.y += ctx.style.window.border;
+                    }
+
+                    if (widget->has_title || widget->is_closable || widget->is_minimizable) {
+                        float padding_y = ctx.style.window.header.padding.y;
+                        float spacing_y = ctx.style.window.spacing.y;
+                        const struct nk_user_font* font = ctx.style.font;
+                        float font_height = font->height;
+                        bounds.y += font_height + 2 * padding_y + spacing_y * 2;
+                    }
+
+                    // clang-format off
+                    #define BUTTON_BODY                                                                                \
+                        button->call_on_click(this->engine);                                                           \
+                        // Because the level can be changed in the callback
+                        if (start_level != engine->getLevel()) {
+                            nk_layout_space_end(&ctx);
+                            nk_end(&ctx);
+                            return;
+                        }
+                    // clang-format on
+
+                    struct nk_image* button_image = nullptr;
+                    if (button->pressed_texture != nullptr and
+                        nk_input_is_mouse_hovering_rect(&ctx.input, bounds) and
+                        nk_input_is_mouse_down(&ctx.input, NK_BUTTON_LEFT)) {
+                        if (not button->getPressedTexture()->is_loaded)
+                            button->getPressedTexture()->Load(loadTexture, unloadTexture);
+
+                        if (button->nk_img_pressed == nullptr) {
+                            struct nk_image img =
+                                    nk_image_id(button->getPressedTexture()->getTextureID());
+                            button->nk_img_pressed = new struct nk_image(img);
+                        }
+
+                        button_image = (struct nk_image*) button->nk_img_pressed;
+                    } else if (button->hover_texture != nullptr and
+                               nk_input_is_mouse_hovering_rect(&ctx.input, bounds)) {
+                        if (not button->getHoverTexture()->is_loaded)
+                            button->getHoverTexture()->Load(loadTexture, unloadTexture);
+
+                        if (button->nk_img_hover == nullptr) {
+                            struct nk_image img =
+                                    nk_image_id(button->getHoverTexture()->getTextureID());
+                            button->nk_img_hover = new struct nk_image(img);
+                        }
+
+                        button_image = (struct nk_image*) button->nk_img_hover;
+                    } else if (button->normal_texture != nullptr) {
+                        if (not button->getNormalTexture()->is_loaded)
+                            button->getNormalTexture()->Load(loadTexture, unloadTexture);
+
+                        if (button->nk_img_normal == nullptr) {
+                            struct nk_image img =
+                                    nk_image_id(button->getNormalTexture()->getTextureID());
+                            button->nk_img_normal = new struct nk_image(img);
+                        }
+
+                        button_image = (struct nk_image*) button->nk_img_normal;
+                    }
+
+                    if (button_image != nullptr and button->ignore_color_with_image) {
+                        ctx.style.button.normal = nk_style_item_color(nk_rgba(0, 0, 0, 0));
+                        ctx.style.button.hover = nk_style_item_color(nk_rgba(0, 0, 0, 0));
+                        ctx.style.button.active = nk_style_item_color(nk_rgba(0, 0, 0, 0));
+                    } else {
+                        ctx.style.button.normal = nk_style_item_color(nk_rgba(
+                                button->color.x, button->color.y, button->color.z, button->color.w
+                        ));
+
+                        ctx.style.button.hover = nk_style_item_color(
+                                nk_rgba(button->hover_color.x, button->hover_color.y,
+                                        button->hover_color.z, button->hover_color.w)
+                        );
+
+                        ctx.style.button.active = nk_style_item_color(
+                                nk_rgba(button->pressed_color.x, button->pressed_color.y,
+                                        button->pressed_color.z, button->pressed_color.w)
+                        );
+                    }
+
+                    ctx.style.button.rounding = button->roundness;
+
+                    if (button_image != nullptr) {
+                        if (nk_button_image(&ctx, *button_image)) {
                             button->call_on_click(this->engine);
                             // Because the level can be changed in the callback
                             if (start_level != engine->getLevel()) {
@@ -231,7 +334,21 @@ void OpenGL15::DrawNuklearUI(std::unordered_map<UUID, Level::SceneUIWidget>* wid
                                 return;
                             }
                         }
+                    } else {
+                        if (nk_button_label(&ctx, button->text.c_str())) {
+                            if (button->on_click != nullptr) {
+                                button->call_on_click(this->engine);
+                                // Because the level can be changed in the callback
+                                if (start_level != engine->getLevel()) {
+                                    nk_layout_space_end(&ctx);
+                                    nk_end(&ctx);
+                                    return;
+                                }
+                            }
+                        }
                     }
+
+
                 } else if (obj->type == ObjectUI::Type::Checkbox) {
                     CheckboxUI* checkbox = (CheckboxUI*) obj;
 
@@ -242,11 +359,14 @@ void OpenGL15::DrawNuklearUI(std::unordered_map<UUID, Level::SceneUIWidget>* wid
                     ImageUI* image = (ImageUI*) obj;
                     Texture* texture = image->texture;
 
-                    if (not texture->is_loaded) {
+                    if (not texture->is_loaded)
                         texture->Load(loadTexture, unloadTexture);
+
+                    if (image->nk_image == nullptr) {
                         struct nk_image img = nk_image_id(texture->getTextureID());
                         image->nk_image = new struct nk_image(img);
                     }
+
                     nk_image(&ctx, *((struct nk_image*) image->nk_image));
                 }
                 nk_style_pop_font(&ctx);

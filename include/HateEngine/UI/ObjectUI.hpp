@@ -21,6 +21,7 @@ namespace HateEngine {
         std::string text = "";
         glm::ivec4 color = {255, 255, 255, 255};
         glm::ivec4 text_color = {0, 0, 0, 255};
+        bool visible = true;
 
     private:
         Type type;
