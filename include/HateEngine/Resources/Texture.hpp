@@ -51,7 +51,10 @@ namespace HateEngine {
                 void (*API_loader)(Texture* texture_ptr), void (*API_unloader)(Texture* texture_ptr)
         );
         void Unload();
-        uint32_t getTextureID();
+        uint32_t getTextureID() const;
+
+        int getWidth() const;
+        int getHeight() const;
 
         void setAutoload(bool value);
     };

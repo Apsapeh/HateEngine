@@ -9,6 +9,7 @@
 #include <HateEngine/UI/ButtonUI.hpp>
 #include <HateEngine/UI/LabelUI.hpp>
 #include <HateEngine/UI/WidgetUI.hpp>
+#include <HateEngine/UI/ImageUI.hpp>
 #include <climits>
 #include <glm/ext.hpp>
 #include <string>
@@ -237,6 +238,16 @@ void OpenGL15::DrawNuklearUI(std::unordered_map<UUID, Level::SceneUIWidget>* wid
                     nk_bool checked = checkbox->get_checked();
                     nk_checkbox_label(&ctx, checkbox->text.c_str(), &checked);
                     checkbox->set_checked(checked);
+                } else if (obj->type == ObjectUI::Type::Image) {
+                    ImageUI* image = (ImageUI*) obj;
+                    Texture* texture = image->texture;
+
+                    if (not texture->is_loaded) {
+                        texture->Load(loadTexture, unloadTexture);
+                        struct nk_image img = nk_image_id(texture->getTextureID());
+                        image->nk_image = new struct nk_image(img);
+                    }
+                    nk_image(&ctx, *((struct nk_image*) image->nk_image));
                 }
                 nk_style_pop_font(&ctx);
             }

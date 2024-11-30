@@ -36,6 +36,7 @@
 #include <HateEngine/UI/LabelUI.hpp>
 #include <HateEngine/UI/ButtonUI.hpp>
 #include <HateEngine/UI/CheckboxUI.hpp>
+#include <HateEngine/UI/ImageUI.hpp>
 
 #include <HateEngine/Resources/Audio.hpp>
 #include <HateEngine/Objects/AudioPlayer.hpp>
@@ -511,11 +512,24 @@ int main() {
     checkbox.text = "Test/Тест";
 
 
+    HateEngine::Texture image(
+            "examples/Assets/brick.png", HateEngine::Texture::Repeat, HateEngine::Texture::Nearest
+    );
+
+    HateEngine::ImageUI image_ui(&image);
+    // image_ui.setScale(10.0);
+    /*image_ui.position = {
+            -40, -20, 1, HateEngine::CoordsUI::CenterRight, HateEngine::CoordsUI::Pixels
+    };*/
+    // image_ui.size = {200, 40, 1, HateEngine::CoordsUI::TopLeft, HateEngine::CoordsUI::Pixels};
+
+
     fps_widget.addObjectRef(&fps_label);
     // fps_widget.addObjectRef(&button);
     fps_widget.addObjectClone(label);
     fps_widget.addObjectClone(button);
     fps_widget.addObjectRef(&checkbox);
+    fps_widget.addObjectRef(&image_ui);
 
 
     lvl.addObjectRef(&fps_widget);

@@ -16,7 +16,7 @@ namespace HateEngine {
         UUID uuid;
 
     public:
-        enum Type { Widget, Label, Button, Checkbox };
+        enum Type { Widget, Label, Button, Checkbox, Image };
 
         std::string text = "";
         glm::ivec4 color = {255, 255, 255, 255};

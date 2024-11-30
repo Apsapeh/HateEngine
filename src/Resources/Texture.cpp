@@ -87,6 +87,8 @@ Texture::Texture(
         this->texMipMapFiltering += GL_NEAREST_MIPMAP_LINEAR - GL_NEAREST;
     this->MipMapLodBias = mipmap_bias;
     this->autoload = autoload;
+
+    loadFromFile();
     /*if (autoload)
         Load();*/
 }
@@ -147,9 +149,6 @@ bool Texture::Load(
     if (!glad_is_initialized)
         return false;
 
-    if (!this->fileName.empty() and not loadFromFile())
-        return false;
-
     API_load_func(this);
     this->is_loaded = true;
 
@@ -166,11 +165,19 @@ void Texture::Unload() {
     }
 }
 
-uint32_t Texture::getTextureID() {
+uint32_t Texture::getTextureID() const {
     /*if (this->autoload)
         Load();*/
 
     return this->textureGL_ID;
+}
+
+int Texture::getWidth() const {
+    return this->width;
+}
+
+int Texture::getHeight() const {
+    return this->height;
 }
 
 void Texture::setAutoload(bool value) {
