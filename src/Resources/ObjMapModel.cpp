@@ -8,6 +8,7 @@
 #include <string>
 #include <vector>
 
+#include "HateEngine/Log.hpp"
 #include "glm/ext/vector_float2.hpp"
 #include "glm/ext/vector_float3.hpp"
 #include "glm/geometric.hpp"
@@ -43,8 +44,7 @@ ObjMapModel::ObjMapModel(
     auto t0 = std::chrono::high_resolution_clock::now();
     parseObj(data, lod_dist, lod_step);
     auto t1 = std::chrono::high_resolution_clock::now();
-    std::cout << "Parsing took: "
-              << std::chrono::duration_cast<std::chrono::milliseconds>(t1 - t0).count() << " ms\n";
+    HATE_DEBUG_F("Parsing took: %d ms", std::chrono::duration_cast<std::chrono::milliseconds>(t1 - t0).count());
 }
 
 ObjMapModel::ObjMapModel(const char* data, uint32_t size, std::string dir) {

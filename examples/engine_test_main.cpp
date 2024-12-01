@@ -96,11 +96,6 @@ HateEngine::LabelUI music_bus_volume_label;
 
 
 int main() {
-
-
-    std::cout << "Hello\n";
-
-
     xAxMesh.setSize(1, 0.1, 0.1);
     xAxMesh.offset(0, 6, 0);
 
@@ -142,8 +137,7 @@ int main() {
 
     // camera.bindObj(&test_glmodel);
 
-
-    std::cout << "Camera uuid: " << camera.getUUID().getU64() << std::endl;
+    HATE_DEBUG_F("Camera uuid: %llu", camera.getUUID().getU64());
     // mesh1.bindObj(&test_glmodel);
     HateEngine::Engine game("HateEngine Test", WIDTH, HEIGHT);
     // std::cout << sizeof(game) << "\n";
@@ -520,6 +514,7 @@ int main() {
     );
     button.color = {255, 0, 0, 255};
     button.text = "Button";
+    button.text_color = {255, 255, 255, 255};
     button.roundness = 0;
     button.setNormalTexture(&image_btn);
     button.setHoverTexture(&image_hover_btn);
@@ -546,10 +541,10 @@ int main() {
 
     fps_widget.addObjectRef(&fps_label);
     fps_widget.addObjectClone(label);
-    // fps_widget.addObjectClone(button);
+    fps_widget.addObjectClone(button);
     fps_widget.addObjectRef(&checkbox);
     fps_widget.addObjectClone(image_ui);
-    fps_widget.addObjectRef(&button);
+    //fps_widget.addObjectRef(&button);
 
 
     lvl.addObjectRef(&fps_widget);
@@ -626,7 +621,7 @@ int main() {
     float xscale, yscale;
     // glfwGetPrimaryMonitor();
     glfwGetMonitorContentScale(glfwGetPrimaryMonitor(), &xscale, &yscale);
-    std::cout << "Content scale: " << xscale << " " << yscale << "\n";
+    //std::cout << "Content scale: " << xscale << " " << yscale << "\n";
     // while (true) {}
     game.Run();
     int p = glfwGetPlatform();

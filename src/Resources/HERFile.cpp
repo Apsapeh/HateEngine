@@ -86,7 +86,7 @@ HERFile::HERFile(std::string path, std::string password) {
 
     // unsigned char key[] = "password";
 
-    std::cout << "Version: " << version << std::endl;
+    /*std::cout << "Version: " << version << std::endl;
     std::cout << "Data pointer: " << dataPointer << std::endl;
     std::cout << "Resource count: " << resourceCount << std::endl;
 
@@ -98,7 +98,7 @@ HERFile::HERFile(std::string path, std::string password) {
         std::cout << "\tOriginal size: " << resource.originalSize << std::endl;
         std::cout << "\tAligned size: " << resource.alignedSize << std::endl;
         std::cout << "\tOffset: " << resource.offset << std::endl << std::endl;
-    }
+    }*/
     file.close();
 }
 

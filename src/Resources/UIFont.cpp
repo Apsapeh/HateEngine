@@ -95,7 +95,6 @@ bool UIFont::loadFromFile() {
     unsigned char* dt = this->data.data();
     file.read((char*) dt, file_size);
     file.close();
-    std::cout << "File size: " << file_size << std::endl;
     return true;
 }
 

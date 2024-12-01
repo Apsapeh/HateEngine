@@ -24402,8 +24402,8 @@ nk_draw_button_text_image(struct nk_command_buffer *out,
 
     text.text = nk_rgb_factor(text.text, style->color_factor_text);
     text.padding = nk_vec2(0, 0);
-    nk_widget_text(out, *label, str, len, &text, NK_TEXT_CENTERED, font);
     nk_draw_image(out, *image, img, nk_rgb_factor(nk_white, style->color_factor_background));
+    nk_widget_text(out, *label, str, len, &text, NK_TEXT_CENTERED, font);
 }
 NK_LIB nk_bool
 nk_do_button_text_image(nk_flags *state,

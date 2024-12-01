@@ -322,10 +322,13 @@ void OpenGL15::DrawNuklearUI(std::unordered_map<UUID, Level::SceneUIWidget>* wid
                         );
                     }
 
+                    //ctx.style.button.text_normal = nk_rgba(0, 0, 255, 255);
+
                     ctx.style.button.rounding = button->roundness;
 
                     if (button_image != nullptr) {
-                        if (nk_button_image(&ctx, *button_image)) {
+                        nk_flags text_flags = 0;
+                        if (nk_button_image_label(&ctx, *button_image, button->text.c_str(), NK_TEXT_ALIGN_CENTERED)) {
                             button->call_on_click(this->engine);
                             // Because the level can be changed in the callback
                             if (start_level != engine->getLevel()) {
