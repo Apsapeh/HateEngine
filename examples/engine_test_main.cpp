@@ -1,6 +1,8 @@
 #include "GLFW/glfw3.h"
 #include "HateEngine/AudioBus.hpp"
 #include "HateEngine/Input.hpp"
+#include "HateEngine/Objects/Light/OmniLight.hpp"
+#include "HateEngine/Objects/Light/SpotLight.hpp"
 #include "HateEngine/Objects/Physics/CapsuleShape.hpp"
 #include "HateEngine/Objects/GLTFAnimationPlayer.hpp"
 #include "glm/ext/vector_float2.hpp"
@@ -67,8 +69,8 @@ const int HEIGHT = 600;
 // HateEngine::CubeMesh meshes[22500];
 HateEngine::Level lvl;
 HateEngine::Camera camera(60, 600);
-HateEngine::Light sun(HateEngine::Light::DirectionalLight);
-HateEngine::Light light(HateEngine::Light::OmniLight);
+HateEngine::DirectionalLight sun;
+HateEngine::SpotLight light;
 
 HateEngine::Particles* part;
 HateEngine::RayCast* ray;
@@ -122,12 +124,20 @@ int main() {
     // floor.setRotation(20, 0, 0);
 
 
+    HateEngine::DirectionalLight dirLight;
+    // dirLight.rotate(45, 0, 0);
+    glm::vec3 dir = dirLight.getDirection();
+
+    // HATE_FATAL_F("Direction x: %f, y: %f, z: %f", dir.x, dir.y, dir.z);
+
     // floor.setRotationMatrix(matfloor);
     //  floor.matrix
     //
 
 
-    sun.setPosition({1.0, 1.0, 1.0});
+    // sun.setPosition({1.0, 1.0, 1.0});
+    sun.rotate(-45, 45, 0);
+    sun.setVisible(false);
 
     mesh2.setPosition(3, 3, 3);
 
@@ -176,6 +186,7 @@ int main() {
     radioModel.rotate(-90, 180, 0, true);
     radioModel.setPosition(0, 2, 0);
     radioModel.setScale(0.003, 0.003, 0.003);
+    // radioModel.setScale(0.1, 0.1, 0.1);
     lvl.addObjectRef(&radioModel);
 
 
@@ -258,7 +269,7 @@ int main() {
         m->setFaceCulling(false);
     }*/
 
-    HateEngine::ObjMapModel objmodel("examples/Assets/unnamed.obj", "examples/Assets/unnamed.map");
+    HateEngine::ObjMapModel objmodel("examples/Assets/unnamed.obj", "examples/Assets/unnamed.map", 15, 0.1);
 
     for (auto& m: objmodel.getLOD(0)) {
         glm::vec3 min = m->getAABBMin();
@@ -285,10 +296,26 @@ int main() {
     std::cout << objmodel.getMeshes()[0]->getUV()->size() << "\n";  // 72*/
     // exit(0);
 
-    /*uint32_t poly_count = 0;
-    for (HateEngine::Mesh* m : objmodel.getMeshes()) {
+    uint32_t poly_count = 0;
+    uint32_t byte_count = 0;
+    for (HateEngine::Mesh* m : objmodel.getLOD(0)) {
         poly_count += m->getIndicies()->size() / 3;
-    }*/
+
+        byte_count += m->getVertices()->size() * sizeof(float);
+        byte_count += m->getIndicies()->size() * sizeof(uint32_t);
+        byte_count += m->getUV()->size() * sizeof(float);
+        byte_count += m->getNormals()->size() * sizeof(float);
+    }
+
+    //HATE_FATAL_F("Byte count: %d", byte_count);
+
+    //HATE_FATAL_F("Poly count: %d", poly_count);
+
+    // 17 012 855
+
+    // 477 251 092
+
+
 
     // std::cout << "Poly count: " << poly_count << std::endl;
 
@@ -345,8 +372,10 @@ int main() {
 
     // light.setPosition({0, 2, 0});
     // l
+    light.setColor(light.getColor() * 10);
     lvl.addObjectRef(&light);
     // light.color = {10, 10, 10, 1};
+    light.setExponent(20);
 
     camera.bindObj(&light);
 
@@ -544,7 +573,7 @@ int main() {
     fps_widget.addObjectClone(button);
     fps_widget.addObjectRef(&checkbox);
     fps_widget.addObjectClone(image_ui);
-    //fps_widget.addObjectRef(&button);
+    // fps_widget.addObjectRef(&button);
 
 
     lvl.addObjectRef(&fps_widget);
@@ -621,8 +650,8 @@ int main() {
     float xscale, yscale;
     // glfwGetPrimaryMonitor();
     glfwGetMonitorContentScale(glfwGetPrimaryMonitor(), &xscale, &yscale);
-    //std::cout << "Content scale: " << xscale << " " << yscale << "\n";
-    // while (true) {}
+    // std::cout << "Content scale: " << xscale << " " << yscale << "\n";
+    //  while (true) {}
     game.Run();
     int p = glfwGetPlatform();
     std::cout << p << " | " << GLFW_PLATFORM_WAYLAND << "\n";
@@ -705,8 +734,8 @@ void _physics_process(HateEngine::Engine* engine, double delta) {
     );*/
     glm::vec3 cam_global_pos = camera.getGlobalPosition();
 
-    // HATE_INFO_F("Camera position: %f | %f | %f", cam_global_pos.x, cam_global_pos.y,
-    // cam_global_pos.z);
+    /*HATE_INFO_F("Camera position: %f | %f | %f", cam_global_pos.x, cam_global_pos.y,
+    cam_global_pos.z);*/
     HateEngine::RayCastInfo rayCastInfo;
     if (ray->isCollide(&rayCastInfo)) {
         // HATE_DEBUG("Is collide: true");

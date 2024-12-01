@@ -2,7 +2,10 @@
 #include <mutex>
 
 #include "HateEngine/Objects/BillboardMesh.hpp"
+#include "HateEngine/Objects/Light/DirectionalLight.hpp"
 #include "HateEngine/Objects/Light/Light.hpp"
+#include "HateEngine/Objects/Light/OmniLight.hpp"
+#include "HateEngine/Objects/Light/SpotLight.hpp"
 #include "HateEngine/Objects/Model.hpp"
 #include "HateEngine/Objects/Particles.hpp"
 #include "HateEngine/Objects/GLTFAnimationPlayer.hpp"
@@ -26,7 +29,25 @@ Level::~Level() {
     DESTRUCTOR_DELETE_POINTERS(models_obj, Model)
     DESTRUCTOR_DELETE_POINTERS(animationPlayers_obj, GLTFAnimationPlayer)
     DESTRUCTOR_DELETE_POINTERS(particles_obj, Particles)
-    DESTRUCTOR_DELETE_POINTERS(lights_obj, Light)
+
+    // !!!: There may be a memory leak
+
+    for (const auto& obj: lights_obj) {
+        if (not obj.second.is_ref) {
+            switch (((Light*) obj.second.obj)->getLightType()) {
+                case Light::DirectionalLight:
+                    delete (DirectionalLight*) obj.second.obj;
+                    break;
+                case Light::OmniLight:
+                    delete (OmniLight*) obj.second.obj;
+                    break;
+                case Light::SpotLight:
+                    delete (SpotLight*) obj.second.obj;
+                    break;
+            }
+        }
+    }
+    lights_obj.clear();
 }
 
 void Level::Update(double delta) {
@@ -180,10 +201,25 @@ UUID Level::addObjectClone(const Mesh& object, bool copy_tex) {
     return id;
 }*/
 
-UUID Level::addObjectClone(const Light& object) {
+UUID Level::addObjectClone(const DirectionalLight& object) {
     std::lock_guard<std::mutex> guard(lightsMutex);
-    Light* new_mesh = new Light(object.getLightType());
-    *new_mesh = object;
+    DirectionalLight* new_mesh = new DirectionalLight(object);
+    lights_obj[new_mesh->getUUID()] = {new_mesh, false};
+    updateLightsVector();
+    return new_mesh->getUUID();
+}
+
+UUID Level::addObjectClone(const OmniLight& object) {
+    std::lock_guard<std::mutex> guard(lightsMutex);
+    OmniLight* new_mesh = new OmniLight(object);
+    lights_obj[new_mesh->getUUID()] = {new_mesh, false};
+    updateLightsVector();
+    return new_mesh->getUUID();
+}
+
+UUID Level::addObjectClone(const SpotLight& object) {
+    std::lock_guard<std::mutex> guard(lightsMutex);
+    SpotLight* new_mesh = new SpotLight(object);
     lights_obj[new_mesh->getUUID()] = {new_mesh, false};
     updateLightsVector();
     return new_mesh->getUUID();

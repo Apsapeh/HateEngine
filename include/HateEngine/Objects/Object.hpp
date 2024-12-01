@@ -40,7 +40,11 @@ namespace HateEngine {
                 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0,
         };
 
+        glm::vec3 direction = {0, 0, -1};
+
         bool binded = false;
+
+        void updateDirection();
 
         virtual void setParentPosition(glm::vec3 vec);
         virtual void setParentScale(glm::vec3 vec);

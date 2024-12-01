@@ -44,7 +44,10 @@ ObjMapModel::ObjMapModel(
     auto t0 = std::chrono::high_resolution_clock::now();
     parseObj(data, lod_dist, lod_step);
     auto t1 = std::chrono::high_resolution_clock::now();
-    HATE_DEBUG_F("Parsing took: %d ms", std::chrono::duration_cast<std::chrono::milliseconds>(t1 - t0).count());
+    HATE_DEBUG_F(
+            "Parsing took: %d ms",
+            std::chrono::duration_cast<std::chrono::milliseconds>(t1 - t0).count()
+    );
 }
 
 ObjMapModel::ObjMapModel(const char* data, uint32_t size, std::string dir) {

@@ -11,6 +11,9 @@
 #include "../UI/WidgetUI.hpp"
 #include "../Utilities/UUID.hpp"
 #include "HateEngine/Objects/GLTFAnimationPlayer.hpp"
+#include "HateEngine/Objects/Light/DirectionalLight.hpp"
+#include "HateEngine/Objects/Light/OmniLight.hpp"
+#include "HateEngine/Objects/Light/SpotLight.hpp"
 #include "glm/ext/vector_float4.hpp"
 
 namespace HateEngine {
@@ -149,7 +152,9 @@ namespace HateEngine {
 
         UUID addObjectClone(const Mesh& object, bool copy_tex = false);
         // UUID_Generator::UUID addObjectClone(Particles object);
-        UUID addObjectClone(const Light& object);
+        UUID addObjectClone(const DirectionalLight& object);
+        UUID addObjectClone(const OmniLight& object);
+        UUID addObjectClone(const SpotLight& object);
         UUID addObjectClone(const Model& object, bool copy_tex = false);
         // UUID_Generator::UUID addObjectRef(Object* object);
         UUID addObjectRef(WidgetUI* object);

@@ -4,6 +4,10 @@
 
 using namespace HateEngine;
 
+void Object::updateDirection() {
+    this->direction = this->getGlobalRotationMatrix() * glm::vec4(0.0f, 0.0f, -1.0f, 0.0f);
+}
+
 void Object::setParentPosition(const glm::vec3 vec) {
     this->parent_position = vec;
     for (auto& obj: bindedObjects)
@@ -23,6 +27,7 @@ void Object::setParentRotationMatrix(const glm::mat4& mat) {
     for (auto& obj: bindedObjects)
         if (obj.second.bind_rot)
             obj.second.obj->setParentRotationMatrix(getGlobalRotationMatrix());
+    updateDirection();
 }
 
 void Object::setPosition(const glm::vec3 value) {
@@ -44,6 +49,7 @@ void Object::setRotation(glm::vec3 value) {
         if (obj.second.bind_pos)
             obj.second.obj->setParentPosition(getGlobalPosition());
     }
+    updateDirection();
 }
 void Object::setRotation(float x, float y, float z) {
     setRotation({x, y, z});
@@ -54,6 +60,7 @@ void Object::setRotationMatrix(glm::mat4 mat) {
     for (auto& obj: bindedObjects)
         if (obj.second.bind_rot)
             obj.second.obj->setParentRotationMatrix(getGlobalRotationMatrix());
+    updateDirection();
 }
 
 void Object::setScale(glm::vec3 value) {
@@ -139,7 +146,8 @@ glm::vec3 Object::getRotationEuler() const {
 }
 
 glm::vec3 Object::getDirection() const {
-    glm::vec3 rot = getRotationEuler();
+    return direction;
+    /*glm::vec3 rot = getRotationEuler();
     glm::vec3 dir;
     float yaw = glm::radians(-rot.y);
     float pitch = glm::radians(rot.x);
@@ -148,7 +156,7 @@ glm::vec3 Object::getDirection() const {
     dir.z = cos(pitch) * sin(yaw);
 
     dir = glm::normalize(dir);
-    return dir;
+    return dir;*/
 }
 
 

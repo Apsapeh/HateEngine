@@ -201,6 +201,7 @@ static void Load(tgModel& model, std::vector<Mesh*>* meshes, std::vector<Texture
                 //  node.rotation[2], node.rotation[3]});
             }
 
+            mesh->enableLightShading();
             meshes->push_back(mesh);
         }
         ++model_mesh_counter;

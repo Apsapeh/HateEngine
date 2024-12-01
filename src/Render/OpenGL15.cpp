@@ -7,6 +7,8 @@
 #include <glm/gtc/type_ptr.hpp>
 
 #include "HateEngine/Objects/GLTFAnimationPlayer.hpp"
+#include "HateEngine/Objects/Light/Light.hpp"
+#include "HateEngine/Objects/Light/SpotLight.hpp"
 #include "HateEngine/Objects/Model.hpp"
 #include "HateEngine/Resources/Level.hpp"
 #include "glm/ext/matrix_float4x4.hpp"
@@ -90,6 +92,9 @@ void OpenGL15::Render() {
     // glm::vec2 displayScale = {1, 1};
     glViewport(0, 0, resolution.x * displayScale.x, resolution.y * displayScale.y);
     // glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+    glEnable(GL_NORMALIZE);
+
 
     // Fog
     glEnable(GL_FOG);
@@ -279,6 +284,7 @@ void OpenGL15::render(const Mesh* mesh, std::vector<Light*>* lights_vec) {
         if (!mesh->getFaceCulling())
             glDisable(GL_CULL_FACE);
 
+
         std::vector<int> light_indicies;
         if (mesh->isLightShading()) {
             float max_light_render_dist = mesh->getCustomMaxLightDist();
@@ -301,6 +307,7 @@ void OpenGL15::render(const Mesh* mesh, std::vector<Light*>* lights_vec) {
 
         glm::vec3 scale = mesh->getGlobalScale();
         glScalef(scale.x, scale.y, scale.z);
+
 
         // Render Textures
         if (mesh->getTexture() != nullptr) {
@@ -364,17 +371,26 @@ inline void OpenGL15::renderLight(
         int light_num = GL_LIGHT0 + i;
         Light* light = (*lights_vec)[index];
         glm::vec3 pos = light->getGlobalPosition();
-        float l_position[4] = {pos.x, pos.y, pos.z, 1.0};
-
-        if (light->getLightType() == Light::LightTypeEnum::DirectionalLight)
-            l_position[3] = 0.0;
+        glm::vec3 att = light->getAttenuation();
 
         glEnable(light_num);
-        glLightfv(light_num, GL_DIFFUSE, light->getColor().data());
-        glLightfv(light_num, GL_POSITION, l_position);
-        glLightf(light_num, GL_CONSTANT_ATTENUATION, 0.5);
-        glLightf(light_num, GL_LINEAR_ATTENUATION, 0.5);
-        glLightf(light_num, GL_QUADRATIC_ATTENUATION, 0.9);
+        glLightfv(light_num, GL_DIFFUSE, glm::value_ptr(light->getColor()));
+        glLightf(light_num, GL_CONSTANT_ATTENUATION, att.x);
+        glLightf(light_num, GL_LINEAR_ATTENUATION, att.y);
+        glLightf(light_num, GL_QUADRATIC_ATTENUATION, att.z);
+
+        glm::vec4 l_position = glm::vec4(pos, 1.0f);
+        if (light->getLightType() == Light::LightTypeEnum::DirectionalLight)
+            l_position = glm::vec4(light->getDirection() * -1.0f, 0.0f);
+        glLightfv(light_num, GL_POSITION, glm::value_ptr(l_position));
+
+        if (light->getLightType() == Light::SpotLight) {
+            SpotLight* spot_light = (SpotLight*) light;
+            glm::vec3 dir = light->getDirection();
+            glLightfv(light_num, GL_SPOT_DIRECTION, glm::value_ptr(dir));
+            glLightf(light_num, GL_SPOT_CUTOFF, spot_light->angleCutoff);
+            glLightf(light_num, GL_SPOT_EXPONENT, spot_light->exponent);
+        }
     }
 }
 
