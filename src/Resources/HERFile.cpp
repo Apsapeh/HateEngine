@@ -7,11 +7,16 @@
 #include "HateEngine/Log.hpp"
 #include "HateEngine/Objects/AudioPlayer.hpp"
 #include "HateEngine/Resources/Audio.hpp"
+#include "HateEngine/Resources/ObjMapModel.hpp"
 
 using namespace HateEngine;
 
 std::vector<uint8_t>* HERResource::getRawData() {
     return &this->data;
+}
+
+std::string HERResource::asString() {
+    return std::string(this->data.begin(), this->data.end());
 }
 
 Texture HERResource::asTexture(
@@ -102,12 +107,26 @@ HERFile::HERFile(std::string path, std::string password) {
     file.close();
 }
 
+ObjMapModel HERFile::loadObjMap(
+        std::string obj_file_name, std::string map_file_name, float lod_dist, float lod_step
+) {
+    std::string obj = (*this)[obj_file_name].asString();
+    std::string map = (*this)[map_file_name].asString();
+    return ObjMapModel(obj, map, this, lod_dist, lod_step);
+}
+
 HERResource HERFile::operator[](std::string key) {
     std::ifstream file(path, std::ios::binary);
     Blowfish blowfish;
     blowfish.SetKey((const unsigned char*) password.c_str(), password.size());
 
     HERResource result;
+
+    if (this->resources.find(key) == this->resources.end()) {
+        HATE_ERROR_F("HERFile [%s]: Resource %s not found", path.c_str(), key.c_str());
+        return result;
+    }
+
     HERResourceRaw& resource = this->resources[key];
     file.seekg(resource.offset + this->dataPointer);
     // std::vector<unsigned char> data(resource.alignedSize);

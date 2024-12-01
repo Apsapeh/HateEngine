@@ -1,9 +1,9 @@
 #include <HateEngine/Resources/ObjMapModel.hpp>
 #include <HateEngine/Resources/Texture.hpp>
+#include <HateEngine/Resources/HERFile.hpp>
 #include <algorithm>
 #include <cstdint>
 #include <fstream>
-#include <iostream>
 #include <sstream>
 #include <string>
 #include <vector>
@@ -16,28 +16,25 @@
 
 using namespace HateEngine;
 
-struct ObjFace {
-    std::vector<int32_t> indices;
-    float normal[3] = {0.0f, 0.0f, 0.0f};
-    std::vector<int32_t> tex_indices;
-};
-
-struct ObjObject {
-    std::string name;
-    std::vector<ObjFace> faces;
-};
-
-std::vector<Mesh*> generateLod(
-        std::vector<glm::vec3> vertices, std::vector<glm::vec2> tex_coords,
-        std::vector<ObjObject> objects, float step = 1.0f
-);
 
 std::vector<std::string> split(std::string str, char delimiter);
+
 
 ObjMapModel::ObjMapModel(
         std::string obj_filename, std::string map_file_name, float lod_dist, float lod_step
 ) {
+    // get parrent from obj_filename
+    size_t pos = obj_filename.find_last_of("/\\");
+    if (pos != std::string::npos)
+        obj_file_path = obj_filename.substr(0, pos + 1);
+    // obj_file_path = obj_filename.substr(0, obj_filename.find_last_of("/\\"));
+
     std::ifstream file(obj_filename);
+
+    if (!file.is_open()) {
+        HATE_ERROR_F("Failed to open file: %s", obj_filename.c_str());
+        return;
+    }
 
     std::string data((std::istreambuf_iterator<char>(file)), (std::istreambuf_iterator<char>()));
     // std::cout << data << "\n";
@@ -50,7 +47,12 @@ ObjMapModel::ObjMapModel(
     );
 }
 
-ObjMapModel::ObjMapModel(const char* data, uint32_t size, std::string dir) {
+ObjMapModel::ObjMapModel(
+        std::string obj_file_data, std::string map_file_data, HERFile* her, float lod_dist,
+        float lod_step
+
+) {
+    parseObj(obj_file_data, lod_dist, lod_step, her);
 }
 
 /*======================================> PARSERS <==============================================*/
@@ -90,7 +92,7 @@ inline static bool isPointInPolygon(glm::vec2 point, std::vector<glm::vec2> poly
 }
 
 
-void ObjMapModel::parseObj(std::string data, float lod_dist, float lod_step) {
+void ObjMapModel::parseObj(std::string data, float lod_dist, float lod_step, HERFile* her) {
     std::vector<glm::vec3> vertices;
     std::vector<glm::vec3> normals;
     std::vector<glm::vec2> tex_coords;
@@ -122,9 +124,6 @@ void ObjMapModel::parseObj(std::string data, float lod_dist, float lod_step) {
             int32_t prev_n_index = 0;
             for (uint32_t i = 1; i < words.size(); i++) {
                 std::vector<std::string> indices = split(words[i], '/');
-                // HATE_DEBUG_F("Indices: %s", words[i].c_str())
-                // HATE_DEBUG_F("Line: %s", line.c_str())
-
                 int32_t v_i = std::stoi(indices[0]);
                 v_indices.push_back(v_i - (v_i > 0 ? 1 : 0));
 
@@ -141,7 +140,7 @@ void ObjMapModel::parseObj(std::string data, float lod_dist, float lod_step) {
 
                     if (i > 1) {
                         if (prev_n_index != n_i) {
-                            std::cout << "Different normals\n";
+                            HATE_WARNING("Different normals");
                         }
                     }
                     prev_n_index = n_i;
@@ -167,7 +166,30 @@ void ObjMapModel::parseObj(std::string data, float lod_dist, float lod_step) {
                     glm::vec3(std::stof(words[1]), std::stof(words[2]), std::stof(words[3]))
             );
         } else if (words[0] == "usemtl") {
+            if (words.size() < 2 || current_obj == nullptr)
+                continue;
+            if (current_obj->material == "")
+                current_obj->material = words[1];
         } else if (words[0] == "mtllib") {
+            if (words.size() < 2)
+                continue;
+
+            // Load from HateEngine Resource File
+            if (her != nullptr) {
+                std::string mtl = (*her)[words[1]].asString();
+                materials = parseMtlLib(mtl, her);
+            } else {
+                std::ifstream file(obj_file_path + words[1]);
+                if (!file.is_open()) {
+                    HATE_ERROR_F("Could not open file: %s", (obj_file_path + words[1]).c_str());
+                    continue;
+                }
+                std::string mtl(
+                        (std::istreambuf_iterator<char>(file)), (std::istreambuf_iterator<char>())
+                );
+                materials = parseMtlLib(mtl, nullptr);
+            }
+
         } else if (words[0] == "o") {
             if (words.size() < 2)
                 continue;
@@ -183,7 +205,45 @@ void ObjMapModel::parseObj(std::string data, float lod_dist, float lod_step) {
 }
 
 
-std::vector<Mesh*> generateLod(
+std::unordered_map<std::string, ObjMapModel::Material> ObjMapModel::parseMtlLib(
+        std::string data, HERFile* her
+) {
+    std::unordered_map<std::string, Material> materials;
+
+    Material* current_material = nullptr;
+
+    std::string line;
+    std::istringstream tokenStream(data);
+    while (std::getline(tokenStream, line, '\n')) {
+        std::vector<std::string> words = split(line, ' ');
+
+        if (words.size() == 0)
+            continue;
+
+        if (words[0] == "newmtl") {
+            if (words.size() < 2)
+                continue;
+            materials[words[1]] = Material();
+        }
+
+        if (words[0] == "map_Kd") {
+            if (words.size() < 2)
+                continue;
+
+            if (her != nullptr) {
+                this->textures.push_back((*her)[words[1]].asTexture());
+            } else {
+                this->textures.push_back(Texture(obj_file_path + words[1]));
+            }
+            materials[words[0]].texture_id = this->textures.size() - 1;
+        }
+    }
+
+    return materials;
+}
+
+
+std::vector<Mesh*> ObjMapModel::generateLod(
         std::vector<glm::vec3> vertices, std::vector<glm::vec2> tex_coords,
         std::vector<ObjObject> objects, float step
 ) {
@@ -196,6 +256,9 @@ std::vector<Mesh*> generateLod(
         std::vector<float> mesh_normals;
         std::vector<float> mesh_UVs;
         // Mesh mesh;
+
+        HATE_INFO_F("Object: %s", obj.name.c_str());
+        HATE_INFO_F("Material: %s", obj.material.c_str());
 
         std::vector<ObjFace> of = {obj.faces[0]};
         for (const auto& face: obj.faces) {
@@ -468,8 +531,10 @@ std::vector<Mesh*> generateLod(
         Mesh* mesh = new Mesh(mesh_vertices, mesh_indicies, mesh_normals);
         mesh->setPosition(center);
         mesh->setUV(mesh_UVs);
-        Texture* texture = new Texture("examples/Assets/brick.png");
-        mesh->setTexture(texture);
+
+        if (obj.material != "") {
+            mesh->setTexture(&this->textures[this->materials[obj.material].texture_id]);
+        }
         //  mesh->disableLightShading();
 
         meshes.push_back(mesh);
@@ -478,8 +543,7 @@ std::vector<Mesh*> generateLod(
 }
 
 
-/*==========================================================> SRING FUNCS
- * <==============================================================*/
+/*==================================> STRING FUNCS <=========================================*/
 
 std::vector<std::string> split(std::string str, char delimiter) {
     std::vector<std::string> result;

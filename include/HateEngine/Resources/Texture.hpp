@@ -22,6 +22,7 @@ namespace HateEngine {
         bool autoload;
         uint32_t textureGL_ID = 0;
         bool is_loaded = false;
+        bool is_unable_to_load = false;
 
         void (*API_unloader)(Texture*);
 

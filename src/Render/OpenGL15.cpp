@@ -6,6 +6,7 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
+#include "HateEngine/Log.hpp"
 #include "HateEngine/Objects/GLTFAnimationPlayer.hpp"
 #include "HateEngine/Objects/Light/Light.hpp"
 #include "HateEngine/Objects/Light/SpotLight.hpp"
@@ -310,7 +311,7 @@ void OpenGL15::render(const Mesh* mesh, std::vector<Light*>* lights_vec) {
 
 
         // Render Textures
-        if (mesh->getTexture() != nullptr) {
+        if (mesh->getTexture() != nullptr and not mesh->getTexture()->is_unable_to_load) {
             if (not mesh->getTexture()->is_loaded)
                 mesh->getTexture()->Load(loadTexture, unloadTexture);
 

@@ -261,15 +261,17 @@ int main() {
     billboardMesh.setCorrectTransparency(true);
     lvl.addObjectRef(&billboardMesh);
 
-    // HateEngine::GLTFModel house("examples/Assets/ignore/ahouse.glb");
-    // lvl.addObjectRef(&house);
+    HateEngine::GLTFModel house("examples/Assets/ignore/ahouse.glb");
+    lvl.addObjectRef(&house);
 
-    /*for (auto& m: house.getMeshes()) {
+    for (auto& m: house.getLOD(0)) {
         m->setCorrectTransparency(true);
         m->setFaceCulling(false);
-    }*/
+    }
 
-    HateEngine::ObjMapModel objmodel("examples/Assets/unnamed.obj", "examples/Assets/unnamed.map", 15, 0.1);
+    // HateEngine::ObjMapModel objmodel("examples/Assets/untitled.obj",
+    // "examples/Assets/unnamed.map");
+    HateEngine::ObjMapModel objmodel = herfile.loadObjMap("untitled.obj", "unnamed.map", 15, 1);
 
     for (auto& m: objmodel.getLOD(0)) {
         glm::vec3 min = m->getAABBMin();
@@ -296,25 +298,11 @@ int main() {
     std::cout << objmodel.getMeshes()[0]->getUV()->size() << "\n";  // 72*/
     // exit(0);
 
-    uint32_t poly_count = 0;
-    uint32_t byte_count = 0;
-    for (HateEngine::Mesh* m : objmodel.getLOD(0)) {
-        poly_count += m->getIndicies()->size() / 3;
-
-        byte_count += m->getVertices()->size() * sizeof(float);
-        byte_count += m->getIndicies()->size() * sizeof(uint32_t);
-        byte_count += m->getUV()->size() * sizeof(float);
-        byte_count += m->getNormals()->size() * sizeof(float);
-    }
-
-    //HATE_FATAL_F("Byte count: %d", byte_count);
-
-    //HATE_FATAL_F("Poly count: %d", poly_count);
+    // HATE_FATAL_F("Poly count: %d", poly_count);
 
     // 17 012 855
 
     // 477 251 092
-
 
 
     // std::cout << "Poly count: " << poly_count << std::endl;

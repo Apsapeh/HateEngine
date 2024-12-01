@@ -31,7 +31,8 @@ Texture::Texture(const Texture& texture, bool copy_tex_data) {
     this->MipMapLodBias = texture.MipMapLodBias;
     this->autoload = texture.autoload;
     this->fileName = texture.fileName;
-    this->fileName = texture.fileName;
+    this->is_loaded = texture.is_loaded;
+    this->API_unloader = texture.API_unloader;
 
     if (copy_tex_data) {
         /*if (texture.textureGL_ID == 0 and this->autoload)
@@ -88,7 +89,8 @@ Texture::Texture(
     this->MipMapLodBias = mipmap_bias;
     this->autoload = autoload;
 
-    loadFromFile();
+    this->is_unable_to_load = !loadFromFile();
+
     /*if (autoload)
         Load();*/
 }

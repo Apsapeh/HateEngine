@@ -5,6 +5,7 @@
 #include <vector>
 
 #include "HateEngine/AudioBus.hpp"
+#include "HateEngine/Resources/ObjMapModel.hpp"
 #include "Texture.hpp"
 #include "GLTFModel.hpp"
 #include "Audio.hpp"
@@ -18,6 +19,7 @@ namespace HateEngine {
 
     public:
         std::vector<uint8_t>* getRawData();
+        std::string asString();
         Texture asTexture(
                 Texture::TexWrap tex_wrap = Texture::Repeat,
                 Texture::TexFiltering tex_filtering = Texture::Linear, bool mipmap = true,
@@ -49,6 +51,11 @@ namespace HateEngine {
 
     public:
         HERFile(std::string path, std::string password);
+
+        ObjMapModel loadObjMap(
+                std::string obj_file_name, std::string map_file_name, float lod_dist = 15,
+                float lod_step = 1.0
+        );
 
         HERResource operator[](std::string key);
     };
