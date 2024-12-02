@@ -13,7 +13,7 @@ namespace HateEngine {
         friend class PhysEngine;
 
     public:
-        enum BodyType { StaticBody, KinematicBody, DynamicBody };
+        enum BodyType { StaticBody, KinematicBody, DynamicBody, TriggerArea };
 
     private:
         struct ShapeObject {

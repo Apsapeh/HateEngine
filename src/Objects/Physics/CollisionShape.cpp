@@ -1,7 +1,6 @@
 #include <HateEngine/Objects/Physics/CollisionShape.hpp>
 
 #include "HateEngine/Log.hpp"
-#include "reactphysics3d/collision/shapes/BoxShape.h"
 
 using namespace HateEngine;
 

@@ -7,18 +7,76 @@
 #include "HateEngine/Objects/Physics/CapsuleShape.hpp"
 #include "HateEngine/Objects/Physics/CollisionShape.hpp"
 #include "HateEngine/Objects/Physics/ConvexShape.hpp"
+#include "HateEngine/Objects/Physics/PhysicalBody.hpp"
 #include "HateEngine/Objects/Physics/SphereShape.hpp"
+#include "HateEngine/Objects/Physics/TriggerArea.hpp"
+#include "reactphysics3d/collision/OverlapCallback.h"
 #include "reactphysics3d/mathematics/Ray.h"
 
 using namespace HateEngine;
 
 reactphysics3d::PhysicsCommon* PhysEngine::physicsCommon = nullptr;
 
+class TriggerCallback : public reactphysics3d::EventListener {
+public:
+    // Вызывается при начале контакта
+    /*void onContact(const CollisionCallback::CallbackData& callbackData) override {
+        for (uint32_t i = 0; i < callbackData.getNbContactPairs(); i++) {
+            const CollisionCallback::ContactPair& contactPair = callbackData.getContactPair(i);
+
+                HATE_INFO("TRIGGER");
+            if (contactPair.getCollider1()->getIsTrigger() ||
+                contactPair.getCollider2()->getIsTrigger()) {
+                // Проверяем, есть ли столкновение с триггером
+                if (contactPair.getEventType() ==
+                    CollisionCallback::ContactPair::EventType::ContactStart) {
+                    std::cout << "Object entered trigger area!" << std::endl;
+                } else if (contactPair.getEventType() ==
+                           CollisionCallback::ContactPair::EventType::ContactExit) {
+                    std::cout << "Object exited trigger area!" << std::endl;
+                }
+            }
+        }
+    }*/
+
+    void onTrigger(const reactphysics3d::OverlapCallback::CallbackData& callbackData) override {
+        for (uint32_t i = 0; i < callbackData.getNbOverlappingPairs(); ++i) {
+            const reactphysics3d::OverlapCallback::OverlapPair& pair =
+                    callbackData.getOverlappingPair(i);
+
+            if (pair.getEventType() ==
+                reactphysics3d::OverlapCallback::OverlapPair::EventType::OverlapStart) {
+                if (pair.getCollider1()->getIsTrigger()) {
+                    TriggerArea* area = (TriggerArea*) pair.getBody1()->getUserData();
+                    area->callOnEnter((PhysicalBody*) pair.getBody2()->getUserData());
+                }
+                if (pair.getCollider2()->getIsTrigger()) {
+                    TriggerArea* area = (TriggerArea*) pair.getBody2()->getUserData();
+                    area->callOnEnter((PhysicalBody*) pair.getBody1()->getUserData());
+                }
+            }
+
+            if (pair.getEventType() ==
+                reactphysics3d::OverlapCallback::OverlapPair::EventType::OverlapExit) {
+                if (pair.getCollider1()->getIsTrigger()) {
+                    TriggerArea* area = (TriggerArea*) pair.getBody1()->getUserData();
+                    area->callOnExit((PhysicalBody*) pair.getBody2()->getUserData());
+                }
+                if (pair.getCollider2()->getIsTrigger()) {
+                    TriggerArea* area = (TriggerArea*) pair.getBody2()->getUserData();
+                    area->callOnExit((PhysicalBody*) pair.getBody1()->getUserData());
+                }
+            }
+        }
+    }
+};
+
 PhysEngine::PhysEngine() {
     if (physicsCommon == nullptr) {
         physicsCommon = new reactphysics3d::PhysicsCommon();
     }
     this->physicsWorld = physicsCommon->createPhysicsWorld();
+    this->physicsWorld->setEventListener(new TriggerCallback());
     // this->physicsWorld->setIsDebugRenderingEnabled(true);
     // reactphysics3d::Ray ray({0, 0, 0}, {1, 1, 1});
     // Change the number of iterations of the position solver
@@ -88,6 +146,12 @@ UUID PhysEngine::addObjectRef(PhysicalBody* object) {
     for (const auto& shape_pair: object->shapes) {
         reactphysics3d::CollisionShape* react_shape;
         CollisionShape::ShapeEnum shape_type = shape_pair.second.shape->shapeType;
+
+        if (shape_pair.second.shape->isInitialized()) {
+            HATE_WARNING("CollisionShape is already binded to another body");
+            continue;
+        }
+
         if (shape_type == CollisionShape::Box) {
             BoxShape* shape = (BoxShape*) shape_pair.second.shape;
             react_shape = physicsCommon->createBoxShape(
@@ -127,6 +191,14 @@ UUID PhysEngine::addObjectRef(PhysicalBody* object) {
         );
         reactphysics3d::Transform transform(position, quaternion);
         shape->reactCollider = phys_body->addCollider(react_shape, transform);
+        shape->reactCollider->setUserData(shape);
+
+        // shape->reactCollider->setC
+
+
+        if (object->getBodyType() == PhysicalBody::TriggerArea) {
+            shape->reactCollider->setIsTrigger(true);
+        }
     }
 
     physBodies[object->getUUID()] = {object, true};

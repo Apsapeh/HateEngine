@@ -6,14 +6,8 @@
 namespace HateEngine {
     class CollisionShape : public Object {
     private:
-        /*bool collisionLayers[16] = {
-                1, 0, 0, 0, 0, 0, 0, 0,
-                0, 0, 0, 0, 0, 0, 0, 0
-        };
-        bool collisionMasks[16]  = {
-                1, 0, 0, 0, 0, 0, 0, 0,
-                0, 0, 0, 0, 0, 0, 0, 0
-        };*/
+        bool collisionLayers[16] = {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+        bool collisionMasks[16] = {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
 
     public:
         enum ShapeEnum { Sphere, Capsule, Box, Convex };

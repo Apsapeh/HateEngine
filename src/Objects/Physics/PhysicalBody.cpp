@@ -2,6 +2,7 @@
 #include <glm/gtx/quaternion.hpp>
 
 #include "HateEngine/Log.hpp"
+#include "reactphysics3d/components/RigidBodyComponents.h"
 
 using namespace HateEngine;
 
@@ -21,13 +22,19 @@ PhysicalBody::~PhysicalBody() {
 void PhysicalBody::Init(reactphysics3d::RigidBody* body) {
     this->reactRigidBody = body;
 
-    this->reactRigidBody->setType((reactphysics3d::BodyType) this->bodyType
-                                  // bodyType == StaticBody ? reactphysics3d::BodyType::STATIC :
-                                  // bodyType
-                                  // == KinematicBody ? reactphysics3d::BodyType::KINEMATIC :
-                                  // reactphysics3d::BodyType::DYNAMIC
-    );
+    reactphysics3d::BodyType r_bodyType = reactphysics3d::BodyType::STATIC;
 
+    if (this->bodyType == BodyType::DynamicBody)
+        r_bodyType = reactphysics3d::BodyType::DYNAMIC;
+    else if (this->bodyType == BodyType::KinematicBody)
+        r_bodyType = reactphysics3d::BodyType::KINEMATIC;
+
+    this->reactRigidBody->setType(r_bodyType);
+    this->reactRigidBody->setUserData(this);
+
+    if (this->bodyType == BodyType::TriggerArea) {
+        this->reactRigidBody->setIsAllowedToSleep(false);
+    }
     // TODO: Add set pref
 }
 

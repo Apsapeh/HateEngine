@@ -2,6 +2,7 @@
 #include <glm/gtx/quaternion.hpp>
 
 #include "HateEngine/Log.hpp"
+#include "HateEngine/Objects/Physics/CollisionShape.hpp"
 #include "HateEngine/PhysEngine.hpp"
 #include "glm/fwd.hpp"
 #include "reactphysics3d/mathematics/Vector3.h"
@@ -22,7 +23,11 @@ reactphysics3d::decimal RayCastCallback::notifyRaycastHit(const reactphysics3d::
 
     rayCastInfo.fraction = (float) info.hitFraction;
 
-    for (const auto& body_obj: physEngine->physBodies) {
+    rayCastInfo.body = (PhysicalBody*) info.body->getUserData();
+
+    rayCastInfo.shape = (CollisionShape*) info.collider->getUserData();
+
+    /*for (const auto& body_obj: physEngine->physBodies) {
         PhysicalBody* body = body_obj.second.obj;
         if (body->reactRigidBody == info.body) {
             rayCastInfo.body = body;
@@ -34,7 +39,7 @@ reactphysics3d::decimal RayCastCallback::notifyRaycastHit(const reactphysics3d::
             }
             break;
         }
-    }
+    }*/
 
 
     hits.push_back(rayCastInfo);

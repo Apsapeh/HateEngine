@@ -5,6 +5,7 @@
 #include "HateEngine/Objects/Light/SpotLight.hpp"
 #include "HateEngine/Objects/Physics/CapsuleShape.hpp"
 #include "HateEngine/Objects/GLTFAnimationPlayer.hpp"
+#include "HateEngine/Objects/Physics/TriggerArea.hpp"
 #include "glm/ext/vector_float2.hpp"
 #include "glm/ext/vector_float3.hpp"
 
@@ -212,6 +213,27 @@ int main() {
 
     /*===============================================================*/
 
+
+    HateEngine::TriggerArea trigger;
+    trigger.setPosition(0, 0, 0);
+    trigger.setOnEnter(
+            [](HateEngine::PhysicalBody* body, void* data_p) {
+                HATE_INFO_F("Enter UUID: %llu", body->getUUID().getU64());
+            },
+            nullptr
+    );
+
+    trigger.setOnExit(
+            [](HateEngine::PhysicalBody* body, void* data_p) {
+                HATE_INFO_F("Exit UUID: %llu", body->getUUID().getU64());
+            },
+            nullptr
+    );
+    HateEngine::BoxShape box({3, 3, 3});
+    trigger.addCollisionShapeRef(&box);
+
+
+    lvl.getPhysEngine()->addObjectRef(&trigger);
 
     /*HateEngine::Audio* audio = new HateEngine::Audio("examples/Assets/audio.ogg");
     // HateEngine::Audio audio = herfile["audio.ogg"].asAudio();
