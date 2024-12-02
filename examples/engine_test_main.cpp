@@ -261,17 +261,11 @@ int main() {
     billboardMesh.setCorrectTransparency(true);
     lvl.addObjectRef(&billboardMesh);
 
-    HateEngine::GLTFModel house("examples/Assets/ignore/ahouse.glb");
-    lvl.addObjectRef(&house);
-
-    for (auto& m: house.getLOD(0)) {
-        m->setCorrectTransparency(true);
-        m->setFaceCulling(false);
-    }
-
     // HateEngine::ObjMapModel objmodel("examples/Assets/untitled.obj",
     // "examples/Assets/unnamed.map");
-    HateEngine::ObjMapModel objmodel = herfile.loadObjMap("untitled.obj", "unnamed.map", 15, 1);
+    HateEngine::ObjMapModel objmodel =
+            herfile.loadObjMap("untitled.obj", "unnamed.map", true, 15, 1);
+    objmodel.offset(0, -180, -20);
 
     for (auto& m: objmodel.getLOD(0)) {
         glm::vec3 min = m->getAABBMin();
@@ -487,8 +481,8 @@ int main() {
     fps_widget.color.w = 0;
     // fps_widget.has_background = true;
     fps_widget.has_border = false;
-    fps_widget.is_movable = true;
-    fps_widget.is_closable = true;
+    fps_widget.is_movable = false;
+    fps_widget.is_closable = false;
 
     HateEngine::UIFont* f = new HateEngine::UIFont("examples/Assets/Comfortaa-Regular.ttf", 36);
     HateEngine::UIFont* f_2 = new HateEngine::UIFont("examples/Assets/NanumGothic-Regular.ttf", 12);

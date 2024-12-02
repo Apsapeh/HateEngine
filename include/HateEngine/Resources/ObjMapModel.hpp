@@ -3,7 +3,9 @@
 #include <string>
 #include <unordered_map>
 #include "../Objects/Model.hpp"
-#include "HateEngine/Resources/Texture.hpp"
+#include "../Objects/Physics/ConvexShape.hpp"
+#include "../Objects/Physics/StaticBody.hpp"
+#include "glm/fwd.hpp"
 
 namespace HateEngine {
     class ObjMapModel : public Model {
@@ -15,7 +17,7 @@ namespace HateEngine {
 
         struct ObjFace {
             std::vector<int32_t> indices;
-            float normal[3] = {0.0f, 0.0f, 0.0f};
+            glm::vec3 normal = {0.0f, 0.0f, 0.0f};
             std::vector<int32_t> tex_indices;
         };
 
@@ -40,6 +42,10 @@ namespace HateEngine {
         std::string obj_file_path;
         std::unordered_map<std::string, Material> materials;
 
+        bool generate_collision = true;
+        std::vector<ConvexShape> convex_shapes;
+        StaticBody static_body;
+
     public:
         /**
          * @brief Load model from file (.gltf/.glb)
@@ -47,8 +53,8 @@ namespace HateEngine {
          * @param str File name
          */
         ObjMapModel(
-                std::string obj_file_name, std::string map_file_name, float lod_dist = 15,
-                float lod_step = 1.0
+                std::string obj_file_name, std::string map_file_name,
+                bool generate_collision = true, float lod_dist = 15, float lod_step = 1.0
         );
 
         /**
@@ -61,7 +67,9 @@ namespace HateEngine {
         ObjMapModel(
 
                 std::string obj_file_data, std::string map_file_data, class HERFile* her,
-                float lod_dist = 15, float lod_step = 1.0
+                bool generate_collision = true, float lod_dist = 15, float lod_step = 1.0
         );
+
+        StaticBody* getStaticBody();
     };
 } // namespace HateEngine

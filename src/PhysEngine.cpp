@@ -6,6 +6,7 @@
 #include "HateEngine/Objects/Physics/BoxShape.hpp"
 #include "HateEngine/Objects/Physics/CapsuleShape.hpp"
 #include "HateEngine/Objects/Physics/CollisionShape.hpp"
+#include "HateEngine/Objects/Physics/ConvexShape.hpp"
 #include "HateEngine/Objects/Physics/SphereShape.hpp"
 #include "reactphysics3d/mathematics/Ray.h"
 
@@ -100,6 +101,12 @@ UUID PhysEngine::addObjectRef(PhysicalBody* object) {
         } else if (shape_type == CollisionShape::Capsule) {
             CapsuleShape* shape = (CapsuleShape*) shape_pair.second.shape;
             react_shape = physicsCommon->createCapsuleShape(shape->getRadius(), shape->getHeight());
+            shape->reactShape = react_shape;
+        } else if (shape_type == CollisionShape::Convex) {
+            ConvexShape* shape = (ConvexShape*) shape_pair.second.shape;
+            reactphysics3d::PolyhedronMesh* PolyhedronMesh =
+                    physicsCommon->createPolyhedronMesh(&shape->vertexArray);
+            react_shape = physicsCommon->createConvexMeshShape(PolyhedronMesh);
             shape->reactShape = react_shape;
         } else {
             HATE_WARNING(

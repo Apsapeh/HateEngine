@@ -41,4 +41,5 @@
 #include "Objects/Physics/RigidBody.hpp"
 #include "Objects/Physics/CollisionShape.hpp"
 #include "Objects/Physics/StaticBody.hpp"
+#include "Objects/Physics/ConvexShape.hpp"
 #include "Utilities/UUID.hpp"

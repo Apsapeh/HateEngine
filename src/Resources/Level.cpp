@@ -9,7 +9,9 @@
 #include "HateEngine/Objects/Model.hpp"
 #include "HateEngine/Objects/Particles.hpp"
 #include "HateEngine/Objects/GLTFAnimationPlayer.hpp"
+#include "HateEngine/Resources/ObjMapModel.hpp"
 #include "HateEngine/UI/WidgetUI.hpp"
+#include "HateEngine/Utilities/UUID.hpp"
 
 #define DESTRUCTOR_DELETE_POINTERS(ptr_obj, type)                                                  \
     for (const auto& obj: ptr_obj) {                                                               \
@@ -275,6 +277,14 @@ UUID Level::addObjectRef(Model* object) {
     return object->getUUID();
 }
 
+UUID Level::addObjectRef(ObjMapModel* object) {
+    std::lock_guard<std::mutex> guard(modelsMutex);
+    objMapModels_obj[object->getUUID()] = {object, true};
+    this->physEngine.addObjectRef(object->getStaticBody());
+    updateModelsVector();
+    return object->getUUID();
+}
+
 UUID Level::addObjectRef(GLTFAnimationPlayer* object) {
     std::lock_guard<std::mutex> guard(animationPlayersMutex);
     animationPlayers_obj[object->getUUID()] = {object, true};
@@ -318,7 +328,18 @@ bool Level::removeObject(const UUID& uuid) {
         if (!models_obj[uuid].is_ref)
             delete (Model*) models_obj[uuid].obj;
         models_obj.erase(uuid);
-        updateMeshesVector();
+        updateModelsVector();
+        return true;
+    }
+
+    if (objMapModels_obj.count(uuid) == 1) {
+        if (!objMapModels_obj[uuid].is_ref)
+            delete (ObjMapModel*) objMapModels_obj[uuid].obj;
+        physEngine.removeObject(
+                ((ObjMapModel*) objMapModels_obj[uuid].obj)->getStaticBody()->getUUID()
+        );
+        objMapModels_obj.erase(uuid);
+        updateModelsVector();
         return true;
     }
 
@@ -346,6 +367,7 @@ bool Level::removeObject(const UUID& uuid) {
         return true;
     }
 
+    // !!! Memory leak
     if (lights_obj.count(uuid) == 1) {
         if (!lights_obj[uuid].is_ref)
             delete (Light*) lights_obj[uuid].obj;
@@ -372,6 +394,8 @@ void Level::updateModelsVector() {
     models.clear();
     models.reserve(this->models_obj.size());
     for (const auto& obj: models_obj)
+        models.push_back((Model*) obj.second.obj);
+    for (const auto& obj: objMapModels_obj)
         models.push_back((Model*) obj.second.obj);
     models.shrink_to_fit();
 }

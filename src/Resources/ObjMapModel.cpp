@@ -6,9 +6,12 @@
 #include <fstream>
 #include <sstream>
 #include <string>
+#include <unordered_map>
 #include <vector>
 
 #include "HateEngine/Log.hpp"
+#include "HateEngine/Objects/Physics/ConvexShape.hpp"
+#include "HateEngine/Objects/Physics/StaticBody.hpp"
 #include "glm/ext/vector_float2.hpp"
 #include "glm/ext/vector_float3.hpp"
 #include "glm/geometric.hpp"
@@ -21,13 +24,15 @@ std::vector<std::string> split(std::string str, char delimiter);
 
 
 ObjMapModel::ObjMapModel(
-        std::string obj_filename, std::string map_file_name, float lod_dist, float lod_step
+        std::string obj_filename, std::string map_file_name, bool generate_collision,
+        float lod_dist, float lod_step
 ) {
+    bindObj(&static_body);
+    this->generate_collision = generate_collision;
     // get parrent from obj_filename
     size_t pos = obj_filename.find_last_of("/\\");
     if (pos != std::string::npos)
         obj_file_path = obj_filename.substr(0, pos + 1);
-    // obj_file_path = obj_filename.substr(0, obj_filename.find_last_of("/\\"));
 
     std::ifstream file(obj_filename);
 
@@ -48,10 +53,12 @@ ObjMapModel::ObjMapModel(
 }
 
 ObjMapModel::ObjMapModel(
-        std::string obj_file_data, std::string map_file_data, HERFile* her, float lod_dist,
-        float lod_step
+        std::string obj_file_data, std::string map_file_data, HERFile* her, bool generate_collision,
+        float lod_dist, float lod_step
 
 ) {
+    bindObj(&static_body);
+    this->generate_collision = generate_collision;
     parseObj(obj_file_data, lod_dist, lod_step, her);
 }
 
@@ -89,6 +96,34 @@ inline static bool isPointInPolygon(glm::vec2 point, std::vector<glm::vec2> poly
     }
 
     return is_in;
+}
+
+// Function to sort vertices in counter clockwise order (thanks ChatGPT)
+void sortVerticesCCW(std::vector<glm::vec3>* vertices, const glm::vec3& normal) {
+    // Calculate centroid
+    glm::vec3 centroid(0.0f);
+    for (const auto& v: *vertices) {
+        centroid += v;
+    }
+    centroid /= static_cast<float>(vertices->size());
+
+    // Find two orthogonal vectors
+    glm::vec3 up = (fabs(normal.x) > 0.0001f) ? glm::vec3(0, 1, 0) : glm::vec3(1, 0, 0);
+    glm::vec3 tangent = glm::normalize(glm::cross(up, normal));
+    glm::vec3 bitangent = glm::normalize(glm::cross(normal, tangent));
+
+    // Lambda function to calculate angle
+    auto calculateAngle = [&](const glm::vec3& vertex) {
+        glm::vec3 relative = vertex - centroid;
+        float x = glm::dot(relative, tangent);
+        float y = glm::dot(relative, bitangent);
+        return std::atan2(y, x); // Угол в 2D
+    };
+
+    // Sort vertices by angles
+    std::sort(vertices->begin(), vertices->end(), [&](const glm::vec3& a, const glm::vec3& b) {
+        return calculateAngle(a) > calculateAngle(b);
+    });
 }
 
 
@@ -202,6 +237,58 @@ void ObjMapModel::parseObj(std::string data, float lod_dist, float lod_step, HER
 
     addLOD(0, generateLod(vertices, tex_coords, objects, lod_step));
     addLOD(lod_dist, generateLod(vertices, tex_coords, objects, 1000000));
+
+    if (!generate_collision)
+        return;
+
+    // Collision generation
+    for (auto& obj: objects) {
+        std::vector<float> obj_vertices;
+        std::vector<std::vector<uint32_t>> obj_faces_indices;
+
+        std::unordered_map<uint32_t, uint32_t> vertex_map;
+        for (auto& face: obj.faces) {
+            std::vector<uint32_t> face_indices;
+
+            std::vector<glm::vec3> sorted_vertices; // Vector for sort in CCW
+            std::vector<glm::vec3> norm_vertices; // Original vertices
+            std::vector<uint32_t> norm_indices; // 'Map' alternate
+            for (auto& index: face.indices) {
+                sorted_vertices.push_back(vertices[index]);
+                norm_vertices.push_back(vertices[index]);
+                norm_indices.push_back(index);
+            }
+            sortVerticesCCW(&sorted_vertices, face.normal);
+
+            face.indices.clear();
+            for (auto& vertex: sorted_vertices) {
+                auto it = std::find(norm_vertices.begin(), norm_vertices.end(), vertex);
+                face.indices.push_back(norm_indices[it - norm_vertices.begin()]);
+            }
+
+            for (auto& index: face.indices) {
+                if (vertex_map.count(index) == 0) {
+                    vertex_map[index] = obj_vertices.size() / 3;
+                    obj_vertices.push_back(vertices[index].z);
+                    obj_vertices.push_back(vertices[index].y);
+                    obj_vertices.push_back(vertices[index].x);
+                    face_indices.push_back(vertex_map[index]);
+
+                } else {
+                    face_indices.push_back(vertex_map[index]);
+                }
+            }
+            obj_faces_indices.push_back(face_indices);
+        }
+
+        convex_shapes.push_back(
+                ConvexShape(obj_vertices, obj_faces_indices, glm::vec3(0, 0, 0), glm::vec3(0, 0, 0))
+        );
+    }
+
+    for (auto& shape: convex_shapes) {
+        static_body.addCollisionShapeRef(&shape);
+    }
 }
 
 
@@ -256,9 +343,6 @@ std::vector<Mesh*> ObjMapModel::generateLod(
         std::vector<float> mesh_normals;
         std::vector<float> mesh_UVs;
         // Mesh mesh;
-
-        HATE_INFO_F("Object: %s", obj.name.c_str());
-        HATE_INFO_F("Material: %s", obj.material.c_str());
 
         std::vector<ObjFace> of = {obj.faces[0]};
         for (const auto& face: obj.faces) {
@@ -531,6 +615,7 @@ std::vector<Mesh*> ObjMapModel::generateLod(
         Mesh* mesh = new Mesh(mesh_vertices, mesh_indicies, mesh_normals);
         mesh->setPosition(center);
         mesh->setUV(mesh_UVs);
+        bindObj(mesh);
 
         if (obj.material != "") {
             mesh->setTexture(&this->textures[this->materials[obj.material].texture_id]);
@@ -540,6 +625,11 @@ std::vector<Mesh*> ObjMapModel::generateLod(
         meshes.push_back(mesh);
     }
     return meshes;
+}
+
+
+StaticBody* ObjMapModel::getStaticBody() {
+    return &static_body;
 }
 
 

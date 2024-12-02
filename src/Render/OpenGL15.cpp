@@ -263,8 +263,9 @@ void OpenGL15::Draw3D(
     // Render transparent objects in correct order
     glm::vec3 camera_pos = camera->getGlobalPosition();
     std::sort(correct_buffer.begin(), correct_buffer.end(), [camera_pos](Mesh* a, Mesh* b) {
-        return glm::distance(a->getGlobalPosition() + a->getAABBRadius(), camera_pos) >
-               glm::distance(b->getGlobalPosition() + b->getAABBRadius(), camera_pos);
+        /*return glm::distance(a->getGlobalPosition() + a->getAABBRadius(), camera_pos) >
+               glm::distance(b->getGlobalPosition() + b->getAABBRadius(), camera_pos);*/
+        return a->getAABBDistanceToPoint(camera_pos) > b->getAABBDistanceToPoint(camera_pos);
     });
 
     for (const auto obj: correct_buffer) {

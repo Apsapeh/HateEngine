@@ -16,7 +16,7 @@ namespace HateEngine {
         };*/
 
     public:
-        enum ShapeEnum { Sphere, Capsule, Box };
+        enum ShapeEnum { Sphere, Capsule, Box, Convex };
 
         ShapeEnum shapeType;
         reactphysics3d::CollisionShape* reactShape = nullptr;

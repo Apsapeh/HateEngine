@@ -1,5 +1,6 @@
 #pragma once
 
+#include <unordered_map>
 #include "../Objects/Camera.hpp"
 #include "../Objects/Light/Light.hpp"
 #include "../Objects/Mesh.hpp"
@@ -14,6 +15,7 @@
 #include "HateEngine/Objects/Light/DirectionalLight.hpp"
 #include "HateEngine/Objects/Light/OmniLight.hpp"
 #include "HateEngine/Objects/Light/SpotLight.hpp"
+#include "HateEngine/Resources/ObjMapModel.hpp"
 #include "glm/ext/vector_float4.hpp"
 
 namespace HateEngine {
@@ -58,6 +60,7 @@ namespace HateEngine {
         // 3D renderable objects
         std::unordered_map<UUID, SceneObject> meshes_obj;
         std::unordered_map<UUID, SceneObject> models_obj;
+        std::unordered_map<UUID, SceneObject> objMapModels_obj;
         std::unordered_map<UUID, SceneObject> billboards_obj;
         std::unordered_map<UUID, SceneObject> animationPlayers_obj;
         std::unordered_map<UUID, SceneObject> particles_obj;
@@ -162,6 +165,7 @@ namespace HateEngine {
         UUID addObjectRef(BillboardMesh* object);
         UUID addObjectRef(Light* object);
         UUID addObjectRef(Model* object);
+        UUID addObjectRef(ObjMapModel* object);
         UUID addObjectRef(GLTFAnimationPlayer* object);
         UUID addObjectRef(Particles* object);
 

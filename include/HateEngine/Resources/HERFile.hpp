@@ -53,8 +53,8 @@ namespace HateEngine {
         HERFile(std::string path, std::string password);
 
         ObjMapModel loadObjMap(
-                std::string obj_file_name, std::string map_file_name, float lod_dist = 15,
-                float lod_step = 1.0
+                std::string obj_file_name, std::string map_file_name,
+                bool generate_collision = true, float lod_dist = 15, float lod_step = 1.0
         );
 
         HERResource operator[](std::string key);
