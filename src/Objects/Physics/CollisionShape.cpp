@@ -55,3 +55,60 @@ void CollisionShape::rotate(float x, float y, float z) {
 void CollisionShape::rotate(glm::vec3 vec) {
     CollisionShape::rotate(vec.x, vec.y, vec.z);
 }
+
+
+void CollisionShape::setCollisionCategory(uint8_t category) {
+    if (category > 15) {
+        HATE_WARNING_F(
+                "CollisonShape [%llu]: category cannot be greater than 15", this->getUUID().getU64()
+        );
+        return;
+    }
+
+    this->collisionCategory = 1 << category;
+
+    if (this->reactCollider != nullptr)
+        this->reactCollider->setCollisionCategoryBits(this->collisionCategory);
+}
+
+void CollisionShape::setCollisionMaskBit(uint8_t mask, bool state) {
+    if (mask > 15) {
+        HATE_WARNING_F(
+                "CollisonShape [%llu]: mask cannot be greater than 15", this->getUUID().getU64()
+        );
+        return;
+    }
+
+    if (state)
+        this->collisionMask |= 1 << mask;
+    else
+        this->collisionMask &= ~(1 << mask);
+
+    if (this->reactCollider != nullptr)
+        this->reactCollider->setCollideWithMaskBits(this->collisionMask);
+}
+
+
+uint8_t CollisionShape::getCollisionCategory() {
+    uint16_t tmp = this->collisionCategory;
+    for (int i = 0; i < 16; i++) {
+        if (tmp & 1) {
+            return i;
+        }
+        tmp >>= 1;
+    }
+    return 0;
+}
+
+bool CollisionShape::getCollisionMaskBit(uint8_t mask) {
+    return this->collisionMask & (1 << mask);
+}
+
+std::vector<uint8_t> CollisionShape::getEnabledCollisionMaskBits() {
+    std::vector<uint8_t> result;
+    for (int i = 0; i < 16; i++) {
+        if (this->collisionMask & (1 << i))
+            result.push_back(i);
+    }
+    return result;
+}

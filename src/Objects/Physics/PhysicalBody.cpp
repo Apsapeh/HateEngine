@@ -1,5 +1,6 @@
 #include <HateEngine/Objects/Physics/PhysicalBody.hpp>
 #include <glm/gtx/quaternion.hpp>
+#include <unordered_set>
 
 #include "HateEngine/Log.hpp"
 #include "reactphysics3d/components/RigidBodyComponents.h"
@@ -182,45 +183,20 @@ void PhysicalBody::rotate(glm::vec3 vec) {
     PhysicalBody::rotate(vec.x, vec.y, vec.z);
 }
 
-/*glm::vec3 PhysicalBody::getPosition() const {
-    return this->position;
+
+void PhysicalBody::addGroup(const std::string& group) {
+    groups.insert(group);
 }
 
-glm::vec3 PhysicalBody::getRotationEuler() const {
-    glm::vec3 rot;
-    glm::extractEulerAngleXYZ(rotation_matrix, rot.x, rot.y, rot.z);
-    rot *= -1;
-
-    // Changes the Y rotation detection limit from [-PI/2, PI/2] to [-P, P]
-    bool bad = rotation_matrix[0][0] == 0 and rotation_matrix[0][2] == 0;
-    if (not bad)
-        rot.y = atan2(rotation_matrix[0][0], -rotation_matrix[0][2]);
-    else
-        rot.y = atan2(rotation_matrix[1][0], -rotation_matrix[1][2]);
-    return glm::degrees(rot);
+void PhysicalBody::removeGroup(const std::string& group) {
+    if (this->hasGroup(group))
+        groups.erase(group);
 }
 
-glm::mat4 PhysicalBody::getRotationMatrix() const {
-    return this->rotation_matrix;
+bool PhysicalBody::hasGroup(const std::string& group) {
+    return groups.count(group);
 }
 
-glm::vec3 PhysicalBody::getScale() const {
-    return this->scale;
+std::unordered_set<std::string> PhysicalBody::getGroups() {
+    return groups;
 }
-
-
-glm::vec3 PhysicalBody::getGlobalPosition() const {
-    reactphysics3d::Vector3 pos =
-this->reactRigidBody->getTransform().getPosition(); glm::vec3 fix_pos =
-glm::vec3(pos.z, pos.y, pos.x) - this->parent_position;
-}
-
-glm::vec3 PhysicalBody::getGlobalRotationEuler() const {
-    return getRotationEuler();
-}
-
-glm::mat4 PhysicalBody::getGlobalRotationMatrix() const {
-    if (not binded)
-        return this->rotation_matrix;
-    return this->parent_rotation_matrix *  this->rotation_matrix;
-}*/

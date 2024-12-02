@@ -103,10 +103,11 @@ void PhysEngine::IteratePhysics(float delta) {
 }
 
 void PhysEngine::getRayCastCollisions(
-        glm::vec3 startPos, glm::vec3 endPos, reactphysics3d::RaycastCallback* callback
+        glm::vec3 startPos, glm::vec3 endPos, reactphysics3d::RaycastCallback* callback,
+        uint16_t mask
 ) {
     reactphysics3d::Ray ray({startPos.z, startPos.y, startPos.x}, {endPos.z, endPos.y, endPos.x});
-    physicsWorld->raycast(ray, callback);
+    physicsWorld->raycast(ray, callback, mask);
 }
 
 const reactphysics3d::PhysicsWorld* PhysEngine::getPhysicsWorld() const {
@@ -193,7 +194,8 @@ UUID PhysEngine::addObjectRef(PhysicalBody* object) {
         shape->reactCollider = phys_body->addCollider(react_shape, transform);
         shape->reactCollider->setUserData(shape);
 
-        // shape->reactCollider->setC
+        shape->reactCollider->setCollisionCategoryBits(shape->collisionCategory);
+        shape->reactCollider->setCollideWithMaskBits(shape->collisionMask);
 
 
         if (object->getBodyType() == PhysicalBody::TriggerArea) {

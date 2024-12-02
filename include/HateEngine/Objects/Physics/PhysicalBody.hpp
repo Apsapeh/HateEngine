@@ -1,6 +1,7 @@
 #pragma once
 #include <cstdint>
 #include <unordered_map>
+#include <unordered_set>
 #include <vector>
 
 #include <reactphysics3d/reactphysics3d.h>
@@ -24,6 +25,7 @@ namespace HateEngine {
         glm::vec3 prev_parent_position = {0, 0, 0};
         glm::mat4 prev_parent_rotation_matrix = glm::mat4(1.0f);
         std::unordered_map<UUID, ShapeObject> shapes;
+        std::unordered_set<std::string> groups;
 
     public:
         reactphysics3d::RigidBody* reactRigidBody = nullptr;
@@ -96,6 +98,18 @@ namespace HateEngine {
          * @return A pointer to the collision shapes
          */
         std::unordered_map<UUID, ShapeObject> const* getShapes();
+
+
+        /**
+         * @brief Adds a group to the body. Just sugar for distinguishing bodies, like "enemy",
+         * "friend", "collectable", etc.
+         *
+         * @param group
+         */
+        void addGroup(const std::string& group);
+        void removeGroup(const std::string& group);
+        bool hasGroup(const std::string& group);
+        std::unordered_set<std::string> getGroups();
     };
 
 } // namespace HateEngine

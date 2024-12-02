@@ -1,4 +1,5 @@
 #pragma once
+#include <cstdint>
 #include <reactphysics3d/reactphysics3d.h>
 #include <unordered_map>
 #include <vector>
@@ -27,7 +28,8 @@ namespace HateEngine {
 
     protected:
         void getRayCastCollisions(
-                glm::vec3 startPos, glm::vec3 endPos, reactphysics3d::RaycastCallback* callback
+                glm::vec3 startPos, glm::vec3 endPos, reactphysics3d::RaycastCallback* callback,
+                uint16_t mask
         );
 
     public:

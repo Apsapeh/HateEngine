@@ -1,13 +1,16 @@
 #pragma once
+#include <cstdint>
 #include <reactphysics3d/reactphysics3d.h>
 #include <vector>
 #include "../Object.hpp"
 
 namespace HateEngine {
     class CollisionShape : public Object {
+        friend class PhysEngine;
+
     private:
-        bool collisionLayers[16] = {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
-        bool collisionMasks[16] = {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+        uint16_t collisionCategory = 1;
+        uint16_t collisionMask = -1;
 
     public:
         enum ShapeEnum { Sphere, Capsule, Box, Convex };
@@ -33,6 +36,24 @@ namespace HateEngine {
         void offset(glm::vec3 vec);
         void rotate(float x, float y, float z);
         void rotate(glm::vec3 vec);
+
+        /**
+         * @brief Set the collision category [0..15]
+         * @param category [0..15]
+         */
+        void setCollisionCategory(uint8_t category);
+
+        /**
+         * @brief Set the collision mask bit [0..15] on which the body can collide with other bodies
+         *
+         * @param bit [0..15]
+         * @param state
+         */
+        void setCollisionMaskBit(uint8_t bit, bool state);
+
+        uint8_t getCollisionCategory();
+        bool getCollisionMaskBit(uint8_t bit);
+        std::vector<uint8_t> getEnabledCollisionMaskBits();
 
         /**
          * Sets the collision layer on which a body can collide with other

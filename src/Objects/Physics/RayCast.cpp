@@ -56,6 +56,10 @@ RayCast::RayCast(PhysEngine* physEngine, float length) {
     this->rayCastCallback.physEngine = physEngine;
 }
 
+void RayCast::changeLength(float length) {
+    this->length = length;
+}
+
 void RayCast::cast(bool once) {
     if (physEngine == nullptr) {
         HATE_ERROR_F("RayCast [%llu]: PhysEngine is null\n", this->getUUID().getU64());
@@ -79,7 +83,7 @@ void RayCast::cast(bool once) {
 
     this->rayCastCallback.oneCast = once;
     this->rayCastCallback.hits.clear();
-    physEngine->getRayCastCollisions(startPos, endPos, &this->rayCastCallback);
+    physEngine->getRayCastCollisions(startPos, endPos, &this->rayCastCallback, this->collisionMask);
 }
 
 bool RayCast::isCollide(RayCastInfo* rayCastInfo) {
@@ -97,4 +101,32 @@ bool RayCast::isCollide(RayCastInfo* rayCastInfo) {
 std::vector<RayCastInfo> RayCast::getAllCollisions() {
     this->cast(false);
     return this->rayCastCallback.hits;
+}
+
+
+void RayCast::setCollisionMaskBit(uint8_t mask, bool state) {
+    if (mask > 15) {
+        HATE_WARNING_F(
+                "CollisonShape [%llu]: mask cannot be greater than 15", this->getUUID().getU64()
+        );
+        return;
+    }
+
+    if (state)
+        this->collisionMask |= 1 << mask;
+    else
+        this->collisionMask &= ~(1 << mask);
+}
+
+bool RayCast::getCollisionMaskBit(uint8_t mask) {
+    return this->collisionMask & (1 << mask);
+}
+
+std::vector<uint8_t> RayCast::getEnabledCollisionMaskBits() {
+    std::vector<uint8_t> result;
+    for (int i = 0; i < 16; i++) {
+        if (this->collisionMask & (1 << i))
+            result.push_back(i);
+    }
+    return result;
 }
