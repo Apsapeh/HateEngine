@@ -19,60 +19,6 @@
 
 using namespace HateEngine;
 
-/*UIFont::UIFont(const UIFont& texture, bool copy_tex_data) {
-    this->data = texture.data;
-    this->width = texture.width;
-    this->height = texture.height;
-    this->textureFormat = texture.textureFormat;
-    this->texWrap = texture.texWrap;
-    this->texFiltering = texture.texFiltering;
-    this->texMipMapFiltering = texture.texMipMapFiltering;
-    this->MipMapLodBias = texture.MipMapLodBias;
-    this->autoload = texture.autoload;
-    this->fileName = texture.fileName;
-    this->fileName = texture.fileName;
-
-    if (copy_tex_data) {
-        //if (texture.textureGL_ID == 0 and this->autoload)
-        //    Load();
-
-        if (this->is_loaded) {
-            glGenTextures(1, &this->textureGL_ID);
-            glBindTexture(GL_TEXTURE_2D, this->textureGL_ID);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, this->texWrap);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, this->texWrap);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, this->texFiltering);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, this->texMipMapFiltering);
-            glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_LOD_BIAS, this->MipMapLodBias);
-
-            glBindTexture(GL_TEXTURE_2D, texture.textureGL_ID);
-            int oldTextureChannelCount = texture.textureFormat == GL_RGBA ? 4 : 3;
-            // Get the old texture data
-            std::vector<GLubyte> cpy_data(
-                    texture.width * texture.height * oldTextureChannelCount
-            ); // Assuming RGBA format
-            glGetTexImage(
-                    GL_TEXTURE_2D, 0, texture.textureFormat, GL_UNSIGNED_BYTE, cpy_data.data()
-            );
-
-            // Bind the new texture and set the texture data
-            glBindTexture(GL_TEXTURE_2D, this->textureGL_ID);
-
-            if (this->texMipMapFiltering != this->texFiltering) // MipMap enabled
-                gluBuild2DMipmaps(
-                        GL_TEXTURE_2D, texture.textureFormat, texture.width, texture.height,
-                        texture.textureFormat, GL_UNSIGNED_BYTE, cpy_data.data()
-                );
-            else // MipMad disabled
-                glTexImage2D(
-                        GL_TEXTURE_2D, 0, texture.textureFormat, texture.width, texture.height, 0,
-                        texture.textureFormat, GL_UNSIGNED_BYTE, cpy_data.data()
-                );
-            glBindTexture(GL_TEXTURE_2D, 0);
-        }
-    } else
-        this->textureGL_ID = texture.textureGL_ID;
-}*/
 
 #include <iostream>
 bool UIFont::loadFromFile() {
@@ -81,6 +27,8 @@ bool UIFont::loadFromFile() {
     std::ifstream file(this->fileName, std::ios::binary);
     if (!file.is_open()) {
         // HATE_ERROR("Error: Could not open file: %s", this->fileName.c_str());
+        HATE_ERROR_F("UIFont: Could not open file: %s", this->fileName.c_str());
+        this->is_unable_to_load = true;
         return false;
     }
 
@@ -101,6 +49,7 @@ bool UIFont::loadFromFile() {
 UIFont::UIFont(std::string file_name, float pixel_height) {
     this->fileName = file_name;
     this->pixel_height = pixel_height;
+    loadFromFile();
     /*if (autoload)
         Load();*/
 }
@@ -112,6 +61,10 @@ UIFont::~UIFont() {
 bool UIFont::Load(
         void (*API_load_func)(UIFont* texture_ptr), void (*API_unloader)(UIFont* texture_ptr)
 ) {
+    if (this->is_unable_to_load) {
+        return false;
+    }
+
     this->API_unloader = API_unloader;
     if (this->API_unloader == nullptr) {
         HATE_WARNING("Error: API_unloader is not set");

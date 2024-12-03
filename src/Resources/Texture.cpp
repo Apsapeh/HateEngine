@@ -124,7 +124,7 @@ bool Texture::loadFromFile() {
     int n;
     unsigned char* s_data = stbi_load(this->fileName.c_str(), &this->width, &this->height, &n, 0);
     if (s_data == nullptr) {
-        HATE_WARNING("Error: Texture \"" + this->fileName + "\" was not found");
+        HATE_ERROR_F("Texture: Texture \"%s\" was not found", this->fileName.c_str());
         return false;
     }
     if (n == 4)

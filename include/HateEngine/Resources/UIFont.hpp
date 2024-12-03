@@ -15,6 +15,7 @@ namespace HateEngine {
         std::vector<uint8_t> data = {};
         uint32_t textureGL_ID = 0;
         bool is_loaded = false;
+        bool is_unable_to_load = false;
         void* render_api_data = nullptr;
 
         bool loadFromFile();

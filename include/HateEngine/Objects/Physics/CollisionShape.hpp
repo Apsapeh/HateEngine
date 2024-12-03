@@ -12,7 +12,7 @@ namespace HateEngine {
         uint16_t collisionCategory = 1;
         uint16_t collisionMask = -1;
 
-        float friction = 0.0f;
+        float friction = 1.0f;
         float bounciness = 0.0f;
 
     public:

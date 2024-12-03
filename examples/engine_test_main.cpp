@@ -283,10 +283,9 @@ int main() {
     billboardMesh.setCorrectTransparency(true);
     lvl.addObjectRef(&billboardMesh);
 
-    // HateEngine::ObjMapModel objmodel("examples/Assets/untitled.obj",
-    // "examples/Assets/unnamed.map");
-    HateEngine::ObjMapModel objmodel =
-            herfile.loadObjMap("untitled.obj", "unnamed.map", true, 15, 1);
+    HateEngine::ObjMapModel objmodel("examples/Assets/untitled.obj", "examples/Assets/unnamed.map");
+    /*HateEngine::ObjMapModel objmodel =
+            herfile.loadObjMap("untitled.obj", "unnamed.map", true, 15, 1);*/
     objmodel.offset(0, -180, -20);
 
     for (auto& m: objmodel.getLOD(0)) {
@@ -506,6 +505,7 @@ int main() {
     fps_widget.is_movable = false;
     fps_widget.is_closable = false;
 
+    // FIXME: Crash if the font is not loaded
     HateEngine::UIFont* f = new HateEngine::UIFont("examples/Assets/Comfortaa-Regular.ttf", 36);
     HateEngine::UIFont* f_2 = new HateEngine::UIFont("examples/Assets/NanumGothic-Regular.ttf", 12);
 

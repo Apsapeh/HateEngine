@@ -204,7 +204,7 @@ void OpenGL15::DrawNuklearUI(std::unordered_map<UUID, Level::SceneUIWidget>* wid
                                 obj->text_color.w);
 
                 // const nk_user_font* prev_font = ctx.style.font;
-                if (obj->font != nullptr) {
+                if (obj->font != nullptr and not obj->font->is_unable_to_load) {
                     if (not obj->font->is_loaded)
                         obj->font->Load(loadFont, unloadFont);
 

@@ -8,7 +8,6 @@ TriggerArea::TriggerArea() : PhysicalBody(BodyType::TriggerArea) {
 
 void TriggerArea::setOnEnter(void (*on_enter)(PhysicalBody* body, void* data_p), void* data_p) {
     this->on_enter = on_enter;
-    HATE_WARNING_F("ON ENTER: %llu", this->on_enter);
     this->on_enter_data_p = data_p;
 }
 
