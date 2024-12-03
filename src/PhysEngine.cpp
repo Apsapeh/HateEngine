@@ -19,26 +19,6 @@ reactphysics3d::PhysicsCommon* PhysEngine::physicsCommon = nullptr;
 
 class TriggerCallback : public reactphysics3d::EventListener {
 public:
-    // Вызывается при начале контакта
-    /*void onContact(const CollisionCallback::CallbackData& callbackData) override {
-        for (uint32_t i = 0; i < callbackData.getNbContactPairs(); i++) {
-            const CollisionCallback::ContactPair& contactPair = callbackData.getContactPair(i);
-
-                HATE_INFO("TRIGGER");
-            if (contactPair.getCollider1()->getIsTrigger() ||
-                contactPair.getCollider2()->getIsTrigger()) {
-                // Проверяем, есть ли столкновение с триггером
-                if (contactPair.getEventType() ==
-                    CollisionCallback::ContactPair::EventType::ContactStart) {
-                    std::cout << "Object entered trigger area!" << std::endl;
-                } else if (contactPair.getEventType() ==
-                           CollisionCallback::ContactPair::EventType::ContactExit) {
-                    std::cout << "Object exited trigger area!" << std::endl;
-                }
-            }
-        }
-    }*/
-
     void onTrigger(const reactphysics3d::OverlapCallback::CallbackData& callbackData) override {
         for (uint32_t i = 0; i < callbackData.getNbOverlappingPairs(); ++i) {
             const reactphysics3d::OverlapCallback::OverlapPair& pair =
@@ -76,12 +56,8 @@ PhysEngine::PhysEngine() {
         physicsCommon = new reactphysics3d::PhysicsCommon();
     }
     this->physicsWorld = physicsCommon->createPhysicsWorld();
-    this->physicsWorld->setEventListener(new TriggerCallback());
-    // this->physicsWorld->setIsDebugRenderingEnabled(true);
-    // reactphysics3d::Ray ray({0, 0, 0}, {1, 1, 1});
-    // Change the number of iterations of the position solver
-    // this->physicsWorld->setNbIterationsPositionSolver(16);
-    // physicsWorld->setIsDebugRenderingEnabled(true);
+    this->listener = new TriggerCallback();
+    this->physicsWorld->setEventListener(listener);
 }
 
 PhysEngine::~PhysEngine() {
@@ -90,6 +66,7 @@ PhysEngine::~PhysEngine() {
             delete body_pair.second.obj;
     }
     physicsCommon->destroyPhysicsWorld(physicsWorld);
+    delete listener;
 }
 
 
@@ -110,9 +87,45 @@ void PhysEngine::getRayCastCollisions(
     physicsWorld->raycast(ray, callback, mask);
 }
 
+
 const reactphysics3d::PhysicsWorld* PhysEngine::getPhysicsWorld() const {
     return physicsWorld;
 }
+
+void PhysEngine::setIsGravityEnabled(bool isGravityEnabled) {
+    this->physicsWorld->setIsGravityEnabled(isGravityEnabled);
+}
+
+void PhysEngine::setGravity(const glm::vec3& gravity) {
+    this->physicsWorld->setGravity({gravity.z, gravity.y, gravity.x});
+}
+
+void PhysEngine::setIterationsPositionSolver(uint32_t count) {
+    this->physicsWorld->setNbIterationsPositionSolver(count);
+}
+
+void PhysEngine::setIterationsVelocitySolver(uint32_t count) {
+    this->physicsWorld->setNbIterationsVelocitySolver(count);
+}
+
+
+bool PhysEngine::isGravityEnabled() {
+    return this->physicsWorld->isGravityEnabled();
+}
+
+glm::vec3 PhysEngine::getGravity() {
+    reactphysics3d::Vector3 gravity = this->physicsWorld->getGravity();
+    return {gravity.z, gravity.y, gravity.x};
+}
+
+uint32_t PhysEngine::getIterationsPositionSolver() {
+    return this->physicsWorld->getNbIterationsPositionSolver();
+}
+
+uint32_t PhysEngine::getNbIterationsVelocitySolver() {
+    return this->physicsWorld->getNbIterationsVelocitySolver();
+}
+
 
 UUID PhysEngine::addObjectClone(const PhysicalBody& object) {
     PhysicalBody* new_obj = nullptr;
@@ -193,6 +206,9 @@ UUID PhysEngine::addObjectRef(PhysicalBody* object) {
         reactphysics3d::Transform transform(position, quaternion);
         shape->reactCollider = phys_body->addCollider(react_shape, transform);
         shape->reactCollider->setUserData(shape);
+
+        shape->reactCollider->getMaterial().setFrictionCoefficient(shape->friction);
+        shape->reactCollider->getMaterial().setBounciness(shape->bounciness);
 
         shape->reactCollider->setCollisionCategoryBits(shape->collisionCategory);
         shape->reactCollider->setCollideWithMaskBits(shape->collisionMask);

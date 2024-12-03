@@ -57,6 +57,47 @@ void CollisionShape::rotate(glm::vec3 vec) {
 }
 
 
+void CollisionShape::setFriction(float friction) {
+    if (friction < 0.0f) {
+        HATE_WARNING_F(
+                "CollisonShape [%llu]: friction cannot be negative", this->getUUID().getU64()
+        );
+        return;
+    }
+
+    this->friction = friction;
+    if (this->reactCollider != nullptr)
+        this->reactCollider->getMaterial().setFrictionCoefficient(friction);
+}
+
+void CollisionShape::setBounciness(float bounciness) {
+    if (bounciness > 1.0f or bounciness < 0.0f) {
+        HATE_WARNING_F(
+                "CollisonShape [%llu]: bounciness cannot be greater than 1 or less than 0",
+                this->getUUID().getU64()
+        );
+        return;
+    }
+
+    this->bounciness = bounciness;
+    if (this->reactCollider != nullptr)
+        this->reactCollider->getMaterial().setBounciness(bounciness);
+}
+
+
+float CollisionShape::getFriction() {
+    if (this->reactCollider != nullptr)
+        return this->reactCollider->getMaterial().getFrictionCoefficient();
+    return this->friction;
+}
+
+float CollisionShape::getBounciness() {
+    if (this->reactCollider != nullptr)
+        return this->reactCollider->getMaterial().getBounciness();
+    return this->bounciness;
+}
+
+
 void CollisionShape::setCollisionCategory(uint8_t category) {
     if (category > 15) {
         HATE_WARNING_F(

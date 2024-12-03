@@ -27,11 +27,18 @@ namespace HateEngine {
         std::unordered_map<UUID, ShapeObject> shapes;
         std::unordered_set<std::string> groups;
 
+        glm::vec3 linearVelocity = {0.0f, 0.0f, 0.0f};
+        glm::vec3 angularLockAxisFactor = {1.0f, 1.0f, 1.0f};
+        float mass = 1.0f;
+
     public:
         reactphysics3d::RigidBody* reactRigidBody = nullptr;
 
     protected:
         BodyType bodyType;
+
+        void updatePosition();
+        void updateRotation();
 
     public:
         PhysicalBody(BodyType bodyType);
@@ -64,10 +71,15 @@ namespace HateEngine {
         void rotate(float x, float y, float z);
         void rotate(glm::vec3 vec);
 
-        void setLinearVelocity(glm::vec3 vec);
         void setLinearVelocity(float x, float y, float z);
+        void setLinearVelocity(glm::vec3 vec);
+        void setAngularLockAxisFactor(float x, float y, float z);
+        void setAngularLockAxisFactor(glm::vec3 vec);
+        void setMass(float mass);
 
         glm::vec3 getLinearVelocity() const;
+        glm::vec3 getAngularLockAxisFactor() const;
+        float getMass() const;
 
         /**
          * Adds a collision shape to the body by copying the object

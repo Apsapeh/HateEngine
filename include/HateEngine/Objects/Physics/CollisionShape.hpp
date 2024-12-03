@@ -12,6 +12,9 @@ namespace HateEngine {
         uint16_t collisionCategory = 1;
         uint16_t collisionMask = -1;
 
+        float friction = 0.0f;
+        float bounciness = 0.0f;
+
     public:
         enum ShapeEnum { Sphere, Capsule, Box, Convex };
 
@@ -36,6 +39,12 @@ namespace HateEngine {
         void offset(glm::vec3 vec);
         void rotate(float x, float y, float z);
         void rotate(glm::vec3 vec);
+
+        void setFriction(float friction);
+        void setBounciness(float bounciness);
+
+        float getFriction();
+        float getBounciness();
 
         /**
          * @brief Set the collision category [0..15]
