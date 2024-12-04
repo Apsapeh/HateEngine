@@ -20,114 +20,64 @@
 using namespace HateEngine;
 
 
-std::vector<std::string> split(std::string str, char delimiter);
+std::vector<std::string> split(const std::string& str, const std::string& delimiters);
+void trim(std::string& str);
 
 
 ObjMapModel::ObjMapModel(
-        std::string obj_filename, std::string map_file_name, bool generate_collision,
-        float lod_dist, float lod_step
+        std::string obj_filename, std::string map_file_name, float grid_size,
+        bool generate_collision, float lod_dist, float lod_step
 ) {
     bindObj(&static_body);
     this->generate_collision = generate_collision;
+    this->obj_file_name = obj_filename;
+    this->map_file_name = map_file_name;
     // get parrent from obj_filename
     size_t pos = obj_filename.find_last_of("/\\");
     if (pos != std::string::npos)
         obj_file_path = obj_filename.substr(0, pos + 1);
 
     std::ifstream file(obj_filename);
-
     if (!file.is_open()) {
         HATE_ERROR_F("Failed to open file: %s", obj_filename.c_str());
         return;
     }
 
     std::string data((std::istreambuf_iterator<char>(file)), (std::istreambuf_iterator<char>()));
-    // std::cout << data << "\n";
     auto t0 = std::chrono::high_resolution_clock::now();
-    parseObj(data, lod_dist, lod_step);
+    parseObj(data, grid_size, lod_dist, lod_step);
     auto t1 = std::chrono::high_resolution_clock::now();
     HATE_DEBUG_F(
             "Parsing took: %d ms",
             std::chrono::duration_cast<std::chrono::milliseconds>(t1 - t0).count()
     );
+
+    std::ifstream map_file(map_file_name);
+    if (!map_file.is_open()) {
+        HATE_ERROR_F("Failed to open file: %s", map_file_name.c_str());
+        return;
+    }
+    std::string map_data(
+            (std::istreambuf_iterator<char>(map_file)), (std::istreambuf_iterator<char>())
+    );
+    parseMap(map_data, grid_size);
 }
 
 ObjMapModel::ObjMapModel(
-        std::string obj_file_data, std::string map_file_data, HERFile* her, bool generate_collision,
-        float lod_dist, float lod_step
+        std::string obj_file_data, std::string map_file_data, HERFile* her, float grid_size,
+        bool generate_collision, float lod_dist, float lod_step
 
 ) {
     bindObj(&static_body);
     this->generate_collision = generate_collision;
-    parseObj(obj_file_data, lod_dist, lod_step, her);
+    parseObj(obj_file_data, grid_size, lod_dist, lod_step, her);
+    parseMap(map_file_data, grid_size);
 }
 
 /*======================================> PARSERS <==============================================*/
-
-inline static bool isPointInPolygon(glm::vec2 point, std::vector<glm::vec2> polygon) {
-    bool is_in = 0;
-
-    for (uint32_t i = 0; i < polygon.size(); i++) {
-        glm::vec2 a = polygon[i];
-        glm::vec2 b;
-        if (i == polygon.size() - 1)
-            b = polygon[0];
-        else
-            b = polygon[i + 1];
-
-        float xByY = 0;
-        if (std::abs(a.y - b.y) < 0.01f)
-            continue;
-        if (std::abs(a.x - b.x) < 0.01f)
-            xByY = a.x;
-        else
-            xByY = a.x + (b.x - a.x) * (point.y - a.y) / (b.y - a.y);
-
-        if (std::abs(point.x - xByY) < 0.01f) {
-            return false;
-        }
-
-        float min_y = std::min(a.y, b.y);
-        float max_y = std::max(a.y, b.y);
-
-        if (point.y > min_y && point.y < max_y && point.x < xByY) {
-            is_in = !is_in;
-        }
-    }
-
-    return is_in;
-}
-
-// Function to sort vertices in counter clockwise order (thanks ChatGPT)
-void sortVerticesCCW(std::vector<glm::vec3>* vertices, const glm::vec3& normal) {
-    // Calculate centroid
-    glm::vec3 centroid(0.0f);
-    for (const auto& v: *vertices) {
-        centroid += v;
-    }
-    centroid /= static_cast<float>(vertices->size());
-
-    // Find two orthogonal vectors
-    glm::vec3 up = (fabs(normal.x) > 0.0001f) ? glm::vec3(0, 1, 0) : glm::vec3(1, 0, 0);
-    glm::vec3 tangent = glm::normalize(glm::cross(up, normal));
-    glm::vec3 bitangent = glm::normalize(glm::cross(normal, tangent));
-
-    // Lambda function to calculate angle
-    auto calculateAngle = [&](const glm::vec3& vertex) {
-        glm::vec3 relative = vertex - centroid;
-        float x = glm::dot(relative, tangent);
-        float y = glm::dot(relative, bitangent);
-        return std::atan2(y, x); // Угол в 2D
-    };
-
-    // Sort vertices by angles
-    std::sort(vertices->begin(), vertices->end(), [&](const glm::vec3& a, const glm::vec3& b) {
-        return calculateAngle(a) > calculateAngle(b);
-    });
-}
-
-
-void ObjMapModel::parseObj(std::string data, float lod_dist, float lod_step, HERFile* her) {
+void ObjMapModel::parseObj(
+        std::string data, float grid_size, float lod_dist, float lod_step, HERFile* her
+) {
     std::vector<glm::vec3> vertices;
     std::vector<glm::vec3> normals;
     std::vector<glm::vec2> tex_coords;
@@ -138,7 +88,9 @@ void ObjMapModel::parseObj(std::string data, float lod_dist, float lod_step, HER
     std::string line;
     std::istringstream tokenStream(data);
     while (std::getline(tokenStream, line, '\n')) {
-        std::vector<std::string> words = split(line, ' ');
+        if (line[line.size() - 1] == 13) // CR
+            line = line.substr(0, line.size() - 1);
+        std::vector<std::string> words = split(line, " \v\t");
 
         if (words.size() == 0)
             continue;
@@ -146,9 +98,10 @@ void ObjMapModel::parseObj(std::string data, float lod_dist, float lod_step, HER
         if (words[0] == "v") {
             if (words.size() < 4)
                 continue;
-            vertices.push_back(
-                    glm::vec3(std::stof(words[1]), std::stof(words[2]), std::stof(words[3]))
-            );
+            vertices.push_back(glm::vec3(
+                    std::stof(words[1]) / grid_size, std::stof(words[2]) / grid_size,
+                    std::stof(words[3]) / grid_size
+            ));
         } else if (words[0] == "f") {
             if (words.size() < 4)
                 continue;
@@ -158,7 +111,7 @@ void ObjMapModel::parseObj(std::string data, float lod_dist, float lod_step, HER
             std::vector<int32_t> t_indices;
             int32_t prev_n_index = 0;
             for (uint32_t i = 1; i < words.size(); i++) {
-                std::vector<std::string> indices = split(words[i], '/');
+                std::vector<std::string> indices = split(words[i], "/");
                 int32_t v_i = std::stoi(indices[0]);
                 v_indices.push_back(v_i - (v_i > 0 ? 1 : 0));
 
@@ -182,6 +135,14 @@ void ObjMapModel::parseObj(std::string data, float lod_dist, float lod_step, HER
                 }
             }
 
+            /*std::string ti;
+            for (uint32_t i = 0; i < t_indices.size(); i++) {
+                ti += std::to_string(t_indices[i]);
+                if (i < t_indices.size() - 1)
+                    ti += " ";
+            }
+            HATE_WARNING_F("Indices: %s", ti.c_str());*/
+
             ObjFace face;
             face.indices = v_indices;
             face.tex_indices = t_indices;
@@ -194,6 +155,7 @@ void ObjMapModel::parseObj(std::string data, float lod_dist, float lod_step, HER
             if (words.size() < 3)
                 continue;
             tex_coords.push_back(glm::vec2(std::stof(words[1]), std::stof(words[2])));
+            // HATE_WARNING_F("Tex coords: %f %f", std::stof(words[1]), std::stof(words[2]));
         } else if (words[0] == "vn") {
             if (words.size() < 4)
                 continue;
@@ -238,57 +200,8 @@ void ObjMapModel::parseObj(std::string data, float lod_dist, float lod_step, HER
     addLOD(0, generateLod(vertices, tex_coords, objects, lod_step));
     addLOD(lod_dist, generateLod(vertices, tex_coords, objects, 1000000));
 
-    if (!generate_collision)
-        return;
-
-    // Collision generation
-    for (auto& obj: objects) {
-        std::vector<float> obj_vertices;
-        std::vector<std::vector<uint32_t>> obj_faces_indices;
-
-        std::unordered_map<uint32_t, uint32_t> vertex_map;
-        for (auto& face: obj.faces) {
-            std::vector<uint32_t> face_indices;
-
-            std::vector<glm::vec3> sorted_vertices; // Vector for sort in CCW
-            std::vector<glm::vec3> norm_vertices; // Original vertices
-            std::vector<uint32_t> norm_indices; // 'Map' alternate
-            for (auto& index: face.indices) {
-                sorted_vertices.push_back(vertices[index]);
-                norm_vertices.push_back(vertices[index]);
-                norm_indices.push_back(index);
-            }
-            sortVerticesCCW(&sorted_vertices, face.normal);
-
-            face.indices.clear();
-            for (auto& vertex: sorted_vertices) {
-                auto it = std::find(norm_vertices.begin(), norm_vertices.end(), vertex);
-                face.indices.push_back(norm_indices[it - norm_vertices.begin()]);
-            }
-
-            for (auto& index: face.indices) {
-                if (vertex_map.count(index) == 0) {
-                    vertex_map[index] = obj_vertices.size() / 3;
-                    obj_vertices.push_back(vertices[index].z);
-                    obj_vertices.push_back(vertices[index].y);
-                    obj_vertices.push_back(vertices[index].x);
-                    face_indices.push_back(vertex_map[index]);
-
-                } else {
-                    face_indices.push_back(vertex_map[index]);
-                }
-            }
-            obj_faces_indices.push_back(face_indices);
-        }
-
-        convex_shapes.push_back(
-                ConvexShape(obj_vertices, obj_faces_indices, glm::vec3(0, 0, 0), glm::vec3(0, 0, 0))
-        );
-    }
-
-    for (auto& shape: convex_shapes) {
-        static_body.addCollisionShapeRef(&shape);
-    }
+    if (generate_collision)
+        this->generateCollision(vertices, objects);
 }
 
 
@@ -302,7 +215,9 @@ std::unordered_map<std::string, ObjMapModel::Material> ObjMapModel::parseMtlLib(
     std::string line;
     std::istringstream tokenStream(data);
     while (std::getline(tokenStream, line, '\n')) {
-        std::vector<std::string> words = split(line, ' ');
+        if (line[line.size() - 1] == 13) // CR
+            line = line.substr(0, line.size() - 1);
+        std::vector<std::string> words = split(line, " \v\t");
 
         if (words.size() == 0)
             continue;
@@ -327,6 +242,281 @@ std::unordered_map<std::string, ObjMapModel::Material> ObjMapModel::parseMtlLib(
     }
 
     return materials;
+}
+
+
+struct Entity {
+    std::string classname;
+    glm::vec3 pos;
+    std::unordered_map<std::string, std::string> properties;
+};
+
+void ObjMapModel::parseMap(std::string data, float grid_size) {
+    std::vector<Entity> entities;
+    Entity* current_entity = nullptr;
+
+    std::string line;
+    std::istringstream tokenStream(data);
+    uint32_t line_num = 0;
+    uint32_t bracket_depth = 0; // 1 = entity, 2 = brush
+    while (std::getline(tokenStream, line, '\n')) {
+        if (line[line.size() - 1] == 13) // CR
+            line = line.substr(0, line.size() - 1);
+        // std::vector<std::string> words = split(line, " \v\t");
+        std::vector<std::string> words;
+        std::string word;
+        bool in_quotes = false;
+        for (int i = 0; i < line.size(); i++) {
+            if (line[i] == '"') {
+                in_quotes = !in_quotes;
+                if (not in_quotes and not word.empty()) {
+                    words.push_back(word);
+                    word.clear();
+                }
+            } else if (line[i] == '\\' and i < line.size() - 1) {
+                if (line[i + 1] == '"') {
+                    word += '"';
+                    i++;
+                } else if (line[i + 1] == '\\') {
+                    word += '\\';
+                    i++;
+                }
+            } else
+                word += line[i];
+        }
+        line_num++;
+
+        if (line[0] == '/' and line[1] == '/')
+            continue;
+
+        // Skip brushes
+        if (bracket_depth == 2) {
+            if (line[0] == '}')
+                bracket_depth--;
+
+            continue;
+        }
+
+
+        if (line[0] == '{') {
+            bracket_depth++;
+            if (bracket_depth > 2) {
+                HATE_ERROR_F(
+                        "ObjMapModel [%s]: Unexpected entity depth (%u) at line %d",
+                        map_file_name.c_str(), bracket_depth, line_num
+                );
+                return;
+            }
+
+            if (bracket_depth == 1) {
+                HATE_DEBUG("");
+                entities.push_back(Entity());
+                current_entity = &entities[entities.size() - 1];
+            }
+        } else if (line[0] == '}') {
+            if (bracket_depth == 0) {
+                HATE_ERROR_F(
+                        "ObjMapModel [%s]: Unexpected entity depth (%u) at line %d",
+                        map_file_name.c_str(), bracket_depth, line_num
+                );
+                return;
+            }
+            bracket_depth--;
+            current_entity = nullptr;
+        } else {
+            if (bracket_depth != 1) {
+                HATE_WARNING_F(
+                        "ObjMapModel [%s]: Unexpected entity depth (%u) for parametre at line %d, "
+                        "skip",
+                        map_file_name.c_str(), bracket_depth, line_num
+                );
+                continue;
+            }
+
+            if (words.size() < 2) {
+                HATE_WARNING_F(
+                        "ObjMapModel [%s]: Unexpected parametre at line %d, skip",
+                        map_file_name.c_str(), line_num
+                );
+
+                for (uint32_t i = 0; i < words.size(); i++)
+                    HATE_DEBUG_F("Word %d: '%s'", i, words[i].c_str());
+
+                continue;
+            }
+
+            std::string value = words[1].substr(1, words[1].size() - 2);
+            HATE_DEBUG_F(
+                    "ObjMapModel [%s]: %s = %s", map_file_name.c_str(), words[0].c_str(),
+                    value.c_str()
+            );
+
+            if (words[0] == "classname") {
+                current_entity->classname = words[1];
+            } else if (words[0] == "origin") {
+                std::vector<std::string> coords = split(words[1], " ");
+                // XZY
+                current_entity->pos = glm::vec3(
+                        std::stof(coords[0]) / grid_size, std::stof(coords[2]) / grid_size,
+                        std::stof(coords[1]) / grid_size
+                );
+            } else {
+                current_entity->properties[words[0]] = words[1];
+            }
+        }
+    }
+}
+
+
+/*inline static bool isPointInPolygon(const glm::vec2 point, const std::vector<glm::vec2>& polygon)
+{ bool is_in = 0;
+
+    for (uint32_t i = 0; i < polygon.size(); i++) {
+        glm::vec2 a = polygon[i];
+        glm::vec2 b;
+        if (i == polygon.size() - 1)
+            b = polygon[0];
+        else
+            b = polygon[i + 1];
+
+        float xByY = 0;
+        if (std::abs(a.y - b.y) < 0.01f)
+            continue;
+        if (std::abs(a.x - b.x) < 0.01f)
+            xByY = a.x;
+        else
+            xByY = a.x + (b.x - a.x) * (point.y - a.y) / (b.y - a.y);
+
+        if (std::abs(point.x - xByY) < 0.01f) {
+            return false;
+        }
+
+        float min_y = std::min(a.y, b.y);
+        float max_y = std::max(a.y, b.y);
+
+        if (point.y > min_y && point.y < max_y && point.x < xByY) {
+            is_in = !is_in;
+        }
+    }
+
+    return is_in;
+}*/
+
+// Вспомогательная функция для вычисления знака векторного произведения
+inline float sign(const glm::vec2& p1, const glm::vec2& p2, const glm::vec2& p3) {
+    return (p1.x - p3.x) * (p2.y - p3.y) - (p2.x - p3.x) * (p1.y - p3.y);
+}
+
+// Проверка принадлежности точки выпуклой области
+inline static bool isPointInPolygon(const glm::vec2& point, const std::vector<glm::vec2>& polygon) {
+    bool has_neg = false;
+    bool has_pos = false;
+
+    for (size_t i = 0; i < polygon.size(); ++i) {
+        const glm::vec2& v1 = polygon[i];
+        const glm::vec2& v2 = polygon[(i + 1) % polygon.size()]; // Следующая вершина (циклически)
+
+        float d = sign(point, v1, v2);
+        if (d < 0)
+            has_neg = true;
+        if (d > 0)
+            has_pos = true;
+
+        // Если есть как отрицательные, так и положительные значения, точка вне области
+        if (has_neg && has_pos)
+            return false;
+    }
+
+    // Точка внутри или на границе
+    return true;
+}
+
+// Основная функция для проверки, находится ли точка внутри треугольника
+inline static bool isPointInTriangle(
+        const glm::vec2 point, const std::vector<glm::vec2>& triangle
+) {
+    const glm::vec2& v1 = triangle[0];
+    const glm::vec2& v2 = triangle[1];
+    const glm::vec2& v3 = triangle[2];
+
+    // Вычисляем знаки для векторных произведений
+    float d1 = sign(point, v1, v2);
+    float d2 = sign(point, v2, v3);
+    float d3 = sign(point, v3, v1);
+
+    // Проверяем, что все знаки одинаковые или равны нулю (на границе)
+    bool has_neg = (d1 < 0) || (d2 < 0) || (d3 < 0);
+    bool has_pos = (d1 > 0) || (d2 > 0) || (d3 > 0);
+
+    return !(has_neg && has_pos);
+}
+
+inline static bool isPointOnTriangleEdge(
+        const glm::vec2 p, const std::vector<glm::vec2>& triangle,
+        std::array<glm::vec2, 2>* return_edge = nullptr
+) {
+    std::array<std::array<glm::vec2, 2>, 3> edges = {
+            {{triangle[0], triangle[1]}, {triangle[1], triangle[2]}, {triangle[2], triangle[0]}}
+    };
+
+    for (uint32_t i = 0; i < 3; ++i) {
+        glm::vec2 v1 = edges[i][0];
+        glm::vec2 v2 = edges[i][1];
+        glm::vec2 min = glm::min(v1, v2);
+        glm::vec2 max = glm::max(v1, v2);
+
+        if (std::abs(p.x - v1.x) < 0.01f and std::abs(v1.x - v2.x) < 0.01f) {
+            if (p.y > min.y and p.y < max.y)
+                return true;
+
+        } else if (std::abs(p.y - v1.y) < 0.01f and std::abs(v1.y - v2.y) < 0.01f) {
+            if (p.x > min.x and p.x < max.x)
+                return true;
+
+        } else if (p.y > min.y and p.y < max.y and p.x > min.x and p.x < max.x) {
+            double m = (v2.y - v1.y) / (v2.x - v1.x);
+            double b = (p.x - v1.x) * m + v1.y;
+            if (std::abs(p.y - b) < 0.01f)
+                return true;
+        }
+    }
+
+    return false;
+}
+
+// Функция для вычисления барицентрических координат
+glm::vec3 ComputeBarycentricCoordinates(
+        const glm::vec2& p, const glm::vec2& v0, const glm::vec2& v1, const glm::vec2& v2
+) {
+    // Векторы
+    glm::vec2 v0v1 = v1 - v0;
+    glm::vec2 v0v2 = v2 - v0;
+    glm::vec2 v0p = p - v0;
+
+    // Детерминант (площадь треугольника)
+    float denom = v0v1.x * v0v2.y - v0v1.y * v0v2.x;
+
+    // Проверка на малый детерминант (почти вырожденный треугольник)
+    if (fabs(denom) < 1e-6) {
+        std::cout << "Degenerate triangle or too small area." << std::endl;
+        return glm::vec3(-1.0f, -1.0f, -1.0f); // Возвращаем ошибочные координаты
+    }
+
+    // Барицентрические координаты
+    float v = (v0p.x * v0v2.y - v0p.y * v0v2.x) / denom;
+    float w = (v0v1.x * v0p.y - v0v1.y * v0p.x) / denom;
+    float u = 1.0f - v - w;
+
+    // Проверка на малые отклонения для числовых погрешностей (погрешности вычислений с плавающей
+    // точкой)
+    if (u < -1e-6 || v < -1e-6 || w < -1e-6 || u > 1.0f + 1e-6 || v > 1.0f + 1e-6 ||
+        w > 1.0f + 1e-6) {
+        /*std::cout << "Point outside the triangle (due to numerical issues or calculation errors)."
+                  << std::endl;*/
+        return glm::vec3(-1.0f, -1.0f, -1.0f); // Возвращаем ошибочные координаты
+    }
+
+    return glm::vec3(u, v, w);
 }
 
 
@@ -403,6 +593,35 @@ std::vector<Mesh*> ObjMapModel::generateLod(
                     poly_max.y = p.y;
                     max_index_y = i;
                 }
+
+                if (std::abs(p.x - poly_min.x) < 0.01f) {
+                    if (tex_coords[face.tex_indices[i]].x <
+                        tex_coords[face.tex_indices[min_index_x]].x) {
+                        min_index_x = i;
+                    }
+                }
+                if (std::abs(p.y - poly_min.y) < 0.01f) {
+                    if (tex_coords[face.tex_indices[i]].y <
+                        tex_coords[face.tex_indices[min_index_y]].y) {
+                        min_index_y = i;
+                    }
+                }
+                if (std::abs(p.x - poly_max.x) < 0.01f) {
+                    if (tex_coords[face.tex_indices[i]].x >
+                        tex_coords[face.tex_indices[max_index_x]].x) {
+                        max_index_x = i;
+                    }
+                }
+                if (std::abs(p.y - poly_max.y) < 0.01f) {
+                    if (tex_coords[face.tex_indices[i]].y >
+                        tex_coords[face.tex_indices[max_index_y]].y) {
+                        max_index_y = i;
+                    }
+                }
+            }
+            /*HATE_ERROR("POLY");
+            for (uint32_t i = 0; i < poly.size(); i++) {
+                HATE_WARNING_F("%f %f", poly[i].x, poly[i].y);
             }
 
             glm::vec2 start_tex = {
@@ -414,10 +633,93 @@ std::vector<Mesh*> ObjMapModel::generateLod(
                     tex_coords[face.tex_indices[max_index_y]].y
             };
 
+            HATE_WARNING_F("start_tex: %f %f", start_tex.x, start_tex.y);
+            HATE_WARNING_F("end_tex: %f %f", end_tex.x, end_tex.y);
+
             const glm::vec2 UV_Vertex_K = {
                     (end_tex.x - start_tex.x) / (poly_max.x - poly_min.x),
                     (end_tex.y - start_tex.y) / (poly_max.y - poly_min.y)
             };
+
+            HATE_WARNING_F("UV_Vertex_K: %f %f", UV_Vertex_K.x, UV_Vertex_K.y);*/
+
+            // Triangulate the polygon
+            struct Triange {
+                std::vector<glm::vec2> points;
+                float invDenom;
+                glm::vec2 v0; // v2 - v1
+                glm::vec2 v1v3; // v3 - v1
+                glm::vec2 tex[3];
+            };
+
+            std::vector<Triange> triangles;
+            std::vector<uint32_t> poly_ccw_idx;
+            glm::vec2 poly_center = {0, 0};
+            poly_center.x = (poly_min.x + poly_max.x) / 2;
+            poly_center.y = (poly_min.y + poly_max.y) / 2;
+
+            for (uint32_t i = 0; i < poly.size(); i++) {
+                poly_ccw_idx.push_back(i);
+            }
+
+            // sort in counter clockwise order
+
+            std::sort(
+                    poly_ccw_idx.begin(), poly_ccw_idx.end(),
+                    [&poly_center, &poly](uint32_t& a, uint32_t& b) -> bool {
+                        glm::vec2 a_v = poly[a];
+                        glm::vec2 b_v = poly[b];
+                        float a_angle = std::atan2(a_v.y - poly_center.y, a_v.x - poly_center.x);
+                        float b_angle = std::atan2(b_v.y - poly_center.y, b_v.x - poly_center.x);
+                        return (a_angle > b_angle);
+                    }
+            );
+
+            for (uint32_t i = 2; i < poly_ccw_idx.size(); i++) {
+                Triange t;
+                t.points.push_back(poly[poly_ccw_idx[0]]);
+                t.points.push_back(poly[poly_ccw_idx[i - 1]]);
+                t.points.push_back(poly[poly_ccw_idx[i]]);
+                /*t.tex_coords.push_back(tex_coords[face.tex_indices[0]]);
+                t.tex_coords.push_back(tex_coords[face.tex_indices[i - 1]]);
+                t.tex_coords.push_back(tex_coords[face.tex_indices[i]]);*/
+
+                t.tex[0] = tex_coords[face.tex_indices[poly_ccw_idx[0]]];
+                t.tex[1] = tex_coords[face.tex_indices[poly_ccw_idx[i - 1]]];
+                t.tex[2] = tex_coords[face.tex_indices[poly_ccw_idx[i]]];
+
+                glm::vec2 v1 = poly[poly_ccw_idx[0]];
+                glm::vec2 v2 = poly[poly_ccw_idx[i - 1]];
+                glm::vec2 v3 = poly[poly_ccw_idx[i]];
+
+                // Вычисляем разности
+                t.v0 = v2 - v1;
+                t.v1v3 = v3 - v1;
+
+                // Вычисляем обратное значение детерминанта
+                float denom = t.v0.x * t.v1v3.y - t.v0.y * t.v1v3.x;
+                t.invDenom = 1.0f / denom;
+
+                if (std::abs(denom) < 1e-6f) {
+                    HATE_ERROR("Degenerate triangle or numerical instability detected!");
+                    continue;
+                }
+
+                /*t.tex_coords.push_back(tex_coords[face.tex_indices[0]]);
+                t.tex_coords.push_back(tex_coords[face.tex_indices[i - 1]]);
+                t.tex_coords.push_back(tex_coords[face.tex_indices[i]]);*/
+                triangles.push_back(t);
+            }
+
+            /*for (uint32_t i = 0; i < triangles.size(); i++) {
+                HATE_INFO("TRIANGLE");
+                for (uint32_t j = 0; j < triangles[i].points.size(); j++) {
+                    HATE_WARNING_F("%f %f", triangles[i].points[j].x, triangles[i].points[j].y);
+                }
+            }*/
+
+
+            // triangulatePolygon(poly, triangles);
 
             std::vector<glm::vec2> grid;
             grid.reserve(
@@ -568,6 +870,7 @@ std::vector<Mesh*> ObjMapModel::generateLod(
                 }
             }
 
+            uint32_t i = 0;
             for (const auto& p: grid) {
                 glm::vec3 a = {p.x, p.y, KEY};
                 glm::vec3 new_a = T_inv * a;
@@ -579,9 +882,156 @@ std::vector<Mesh*> ObjMapModel::generateLod(
                 mesh_normals.push_back(face.normal[1]);
                 mesh_normals.push_back(face.normal[2]);
 
-                glm::vec2 uv = p * UV_Vertex_K;
+
+                for (const auto& t: triangles) {
+                    /*HATE_ERROR_F(
+                            "Triangle: %f %f, %f %f, %f %f", t.points[0].x, t.points[0].y,
+                            t.points[1].x, t.points[1].y, t.points[2].x, t.points[2].y
+                    );
+                    HATE_INFO_F("Point: %f %f", p.x, p.y);*/
+
+                    /*glm::vec2 stop_point = {-52.851002, -2.999996};
+                    if (std::abs(p.x - stop_point.x) < 0.01f and
+                        std::abs(p.y - stop_point.y) < 0.01f) {
+                        bool on_edge = isPointOnTriangleEdge(p, t.points);
+                        bool in_polygon = isPointInTriangle(p, t.points);
+                        HATE_INFO_F("on_edge: %d, in_polygon: %d", on_edge, in_polygon);
+                        //HATE_FATAL("STOP");
+                    }*/
+
+                    if (isPointInTriangle(p, t.points) or isPointOnTriangleEdge(p, t.points)) {
+
+                        glm::vec2 point = p;
+
+
+                        glm::vec2 v1 = t.points[0];
+                        glm::vec2 vp = point - v1;
+
+                        // Вычисляем скалярные произведения
+                        float d20 = glm::dot(vp, t.v0);
+                        float d21 = glm::dot(vp, t.v1v3);
+
+                        // Вычисляем барицентрические координаты
+                        float v = (t.v1v3.y * d20 - t.v0.y * d21) * t.invDenom;
+                        float w = (t.v0.x * d21 - t.v1v3.x * d20) * t.invDenom;
+                        float u = 1.0f - v - w;
+
+                        glm::vec3 bary_coords = ComputeBarycentricCoordinates(
+                                p, t.points[0], t.points[1], t.points[2]
+                        );
+
+                        glm::vec2 uv = bary_coords.x * t.tex[0] + bary_coords.y * t.tex[1] +
+                                       bary_coords.z * t.tex[2];
+
+                        /*HATE_INFO_F(
+                                "Bary coords: %f %f %f", bary_coords.x, bary_coords.y, bary_coords.z
+                        );*/
+
+                        mesh_UVs.push_back(uv.x);
+                        mesh_UVs.push_back(uv.y);
+
+                        // HATE_WARNING("Added");
+                        break;
+                    }
+
+                    bool on_p0 = std::abs(p.x - t.points[0].x) < 0.01f and
+                                 std::abs(p.y - t.points[0].y) < 0.01f;
+                    bool on_p1 = std::abs(p.x - t.points[1].x) < 0.01f and
+                                 std::abs(p.y - t.points[1].y) < 0.01f;
+                    bool on_p2 = std::abs(p.x - t.points[2].x) < 0.01f and
+                                 std::abs(p.y - t.points[2].y) < 0.01f;
+
+                    if (on_p0 or on_p1 or on_p2) {
+                        if (on_p0) {
+                            mesh_UVs.push_back(t.tex[0].x);
+                            mesh_UVs.push_back(t.tex[0].y);
+                        } else if (on_p1) {
+                            mesh_UVs.push_back(t.tex[1].x);
+                            mesh_UVs.push_back(t.tex[1].y);
+                        } else {
+                            mesh_UVs.push_back(t.tex[2].x);
+                            mesh_UVs.push_back(t.tex[2].y);
+                        }
+                        // HATE_WARNING("Added Vertex");
+                        break;
+                    }
+
+
+                    std::array<std::array<glm::vec2, 4>, 3> edges = {
+                            {{t.points[0], t.points[1], t.tex[0], t.tex[1]},
+                             {t.points[1], t.points[2], t.tex[1], t.tex[2]},
+                             {t.points[2], t.points[0], t.tex[2], t.tex[0]}}
+                    };
+
+                    /*bool stop = false;
+                    for (uint32_t i = 3; i < 3; ++i) {
+                        glm::vec2 v1 = edges[i][0];
+                        glm::vec2 v2 = edges[i][1];
+                        glm::vec2 min = glm::min(v1, v2);
+                        glm::vec2 max = glm::max(v1, v2);
+
+                        if (std::abs(p.x - v1.x) < 0.01f and std::abs(v1.x - v2.x) < 0.01f) {
+                            if (p.y > min.y and p.y < max.y) {
+                                glm::vec2 t0 = edges[i][2];
+                                glm::vec2 t1 = edges[i][3];
+
+                                float l = v2.y - v1.y;
+                                float procent = (p.y - v1.y) / l;
+
+                                float x = t0.x + (t1.x - t0.x) * procent;
+
+                                mesh_UVs.push_back(x);
+                                mesh_UVs.push_back(t0.y);
+                                //HATE_WARNING("Added Edge V");
+                                stop = true;
+                                break;
+                            }
+                        } else if (std::abs(p.y - v1.y) < 0.01f and std::abs(v1.y - v2.y) < 0.01f) {
+                            if (p.x > min.x and p.x < max.x) {
+                                // TODO: Horizontal
+                                // return true;
+                                // float m = (max.y - min.y) / (max.x - min.x);
+                                // float y =
+                                glm::vec2 t0 = edges[i][2];
+                                glm::vec2 t1 = edges[i][3];
+
+                                float l = v2.x - v1.x;
+                                float procent = (p.x - v1.x) / l;
+
+                                float y = t0.y + (t1.y - t0.y) * procent;
+
+                                mesh_UVs.push_back(t0.x);
+                                mesh_UVs.push_back(y);
+                                //HATE_WARNING("Added Edge H");
+                                stop = true;
+                                break;
+                            }
+                        } else if (p.y > min.y and p.y < max.y and p.x > min.x and p.x < max.x) {
+                            float m = (max.y - min.y) / (max.x - min.x);
+                            float b = p.x * m - min.y;
+
+                            //HATE_INFO_F("Point: %f %f, b: %f", p.x, p.y, b);
+                            if (std::abs(p.y - b) < 0.01f) {
+                                // TODO: Diagonal
+                                stop = true;
+                                break;
+                            }
+                        }
+                    }
+
+                    if (stop)
+                        break;*/
+                }
+
+
+                /*glm::vec2 uv = {
+                        start_tex.x + (p.x - poly_min.x) * UV_Vertex_K.x,
+                        start_tex.y + (p.y - poly_min.y) * UV_Vertex_K.y
+                };
+                //glm::vec2 uv = p;
                 mesh_UVs.push_back(uv.x);
                 mesh_UVs.push_back(uv.y);
+                i++;*/
             }
         }
 
@@ -613,11 +1063,12 @@ std::vector<Mesh*> ObjMapModel::generateLod(
 
 
         Mesh* mesh = new Mesh(mesh_vertices, mesh_indicies, mesh_normals);
+        mesh->setName(obj.name);
         mesh->setPosition(center);
         mesh->setUV(mesh_UVs);
         bindObj(mesh);
 
-        if (obj.material != "") {
+        if (obj.material != "" and this->materials.count(obj.material) > 0) {
             mesh->setTexture(&this->textures[this->materials[obj.material].texture_id]);
         }
         //  mesh->disableLightShading();
@@ -628,6 +1079,88 @@ std::vector<Mesh*> ObjMapModel::generateLod(
 }
 
 
+// Function to sort vertices in counter clockwise order (thanks ChatGPT)
+inline static void sortVerticesCCW(std::vector<glm::vec3>* vertices, const glm::vec3& normal) {
+    // Calculate centroid
+    glm::vec3 centroid(0.0f);
+    for (const auto& v: *vertices) {
+        centroid += v;
+    }
+    centroid /= static_cast<float>(vertices->size());
+
+    // Find two orthogonal vectors
+    glm::vec3 up = (fabs(normal.x) > 0.0001f) ? glm::vec3(0, 1, 0) : glm::vec3(1, 0, 0);
+    glm::vec3 tangent = glm::normalize(glm::cross(up, normal));
+    glm::vec3 bitangent = glm::normalize(glm::cross(normal, tangent));
+
+    // Lambda function to calculate angle
+    auto calculateAngle = [&](const glm::vec3& vertex) {
+        glm::vec3 relative = vertex - centroid;
+        float x = glm::dot(relative, tangent);
+        float y = glm::dot(relative, bitangent);
+        return std::atan2(y, x); // Угол в 2D
+    };
+
+    // Sort vertices by angles
+    std::sort(vertices->begin(), vertices->end(), [&](const glm::vec3& a, const glm::vec3& b) {
+        return calculateAngle(a) > calculateAngle(b);
+    });
+}
+
+void ObjMapModel::generateCollision(
+        std::vector<glm::vec3>& vertices, std::vector<ObjObject>& objects
+) {
+    // Collision generation
+    for (auto& obj: objects) {
+        std::vector<float> obj_vertices;
+        std::vector<std::vector<uint32_t>> obj_faces_indices;
+
+        std::unordered_map<uint32_t, uint32_t> vertex_map;
+        for (auto& face: obj.faces) {
+            std::vector<uint32_t> face_indices;
+
+            std::vector<glm::vec3> sorted_vertices; // Vector for sort in CCW
+            std::vector<glm::vec3> norm_vertices; // Original vertices
+            std::vector<uint32_t> norm_indices; // 'Map' alternate
+            for (auto& index: face.indices) {
+                sorted_vertices.push_back(vertices[index]);
+                norm_vertices.push_back(vertices[index]);
+                norm_indices.push_back(index);
+            }
+            sortVerticesCCW(&sorted_vertices, face.normal);
+
+            face.indices.clear();
+            for (auto& vertex: sorted_vertices) {
+                auto it = std::find(norm_vertices.begin(), norm_vertices.end(), vertex);
+                face.indices.push_back(norm_indices[it - norm_vertices.begin()]);
+            }
+
+            for (auto& index: face.indices) {
+                if (vertex_map.count(index) == 0) {
+                    vertex_map[index] = obj_vertices.size() / 3;
+                    obj_vertices.push_back(vertices[index].z);
+                    obj_vertices.push_back(vertices[index].y);
+                    obj_vertices.push_back(vertices[index].x);
+                    face_indices.push_back(vertex_map[index]);
+
+                } else {
+                    face_indices.push_back(vertex_map[index]);
+                }
+            }
+            obj_faces_indices.push_back(face_indices);
+        }
+
+        convex_shapes.push_back(
+                ConvexShape(obj_vertices, obj_faces_indices, glm::vec3(0, 0, 0), glm::vec3(0, 0, 0))
+        );
+    }
+
+    for (auto& shape: convex_shapes) {
+        static_body.addCollisionShapeRef(&shape);
+    }
+}
+
+
 StaticBody* ObjMapModel::getStaticBody() {
     return &static_body;
 }
@@ -635,14 +1168,24 @@ StaticBody* ObjMapModel::getStaticBody() {
 
 /*==================================> STRING FUNCS <=========================================*/
 
-std::vector<std::string> split(std::string str, char delimiter) {
-    std::vector<std::string> result;
-    std::string token;
-    std::istringstream tokenStream(str);
-    while (std::getline(tokenStream, token, delimiter)) {
-        // HATE_DEBUG_F("Token: '%s'", token.c_str())
-        if (not token.empty())
-            result.push_back(token);
+std::vector<std::string> split(const std::string& str, const std::string& delimiters) {
+    std::vector<std::string> tokens;
+    size_t start = 0;
+    size_t end = 0;
+
+    while ((end = str.find_first_of(delimiters, start)) != std::string::npos) {
+        if (end > start)
+            tokens.push_back(str.substr(start, end - start)); // Extract token
+        start = end + 1; // Move past the delimiter
     }
-    return result;
+    if (start < str.length()) {
+        tokens.push_back(str.substr(start)); // Add the last token
+    }
+
+    return tokens;
+}
+
+void trim(std::string& str) {
+    str.erase(str.find_last_not_of(" \t\n\v\r") + 1);
+    str.erase(0, str.find_first_not_of(" \t\n\v\r"));
 }

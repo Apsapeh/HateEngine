@@ -9,7 +9,7 @@
 
 namespace HateEngine {
     class ObjMapModel : public Model {
-
+    public:
     private:
         struct Material {
             size_t texture_id;
@@ -28,17 +28,24 @@ namespace HateEngine {
         };
 
         void parseObj(
-                std::string data, float lod_dist, float lod_step, class HERFile* her = nullptr
+                std::string data, float grid_size, float lod_dist, float lod_step,
+                class HERFile* her = nullptr
         );
         std::unordered_map<std::string, Material> parseMtlLib(
                 std::string data, class HERFile* her = nullptr
         );
+
+        void parseMap(std::string data, float grid_size);
 
         std::vector<Mesh*> generateLod(
                 std::vector<glm::vec3> vertices, std::vector<glm::vec2> tex_coords,
                 std::vector<ObjObject> objects, float step = 1.0f
         );
 
+        void generateCollision(std::vector<glm::vec3>& vertices, std::vector<ObjObject>& objects);
+
+        std::string obj_file_name;
+        std::string map_file_name;
         std::string obj_file_path;
         std::unordered_map<std::string, Material> materials;
 
@@ -53,7 +60,7 @@ namespace HateEngine {
          * @param str File name
          */
         ObjMapModel(
-                std::string obj_file_name, std::string map_file_name,
+                std::string obj_file_name, std::string map_file_name, float grid_size = 16.0f,
                 bool generate_collision = true, float lod_dist = 15, float lod_step = 1.0
         );
 
@@ -67,7 +74,8 @@ namespace HateEngine {
         ObjMapModel(
 
                 std::string obj_file_data, std::string map_file_data, class HERFile* her,
-                bool generate_collision = true, float lod_dist = 15, float lod_step = 1.0
+                float grid_size = 16.0f, bool generate_collision = true, float lod_dist = 15,
+                float lod_step = 1.0
         );
 
         StaticBody* getStaticBody();

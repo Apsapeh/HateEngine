@@ -108,12 +108,12 @@ HERFile::HERFile(std::string path, std::string password) {
 }
 
 ObjMapModel HERFile::loadObjMap(
-        std::string obj_file_name, std::string map_file_name, bool generate_collision,
-        float lod_dist, float lod_step
+        std::string obj_file_name, std::string map_file_name, float grid_size,
+        bool generate_collision, float lod_dist, float lod_step
 ) {
     std::string obj = (*this)[obj_file_name].asString();
     std::string map = (*this)[map_file_name].asString();
-    return ObjMapModel(obj, map, this, generate_collision, lod_dist, lod_step);
+    return ObjMapModel(obj, map, this, grid_size, generate_collision, lod_dist, lod_step);
 }
 
 HERResource HERFile::operator[](std::string key) {

@@ -10,6 +10,7 @@
 #include "HateEngine/Objects/GLTFAnimationPlayer.hpp"
 #include "HateEngine/Objects/Light/Light.hpp"
 #include "HateEngine/Objects/Light/SpotLight.hpp"
+#include "HateEngine/Objects/Mesh.hpp"
 #include "HateEngine/Objects/Model.hpp"
 #include "HateEngine/Resources/Level.hpp"
 #include "glm/ext/matrix_float4x4.hpp"
@@ -292,10 +293,7 @@ void OpenGL15::render(const Mesh* mesh, std::vector<Light*>* lights_vec) {
             float max_light_render_dist = mesh->getCustomMaxLightDist();
             if (max_light_render_dist == 0)
                 max_light_render_dist = this->maxLightRenderDist;
-            light_indicies = getNearestLights(
-                    lights_vec, mesh->getGlobalPosition(),
-                    max_light_render_dist + mesh->getAABBRadius()
-            );
+            light_indicies = getNearestLights(lights_vec, mesh, max_light_render_dist);
             renderLight(lights_vec, light_indicies);
         } else {
             glDisable(GL_LIGHTING);
@@ -402,7 +400,7 @@ struct LightDistSt {
 };
 
 inline std::vector<int> OpenGL15::getNearestLights(
-        std::vector<Light*>* lights_vec, glm::vec3 position, float max_light_render_dist
+        std::vector<Light*>* lights_vec, const Mesh* mesh, float max_light_render_dist
 ) {
     std::vector<int> result;
 
@@ -415,7 +413,7 @@ inline std::vector<int> OpenGL15::getNearestLights(
         if (light->getLightType() == Light::LightTypeEnum::DirectionalLight)
             result.push_back(i);
         else
-            light_dist.push_back({glm::length(position - light->getGlobalPosition()), i});
+            light_dist.push_back({mesh->getAABBDistanceToPoint(light->getGlobalPosition()), i});
     }
 
     // if

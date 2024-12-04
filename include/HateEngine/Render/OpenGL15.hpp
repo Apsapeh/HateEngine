@@ -68,7 +68,7 @@ namespace HateEngine {
          * \return Vector of indicies of the nearest lights
          */
         inline std::vector<int> getNearestLights(
-                std::vector<Light*>* lights_vec, glm::vec3 position, float max_light_render_dist
+                std::vector<Light*>* lights_vec, const Mesh* mesh, float max_light_render_dist
         );
 
         static void loadTexture(Texture* texture_ptr);

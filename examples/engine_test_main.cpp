@@ -27,6 +27,7 @@
 #include <HateEngine/Resources/HERFile.hpp>
 #include <HateEngine/Resources/ObjMapModel.hpp>
 #include <cmath>
+#include <cstdint>
 #include <glm/ext.hpp>
 #include <glm/glm.hpp>
 #include <glm/gtx/quaternion.hpp>
@@ -44,6 +45,7 @@
 #include <HateEngine/Resources/Audio.hpp>
 #include <HateEngine/Objects/AudioPlayer.hpp>
 #include <HateEngine/AudioServer.hpp>
+#include <sys/types.h>
 
 #define WINVER 0x0501
 #define _WIN32_WINNT 0x0501
@@ -129,6 +131,8 @@ int main() {
     // dirLight.rotate(45, 0, 0);
     glm::vec3 dir = dirLight.getDirection();
 
+    light.setVisible(true);
+
     // HATE_FATAL_F("Direction x: %f, y: %f, z: %f", dir.x, dir.y, dir.z);
 
     // floor.setRotationMatrix(matfloor);
@@ -138,7 +142,7 @@ int main() {
 
     // sun.setPosition({1.0, 1.0, 1.0});
     sun.rotate(-45, 45, 0);
-    sun.setVisible(false);
+    // sun.setVisible(false);
 
     mesh2.setPosition(3, 3, 3);
 
@@ -207,9 +211,9 @@ int main() {
     audioPlayer1.setPosition(0, 2, 0);
     playerCapsuleMesh.bindObj(&audioPlayer2);
 
-    ambientPlayer.play();
-    audioPlayer1.play();
-    audioPlayer2.play();
+    // ambientPlayer.play();
+    // audioPlayer1.play();
+    // audioPlayer2.play();
 
     /*===============================================================*/
 
@@ -244,7 +248,7 @@ int main() {
 
     playerCapsuleMesh.bindObj(test_glmodel);
 
-    test_glmodel->offset(0.5, -0.5, -2);
+    // test_glmodel->offset(0.5, -0.5, -2);
     test_glmodel->setScale(0.25, 0.25, 0.25);
     test_glmodel->setRotation(0, 180, 0);
 
@@ -283,10 +287,65 @@ int main() {
     billboardMesh.setCorrectTransparency(true);
     lvl.addObjectRef(&billboardMesh);
 
-    HateEngine::ObjMapModel objmodel("examples/Assets/untitled.obj", "examples/Assets/unnamed.map");
+    HateEngine::ObjMapModel objmodel(
+            "examples/Assets/Ignore/E1M1.obj", "examples/Assets/Ignore/E1M1.map", 16.0, true, 15, 1
+    );
+    // HATE_FATAL("UOEAUOAEU00");
+
+    uint32_t vertex_count = 0;
+    uint32_t uv_count = 0;
+    for (auto& m: objmodel.getLOD(0)) {
+        // HATE_INFO_F("Name: %s", m->getName().c_str());
+        //  if (m->getName() == "entity0_brush663") {
+        // if (m->getName() == "entity0_brush961") {
+        /*if (m->getName() == "entity0_brush143") {
+            // m->setVisible(false);
+            HATE_INFO("VERTICES:")
+            const auto& vertices = m->getVertices();
+            const glm::vec3 pos = m->getPosition();
+            for (uint32_t i = 0; i < vertices->size(); i += 3) {
+                vertex_count += 1;
+                HATE_INFO_F(
+                        "X: %f, Y: %f, Z: %f", vertices->at(i) + pos.x, vertices->at(i + 1) + pos.y,
+                        vertices->at(i + 2) + pos.z
+                );
+            }
+
+            HATE_INFO("TEX COORDS:")
+            const auto& tex_coords = m->getUV();
+            for (uint32_t i = 0; i < tex_coords->size(); i += 2) {
+                uv_count += 1;
+                HATE_INFO_F("U: %f, V: %f", tex_coords->at(i), tex_coords->at(i + 1));
+            }
+        }*/
+
+        uint32_t vc = 0;
+        uint32_t uvc = 0;
+        const auto& vertices = m->getVertices();
+        const glm::vec3 pos = m->getPosition();
+        for (uint32_t i = 0; i < vertices->size(); i += 3) {
+            vc += 1;
+        }
+
+        const auto& tex_coords = m->getUV();
+        for (uint32_t i = 0; i < tex_coords->size(); i += 2) {
+            uvc += 1;
+        }
+
+        if (vc != uvc) {
+            HATE_ERROR_F("Name: %s", m->getName().c_str());
+            HATE_ERROR_F("Vertex count: %d", vc);
+            HATE_ERROR_F("UV count: %d", uvc);
+        }
+    }
+    HATE_ERROR_F("Vertex count: %d", vertex_count);
+    HATE_ERROR_F("UV count: %d", uv_count);
+
+    // objmodel.setScale(0.0625, 0.0625, 0.0625);
     /*HateEngine::ObjMapModel objmodel =
             herfile.loadObjMap("untitled.obj", "unnamed.map", true, 15, 1);*/
-    objmodel.offset(0, -180, -20);
+    // objmodel.offset(0, -180, -20);
+    objmodel.offset(-60, -20, 60);
 
     for (auto& m: objmodel.getLOD(0)) {
         glm::vec3 min = m->getAABBMin();
@@ -303,6 +362,7 @@ int main() {
     }
 
     lvl.addObjectRef(&objmodel);
+
     /*for (auto& m: objmodel.getMeshes()) {
         std::cout << "POS: " << m->getPosition().x << " " << m->getPosition().y << " "
                   << m->getPosition().z << std::endl;
