@@ -47,6 +47,10 @@ namespace HateEngine {
         Texture(std::vector<uint8_t> data, int width, int height, TexType tex_type,
                 TexWrap tex_wrap = Repeat, TexFiltering tex_filtering = Linear, bool mipmap = true,
                 float mipmap_bias = -1.0f, bool autoload = true);
+
+        // Load packed
+        Texture(std::vector<uint8_t> data, TexWrap tex_wrap = Repeat,
+                TexFiltering tex_filtering = Linear, bool mipmap = true, float mipmap_bias = -1.0f);
         ~Texture();
         bool Load(
                 void (*API_loader)(Texture* texture_ptr), void (*API_unloader)(Texture* texture_ptr)

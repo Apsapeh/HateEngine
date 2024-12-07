@@ -23,19 +23,7 @@ Texture HERResource::asTexture(
         Texture::TexWrap tex_wrap, Texture::TexFiltering tex_filtering, bool mipmap,
         float mipmap_bias, bool autoload
 ) {
-    // return Texture(this->data, this->width, this->height);
-    int n, width, height;
-    Texture::TexType textureFormat = Texture::RGB;
-
-    unsigned char* s_data =
-            stbi_load_from_memory(this->data.data(), this->data.size(), &width, &height, &n, 0);
-    if (n == 4)
-        textureFormat = Texture::RGBA;
-    this->data = std::vector<uint8_t>(s_data, s_data + width * height * n);
-    stbi_image_free(s_data);
-    return Texture(
-            this->data, width, height, textureFormat, tex_wrap, tex_filtering, mipmap, mipmap_bias
-    );
+    return Texture(this->data, tex_wrap, tex_filtering, mipmap, mipmap_bias);
 }
 
 GLTFModel HERResource::asGLBModel() {

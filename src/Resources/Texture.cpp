@@ -116,6 +116,30 @@ Texture::Texture(
         Load();*/
 }
 
+Texture::Texture(
+        std::vector<uint8_t> data, TexWrap tex_wrap, TexFiltering tex_filtering, bool mipmap,
+        float mipmap_bias
+) {
+    int n, width, height;
+    Texture::TexType textureFormat = Texture::RGB;
+
+    unsigned char* s_data = stbi_load_from_memory(data.data(), data.size(), &width, &height, &n, 0);
+    if (n == 4)
+        textureFormat = Texture::RGBA;
+    this->data = std::vector<uint8_t>(s_data, s_data + width * height * n);
+    stbi_image_free(s_data);
+
+    this->width = width;
+    this->height = height;
+    this->textureFormat = textureFormat;
+    this->texWrap = tex_wrap;
+    this->texFiltering = tex_filtering;
+    this->texMipMapFiltering = tex_filtering;
+    if (mipmap)
+        this->texMipMapFiltering += GL_NEAREST_MIPMAP_LINEAR - GL_NEAREST;
+    this->MipMapLodBias = mipmap_bias;
+}
+
 Texture::~Texture() {
     Unload();
 }
