@@ -131,7 +131,7 @@ int main() {
     // dirLight.rotate(45, 0, 0);
     glm::vec3 dir = dirLight.getDirection();
 
-    light.setVisible(true);
+    light.setVisible(false);
 
     // HATE_FATAL_F("Direction x: %f, y: %f, z: %f", dir.x, dir.y, dir.z);
 
@@ -142,7 +142,7 @@ int main() {
 
     // sun.setPosition({1.0, 1.0, 1.0});
     sun.rotate(-45, 45, 0);
-    // sun.setVisible(false);
+    sun.setVisible(false);
 
     mesh2.setPosition(3, 3, 3);
 
@@ -287,8 +287,42 @@ int main() {
     billboardMesh.setCorrectTransparency(true);
     lvl.addObjectRef(&billboardMesh);
 
+    /*const auto desers = std::make_pair(
+            std::unordered_map<std::string, HateEngine::ObjMapModel::EntityDeserialzer>(
+
+            ),
+            nullptr
+    );*/
+
     HateEngine::ObjMapModel objmodel(
             "examples/Assets/Ignore/E1M1.obj", "examples/Assets/Ignore/E1M1.map", 16.0, true, 15, 1
+    );
+    objmodel.deserializeEntities(
+            {{"light",
+              [](HE_ENTITY_DE_PARAMS) {
+                  HateEngine::OmniLight* light = new HateEngine::OmniLight();
+                  light->setPosition(entity.position);
+                  light->setColor({10, 0, 0, 1});
+                  model->bindObj(light);
+                  model->addEntityObjectToLevel(light);
+
+                  auto lights = static_cast<std::vector<HateEngine::OmniLight*>*>(data);
+                  lights->push_back(light);
+
+                  HateEngine::CubeMesh* cube = new HateEngine::CubeMesh();
+                  // cube->setSize(0.1, 0.1, 0.1);
+                  cube->setPosition(entity.position);
+                  model->bindObj(cube);
+                  model->addEntityObjectToLevel(cube);
+              }}},
+            new std::vector<HateEngine::OmniLight*>,
+            [](void* data) {
+                auto lights = static_cast<std::vector<HateEngine::OmniLight*>*>(data);
+                for (auto light: *lights) {
+                    delete light;
+                }
+                delete lights;
+            }
     );
     // HATE_FATAL("UOEAUOAEU00");
 

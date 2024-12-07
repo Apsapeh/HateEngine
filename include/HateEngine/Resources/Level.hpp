@@ -98,6 +98,8 @@ namespace HateEngine {
         std::mutex particlesMutex;
         std::mutex lightsMutex;
 
+        bool auto_updates_enabled =
+                true; // Hack to improve performance, when adding multiple objects
         void updateMeshesVector();
         void updateModelsVector();
         void updateAnimationPlayersVector();

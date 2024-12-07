@@ -10,6 +10,7 @@
 #include <vector>
 
 #include "HateEngine/Log.hpp"
+#include "HateEngine/Objects/Object.hpp"
 #include "HateEngine/Objects/Physics/ConvexShape.hpp"
 #include "HateEngine/Objects/Physics/StaticBody.hpp"
 #include "glm/ext/vector_float2.hpp"
@@ -22,7 +23,6 @@ using namespace HateEngine;
 
 std::vector<std::string> split(const std::string& str, const std::string& delimiters);
 void trim(std::string& str);
-
 
 ObjMapModel::ObjMapModel(
         std::string obj_filename, std::string map_file_name, float grid_size,
@@ -63,8 +63,9 @@ ObjMapModel::ObjMapModel(
     parseMap(map_data, grid_size);
 }
 
+
 ObjMapModel::ObjMapModel(
-        std::string obj_file_data, std::string map_file_data, HERFile* her, float grid_size,
+        HERFile* her, std::string obj_file_data, std::string map_file_data, float grid_size,
         bool generate_collision, float lod_dist, float lod_step
 
 ) {
@@ -72,6 +73,48 @@ ObjMapModel::ObjMapModel(
     this->generate_collision = generate_collision;
     parseObj(obj_file_data, grid_size, lod_dist, lod_step, her);
     parseMap(map_file_data, grid_size);
+}
+
+ObjMapModel::~ObjMapModel() {
+    if (entities_data_deleter != nullptr)
+        entities_data_deleter(entities_data);
+}
+
+void ObjMapModel::deserializeEntities(
+        const std::unordered_map<std::string, EntityDeserialzer>& entity_deserializers, void* data,
+        void (*data_deleter)(void*)
+) {
+    for (auto& entity: entities) {
+        if (entity_deserializers.count(entity.classname))
+            entity_deserializers.at(entity.classname)(this, entity, data);
+    }
+
+    entities_data = data;
+
+    if (data_deleter != nullptr)
+        this->entities_data_deleter = data_deleter;
+}
+
+void ObjMapModel::addEntityObjectToLevel(Mesh* object) {
+    add_to_level_meshes.push_back(object);
+}
+void ObjMapModel::addEntityObjectToLevel(BillboardMesh* object) {
+    add_to_level_billboards.push_back(object);
+}
+void ObjMapModel::addEntityObjectToLevel(Light* object) {
+    add_to_level_lights.push_back(object);
+}
+void ObjMapModel::addEntityObjectToLevel(Model* object) {
+    add_to_level_models.push_back(object);
+}
+void ObjMapModel::addEntityObjectToLevel(ObjMapModel* object) {
+    add_to_level_objMapModels.push_back(object);
+}
+void ObjMapModel::addEntityObjectToLevel(GLTFAnimationPlayer* object) {
+    add_to_level_animationPlayers.push_back(object);
+}
+void ObjMapModel::addEntityObjectToLevel(Particles* object) {
+    add_to_level_particles.push_back(object);
 }
 
 /*======================================> PARSERS <==============================================*/
@@ -134,14 +177,6 @@ void ObjMapModel::parseObj(
                     prev_n_index = n_i;
                 }
             }
-
-            /*std::string ti;
-            for (uint32_t i = 0; i < t_indices.size(); i++) {
-                ti += std::to_string(t_indices[i]);
-                if (i < t_indices.size() - 1)
-                    ti += " ";
-            }
-            HATE_WARNING_F("Indices: %s", ti.c_str());*/
 
             ObjFace face;
             face.indices = v_indices;
@@ -245,15 +280,8 @@ std::unordered_map<std::string, ObjMapModel::Material> ObjMapModel::parseMtlLib(
 }
 
 
-struct Entity {
-    std::string classname;
-    glm::vec3 pos;
-    std::unordered_map<std::string, std::string> properties;
-};
-
 void ObjMapModel::parseMap(std::string data, float grid_size) {
-    std::vector<Entity> entities;
-    Entity* current_entity = nullptr;
+    Entity current_entity;
 
     std::string line;
     std::istringstream tokenStream(data);
@@ -309,9 +337,10 @@ void ObjMapModel::parseMap(std::string data, float grid_size) {
             }
 
             if (bracket_depth == 1) {
-                HATE_DEBUG("");
-                entities.push_back(Entity());
-                current_entity = &entities[entities.size() - 1];
+                // New entity
+                // entities.push_back(Entity());
+                // current_entity = &entities[entities.size() - 1];
+                current_entity = Entity();
             }
         } else if (line[0] == '}') {
             if (bracket_depth == 0) {
@@ -322,7 +351,9 @@ void ObjMapModel::parseMap(std::string data, float grid_size) {
                 return;
             }
             bracket_depth--;
-            current_entity = nullptr;
+
+            if (!current_entity.classname.empty() and current_entity.classname != "worldspawn")
+                entities.push_back(current_entity);
         } else {
             if (bracket_depth != 1) {
                 HATE_WARNING_F(
@@ -338,30 +369,20 @@ void ObjMapModel::parseMap(std::string data, float grid_size) {
                         "ObjMapModel [%s]: Unexpected parametre at line %d, skip",
                         map_file_name.c_str(), line_num
                 );
-
-                for (uint32_t i = 0; i < words.size(); i++)
-                    HATE_DEBUG_F("Word %d: '%s'", i, words[i].c_str());
-
                 continue;
             }
 
-            std::string value = words[1].substr(1, words[1].size() - 2);
-            HATE_DEBUG_F(
-                    "ObjMapModel [%s]: %s = %s", map_file_name.c_str(), words[0].c_str(),
-                    value.c_str()
-            );
+            trim(words[0]);
+            trim(words[1]);
+            // HATE_ERROR_F("Word_0: %s, Word_1: %s", words[0].c_str(), words[1].c_str());
 
             if (words[0] == "classname") {
-                current_entity->classname = words[1];
+                current_entity.classname = words[1];
             } else if (words[0] == "origin") {
-                std::vector<std::string> coords = split(words[1], " ");
-                // XZY
-                current_entity->pos = glm::vec3(
-                        std::stof(coords[0]) / grid_size, std::stof(coords[2]) / grid_size,
-                        std::stof(coords[1]) / grid_size
-                );
+                Property prop(words[1]);
+                current_entity.position = prop.asVec3XZY() / grid_size;
             } else {
-                current_entity->properties[words[0]] = words[1];
+                current_entity.properties.insert({words[0], Property(words[1])});
             }
         }
     }
@@ -571,84 +592,17 @@ std::vector<Mesh*> ObjMapModel::generateLod(
 
             glm::vec2 poly_min = poly[0];
             glm::vec2 poly_max = poly[0];
-            uint32_t min_index_x = 0;
-            uint32_t max_index_x = 0;
-            uint32_t min_index_y = 0;
-            uint32_t max_index_y = 0;
             for (uint32_t i = 1; i < poly.size(); i++) {
                 glm::vec2 p = poly[i];
-                if (p.x < poly_min.x) {
-                    poly_min.x = p.x;
-                    min_index_x = i;
-                }
-                if (p.y < poly_min.y) {
-                    poly_min.y = p.y;
-                    min_index_y = i;
-                }
-                if (p.x > poly_max.x) {
-                    poly_max.x = p.x;
-                    max_index_x = i;
-                }
-                if (p.y > poly_max.y) {
-                    poly_max.y = p.y;
-                    max_index_y = i;
-                }
-
-                if (std::abs(p.x - poly_min.x) < 0.01f) {
-                    if (tex_coords[face.tex_indices[i]].x <
-                        tex_coords[face.tex_indices[min_index_x]].x) {
-                        min_index_x = i;
-                    }
-                }
-                if (std::abs(p.y - poly_min.y) < 0.01f) {
-                    if (tex_coords[face.tex_indices[i]].y <
-                        tex_coords[face.tex_indices[min_index_y]].y) {
-                        min_index_y = i;
-                    }
-                }
-                if (std::abs(p.x - poly_max.x) < 0.01f) {
-                    if (tex_coords[face.tex_indices[i]].x >
-                        tex_coords[face.tex_indices[max_index_x]].x) {
-                        max_index_x = i;
-                    }
-                }
-                if (std::abs(p.y - poly_max.y) < 0.01f) {
-                    if (tex_coords[face.tex_indices[i]].y >
-                        tex_coords[face.tex_indices[max_index_y]].y) {
-                        max_index_y = i;
-                    }
-                }
+                poly_min.x = std::min(p.x, poly_min.x);
+                poly_min.y = std::min(p.y, poly_min.y);
+                poly_max.x = std::max(p.x, poly_max.x);
+                poly_max.y = std::max(p.y, poly_max.y);
             }
-            /*HATE_ERROR("POLY");
-            for (uint32_t i = 0; i < poly.size(); i++) {
-                HATE_WARNING_F("%f %f", poly[i].x, poly[i].y);
-            }
-
-            glm::vec2 start_tex = {
-                    tex_coords[face.tex_indices[min_index_x]].x,
-                    tex_coords[face.tex_indices[min_index_y]].y
-            };
-            glm::vec2 end_tex = {
-                    tex_coords[face.tex_indices[max_index_x]].x,
-                    tex_coords[face.tex_indices[max_index_y]].y
-            };
-
-            HATE_WARNING_F("start_tex: %f %f", start_tex.x, start_tex.y);
-            HATE_WARNING_F("end_tex: %f %f", end_tex.x, end_tex.y);
-
-            const glm::vec2 UV_Vertex_K = {
-                    (end_tex.x - start_tex.x) / (poly_max.x - poly_min.x),
-                    (end_tex.y - start_tex.y) / (poly_max.y - poly_min.y)
-            };
-
-            HATE_WARNING_F("UV_Vertex_K: %f %f", UV_Vertex_K.x, UV_Vertex_K.y);*/
 
             // Triangulate the polygon
             struct Triange {
                 std::vector<glm::vec2> points;
-                float invDenom;
-                glm::vec2 v0; // v2 - v1
-                glm::vec2 v1v3; // v3 - v1
                 glm::vec2 tex[3];
             };
 
@@ -680,46 +634,13 @@ std::vector<Mesh*> ObjMapModel::generateLod(
                 t.points.push_back(poly[poly_ccw_idx[0]]);
                 t.points.push_back(poly[poly_ccw_idx[i - 1]]);
                 t.points.push_back(poly[poly_ccw_idx[i]]);
-                /*t.tex_coords.push_back(tex_coords[face.tex_indices[0]]);
-                t.tex_coords.push_back(tex_coords[face.tex_indices[i - 1]]);
-                t.tex_coords.push_back(tex_coords[face.tex_indices[i]]);*/
 
                 t.tex[0] = tex_coords[face.tex_indices[poly_ccw_idx[0]]];
                 t.tex[1] = tex_coords[face.tex_indices[poly_ccw_idx[i - 1]]];
                 t.tex[2] = tex_coords[face.tex_indices[poly_ccw_idx[i]]];
 
-                glm::vec2 v1 = poly[poly_ccw_idx[0]];
-                glm::vec2 v2 = poly[poly_ccw_idx[i - 1]];
-                glm::vec2 v3 = poly[poly_ccw_idx[i]];
-
-                // Вычисляем разности
-                t.v0 = v2 - v1;
-                t.v1v3 = v3 - v1;
-
-                // Вычисляем обратное значение детерминанта
-                float denom = t.v0.x * t.v1v3.y - t.v0.y * t.v1v3.x;
-                t.invDenom = 1.0f / denom;
-
-                if (std::abs(denom) < 1e-6f) {
-                    HATE_ERROR("Degenerate triangle or numerical instability detected!");
-                    continue;
-                }
-
-                /*t.tex_coords.push_back(tex_coords[face.tex_indices[0]]);
-                t.tex_coords.push_back(tex_coords[face.tex_indices[i - 1]]);
-                t.tex_coords.push_back(tex_coords[face.tex_indices[i]]);*/
                 triangles.push_back(t);
             }
-
-            /*for (uint32_t i = 0; i < triangles.size(); i++) {
-                HATE_INFO("TRIANGLE");
-                for (uint32_t j = 0; j < triangles[i].points.size(); j++) {
-                    HATE_WARNING_F("%f %f", triangles[i].points[j].x, triangles[i].points[j].y);
-                }
-            }*/
-
-
-            // triangulatePolygon(poly, triangles);
 
             std::vector<glm::vec2> grid;
             grid.reserve(
@@ -778,10 +699,6 @@ std::vector<Mesh*> ObjMapModel::generateLod(
                 grid.push_back(p);
             }
 
-            /*uint32_t g_x = 0;
-            for (float x = poly_min.x; x < poly_max.x; x += step) {g_x++;}
-            uint32_t g_y = 0;
-            for (float y = poly_min.y; y < poly_max.y; y += step) {g_y++;}*/
 
             uint32_t g_x = std::ceil((poly_max.x - poly_min.x) / step);
             uint32_t g_y = std::ceil((poly_max.y - poly_min.y) / step);
@@ -884,38 +801,7 @@ std::vector<Mesh*> ObjMapModel::generateLod(
 
 
                 for (const auto& t: triangles) {
-                    /*HATE_ERROR_F(
-                            "Triangle: %f %f, %f %f, %f %f", t.points[0].x, t.points[0].y,
-                            t.points[1].x, t.points[1].y, t.points[2].x, t.points[2].y
-                    );
-                    HATE_INFO_F("Point: %f %f", p.x, p.y);*/
-
-                    /*glm::vec2 stop_point = {-52.851002, -2.999996};
-                    if (std::abs(p.x - stop_point.x) < 0.01f and
-                        std::abs(p.y - stop_point.y) < 0.01f) {
-                        bool on_edge = isPointOnTriangleEdge(p, t.points);
-                        bool in_polygon = isPointInTriangle(p, t.points);
-                        HATE_INFO_F("on_edge: %d, in_polygon: %d", on_edge, in_polygon);
-                        //HATE_FATAL("STOP");
-                    }*/
-
                     if (isPointInTriangle(p, t.points) or isPointOnTriangleEdge(p, t.points)) {
-
-                        glm::vec2 point = p;
-
-
-                        glm::vec2 v1 = t.points[0];
-                        glm::vec2 vp = point - v1;
-
-                        // Вычисляем скалярные произведения
-                        float d20 = glm::dot(vp, t.v0);
-                        float d21 = glm::dot(vp, t.v1v3);
-
-                        // Вычисляем барицентрические координаты
-                        float v = (t.v1v3.y * d20 - t.v0.y * d21) * t.invDenom;
-                        float w = (t.v0.x * d21 - t.v1v3.x * d20) * t.invDenom;
-                        float u = 1.0f - v - w;
-
                         glm::vec3 bary_coords = ComputeBarycentricCoordinates(
                                 p, t.points[0], t.points[1], t.points[2]
                         );
@@ -923,14 +809,8 @@ std::vector<Mesh*> ObjMapModel::generateLod(
                         glm::vec2 uv = bary_coords.x * t.tex[0] + bary_coords.y * t.tex[1] +
                                        bary_coords.z * t.tex[2];
 
-                        /*HATE_INFO_F(
-                                "Bary coords: %f %f %f", bary_coords.x, bary_coords.y, bary_coords.z
-                        );*/
-
                         mesh_UVs.push_back(uv.x);
                         mesh_UVs.push_back(uv.y);
-
-                        // HATE_WARNING("Added");
                         break;
                     }
 
@@ -952,86 +832,9 @@ std::vector<Mesh*> ObjMapModel::generateLod(
                             mesh_UVs.push_back(t.tex[2].x);
                             mesh_UVs.push_back(t.tex[2].y);
                         }
-                        // HATE_WARNING("Added Vertex");
                         break;
                     }
-
-
-                    std::array<std::array<glm::vec2, 4>, 3> edges = {
-                            {{t.points[0], t.points[1], t.tex[0], t.tex[1]},
-                             {t.points[1], t.points[2], t.tex[1], t.tex[2]},
-                             {t.points[2], t.points[0], t.tex[2], t.tex[0]}}
-                    };
-
-                    /*bool stop = false;
-                    for (uint32_t i = 3; i < 3; ++i) {
-                        glm::vec2 v1 = edges[i][0];
-                        glm::vec2 v2 = edges[i][1];
-                        glm::vec2 min = glm::min(v1, v2);
-                        glm::vec2 max = glm::max(v1, v2);
-
-                        if (std::abs(p.x - v1.x) < 0.01f and std::abs(v1.x - v2.x) < 0.01f) {
-                            if (p.y > min.y and p.y < max.y) {
-                                glm::vec2 t0 = edges[i][2];
-                                glm::vec2 t1 = edges[i][3];
-
-                                float l = v2.y - v1.y;
-                                float procent = (p.y - v1.y) / l;
-
-                                float x = t0.x + (t1.x - t0.x) * procent;
-
-                                mesh_UVs.push_back(x);
-                                mesh_UVs.push_back(t0.y);
-                                //HATE_WARNING("Added Edge V");
-                                stop = true;
-                                break;
-                            }
-                        } else if (std::abs(p.y - v1.y) < 0.01f and std::abs(v1.y - v2.y) < 0.01f) {
-                            if (p.x > min.x and p.x < max.x) {
-                                // TODO: Horizontal
-                                // return true;
-                                // float m = (max.y - min.y) / (max.x - min.x);
-                                // float y =
-                                glm::vec2 t0 = edges[i][2];
-                                glm::vec2 t1 = edges[i][3];
-
-                                float l = v2.x - v1.x;
-                                float procent = (p.x - v1.x) / l;
-
-                                float y = t0.y + (t1.y - t0.y) * procent;
-
-                                mesh_UVs.push_back(t0.x);
-                                mesh_UVs.push_back(y);
-                                //HATE_WARNING("Added Edge H");
-                                stop = true;
-                                break;
-                            }
-                        } else if (p.y > min.y and p.y < max.y and p.x > min.x and p.x < max.x) {
-                            float m = (max.y - min.y) / (max.x - min.x);
-                            float b = p.x * m - min.y;
-
-                            //HATE_INFO_F("Point: %f %f, b: %f", p.x, p.y, b);
-                            if (std::abs(p.y - b) < 0.01f) {
-                                // TODO: Diagonal
-                                stop = true;
-                                break;
-                            }
-                        }
-                    }
-
-                    if (stop)
-                        break;*/
                 }
-
-
-                /*glm::vec2 uv = {
-                        start_tex.x + (p.x - poly_min.x) * UV_Vertex_K.x,
-                        start_tex.y + (p.y - poly_min.y) * UV_Vertex_K.y
-                };
-                //glm::vec2 uv = p;
-                mesh_UVs.push_back(uv.x);
-                mesh_UVs.push_back(uv.y);
-                i++;*/
             }
         }
 
@@ -1186,6 +989,55 @@ std::vector<std::string> split(const std::string& str, const std::string& delimi
 }
 
 void trim(std::string& str) {
-    str.erase(str.find_last_not_of(" \t\n\v\r") + 1);
-    str.erase(0, str.find_first_not_of(" \t\n\v\r"));
+    size_t first = str.find_first_not_of(" \v\t\n");
+    size_t last = str.find_last_not_of(" \v\t\n");
+    str = str.substr(first, (last - first + 1));
+}
+
+
+/* ==== */
+ObjMapModel::Property::Property(std::string value) : value(value) {
+}
+
+float ObjMapModel::Property::asFloat() const {
+    return std::stof(value);
+}
+
+int ObjMapModel::Property::asInt() const {
+    return std::stoi(value);
+}
+
+bool ObjMapModel::Property::asBool() const {
+    return std::stoi(value);
+}
+
+std::string ObjMapModel::Property::asString() {
+    return value;
+}
+
+glm::vec3 ObjMapModel::Property::asVec3() const {
+    std::vector<std::string> values = split(value, " ");
+
+    if (values.size() != 3) {
+        HATE_ERROR_F("Invalid vec3: %s", value.c_str());
+        return glm::vec3(0.0f, 0.0f, 0.0f);
+    }
+
+    return glm::vec3(std::stof(values[0]), std::stof(values[1]), std::stof(values[2]));
+}
+
+glm::vec3 ObjMapModel::Property::asVec3XZY() const {
+    glm::vec3 v = asVec3();
+    return glm::vec3(v.x, v.z, -v.y);
+}
+
+glm::vec2 ObjMapModel::Property::asVec2() const {
+    std::vector<std::string> values = split(value, " ");
+
+    if (values.size() != 2) {
+        HATE_ERROR_F("Invalid vec2: %s", value.c_str());
+        return glm::vec2(0.0f, 0.0f);
+    }
+
+    return glm::vec2(std::stof(values[0]), std::stof(values[1]));
 }

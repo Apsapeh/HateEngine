@@ -281,6 +281,21 @@ UUID Level::addObjectRef(ObjMapModel* object) {
     std::lock_guard<std::mutex> guard(modelsMutex);
     objMapModels_obj[object->getUUID()] = {object, true};
     this->physEngine.addObjectRef(object->getStaticBody());
+
+#define ADD_OBJMAP_DEPS(type)                                                                      \
+    for (const auto& obj: object->add_to_level_##type)                                             \
+        addObjectRef(obj);
+
+    this->auto_updates_enabled = false;
+    ADD_OBJMAP_DEPS(meshes)
+    ADD_OBJMAP_DEPS(models)
+    ADD_OBJMAP_DEPS(objMapModels)
+    ADD_OBJMAP_DEPS(billboards)
+    ADD_OBJMAP_DEPS(animationPlayers)
+    ADD_OBJMAP_DEPS(particles)
+    ADD_OBJMAP_DEPS(lights)
+    this->auto_updates_enabled = true;
+
     updateModelsVector();
     return object->getUUID();
 }
@@ -338,6 +353,20 @@ bool Level::removeObject(const UUID& uuid) {
         physEngine.removeObject(
                 ((ObjMapModel*) objMapModels_obj[uuid].obj)->getStaticBody()->getUUID()
         );
+
+#define REMOVE_OBJMAP_DEPS(type)                                                                   \
+    for (const auto& obj: ((ObjMapModel*) objMapModels_obj[uuid].obj)->add_to_level_##type)        \
+        removeObject(obj->getUUID());
+        this->auto_updates_enabled = false;
+        REMOVE_OBJMAP_DEPS(meshes)
+        REMOVE_OBJMAP_DEPS(models)
+        REMOVE_OBJMAP_DEPS(objMapModels)
+        REMOVE_OBJMAP_DEPS(billboards)
+        REMOVE_OBJMAP_DEPS(animationPlayers)
+        REMOVE_OBJMAP_DEPS(particles)
+        REMOVE_OBJMAP_DEPS(lights)
+        this->auto_updates_enabled = true;
+
         objMapModels_obj.erase(uuid);
         updateModelsVector();
         return true;
@@ -380,7 +409,12 @@ bool Level::removeObject(const UUID& uuid) {
 }
 
 /* =============> UPDATE RENDER VECTORS <============= */
+#define CHECK_AUTO_UPDATES_ENABLED()                                                               \
+    if (!auto_updates_enabled)                                                                     \
+        return;
+
 void Level::updateMeshesVector() {
+    CHECK_AUTO_UPDATES_ENABLED()
     meshes.clear();
     meshes.reserve(this->meshes_obj.size() + this->billboards_obj.size());
     for (const auto& obj: meshes_obj)
@@ -391,6 +425,7 @@ void Level::updateMeshesVector() {
 }
 
 void Level::updateModelsVector() {
+    CHECK_AUTO_UPDATES_ENABLED()
     models.clear();
     models.reserve(this->models_obj.size());
     for (const auto& obj: models_obj)
@@ -401,6 +436,7 @@ void Level::updateModelsVector() {
 }
 
 void Level::updateAnimationPlayersVector() {
+    CHECK_AUTO_UPDATES_ENABLED()
     animationPlayers.clear();
     animationPlayers.reserve(this->animationPlayers_obj.size());
     for (const auto& obj: animationPlayers_obj)
@@ -409,6 +445,7 @@ void Level::updateAnimationPlayersVector() {
 }
 
 void Level::updateParticlesVector() {
+    CHECK_AUTO_UPDATES_ENABLED()
     particles.clear();
     particles.reserve(this->particles_obj.size());
     for (const auto& obj: particles_obj)
@@ -417,6 +454,7 @@ void Level::updateParticlesVector() {
 }
 
 void Level::updateLightsVector() {
+    CHECK_AUTO_UPDATES_ENABLED()
     lights.clear();
     lights.reserve(this->lights_obj.size());
     for (const auto& obj: lights_obj)

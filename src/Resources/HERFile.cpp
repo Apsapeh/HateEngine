@@ -113,7 +113,7 @@ ObjMapModel HERFile::loadObjMap(
 ) {
     std::string obj = (*this)[obj_file_name].asString();
     std::string map = (*this)[map_file_name].asString();
-    return ObjMapModel(obj, map, this, grid_size, generate_collision, lod_dist, lod_step);
+    return ObjMapModel(this, obj, map, grid_size, generate_collision, lod_dist, lod_step);
 }
 
 HERResource HERFile::operator[](std::string key) {
