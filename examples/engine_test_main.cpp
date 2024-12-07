@@ -142,7 +142,7 @@ int main() {
 
     // sun.setPosition({1.0, 1.0, 1.0});
     sun.rotate(-45, 45, 0);
-    sun.setVisible(false);
+    sun.setVisible(true);
 
     mesh2.setPosition(3, 3, 3);
 
@@ -379,7 +379,7 @@ int main() {
     /*HateEngine::ObjMapModel objmodel =
             herfile.loadObjMap("untitled.obj", "unnamed.map", true, 15, 1);*/
     // objmodel.offset(0, -180, -20);
-    objmodel.offset(-60, -20, 60);
+    objmodel.offset(-30, -20, 60);
 
     for (auto& m: objmodel.getLOD(0)) {
         glm::vec3 min = m->getAABBMin();
@@ -577,8 +577,9 @@ int main() {
 
     // RayCast test
     ray = new HateEngine::RayCast(lvl.getPhysEngine(), 5.0f);
-    ray->setPosition(0, 0.7, 0);
-    ray->rotate(0, 180, 0, true);
+    // ray->setPosition(0, 0.7, 0);
+    // ray->rotate(0, 180, 0, true);
+    camera.bindObj(ray);
 
 
     // UI TEST
@@ -838,7 +839,7 @@ void _physics_process(HateEngine::Engine* engine, double delta) {
     if (ray->isCollide(&rayCastInfo)) {
         // HATE_DEBUG("Is collide: true");
         // HATE_DEBUG_F("Body UUID: %llu", rayCastInfo.body->getUUID().getU64());
-        HATE_DEBUG_F(
+        HATE_INFO_F(
                 "x: %f, y: %f, z: %f", rayCastInfo.worldPoint.x, rayCastInfo.worldPoint.y,
                 rayCastInfo.worldPoint.z
         );
