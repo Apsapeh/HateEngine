@@ -90,6 +90,10 @@ void Object::setScale(float x, float y, float z) {
 
 void Object::setVisible(bool vis) {
     this->visible = vis;
+
+    for (auto& obj: bindedObjects)
+        if (obj.second.bind_visible)
+            obj.second.obj->setParentVisible(getGlobalVisible());
 }
 
 void Object::lookAt(glm::vec3 target) {
