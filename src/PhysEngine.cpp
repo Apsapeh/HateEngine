@@ -225,6 +225,43 @@ UUID PhysEngine::addObjectRef(PhysicalBody* object) {
 
 bool PhysEngine::removeObject(UUID uuid) {
     if (physBodies.count(uuid) == 1) {
+        for (const auto& shape_pair: physBodies[uuid].obj->shapes) {
+            if (shape_pair.second.shape->reactShape != nullptr) {
+                CollisionShape::ShapeEnum shape_type = shape_pair.second.shape->shapeType;
+
+                if (shape_type == CollisionShape::Box) {
+                    BoxShape* shape = (BoxShape*) shape_pair.second.shape;
+                    physicsCommon->destroyBoxShape((reactphysics3d::BoxShape*) shape->reactShape);
+                    shape->reactShape = nullptr;
+                    shape->reactCollider = nullptr;
+                } else if (shape_type == CollisionShape::Sphere) {
+                    SphereShape* shape = (SphereShape*) shape_pair.second.shape;
+                    physicsCommon->destroySphereShape(
+                            (reactphysics3d::SphereShape*) shape->reactShape
+                    );
+                    shape->reactShape = nullptr;
+                    shape->reactCollider = nullptr;
+                } else if (shape_type == CollisionShape::Capsule) {
+                    CapsuleShape* shape = (CapsuleShape*) shape_pair.second.shape;
+                    physicsCommon->destroyCapsuleShape(
+                            (reactphysics3d::CapsuleShape*) shape->reactShape
+                    );
+                    shape->reactShape = nullptr;
+                    shape->reactCollider = nullptr;
+                } else if (shape_type == CollisionShape::Convex) {
+                    ConvexShape* shape = (ConvexShape*) shape_pair.second.shape;
+                    physicsCommon->destroyConvexMeshShape(
+                            (reactphysics3d::ConvexMeshShape*) shape->reactShape
+                    );
+                    shape->reactShape = nullptr;
+                    shape->reactCollider = nullptr;
+                }
+            }
+        }
+
+        physicsWorld->destroyRigidBody(physBodies[uuid].obj->reactRigidBody);
+        physBodies[uuid].obj->reactRigidBody = nullptr;
+
         if (not physBodies[uuid].is_ref)
             delete physBodies[uuid].obj;
         physBodies.erase(uuid);
