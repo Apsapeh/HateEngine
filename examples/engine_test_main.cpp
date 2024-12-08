@@ -1003,7 +1003,7 @@ void _input_event(HateEngine::Engine* engine, HateEngine::Engine::InputEventInfo
     }
 
     if (event.type == HateEngine::Engine::InputEventMouseButton) {
-        if (event.key == HateEngine::MouseButtonLeft && event.isPressed) {
+        if (event.button == HateEngine::MouseButtonLeft && event.isPressed) {
             // Координаты курсора
             glm::vec3 rayDirection =
                     camera.getProjectRayFromScreen(event.position, engine->getResolution());
@@ -1017,7 +1017,8 @@ void _input_event(HateEngine::Engine* engine, HateEngine::Engine::InputEventInfo
             ray.setPosition(camera.getGlobalPosition());
             ray.enableCustomDirection(rayDirection);
 
-            std::vector<HateEngine::RayCastInfo> hits = ray.getSortedByDistanceAllCollisions(camera.getGlobalPosition());
+            std::vector<HateEngine::RayCastInfo> hits =
+                    ray.getSortedByDistanceAllCollisions(camera.getGlobalPosition());
 
             HateEngine::RayCastInfo rayCastInfo;
             // if (ray.isCollide(&rayCastInfo)) {

@@ -10,6 +10,7 @@
 
 #include "GLFW/glfw3.h"
 #include "HateEngine/AudioServer.hpp"
+#include "HateEngine/Input.hpp"
 #include "glm/ext/vector_float2.hpp"
 #include "globalStaticParams.hpp"
 
@@ -89,7 +90,8 @@ Engine::Engine(std::string window_lbl, int width, int height) : Input(this) {
         if (th->inputEventFunc != nullptr) {
             InputEventInfo info;
             info.type = InputEventType::InputEventKey;
-            info.key = key;
+            info.raw_key = key;
+            info.key = static_cast<Key>(key);
             info.scancode = scancode;
             info.isPressed = action == GLFW_PRESS;
             info.mods = mods;
@@ -102,7 +104,8 @@ Engine::Engine(std::string window_lbl, int width, int height) : Input(this) {
         if (th->inputEventFunc != nullptr) {
             InputEventInfo info;
             info.type = InputEventType::InputEventMouseButton;
-            info.key = button;
+            info.raw_key = button;
+            info.button = static_cast<MouseButton>(button);
             info.scancode = button;
             info.isPressed = action == GLFW_PRESS;
             info.position = th->Input.getCursorPosition();

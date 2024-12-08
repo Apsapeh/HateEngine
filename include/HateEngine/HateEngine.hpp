@@ -31,7 +31,11 @@ namespace HateEngine {
 
         struct InputEventInfo {
             InputEventType type;
-            int key, scancode, mods = 0;
+            union {
+                Key key;
+                MouseButton button;
+            };
+            int raw_key, scancode, mods = 0;
             bool isPressed;
             glm::vec2 offset = {0, 0};
             glm::vec2 position = {0, 0};
