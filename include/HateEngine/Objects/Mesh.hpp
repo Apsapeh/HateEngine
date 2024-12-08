@@ -19,7 +19,6 @@ namespace HateEngine {
         glm::vec3 AABB_min;
         glm::vec3 AABB_max;
         bool is_shaded = true;
-        std::string name = "";
         // uint8_t draw_priority = 255;
         bool correct_transparency = false;
         bool face_culling = true;
@@ -32,9 +31,6 @@ namespace HateEngine {
         Mesh();
         Mesh(std::vector<float> vert, std::vector<uint32_t> ind, std::vector<float> norm);
         Mesh(const Mesh& mesh, bool copy_texture = false);
-
-        void setName(std::string name);
-        const std::string getName();
 
         void setVertices(std::vector<float> vec);
         void setIndicies(std::vector<uint32_t> vec);

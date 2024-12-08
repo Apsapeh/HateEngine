@@ -281,7 +281,7 @@ void OpenGL15::Draw3D(
 }
 
 void OpenGL15::render(const Mesh* mesh, std::vector<Light*>* lights_vec) {
-    if (mesh->getVisible()) {
+    if (mesh->getGlobalVisible()) {
         glPushMatrix();
 
         if (!mesh->getFaceCulling())
@@ -400,7 +400,7 @@ inline std::vector<int> OpenGL15::getNearestLights(
     light_dist.reserve(lights_vec->size());
     for (int i = 0; i < lights_vec->size() and result.size() <= maxLightCount; ++i) {
         Light* light = (*lights_vec)[i];
-        if (!light->getVisible())
+        if (!light->getGlobalVisible())
             continue;
         if (light->getLightType() == Light::LightTypeEnum::DirectionalLight)
             result.push_back(i);

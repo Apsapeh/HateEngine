@@ -74,14 +74,6 @@ void Mesh::updateAABB() {
     this->AABB_max = max;
 }
 
-void Mesh::setName(std::string name) {
-    this->name = name;
-}
-
-const std::string Mesh::getName() {
-    return name;
-}
-
 void Mesh::setVertices(std::vector<float> vec) {
     this->verticies = std::move(vec);
     updateCenterMaxSize();

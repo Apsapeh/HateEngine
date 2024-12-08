@@ -1,4 +1,5 @@
 #include <HateEngine/Objects/Physics/CollisionShape.hpp>
+#include <cstdint>
 
 #include "HateEngine/Log.hpp"
 
@@ -112,6 +113,13 @@ void CollisionShape::setCollisionCategory(uint8_t category) {
         this->reactCollider->setCollisionCategoryBits(this->collisionCategory);
 }
 
+void CollisionShape::setCollisionCategoryRaw(uint16_t category) {
+    this->collisionCategory = category;
+
+    if (this->reactCollider != nullptr)
+        this->reactCollider->setCollisionCategoryBits(this->collisionCategory);
+}
+
 void CollisionShape::setCollisionMaskBit(uint8_t mask, bool state) {
     if (mask > 15) {
         HATE_WARNING_F(
@@ -124,6 +132,13 @@ void CollisionShape::setCollisionMaskBit(uint8_t mask, bool state) {
         this->collisionMask |= 1 << mask;
     else
         this->collisionMask &= ~(1 << mask);
+
+    if (this->reactCollider != nullptr)
+        this->reactCollider->setCollideWithMaskBits(this->collisionMask);
+}
+
+void CollisionShape::setCollisionMask(uint16_t mask) {
+    this->collisionMask = mask;
 
     if (this->reactCollider != nullptr)
         this->reactCollider->setCollideWithMaskBits(this->collisionMask);
@@ -143,6 +158,10 @@ uint8_t CollisionShape::getCollisionCategory() {
 
 bool CollisionShape::getCollisionMaskBit(uint8_t mask) {
     return this->collisionMask & (1 << mask);
+}
+
+uint16_t CollisionShape::getCollisionMask() {
+    return this->collisionMask;
 }
 
 std::vector<uint8_t> CollisionShape::getEnabledCollisionMaskBits() {

@@ -53,6 +53,12 @@ namespace HateEngine {
         void setCollisionCategory(uint8_t category);
 
         /**
+         * @brief Set the collision category [0..15]
+         * @param category [0..15]
+         */
+        void setCollisionCategoryRaw(uint16_t category);
+
+        /**
          * @brief Set the collision mask bit [0..15] on which the body can collide with other bodies
          *
          * @param bit [0..15]
@@ -60,8 +66,15 @@ namespace HateEngine {
          */
         void setCollisionMaskBit(uint8_t bit, bool state);
 
+        /**
+         * @brief Set the collision mask [0..15] on which the body can collide with other bodies
+         * @param mask [0..15]
+         */
+        void setCollisionMask(uint16_t mask);
+
         uint8_t getCollisionCategory();
         bool getCollisionMaskBit(uint8_t bit);
+        uint16_t getCollisionMask();
         std::vector<uint8_t> getEnabledCollisionMaskBits();
 
         /**

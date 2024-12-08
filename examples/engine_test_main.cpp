@@ -5,6 +5,7 @@
 #include "HateEngine/Objects/Light/SpotLight.hpp"
 #include "HateEngine/Objects/Physics/CapsuleShape.hpp"
 #include "HateEngine/Objects/GLTFAnimationPlayer.hpp"
+#include "HateEngine/Objects/Physics/CollisionShape.hpp"
 #include "HateEngine/Objects/Physics/StaticBody.hpp"
 #include "HateEngine/Objects/Physics/TriggerArea.hpp"
 #include "glm/ext/vector_float2.hpp"
@@ -86,6 +87,8 @@ HateEngine::CubeMesh test2;
 HateEngine::PhysicalBody playerBody(HateEngine::PhysicalBody::DynamicBody);
 HateEngine::PhysicalBody rigidBody(HateEngine::PhysicalBody::DynamicBody);
 HateEngine::StaticBody floorBody;
+HateEngine::BoxShape rigidBodyBoxShape({1, 1, 1});
+
 
 HateEngine::Particles* cube_part_ptr;
 
@@ -540,7 +543,7 @@ int main() {
     // game.addObjectClone(cube_part);
 
 
-    //HateEngine::PhysicalBody floorBody(HateEngine::PhysicalBody::StaticBody);
+    // HateEngine::PhysicalBody floorBody(HateEngine::PhysicalBody::StaticBody);
     floorBody.setPosition(0, -0.5, 0);
     HateEngine::BoxShape floorShape({25, 1, 25}, {0, 0, 0}, {0, 0, 0});
     floorBody.addCollisionShapeRef(&floorShape);
@@ -550,10 +553,9 @@ int main() {
     rigidBody.setPosition(0, 5, 0);
     rigidBody.rotate(48, 22, 36);
     // rigidBody.setRotation(0, 0, 0);
-    HateEngine::BoxShape boxShape({1, 1, 1});
-    rigidBody.addCollisionShapeRef(&boxShape);
+    rigidBody.addCollisionShapeRef(&rigidBodyBoxShape);
     HateEngine::SphereShape sphereShape(0.5);
-    rigidBody.addCollisionShapeRef(&sphereShape);
+    // rigidBody.addCollisionShapeRef(&sphereShape);
     rigidBody.bindObj(&mesh1);
     // rigidBody.bindObj(&camera);
     // rigidBody.bindObj(&glmodel);
@@ -1046,7 +1048,15 @@ void _input_event(HateEngine::Engine* engine, HateEngine::Engine::InputEventInfo
         }
 
         if (event.key == HateEngine::KeyJ and event.isPressed) {
-            lvl.getPhysEngine()->removeObject(floorBody.getUUID());
+            // lvl.getPhysEngine()->removeObject(floorBody.getUUID());
+            // floorBody.setIsActive(false);
+            // rigidBody.setIsActive(!rigidBody.getIsActive());
+            HateEngine::CollisionShape* shape =
+                    (HateEngine::CollisionShape*) rigidBody.getShapes()->begin()->second.shape;
+            // shape->setCollisionMask(0);
+            // shape->setCollisionCategoryRaw(-1);
+            rigidBodyBoxShape.setCollisionMask(0);
+            rigidBodyBoxShape.setCollisionCategoryRaw(0);
         }
 
         if (event.key == HateEngine::KeyNumPadAdd && event.isPressed) {

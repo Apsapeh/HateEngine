@@ -38,6 +38,7 @@ void PhysicalBody::Init(reactphysics3d::RigidBody* body) {
     }
 
     this->reactRigidBody->setMass(this->mass);
+    this->reactRigidBody->setIsActive(this->isActive);
     this->reactRigidBody->setLinearVelocity(reactphysics3d::Vector3(
             this->linearVelocity.z, this->linearVelocity.y, this->linearVelocity.x
     ));
@@ -215,6 +216,12 @@ void PhysicalBody::setMass(float mass) {
         reactRigidBody->setMass(mass);
 }
 
+void PhysicalBody::setIsActive(bool isActive) {
+    this->isActive = isActive;
+    if (this->reactRigidBody != nullptr)
+        reactRigidBody->setIsActive(isActive);
+}
+
 
 glm::vec3 PhysicalBody::getLinearVelocity() const {
     if (this->reactRigidBody != nullptr) {
@@ -237,6 +244,12 @@ float PhysicalBody::getMass() const {
     if (this->reactRigidBody != nullptr)
         return reactRigidBody->getMass();
     return this->mass;
+}
+
+bool PhysicalBody::getIsActive() const {
+    if (this->reactRigidBody != nullptr)
+        return reactRigidBody->isActive();
+    return this->isActive;
 }
 
 

@@ -30,6 +30,7 @@ namespace HateEngine {
         glm::vec3 linearVelocity = {0.0f, 0.0f, 0.0f};
         glm::vec3 angularLockAxisFactor = {1.0f, 1.0f, 1.0f};
         float mass = 1.0f;
+        bool isActive = true;
 
     public:
         reactphysics3d::RigidBody* reactRigidBody = nullptr;
@@ -76,10 +77,13 @@ namespace HateEngine {
         void setAngularLockAxisFactor(float x, float y, float z);
         void setAngularLockAxisFactor(glm::vec3 vec);
         void setMass(float mass);
+        void setIsActive(bool active);
 
         glm::vec3 getLinearVelocity() const;
         glm::vec3 getAngularLockAxisFactor() const;
         float getMass() const;
+        bool getIsActive() const;
+
 
         /**
          * Adds a collision shape to the body by copying the object

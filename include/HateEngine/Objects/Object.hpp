@@ -25,6 +25,7 @@ namespace HateEngine {
             bool bind_pos;
             bool bind_rot;
             bool bind_scale;
+            bool bind_visible;
         };
         // FIXME
         std::unordered_map<UUID, BindedObj> bindedObjects;
@@ -34,6 +35,8 @@ namespace HateEngine {
         glm::mat4 parent_rotation_matrix = {
                 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0,
         };
+        bool parent_visible = true;
+
         glm::vec3 position = {0, 0, 0};
         glm::vec3 scale = {1.0, 1.0, 1.0};
         glm::mat4 rotation_matrix = {
@@ -41,6 +44,7 @@ namespace HateEngine {
         };
 
         glm::vec3 direction = {0, 0, -1};
+        std::string name = "";
 
         bool binded = false;
 
@@ -49,8 +53,12 @@ namespace HateEngine {
         virtual void setParentPosition(glm::vec3 vec);
         virtual void setParentScale(glm::vec3 vec);
         virtual void setParentRotationMatrix(const glm::mat4& mat);
+        virtual void setParentVisible(bool visible);
 
     public:
+        void setName(std::string name);
+        const std::string getName();
+
         void setPosition(glm::vec3 vec);
         void setPosition(float x, float y, float z);
         void setRotation(glm::vec3 vec);
@@ -81,6 +89,7 @@ namespace HateEngine {
         glm::vec3 getGlobalDirection() const;
 
         bool getVisible() const;
+        bool getGlobalVisible() const;
         UUID getUUID() const;
 
         /**
@@ -89,7 +98,8 @@ namespace HateEngine {
          * \return UUID of binded object
          */
         UUID bindObj(
-                Object* obj, bool bind_pos = true, bool bind_rot = true, bool bind_scale = true
+                Object* obj, bool bind_pos = true, bool bind_rot = true, bool bind_scale = true,
+                bool bind_visible = true
         );
 
         /**

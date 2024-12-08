@@ -30,6 +30,21 @@ void Object::setParentRotationMatrix(const glm::mat4& mat) {
     updateDirection();
 }
 
+void Object::setParentVisible(bool value) {
+    this->parent_visible = value;
+    for (auto& obj: bindedObjects)
+        if (obj.second.bind_visible)
+            obj.second.obj->setParentVisible(getGlobalVisible());
+}
+
+void Object::setName(std::string name) {
+    this->name = name;
+}
+
+const std::string Object::getName() {
+    return name;
+}
+
 void Object::setPosition(const glm::vec3 value) {
     this->position = value;
     for (auto& obj: bindedObjects)
@@ -221,19 +236,29 @@ bool Object::getVisible() const {
     return this->visible;
 }
 
+bool Object::getGlobalVisible() const {
+    if (not binded)
+        return this->visible;
+    return this->parent_visible && this->visible;
+}
+
 UUID Object::getUUID() const {
     return this->uuid;
 }
 
-UUID Object::bindObj(Object* obj, bool bind_pos, bool bind_rot, bool bind_scale) {
-    bindedObjects[obj->getUUID()] = {obj, bind_pos, bind_rot, bind_scale};
+UUID Object::bindObj(
+        Object* obj, bool bind_pos, bool bind_rot, bool bind_scale, bool bind_visible
+) {
+    bindedObjects[obj->getUUID()] = {obj, bind_pos, bind_rot, bind_scale, bind_visible};
     obj->binded = true;
     if (bind_pos)
-        obj->setParentPosition(this->position);
+        obj->setParentPosition(this->getGlobalPosition());
     if (bind_rot)
-        obj->setParentRotationMatrix(this->rotation_matrix);
+        obj->setParentRotationMatrix(this->getGlobalRotationMatrix());
     if (bind_scale)
-        obj->setParentScale(this->scale);
+        obj->setParentScale(this->getGlobalScale());
+    if (bind_visible)
+        obj->setParentVisible(this->getGlobalVisible());
     return obj->getUUID();
 }
 

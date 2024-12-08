@@ -227,7 +227,7 @@ bool PhysEngine::removeObject(UUID uuid) {
     if (physBodies.count(uuid) == 1) {
         physicsWorld->destroyRigidBody(physBodies[uuid].obj->reactRigidBody);
         physBodies[uuid].obj->reactRigidBody = nullptr;
-        
+
         for (const auto& shape_pair: physBodies[uuid].obj->shapes) {
             if (shape_pair.second.shape->reactShape != nullptr) {
                 CollisionShape::ShapeEnum shape_type = shape_pair.second.shape->shapeType;
@@ -262,7 +262,6 @@ bool PhysEngine::removeObject(UUID uuid) {
             }
         }
 
-        
 
         if (not physBodies[uuid].is_ref)
             delete physBodies[uuid].obj;
