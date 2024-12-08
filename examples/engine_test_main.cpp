@@ -5,6 +5,7 @@
 #include "HateEngine/Objects/Light/SpotLight.hpp"
 #include "HateEngine/Objects/Physics/CapsuleShape.hpp"
 #include "HateEngine/Objects/GLTFAnimationPlayer.hpp"
+#include "HateEngine/Objects/Physics/StaticBody.hpp"
 #include "HateEngine/Objects/Physics/TriggerArea.hpp"
 #include "glm/ext/vector_float2.hpp"
 #include "glm/ext/vector_float3.hpp"
@@ -84,6 +85,7 @@ HateEngine::WidgetUI* fps_widget_ptr = nullptr;
 HateEngine::CubeMesh test2;
 HateEngine::PhysicalBody playerBody(HateEngine::PhysicalBody::DynamicBody);
 HateEngine::PhysicalBody rigidBody(HateEngine::PhysicalBody::DynamicBody);
+HateEngine::StaticBody floorBody;
 
 HateEngine::Particles* cube_part_ptr;
 
@@ -538,7 +540,7 @@ int main() {
     // game.addObjectClone(cube_part);
 
 
-    HateEngine::PhysicalBody floorBody(HateEngine::PhysicalBody::StaticBody);
+    //HateEngine::PhysicalBody floorBody(HateEngine::PhysicalBody::StaticBody);
     floorBody.setPosition(0, -0.5, 0);
     HateEngine::BoxShape floorShape({25, 1, 25}, {0, 0, 0}, {0, 0, 0});
     floorBody.addCollisionShapeRef(&floorShape);
@@ -1041,6 +1043,10 @@ void _input_event(HateEngine::Engine* engine, HateEngine::Engine::InputEventInfo
         if (event.key == HateEngine::KeyP && event.isPressed) {
             engine->setFullScreen(!engine->getFullScreen());
             HATE_WARNING("Toggled fullscreen")
+        }
+
+        if (event.key == HateEngine::KeyJ and event.isPressed) {
+            lvl.getPhysEngine()->removeObject(floorBody.getUUID());
         }
 
         if (event.key == HateEngine::KeyNumPadAdd && event.isPressed) {
