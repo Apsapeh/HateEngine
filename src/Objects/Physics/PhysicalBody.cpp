@@ -3,6 +3,7 @@
 #include <unordered_set>
 
 #include "HateEngine/Log.hpp"
+#include "HateEngine/Objects/Object.hpp"
 #include "reactphysics3d/components/RigidBodyComponents.h"
 
 using namespace HateEngine;
@@ -157,6 +158,16 @@ std::unordered_map<UUID, PhysicalBody::ShapeObject> const* PhysicalBody::getShap
     return &shapes;
 }
 
+
+void PhysicalBody::setParentPosition(glm::vec3 vec) {
+    Object::setParentPosition(vec);
+    updatePosition();
+}
+
+void PhysicalBody::setParentRotationMatrix(const glm::mat4& mat) {
+    Object::setParentRotationMatrix(mat);
+    updateRotation();
+}
 
 void PhysicalBody::setPosition(glm::vec3 vec) {
     Object::setPosition(vec);

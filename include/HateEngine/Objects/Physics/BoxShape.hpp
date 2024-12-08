@@ -15,7 +15,7 @@ namespace HateEngine {
 
     public:
         BoxShape(
-                glm::vec3 extents = {.5, .5, .5}, glm::vec3 pos = {0, 0, 0},
+                glm::vec3 extents = {1.0f, 1.0f, 1.0f}, glm::vec3 pos = {0, 0, 0},
                 glm::vec3 rot = {0, 0, 0}
         );
 

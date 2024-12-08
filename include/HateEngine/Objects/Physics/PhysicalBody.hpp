@@ -62,6 +62,9 @@ namespace HateEngine {
 
         BodyType getBodyType() const;
 
+        void setParentPosition(glm::vec3 vec) override;
+        void setParentRotationMatrix(const glm::mat4& mat) override;
+
         void setPosition(glm::vec3 vec);
         void setPosition(float x, float y, float z);
         void setRotation(glm::vec3 vec);
