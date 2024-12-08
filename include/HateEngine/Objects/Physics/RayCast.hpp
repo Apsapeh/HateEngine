@@ -49,6 +49,7 @@ namespace HateEngine {
 
         bool isCollide(RayCastInfo* rayCastInfo = nullptr);
         std::vector<RayCastInfo> getAllCollisions();
+        std::vector<RayCastInfo> getSortedByDistanceAllCollisions(glm::vec3 point_to);
 
         void setPhysEngine(PhysEngine* physEngine);
 

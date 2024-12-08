@@ -1017,15 +1017,7 @@ void _input_event(HateEngine::Engine* engine, HateEngine::Engine::InputEventInfo
             ray.setPosition(camera.getGlobalPosition());
             ray.enableCustomDirection(rayDirection);
 
-            std::vector<HateEngine::RayCastInfo> hits = ray.getAllCollisions();
-
-            std::sort(
-                    hits.begin(), hits.end(),
-                    [](const HateEngine::RayCastInfo& a, const HateEngine::RayCastInfo& b) {
-                        return glm::distance(camera.getGlobalPosition(), a.worldPoint) <
-                               glm::distance(camera.getGlobalPosition(), b.worldPoint);
-                    }
-            );
+            std::vector<HateEngine::RayCastInfo> hits = ray.getSortedByDistanceAllCollisions(camera.getGlobalPosition());
 
             HateEngine::RayCastInfo rayCastInfo;
             // if (ray.isCollide(&rayCastInfo)) {

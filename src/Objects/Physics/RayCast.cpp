@@ -100,6 +100,18 @@ std::vector<RayCastInfo> RayCast::getAllCollisions() {
     return this->rayCastCallback.hits;
 }
 
+std::vector<RayCastInfo> RayCast::getSortedByDistanceAllCollisions(glm::vec3 point_to) {
+    this->cast(false);
+    std::sort(
+            this->rayCastCallback.hits.begin(), this->rayCastCallback.hits.end(),
+            [point_to](const RayCastInfo& a, const RayCastInfo& b) {
+                return glm::distance(a.worldPoint, point_to) <
+                       glm::distance(b.worldPoint, point_to);
+            }
+    );
+    return this->rayCastCallback.hits;
+}
+
 void RayCast::setPhysEngine(PhysEngine* physEngine) {
     this->physEngine = physEngine;
 }
