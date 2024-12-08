@@ -13,6 +13,9 @@ namespace HateEngine {
         CubeMesh skybox;
         bool skyboxEnabled = false;
 
+        float prev_aspect_ratio = 0;
+        glm::mat4 projectionMatrix = glm::mat4(1.0f);
+
     public:
         float yaw = -90;
         float pitch = 0;
@@ -27,5 +30,10 @@ namespace HateEngine {
         float getRenderDist() const;
         const CubeMesh* getSkyBox() const;
         bool isSkyBoxEnabled() const;
+
+        glm::mat4 getProjectionMatrix(float aspect_ratio);
+        glm::mat4 getViewMatrix() const;
+
+        glm::vec3 getProjectRayFromScreen(glm::vec2 pos, glm::vec2 screen);
     };
 } // namespace HateEngine

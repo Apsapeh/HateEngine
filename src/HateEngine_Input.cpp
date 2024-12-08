@@ -1,4 +1,5 @@
 #include <HateEngine/HateEngine.hpp>
+#include "HateEngine/Input.hpp"
 #include "HateEngine/Log.hpp"
 
 #define WINVER 0x0501
@@ -22,14 +23,30 @@ glm::vec2 InputClass::getVector(Key left, Key right, Key up, Key down) {
     return vec;
 }
 
+glm::vec2 InputClass::getCursorPosition() {
+    double x, y;
+    glfwGetCursorPos(engine->window, &x, &y);
+    return glm::vec2(x, y);
+}
+
+bool InputClass::isMouseButtonPressed(MouseButton button) {
+    return glfwGetMouseButton(engine->window, button);
+}
+
 bool InputClass::isActionPressed(std::string action) {
     if (this->actions_map.find(action) == this->actions_map.end()) {
         HATE_WARNING_F("Action %s not found", action.c_str())
         return false;
     }
-    for (auto key: this->actions_map[action])
-        if (isKeyPressed(key))
-            return true;
+    for (auto key: this->actions_map[action]) {
+        if (key.type == ActionKeyType::KEYBOARD) {
+            if (isKeyPressed(key.key))
+                return true;
+        } else if (key.type == ActionKeyType::MOUSE) {
+            if (isMouseButtonPressed(key.button))
+                return true;
+        }
+    }
     return false;
 }
 
@@ -44,14 +61,43 @@ glm::vec2 InputClass::getVectorAction(
 
 void InputClass::addKeyToAction(std::string action, Key key) {
     if (this->actions_map.find(action) == this->actions_map.end())
-        this->actions_map[action] = std::vector<Key>();
-    this->actions_map[action].push_back(key);
+        this->actions_map[action] = std::vector<ActionKey>();
+    ActionKey ak;
+    ak.type = ActionKeyType::KEYBOARD;
+    ak.key = key;
+    this->actions_map[action].push_back(ak);
+}
+
+void InputClass::addKeyToAction(std::string action, MouseButton button) {
+    if (this->actions_map.find(action) == this->actions_map.end())
+        this->actions_map[action] = std::vector<ActionKey>();
+    ActionKey ak;
+    ak.type = ActionKeyType::MOUSE;
+    ak.button = button;
+    this->actions_map[action].push_back(ak);
 }
 
 bool InputClass::removeKeyFromAction(std::string action, Key key) {
     if (this->actions_map.find(action) == this->actions_map.end())
         return false;
-    auto it = std::find(this->actions_map[action].begin(), this->actions_map[action].end(), key);
+    ActionKey ak;
+    ak.type = ActionKeyType::KEYBOARD;
+    ak.key = key;
+    auto it = std::find(this->actions_map[action].begin(), this->actions_map[action].end(), ak);
+    if (it != this->actions_map[action].end()) {
+        this->actions_map[action].erase(it);
+        return true;
+    }
+    return false;
+}
+
+bool InputClass::removeKeyFromAction(std::string action, MouseButton button) {
+    if (this->actions_map.find(action) == this->actions_map.end())
+        return false;
+    ActionKey ak;
+    ak.type = ActionKeyType::MOUSE;
+    ak.button = button;
+    auto it = std::find(this->actions_map[action].begin(), this->actions_map[action].end(), ak);
     if (it != this->actions_map[action].end()) {
         this->actions_map[action].erase(it);
         return true;
@@ -66,8 +112,32 @@ bool InputClass::removeAction(std::string action) {
     return true;
 }
 
-std::vector<Key> InputClass::getActionKeys(std::string action) {
+std::vector<InputClass::ActionKey> InputClass::getActionKeys(std::string action) {
     if (this->actions_map.find(action) == this->actions_map.end())
-        return std::vector<Key>();
+        return std::vector<ActionKey>();
     return this->actions_map[action];
+}
+
+bool InputClass::isKeyInAction(std::string action, Key key) {
+    if (this->actions_map.count(action)) {
+        ActionKey ak;
+        ak.type = ActionKeyType::KEYBOARD;
+        ak.key = key;
+        auto it = std::find(this->actions_map[action].begin(), this->actions_map[action].end(), ak);
+        if (it != this->actions_map[action].end())
+            return true;
+    }
+    return false;
+}
+
+bool InputClass::isKeyInAction(std::string action, MouseButton button) {
+    if (this->actions_map.count(action)) {
+        ActionKey ak;
+        ak.type = ActionKeyType::MOUSE;
+        ak.button = button;
+        auto it = std::find(this->actions_map[action].begin(), this->actions_map[action].end(), ak);
+        if (it != this->actions_map[action].end())
+            return true;
+    }
+    return false;
 }

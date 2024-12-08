@@ -7,140 +7,171 @@
 
 namespace HateEngine {
     enum Key {
-        SPACE = 32,
-        APOSTROPHE = 39, /* ' */
-        COMMA = 44, /* , */
-        MINUS = 45, /* - */
-        PERIOD = 46, /* . */
-        SLASH = 47, /* / */
-        KEY_0 = 48,
-        KEY_1 = 49,
-        KEY_2 = 50,
-        KEY_3 = 51,
-        KEY_4 = 52,
-        KEY_5 = 53,
-        KEY_6 = 54,
-        KEY_7 = 55,
-        KEY_8 = 56,
-        KEY_9 = 57,
-        SEMICOLON = 59, /* ; */
-        EQUAL = 61, /* = */
-        A = 65,
-        B = 66,
-        C = 67,
-        D = 68,
-        E = 69,
-        F = 70,
-        G = 71,
-        H = 72,
-        I = 73,
-        J = 74,
-        K = 75,
-        L = 76,
-        M = 77,
-        N = 78,
-        O = 79,
-        P = 80,
-        Q = 81,
-        R = 82,
-        S = 83,
-        T = 84,
-        U = 85,
-        V = 86,
-        W = 87,
-        X = 88,
-        Y = 89,
-        Z = 90,
-        LEFT_BRACKET = 91, /* [ */
-        BACKSLASH = 92, /* \ */
-        RIGHT_BRACKET = 93, /* ] */
-        GRAVE_ACCENT = 96, /* ` */
-        WORLD_1 = 161, /* non-US #1 */
-        WORLD_2 = 162, /* non-US #2 */
+        KeySpace = 32,
+        KeyApostrophe = 39, /* ' */
+        KeyComma = 44, /* , */
+        KeyMinus = 45, /* - */
+        KeyPeriod = 46, /* . */
+        KeySlash = 47, /* / */
+        Key0 = 48,
+        Key1 = 49,
+        Key2 = 50,
+        Key3 = 51,
+        Key4 = 52,
+        Key5 = 53,
+        Key6 = 54,
+        Key7 = 55,
+        Key8 = 56,
+        Key9 = 57,
+        KeySemicolon = 59, /* ; */
+        KeyEqual = 61, /* = */
+        KeyA = 65,
+        KeyB = 66,
+        KeyC = 67,
+        KeyD = 68,
+        KeyE = 69,
+        KeyF = 70,
+        KeyG = 71,
+        KeyH = 72,
+        KeyI = 73,
+        KeyJ = 74,
+        KeyK = 75,
+        KeyL = 76,
+        KeyM = 77,
+        KeyN = 78,
+        KeyO = 79,
+        KeyP = 80,
+        KeyQ = 81,
+        KeyR = 82,
+        KeyS = 83,
+        KeyT = 84,
+        KeyU = 85,
+        KeyV = 86,
+        KeyW = 87,
+        KeyX = 88,
+        KeyY = 89,
+        KeyZ = 90,
+        KeyLeftBracket = 91, /* [ */
+        KeyBackslash = 92, /* \ */
+        KeyRightBracket = 93, /* ] */
+        KeyGraveAccent = 96, /* ` */
+        KeyWorld1 = 161, /* non-US #1 */
+        KeyWorld2 = 162, /* non-US #2 */
 
         /* Function keys */
-        ESCAPE = 256,
-        ENTER = 257,
-        TAB = 258,
-        BACKSPACE = 259,
-        INSERT = 260,
-        DELETE = 261,
-        RIGHT = 262,
-        LEFT = 263,
-        DOWN = 264,
-        UP = 265,
-        PAGE_UP = 266,
-        PAGE_DOWN = 267,
-        HOME = 268,
-        END = 269,
-        CAPS_LOCK = 280,
-        SCROLL_LOCK = 281,
-        NUM_LOCK = 282,
-        PRINT_SCREEN = 283,
-        PAUSE = 284,
-        F1 = 290,
-        F2 = 291,
-        F3 = 292,
-        F4 = 293,
-        F5 = 294,
-        F6 = 295,
-        F7 = 296,
-        F8 = 297,
-        F9 = 298,
-        F10 = 299,
-        F11 = 300,
-        F12 = 301,
-        F13 = 302,
-        F14 = 303,
-        F15 = 304,
-        F16 = 305,
-        F17 = 306,
-        F18 = 307,
-        F19 = 308,
-        F20 = 309,
-        F21 = 310,
-        F22 = 311,
-        F23 = 312,
-        F24 = 313,
-        F25 = 314,
-        KP_0 = 320,
-        KP_1 = 321,
-        KP_2 = 322,
-        KP_3 = 323,
-        KP_4 = 324,
-        KP_5 = 325,
-        KP_6 = 326,
-        KP_7 = 327,
-        KP_8 = 328,
-        KP_9 = 329,
-        KP_DECIMAL = 330,
-        KP_DIVIDE = 331,
-        KP_MULTIPLY = 332,
-        KP_SUBTRACT = 333,
-        KP_ADD = 334,
-        KP_ENTER = 335,
-        KP_EQUAL = 336,
-        LEFT_SHIFT = 340,
-        LEFT_CONTROL = 341,
-        LEFT_ALT = 342,
-        LEFT_SUPER = 343,
-        RIGHT_SHIFT = 344,
-        RIGHT_CONTROL = 345,
-        RIGHT_ALT = 346,
-        RIGHT_SUPER = 347,
-        MENU = 348,
+        KeyEscape = 256,
+        KeyEnter = 257,
+        KeyTab = 258,
+        KeyBackspace = 259,
+        KeyInsert = 260,
+        KeyDelete = 261,
+        KeyRight = 262,
+        KeyLeft = 263,
+        KeyDown = 264,
+        KeyUp = 265,
+        KeyPageUp = 266,
+        KeyPageDown = 267,
+        KeyHome = 268,
+        KeyEnd = 269,
+        KeyCapsLock = 280,
+        KeyScrollLock = 281,
+        KeyNumLock = 282,
+        KeyPrintScreen = 283,
+        KeyPause = 284,
+        KeyF1 = 290,
+        KeyF2 = 291,
+        KeyF3 = 292,
+        KeyF4 = 293,
+        KeyF5 = 294,
+        KeyF6 = 295,
+        KeyF7 = 296,
+        KeyF8 = 297,
+        KeyF9 = 298,
+        KeyF10 = 299,
+        KeyF11 = 300,
+        KeyF12 = 301,
+        KeyF13 = 302,
+        KeyF14 = 303,
+        KeyF15 = 304,
+        KeyF16 = 305,
+        KeyF17 = 306,
+        KeyF18 = 307,
+        KeyF19 = 308,
+        KeyF20 = 309,
+        KeyF21 = 310,
+        KeyF22 = 311,
+        KeyF23 = 312,
+        KeyF24 = 313,
+        KeyF25 = 314,
+        KeyNumPad0 = 320,
+        KeyNumPad1 = 321,
+        KeyNumPad2 = 322,
+        KeyNumPad3 = 323,
+        KeyNumPad4 = 324,
+        KeyNumPad5 = 325,
+        KeyNumPad6 = 326,
+        KeyNumPad7 = 327,
+        KeyNumPad8 = 328,
+        KeyNumPad9 = 329,
+        KeyNumPadDecimal = 330,
+        KeyNumPadDivide = 331,
+        KeyNumPadMultiply = 332,
+        KeyNumPadSubtract = 333,
+        KeyNumPadAdd = 334,
+        KeyNumPadEnter = 335,
+        KeyNumPadEqual = 336,
+        KeyLeftShift = 340,
+        KeyLeftControl = 341,
+        KeyLeftAlt = 342,
+        KeyLeftSuper = 343,
+        KeyRightShift = 344,
+        KeyRightControl = 345,
+        KeyRightAlt = 346,
+        KeyRightSuper = 347,
+        KeyMenu = 348,
+    };
+
+    enum MouseButton {
+        MouseButton1 = 0,
+        MouseButton2 = 1,
+        MouseButton3 = 2,
+        MouseButton4 = 3,
+        MouseButton5 = 4,
+        MouseButton6 = 5,
+        MouseButton7 = 6,
+        MouseButton8 = 7,
+        MouseButtonLeft = MouseButton1,
+        MouseButtonRight = MouseButton2,
+        MouseButtonMiddle = MouseButton3,
     };
 
     class Engine;
     class InputClass {
+    public:
+        enum ActionKeyType { KEYBOARD, MOUSE };
+        struct ActionKey {
+            ActionKeyType type;
+            union {
+                Key key;
+                MouseButton button;
+            };
+
+            bool operator==(const ActionKey& other) const {
+                return type == other.type && (key == other.key || button == other.button);
+            }
+        };
+
     private:
         Engine* engine;
-        std::unordered_map<std::string, std::vector<Key>> actions_map;
+        std::unordered_map<std::string, std::vector<ActionKey>> actions_map;
 
     public:
         InputClass(Engine*);
         bool isKeyPressed(Key key);
         glm::vec2 getVector(Key left, Key right, Key up, Key down);
+
+        glm::vec2 getCursorPosition();
+        bool isMouseButtonPressed(MouseButton button);
 
         bool isActionPressed(std::string action);
         glm::vec2 getVectorAction(
@@ -148,9 +179,13 @@ namespace HateEngine {
         );
 
         void addKeyToAction(std::string action, Key key);
+        void addKeyToAction(std::string action, MouseButton button);
         bool removeKeyFromAction(std::string action, Key key);
+        bool removeKeyFromAction(std::string action, MouseButton button);
         bool removeAction(std::string action);
-        std::vector<Key> getActionKeys(std::string action);
+        std::vector<ActionKey> getActionKeys(std::string action);
+        bool isKeyInAction(std::string action, Key key);
+        bool isKeyInAction(std::string action, MouseButton button);
         // bool isKeyPressed(int key);
     };
 } // namespace HateEngine

@@ -105,6 +105,7 @@ Engine::Engine(std::string window_lbl, int width, int height) : Input(this) {
             info.key = button;
             info.scancode = button;
             info.isPressed = action == GLFW_PRESS;
+            info.position = th->Input.getCursorPosition();
             info.mods = mods;
             th->inputEventFunc(th, info);
         }
@@ -218,7 +219,7 @@ void Engine::Run() {
         if (this->processLoop != nullptr)
             this->processLoop(this, delta);
 
-        if (this->level->processLoop != nullptr)
+        if (this->level != nullptr and this->level->processLoop != nullptr)
             this->level->processLoop(this, delta);
 
         if (this->isOneThread) {
@@ -226,12 +227,13 @@ void Engine::Run() {
             physics_engine_iterate_loop_delta += delta;
 
 
-            this->level->Update(delta);
+            if (this->level != nullptr)
+                this->level->Update(delta);
 
             if (this->fixedProcessLoop != nullptr and
                 fixed_process_loop_delta >= fixed_process_loop_delay) {
                 this->fixedProcessLoop(this, fixed_process_loop_delta);
-                if (this->level->fixedProcessLoop != nullptr)
+                if (this->level != nullptr and this->level->fixedProcessLoop != nullptr)
                     this->level->fixedProcessLoop(this, delta);
                 fixed_process_loop_delta = 0.0;
             }
@@ -240,31 +242,36 @@ void Engine::Run() {
                 // uint32_t i = 0;
                 /*std::cout << "Physics Engine Iteration: " <<
                 physics_engine_iterate_loop_delta << std::endl;*/
-                while (physics_engine_iterate_loop_delta - 0.0001 > 0.0f) {
-                    float d = physics_engine_iterate_loop_delay;
-                    if (physics_engine_iterate_loop_delta < d)
-                        d = physics_engine_iterate_loop_delta;
-                    this->level->getPhysEngine()->IteratePhysics(d);
-                    physics_engine_iterate_loop_delta -= d;
-                    // std::cout << "Physics Engine Iteration [" << i++ << "]: "
-                    // << d << std::endl;
+                if (this->level != nullptr) {
+                    while (physics_engine_iterate_loop_delta - 0.0001 > 0.0f) {
+                        float d = physics_engine_iterate_loop_delay;
+                        if (physics_engine_iterate_loop_delta < d)
+                            d = physics_engine_iterate_loop_delta;
+                        this->level->getPhysEngine()->IteratePhysics(d);
+                        physics_engine_iterate_loop_delta -= d;
+                        // std::cout << "Physics Engine Iteration [" << i++ << "]: "
+                        // << d << std::endl;
+                    }
                 }
                 physics_engine_iterate_loop_delta = 0.0;
             }
         }
 
-        for (auto& obj: level->animationPlayers) {
-            obj->Update(delta);
-        }
+        if (this->level != nullptr) {
+            for (auto& obj: level->animationPlayers) {
+                obj->Update(delta);
+            }
 
-        if (this->level->camera != nullptr) {
-            AudioServer::setListener3DPosition(this->level->camera->getGlobalPosition());
-            AudioServer::setListener3DDirection(this->level->camera->getGlobalDirection());
+            if (this->level->camera != nullptr) {
+                AudioServer::setListener3DPosition(this->level->camera->getGlobalPosition());
+                AudioServer::setListener3DDirection(this->level->camera->getGlobalDirection());
+            }
+
+            ogl.Render();
         }
 
         AudioServer::Update3D();
 
-        ogl.Render();
 
         glfwSwapBuffers(this->window);
     }
@@ -357,11 +364,12 @@ void Engine::threadFixedProcessLoop() {
         // std::cout << d / 10<< "\n";
         delta = glfwGetTime() - oldTime;
         oldTime = glfwGetTime();
-        this->level->Update(delta);
+        if (this->level != nullptr)
+            this->level->Update(delta);
 
         // meshesMutex.lock();
         fixedProcessLoop(this, delta);
-        if (this->level->fixedProcessLoop != nullptr)
+        if (this->level != nullptr and this->level->fixedProcessLoop != nullptr)
             this->level->fixedProcessLoop(this, delta);
         // meshesMutex.unlock();
         func_delta = glfwGetTime() - oldTime;
@@ -380,7 +388,8 @@ void Engine::threadPhysicsEngineIterateLoop() {
         std::this_thread::sleep_for(std::chrono::microseconds(a));
 
         delta = glfwGetTime() - oldTime;
-        level->getPhysEngine()->IteratePhysics((float) delta);
+        if (this->level != nullptr)
+            this->level->getPhysEngine()->IteratePhysics((float) delta);
         oldTime = glfwGetTime();
         func_delta = glfwGetTime() - oldTime;
     }

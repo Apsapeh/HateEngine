@@ -35,6 +35,8 @@ namespace HateEngine {
         RayCastCallback rayCastCallback;
         uint16_t collisionMask = -1;
         float length = 1.0f;
+        glm::vec3 customDirection = {0, 0, 0};
+        bool isCustomDirection = false;
         //                      legth/2, width/2, height/2
         // glm::vec3 reactRightSize = {.5f, .5f, .5f};
         void cast(bool once);
@@ -42,11 +44,17 @@ namespace HateEngine {
 
     public:
         RayCast(PhysEngine* physEngine, float length = 1.0f);
+        RayCast(float length = 1.0f);
         void changeLength(float length);
 
         bool isCollide(RayCastInfo* rayCastInfo = nullptr);
         std::vector<RayCastInfo> getAllCollisions();
 
+        void setPhysEngine(PhysEngine* physEngine);
+
+        void enableCustomDirection(glm::vec3 direction);
+        glm::vec3 disableCustomDirection();
+        bool isCustomDirectionEnabled() const;
 
         /**
          * @brief Set the collision mask bit [0..15] on which the body can collide with other bodies

@@ -69,7 +69,11 @@ void RayCast::cast(bool once) {
     glm::vec3 global_pos = this->getGlobalPosition();
     glm::vec3 dir;
 
-    dir = this->getGlobalDirection() * length;
+    if (this->isCustomDirection)
+        dir = this->customDirection * length;
+    else
+        dir = this->getGlobalDirection() * length;
+
 
     glm::vec3 startPos = {global_pos.x, global_pos.y, global_pos.z};
     glm::vec3 endPos = {global_pos.x + dir.x, global_pos.y + dir.y, global_pos.z + dir.z};
@@ -96,6 +100,23 @@ std::vector<RayCastInfo> RayCast::getAllCollisions() {
     return this->rayCastCallback.hits;
 }
 
+void RayCast::setPhysEngine(PhysEngine* physEngine) {
+    this->physEngine = physEngine;
+}
+
+void RayCast::enableCustomDirection(glm::vec3 direction) {
+    this->customDirection = direction;
+    this->isCustomDirection = true;
+}
+
+glm::vec3 RayCast::disableCustomDirection() {
+    this->isCustomDirection = false;
+    return this->customDirection;
+}
+
+bool RayCast::isCustomDirectionEnabled() const {
+    return this->isCustomDirection;
+}
 
 void RayCast::setCollisionMaskBit(uint8_t mask, bool state) {
     if (mask > 15) {

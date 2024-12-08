@@ -345,19 +345,11 @@ void OpenGL15::render(const Mesh* mesh, std::vector<Light*>* lights_vec) {
 }
 
 inline void OpenGL15::renderCamera(Camera* camera) {
-    glm::mat4 Mp = glm::perspective(
-            glm::radians(camera->getFOV()), this->engine->getAspectRatio(), 0.1f,
-            camera->getRenderDist()
-    );
-
+    glm::mat4 Mp = camera->getProjectionMatrix(this->engine->getAspectRatio());
     glMatrixMode(GL_PROJECTION);
     glLoadMatrixf(glm::value_ptr(Mp));
 
-    glm::mat4 mat = camera->getGlobalRotationMatrix();
-    mat = glm::transpose(mat); // Invert rotation matrix
-    mat = glm::translate(mat, -camera->getGlobalPosition());
-    glm::mat3 rot = glm::mat3(mat);
-
+    glm::mat4 mat = camera->getViewMatrix();
     glMatrixMode(GL_MODELVIEW);
     glLoadMatrixf(glm::value_ptr(mat));
 }

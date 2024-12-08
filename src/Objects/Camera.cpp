@@ -82,3 +82,39 @@ const CubeMesh* Camera::getSkyBox() const {
 bool Camera::isSkyBoxEnabled() const {
     return this->skyboxEnabled;
 }
+
+
+glm::mat4 Camera::getProjectionMatrix(float aspect_ratio) {
+    if (this->prev_aspect_ratio != aspect_ratio) {
+        this->prev_aspect_ratio = aspect_ratio;
+        this->projectionMatrix =
+                glm::perspective(glm::radians(this->FOV), aspect_ratio, 0.1f, this->renderDist);
+    }
+    return this->projectionMatrix;
+}
+
+glm::mat4 Camera::getViewMatrix() const {
+    glm::mat4 mat = this->getGlobalRotationMatrix();
+    mat = glm::transpose(mat); // Invert rotation matrix
+    mat = glm::translate(mat, -this->getGlobalPosition());
+    return mat;
+}
+
+
+glm::vec3 Camera::getProjectRayFromScreen(glm::vec2 pos, glm::vec2 screen) {
+    glm::vec3 rayNDC;
+    rayNDC.x = (2.0f * pos.x) / screen.x - 1.0f;
+    rayNDC.y = 1.0f - (2.0f * pos.y) / screen.y; // Инверсия оси Y
+    rayNDC.z = 1.0f; // Глубина для "дальнего плана"
+
+    // 2. Преобразуем из NDC в координаты камеры (view space)
+    glm::vec4 rayClip(rayNDC.x, rayNDC.y, -1.0f, 1.0f); // -1.0f для задней плоскости
+    glm::vec4 rayEye = glm::inverse(getProjectionMatrix(screen.x / screen.y)) * rayClip;
+    rayEye = glm::vec4(rayEye.x, rayEye.y, -1.0f, 0.0f); // Устанавливаем w = 0 для направления
+
+    // 3. Преобразуем из координат камеры в мировое пространство
+    glm::vec4 rayWorld = glm::inverse(getViewMatrix()) * rayEye;
+    glm::vec3 rayDirection = glm::normalize(glm::vec3(rayWorld));
+
+    return rayDirection;
+}

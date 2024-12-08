@@ -13,6 +13,7 @@
 #include "HateEngine/Objects/Object.hpp"
 #include "HateEngine/Objects/Physics/BoxShape.hpp"
 #include "glm/fwd.hpp"
+#include "glm/geometric.hpp"
 #include <HateEngine/Log.hpp>
 #include <HateEngine/HateEngine.hpp>
 #include <HateEngine/Objects/Camera.hpp>
@@ -163,17 +164,17 @@ int main() {
     game.setOneThreadMode(true);
     game.setVSync(false);
 
-    game.Input.addKeyToAction("forward", HateEngine::W);
-    game.Input.addKeyToAction("forward", HateEngine::KP_8);
-    game.Input.addKeyToAction("backward", HateEngine::S);
-    game.Input.addKeyToAction("backward", HateEngine::KP_5);
-    game.Input.addKeyToAction("left", HateEngine::A);
-    game.Input.addKeyToAction("left", HateEngine::KP_4);
-    game.Input.addKeyToAction("right", HateEngine::D);
-    game.Input.addKeyToAction("right", HateEngine::KP_6);
-    game.Input.addKeyToAction("up", HateEngine::SPACE);
-    game.Input.addKeyToAction("down", HateEngine::LEFT_CONTROL);
-    game.Input.addKeyToAction("down", HateEngine::LEFT_SUPER);
+    game.Input.addKeyToAction("forward", HateEngine::KeyW);
+    game.Input.addKeyToAction("forward", HateEngine::KeyNumPad8);
+    game.Input.addKeyToAction("backward", HateEngine::KeyS);
+    game.Input.addKeyToAction("backward", HateEngine::KeyNumPad5);
+    game.Input.addKeyToAction("left", HateEngine::KeyA);
+    game.Input.addKeyToAction("left", HateEngine::KeyNumPad4);
+    game.Input.addKeyToAction("right", HateEngine::KeyD);
+    game.Input.addKeyToAction("right", HateEngine::KeyNumPad6);
+    game.Input.addKeyToAction("up", HateEngine::KeySpace);
+    game.Input.addKeyToAction("down", HateEngine::KeyLeftControl);
+    game.Input.addKeyToAction("down", HateEngine::KeyLeftSuper);
     // Setting textures for the cube and floor meshes
 
 
@@ -757,6 +758,7 @@ int main() {
     // HateEngine::AudioServer::Deinit();
 }
 
+
 int frames_count = 0;
 float speed = 1;
 double fps_time = 0.0;
@@ -882,7 +884,7 @@ void _physics_process(HateEngine::Engine* engine, double delta) {
 
     // mesh1.setPosition(rbodyPosVect.z, rbodyPosVect.y, rbodyPosVect.x);
 
-    if (engine->Input.isKeyPressed(HateEngine::ESCAPE))
+    if (engine->Input.isKeyPressed(HateEngine::KeyEscape))
         engine->Exit();
 
 
@@ -890,10 +892,10 @@ void _physics_process(HateEngine::Engine* engine, double delta) {
         rbody_body->setLinearVelocity({0, -1, 0});*/
 
 
-    if (engine->Input.isKeyPressed(HateEngine::Q))
+    if (engine->Input.isKeyPressed(HateEngine::KeyQ))
         head.rotate(0, 1, 0);
 
-    if (engine->Input.isKeyPressed(HateEngine::E)) {
+    if (engine->Input.isKeyPressed(HateEngine::KeyE)) {
         std::vector<HateEngine::Mesh> meshes = {};
         meshes.reserve(64535);
         for (int i = 0; i < 64535; ++i) {
@@ -904,34 +906,30 @@ void _physics_process(HateEngine::Engine* engine, double delta) {
         HATE_INFO_F("LAST UUID: %llu\n", meshes.back().getUUID().getU64());
     }
 
-    if (engine->Input.isKeyPressed(HateEngine::T)) {
+    if (engine->Input.isKeyPressed(HateEngine::KeyT)) {
         cube_part_ptr->reset();
         cube_part_ptr->play();
     }
 
 
-    if (engine->Input.isKeyPressed(HateEngine::Y))
+    if (engine->Input.isKeyPressed(HateEngine::KeyY))
         engine->setMouseCapture(false);
-    if (engine->Input.isKeyPressed(HateEngine::U))
+    if (engine->Input.isKeyPressed(HateEngine::KeyU))
         engine->setMouseCapture(true);
 
     /*if (engine->Input.isKeyPressed(GLFW_KEY_P))
         engine->setFullScreen(!engine->getFullScreen());*/
 
-    glm::vec2 raw_dir =
-            engine->Input.getVector(
-                    HateEngine::LEFT, HateEngine::RIGHT, HateEngine::UP, HateEngine::DOWN
-            ) *
-            5;
+    glm::vec2 raw_dir = engine->Input.getVector(
+                                HateEngine::KeyLeft, HateEngine::KeyRight, HateEngine::KeyUp,
+                                HateEngine::KeyDown
+                        ) *
+                        5;
     float pb_x = playerBody.reactRigidBody->getLinearVelocity().x;
     float pb_y = playerBody.reactRigidBody->getLinearVelocity().y;
     float pb_z = playerBody.reactRigidBody->getLinearVelocity().z;
     playerBody.reactRigidBody->setLinearVelocity({-raw_dir.y, pb_y, raw_dir.x});
 
-
-    glm::vec2 glmodel_rot = engine->Input.getVector(
-            HateEngine::LEFT, HateEngine::RIGHT, HateEngine::UP, HateEngine::DOWN
-    );
     // glmodel.rotate(0, glmodel_rot.x, 0);
     //  glmodel.offset(0, glmodel_rot.y / 10, 0);
 
@@ -940,6 +938,32 @@ void _physics_process(HateEngine::Engine* engine, double delta) {
         glmodel.getGlobalPosition().y << " " <<
         glmodel.getGlobalPosition().z << '\n';*/
 }
+
+
+// Функция для генерации луча
+glm::vec3 computeRayDirection(
+        double cursorX, double cursorY, int screenWidth, int screenHeight,
+        const glm::mat4& projectionMatrix, const glm::mat4& viewMatrix,
+        const glm::vec3& cameraPosition
+) {
+    // 1. Преобразуем координаты курсора в NDC
+    float x = (2.0f * cursorX) / screenWidth - 1.0f;
+    float y = 1.0f - (2.0f * cursorY) / screenHeight; // Инверсия оси Y
+    float z = 1.0f; // Глубина для "дальнего плана"
+    glm::vec3 rayNDC(x, y, z);
+
+    // 2. Преобразуем из NDC в координаты камеры (view space)
+    glm::vec4 rayClip(rayNDC.x, rayNDC.y, -1.0f, 1.0f); // -1.0f для задней плоскости
+    glm::vec4 rayEye = glm::inverse(projectionMatrix) * rayClip;
+    rayEye = glm::vec4(rayEye.x, rayEye.y, -1.0f, 0.0f); // Устанавливаем w = 0 для направления
+
+    // 3. Преобразуем из координат камеры в мировое пространство
+    glm::vec4 rayWorld = glm::inverse(viewMatrix) * rayEye;
+    glm::vec3 rayDirection = glm::normalize(glm::vec3(rayWorld));
+
+    return rayDirection;
+}
+
 
 float lastX = 0;
 float lastY = 0;
@@ -978,16 +1002,58 @@ void _input_event(HateEngine::Engine* engine, HateEngine::Engine::InputEventInfo
         // fps_widget_ptr->zoom(0.1);
     }
 
+    if (event.type == HateEngine::Engine::InputEventMouseButton) {
+        if (event.key == HateEngine::MouseButtonLeft && event.isPressed) {
+            // Координаты курсора
+            glm::vec3 rayDirection =
+                    camera.getProjectRayFromScreen(event.position, engine->getResolution());
+
+            // Вывод направления луча
+            /*std::cout << "Ray Direction: (" << rayDirection.x << ", " << rayDirection.y << ", "
+                      << rayDirection.z << ")" << std::endl;*/
+
+
+            HateEngine::RayCast ray = HateEngine::RayCast(engine->getLevel()->getPhysEngine(), 50);
+            ray.setPosition(camera.getGlobalPosition());
+            ray.enableCustomDirection(rayDirection);
+
+            std::vector<HateEngine::RayCastInfo> hits = ray.getAllCollisions();
+
+            std::sort(
+                    hits.begin(), hits.end(),
+                    [](const HateEngine::RayCastInfo& a, const HateEngine::RayCastInfo& b) {
+                        return glm::distance(camera.getGlobalPosition(), a.worldPoint) <
+                               glm::distance(camera.getGlobalPosition(), b.worldPoint);
+                    }
+            );
+
+            HateEngine::RayCastInfo rayCastInfo;
+            // if (ray.isCollide(&rayCastInfo)) {
+            if (not hits.empty()) {
+                rayCastInfo = hits[0];
+                HATE_INFO_F(
+                        "x: %f, y: %f, z: %f", rayCastInfo.worldPoint.x, rayCastInfo.worldPoint.y,
+                        rayCastInfo.worldPoint.z
+                );
+
+                HateEngine::CubeMesh cube;
+                // cube.setSize(0.1, 0.1, 0.1);
+                cube.setPosition(rayCastInfo.worldPoint);
+                lvl.addObjectClone(cube);
+            }
+        }
+    }
+
     if (event.type == HateEngine::Engine::InputEventKey) {
-        if (event.key == HateEngine::P && event.isPressed) {
+        if (event.key == HateEngine::KeyP && event.isPressed) {
             engine->setFullScreen(!engine->getFullScreen());
             HATE_WARNING("Toggled fullscreen")
         }
 
-        if (event.key == HateEngine::KP_ADD && event.isPressed) {
+        if (event.key == HateEngine::KeyNumPadAdd && event.isPressed) {
             lvl.setAmbientLightIntensity(lvl.getAmbientLightIntensity() + 0.1);
         }
-        if (event.key == HateEngine::KP_SUBTRACT && event.isPressed) {
+        if (event.key == HateEngine::KeyNumPadSubtract && event.isPressed) {
             lvl.setAmbientLightIntensity(lvl.getAmbientLightIntensity() - 0.1);
         }
     }
