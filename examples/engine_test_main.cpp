@@ -217,6 +217,15 @@ int main() {
     audioPlayer1.setPosition(0, 2, 0);
     playerCapsuleMesh.bindObj(&audioPlayer2);
 
+    // playerCapsuleMesh.getLOD(0)[0]->setColor(glm::vec4(1, 0, 0, 1));
+
+    HateEngine::CubeMesh colorCube;
+    colorCube.offset(3, 3, 3);
+    colorCube.setColor({0.4, 0.1, 0.1});
+    // colorCube.disableLightShading();
+
+    lvl.addObjectRef(&colorCube);
+
     // ambientPlayer.play();
     // audioPlayer1.play();
     // audioPlayer2.play();

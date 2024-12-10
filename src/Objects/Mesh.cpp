@@ -2,6 +2,7 @@
 #include <algorithm>
 #include <cstdint>
 #include <utility>
+#include "glm/fwd.hpp"
 
 using namespace HateEngine;
 
@@ -96,6 +97,37 @@ void Mesh::setUV(std::vector<float> uv) {
     this->UV = std::move(uv);
 }
 
+void Mesh::setColors(std::vector<float> colors, uint8_t channels) {
+    this->colors = std::move(colors);
+    this->color_channels = channels;
+    this->is_color_enabled = true;
+}
+
+void Mesh::setColor(glm::vec4 color) {
+    this->colors.clear();
+    this->colors.reserve(this->verticies.size() / 3 * this->color_channels);
+    for (uint32_t i = 0; i < this->verticies.size() / 3; i++) {
+        this->colors.push_back(color.r);
+        this->colors.push_back(color.g);
+        this->colors.push_back(color.b);
+        this->colors.push_back(color.a);
+    }
+    this->color_channels = 4;
+    this->is_color_enabled = true;
+}
+
+void Mesh::setColor(glm::vec3 color) {
+    this->colors.clear();
+    this->colors.reserve(this->verticies.size());
+    for (uint32_t i = 0; i < this->verticies.size() / 3; i++) {
+        this->colors.push_back(color.r);
+        this->colors.push_back(color.g);
+        this->colors.push_back(color.b);
+    }
+    this->color_channels = 3;
+    this->is_color_enabled = true;
+}
+
 void Mesh::enableCustomMaxLightDist(float dist) {
     this->max_light_dist = dist;
 }
@@ -130,6 +162,16 @@ void Mesh::disableLightShading() {
 }
 bool Mesh::isLightShading() const {
     return this->is_shaded;
+}
+
+void Mesh::enableColor() {
+    this->is_color_enabled = true;
+}
+void Mesh::disableColor() {
+    this->is_color_enabled = false;
+}
+bool Mesh::isColorEnabled() const {
+    return this->is_color_enabled;
 }
 
 float Mesh::getAABBRadius() const {
@@ -169,4 +211,12 @@ Texture* Mesh::getTexture() const {
 
 const std::vector<float>* Mesh::getUV() const {
     return &this->UV;
+}
+
+const std::vector<float>* Mesh::getColors() const {
+    return &this->colors;
+}
+
+const uint8_t Mesh::getColorChannels() const {
+    return this->color_channels;
 }

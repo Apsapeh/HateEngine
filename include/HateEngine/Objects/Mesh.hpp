@@ -1,5 +1,6 @@
 #pragma once
 #include <cstdint>
+#include <sys/types.h>
 #include <vector>
 #include "../Resources/Texture.hpp"
 #include "Object.hpp"
@@ -12,8 +13,10 @@ namespace HateEngine {
         std::vector<float> verticies;
         std::vector<uint32_t> indicies;
         std::vector<float> normals;
+        std::vector<float> colors;
         Texture* texture = nullptr;
         std::vector<float> UV = {};
+        uint8_t color_channels = 4;
         float max_light_dist = 0;
         float center_max_size = 0;
         glm::vec3 AABB_min;
@@ -22,6 +25,7 @@ namespace HateEngine {
         // uint8_t draw_priority = 255;
         bool correct_transparency = false;
         bool face_culling = true;
+        bool is_color_enabled = false;
 
         void updateCenterMaxSize();
         void updateAABB();
@@ -37,6 +41,9 @@ namespace HateEngine {
         void setNormals(std::vector<float> vec);
         void setTexture(Texture* tex);
         void setUV(std::vector<float> UV);
+        void setColors(std::vector<float> colors, uint8_t channels = 4);
+        void setColor(glm::vec4 color);
+        void setColor(glm::vec3 color);
 
         void enableCustomMaxLightDist(float dist);
         const float getCustomMaxLightDist() const;
@@ -55,6 +62,9 @@ namespace HateEngine {
         void enableLightShading();
         void disableLightShading();
         bool isLightShading() const;
+        void enableColor();
+        void disableColor();
+        bool isColorEnabled() const;
         float getAABBRadius() const;
         glm::vec3 getAABBMin() const;
         glm::vec3 getAABBMax() const;
@@ -65,6 +75,8 @@ namespace HateEngine {
         const std::vector<float>* getNormals() const;
         Texture* getTexture() const;
         const std::vector<float>* getUV() const;
+        const std::vector<float>* getColors() const;
+        const uint8_t getColorChannels() const;
         // const std::vector<std::vector<float>>* getTexturesCoords();
     };
 } // namespace HateEngine

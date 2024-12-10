@@ -39,9 +39,18 @@ OpenGL15::OpenGL15(Engine* engine) {
     GLfloat white_light[] = {1.0, 1.0, 1.0, 1.0};
     glClearColor(0.0, 1.0, 0.0, 0.0);
     glShadeModel(GL_SMOOTH);
-    // glMaterialfv(GL_FRONT,GL_SPECULAR,mat_specular);
-    // glMaterialfv(GL_FRONT,GL_SHININESS,mat_shininess);
+    glMaterialfv(GL_FRONT, GL_SPECULAR, mat_specular);
+    glMaterialfv(GL_FRONT, GL_SHININESS, mat_shininess);
     GLfloat light_ambient[] = {1.0, 1.0, 1.0, 1.0};
+
+
+    // GLfloat mat_specular[] = {0.3f, 0.3f, 0.3f, 1.0f};
+    // GLfloat mat_shininess[] = {25.0f};
+
+    glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, mat_specular);
+    glMaterialfv(GL_FRONT_AND_BACK, GL_SHININESS, mat_shininess);
+
+
     /*glLightfv(GL_LIGHT0,GL_AMBIENT,light_ambient);
     glLightfv(GL_LIGHT0,GL_POSITION,light_position);
     glLightf(GL_LIGHT0, GL_CONSTANT_ATTENUATION, 1.0);
@@ -58,7 +67,9 @@ OpenGL15::OpenGL15(Engine* engine) {
     glEnable(GL_BLEND);
     // glBlendEquation(GL_FUNC_ADD);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
     glDisable(GL_BLEND);
+    glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
     // glLightModelf(GL_LIGHT_MODEL_TWO_SIDE, GL_TRUE);
 
     glEnableClientState(GL_VERTEX_ARRAY);
@@ -295,6 +306,15 @@ void OpenGL15::render(const Mesh* mesh, std::vector<Light*>* lights_vec) {
                 max_light_render_dist = this->maxLightRenderDist;
             light_indicies = getNearestLights(lights_vec, mesh, max_light_render_dist);
             renderLight(lights_vec, light_indicies);
+            /*GLfloat mat_ambient[] = {0.5f, 0.5f, 0.5f, 1.0f};
+GLfloat mat_diffuse[] = {1.0f, 0.0f, 0.0f, 1.0f}; // Цвет объекта
+GLfloat mat_specular[] = {0.3f, 0.3f, 0.3f, 1.0f};
+GLfloat mat_shininess[] = {25.0f};
+
+glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, mat_ambient);
+glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, mat_diffuse);
+glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, mat_specular);
+glMaterialfv(GL_FRONT_AND_BACK, GL_SHININESS, mat_shininess);*/
         } else {
             glDisable(GL_LIGHTING);
         }
@@ -321,7 +341,15 @@ void OpenGL15::render(const Mesh* mesh, std::vector<Light*>* lights_vec) {
 
         glVertexPointer(3, GL_FLOAT, 0, mesh->getVertices()->data());
         glNormalPointer(GL_FLOAT, 0, mesh->getNormals()->data());
-        // glColorPointer(3, GL_FLOAT, 0, color);
+
+
+        if (mesh->isColorEnabled()) {
+            glEnable(GL_COLOR_MATERIAL);
+            glEnableClientState(GL_COLOR_ARRAY);
+            glColorPointer((int) mesh->getColorChannels(), GL_FLOAT, 0, mesh->getColors()->data());
+            glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
+        }
+
         glDrawElements(
                 GL_TRIANGLES, mesh->getIndicies()->size(), GL_UNSIGNED_INT,
                 mesh->getIndicies()->data()
@@ -336,11 +364,16 @@ void OpenGL15::render(const Mesh* mesh, std::vector<Light*>* lights_vec) {
         for (int i = 0; i < light_indicies.size(); ++i)
             glDisable(GL_LIGHT0 + i);
 
-        if (mesh->isLightShading())
+        if (!mesh->isLightShading())
             glEnable(GL_LIGHTING);
 
         if (!mesh->getFaceCulling())
             glEnable(GL_CULL_FACE);
+
+        if (mesh->isColorEnabled()) {
+            glDisableClientState(GL_COLOR_ARRAY);
+            glDisable(GL_COLOR_MATERIAL);
+        }
     }
 }
 

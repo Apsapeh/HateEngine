@@ -49,7 +49,7 @@ namespace HateEngine {
         glm::vec4 backgroundColor = {0.5f, 0.5f, 0.5f, 0.0f};
 
         // Ambient light
-        glm::vec4 calculatedAmbientLight = {1.0f, 1.0f, 1.0f, 1.0f};
+        glm::vec4 calculatedAmbientLight = {0.5f, 0.5f, 0.5f, 1.0f};
         glm::vec3 ambientLightColor = {1.0f, 1.0f, 1.0f};
         float ambientLightIntensity = 1.0f;
         void updateAmbientLight(); // Recalculate the ambient light
