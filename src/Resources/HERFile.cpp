@@ -30,6 +30,10 @@ GLTFModel HERResource::asGLBModel() {
     return GLTFModel(this->data.data(), this->data.size());
 }
 
+HENFile HERResource::asHENFile() {
+    return HENFile((const char*) this->data.data(), this->data.size());
+}
+
 Audio HERResource::asAudio() {
     return Audio(this->data.data(), this->data.size(), "unknown");
 }

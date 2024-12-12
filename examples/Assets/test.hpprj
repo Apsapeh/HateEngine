@@ -10,3 +10,8 @@ is_relative = true
 path = "/Users/ghost/CLionProjects/HateEngine/examples/Assets/SHOTGUN4.glb"
 name = "shotgun.glb"
 is_relative = false
+
+[[resources]]
+path = "/Users/ghost/CLionProjects/HateEngine/examples/Assets/ignore/E1M1.hen"
+name = "E1M1.hen"
+is_relative = true

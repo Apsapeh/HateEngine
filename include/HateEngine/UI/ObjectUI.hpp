@@ -44,7 +44,7 @@ namespace HateEngine {
         void removeFont();
         UIFont* getFont() const;
 
-        void setText(const std::string& text);
+        void setText(const std::string text);
         std::string getText() const;
 
         Type getType() const;

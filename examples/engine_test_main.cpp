@@ -8,6 +8,7 @@
 #include "HateEngine/Objects/Physics/CollisionShape.hpp"
 #include "HateEngine/Objects/Physics/StaticBody.hpp"
 #include "HateEngine/Objects/Physics/TriggerArea.hpp"
+#include "HateEngine/Resources/HENFile.hpp"
 #include "glm/ext/vector_float2.hpp"
 #include "glm/ext/vector_float3.hpp"
 
@@ -339,56 +340,12 @@ int main() {
                 delete lights;
             }
     );
-    // HATE_FATAL("UOEAUOAEU00");
 
-    uint32_t vertex_count = 0;
-    uint32_t uv_count = 0;
-    for (auto& m: objmodel.getLOD(0)) {
-        // HATE_INFO_F("Name: %s", m->getName().c_str());
-        //  if (m->getName() == "entity0_brush663") {
-        // if (m->getName() == "entity0_brush961") {
-        /*if (m->getName() == "entity0_brush143") {
-            // m->setVisible(false);
-            HATE_INFO("VERTICES:")
-            const auto& vertices = m->getVertices();
-            const glm::vec3 pos = m->getPosition();
-            for (uint32_t i = 0; i < vertices->size(); i += 3) {
-                vertex_count += 1;
-                HATE_INFO_F(
-                        "X: %f, Y: %f, Z: %f", vertices->at(i) + pos.x, vertices->at(i + 1) + pos.y,
-                        vertices->at(i + 2) + pos.z
-                );
-            }
 
-            HATE_INFO("TEX COORDS:")
-            const auto& tex_coords = m->getUV();
-            for (uint32_t i = 0; i < tex_coords->size(); i += 2) {
-                uv_count += 1;
-                HATE_INFO_F("U: %f, V: %f", tex_coords->at(i), tex_coords->at(i + 1));
-            }
-        }*/
+    // HateEngine::HENFile henfile("examples/Assets/Ignore/E1M1.hen");
+    HateEngine::HENFile henfile = herfile["E1M1.hen"].asHENFile();
+    const auto* nodes = henfile.getNodes();
 
-        uint32_t vc = 0;
-        uint32_t uvc = 0;
-        const auto& vertices = m->getVertices();
-        const glm::vec3 pos = m->getPosition();
-        for (uint32_t i = 0; i < vertices->size(); i += 3) {
-            vc += 1;
-        }
-
-        const auto& tex_coords = m->getUV();
-        for (uint32_t i = 0; i < tex_coords->size(); i += 2) {
-            uvc += 1;
-        }
-
-        if (vc != uvc) {
-            HATE_ERROR_F("Name: %s", m->getName().c_str());
-            HATE_ERROR_F("Vertex count: %d", vc);
-            HATE_ERROR_F("UV count: %d", uvc);
-        }
-    }
-    HATE_ERROR_F("Vertex count: %d", vertex_count);
-    HATE_ERROR_F("UV count: %d", uv_count);
 
     // objmodel.setScale(0.0625, 0.0625, 0.0625);
     /*HateEngine::ObjMapModel objmodel =

@@ -5,6 +5,7 @@
 #include <vector>
 
 #include "HateEngine/AudioBus.hpp"
+#include "HateEngine/Resources/HENFile.hpp"
 #include "HateEngine/Resources/ObjMapModel.hpp"
 #include "Texture.hpp"
 #include "GLTFModel.hpp"
@@ -26,6 +27,7 @@ namespace HateEngine {
                 float mipmap_bias = -1.0f, bool autoload = true
         );
         GLTFModel asGLBModel();
+        HENFile asHENFile();
         Audio asAudio();
         AudioStream asAudioStream();
         AudioPlayer asAudioPlayer(

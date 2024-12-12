@@ -47,7 +47,7 @@ UIFont* ObjectUI::getFont() const {
     return this->font;
 }
 
-void ObjectUI::setText(const std::string& text) {
+void ObjectUI::setText(const std::string text) {
     this->text = text;
 }
 
