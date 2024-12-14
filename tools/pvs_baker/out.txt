@@ -1,0 +1,1698 @@
+Min: Vec3 { x: -38.0, y: -38.0, z: -192.0 }, Max: Vec3 { x: 95.0, y: 18.0, z: 27.0 }
+Width: 9, Height: 4, Depth: 14
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+distance: 9.513149, point_to_obj_distance: 3.535534, point_to_other_obj_distance: 7.4498324, point_gipotenuze: 8.246211
+2-4-12: 1188
+{
+"entity0_brush47",
+"entity0_brush0",
+"entity0_brush2",
+"entity0_brush4",
+"entity0_brush46",
+"entity0_brush395",
+"entity0_brush397",
+"entity0_brush398",
+"entity0_brush399",
+"entity0_brush53",
+"entity0_brush54",
+"entity0_brush55",
+"entity0_brush56",
+"entity0_brush59",
+"entity0_brush60",
+"entity0_brush48",
+"entity0_brush49",
+"entity0_brush1",
+"entity0_brush3",
+"entity0_brush57",
+"entity0_brush50",
+"entity0_brush396",
+"entity0_brush400",
+"entity0_brush51",
+"entity0_brush52",
+"entity0_brush58",
+"entity0_brush120",
+"entity0_brush121",
+"entity0_brush401",
+"entity0_brush402",
+"entity0_brush22",
+"entity0_brush1070",
+"entity0_brush20",
+"entity0_brush21",
+"entity0_brush5",
+"entity0_brush1071",
+"entity0_brush38",
+"entity0_brush42",
+"entity0_brush18",
+"entity0_brush32",
+"entity0_brush43",
+"entity0_brush17",
+"entity0_brush33",
+"entity0_brush8",
+"entity0_brush15",
+"entity0_brush16",
+"entity0_brush1072",
+"entity312_brush0",
+"entity0_brush24",
+"entity310_brush0",
+"entity0_brush406",
+"entity0_brush9",
+"entity0_brush10",
+"entity0_brush13",
+"entity0_brush14",
+"entity0_brush27",
+"entity0_brush31",
+"entity0_brush1077",
+"entity352_brush0",
+"entity0_brush1073",
+"entity0_brush1074",
+"entity0_brush1078",
+"entity0_brush1079",
+"entity0_brush35",
+"entity0_brush1075",
+"entity0_brush28",
+"entity0_brush39",
+"entity0_brush1076",
+"entity0_brush29",
+"entity0_brush40",
+"entity0_brush30",
+"entity0_brush41",
+"entity0_brush23",
+"entity0_brush405",
+"entity0_brush25",
+"entity0_brush36",
+"entity0_brush6",
+"entity0_brush11",
+"entity0_brush45",
+"entity0_brush403",
+"entity0_brush26",
+"entity0_brush37",
+"entity0_brush44",
+"entity0_brush404",
+"entity0_brush1062",
+"entity0_brush7",
+"entity0_brush62",
+"entity0_brush61",
+"entity0_brush76",
+"entity0_brush84",
+"entity0_brush65",
+"entity0_brush79",
+"entity0_brush78",
+"entity0_brush66",
+"entity0_brush101",
+"entity0_brush92",
+"entity0_brush100",
+"entity0_brush95",
+"entity338_brush0",
+"entity0_brush102",
+"entity0_brush1110",
+"entity0_brush408",
+"entity0_brush70",
+"entity0_brush411",
+"entity0_brush97",
+"entity0_brush964",
+"entity0_brush966",
+"entity0_brush89",
+"entity0_brush935",
+"entity0_brush970",
+"entity0_brush67",
+"entity0_brush99",
+"entity189_brush0",
+"entity188_brush0",
+"entity0_brush961",
+"entity0_brush98",
+"entity190_brush0",
+"entity0_brush103",
+"entity0_brush117",
+"entity0_brush105",
+"entity0_brush1109",
+"entity0_brush81",
+"entity0_brush973",
+"entity0_brush69",
+"entity0_brush80",
+"entity0_brush971",
+"entity14_brush1",
+"entity14_brush2",
+"entity14_brush0",
+"entity0_brush969",
+"entity0_brush962",
+"entity0_brush94",
+"entity15_brush2",
+"entity0_brush77",
+"entity0_brush965",
+"entity15_brush0",
+"entity0_brush981",
+"entity0_brush96",
+"entity0_brush963",
+"entity0_brush1100",
+"entity0_brush86",
+"entity0_brush119",
+"entity0_brush934",
+"entity0_brush106",
+"entity0_brush409",
+"entity0_brush968",
+"entity0_brush410",
+"entity15_brush1",
+"entity0_brush940",
+"entity29_brush1",
+"entity0_brush118",
+"entity0_brush1102",
+"entity29_brush2",
+"entity0_brush88",
+"entity0_brush413",
+"entity0_brush414",
+"entity0_brush1095",
+"entity0_brush938",
+"entity0_brush116",
+"entity0_brush63",
+"entity0_brush1084",
+"entity0_brush1144",
+"entity0_brush1128",
+"entity0_brush115",
+"entity0_brush68",
+"entity0_brush1107",
+"entity353_brush0",
+"entity0_brush112",
+"entity0_brush71",
+"entity0_brush122",
+"entity0_brush93",
+"entity0_brush110",
+"entity0_brush1111",
+"entity0_brush90",
+"entity0_brush82",
+"entity0_brush1097",
+"entity0_brush933",
+"entity0_brush126",
+"entity0_brush131",
+"entity0_brush1085",
+"entity0_brush1098",
+"entity0_brush104",
+"entity0_brush72",
+"entity0_brush64",
+"entity0_brush127",
+"entity0_brush1089",
+"entity0_brush83",
+"entity0_brush1088",
+"entity0_brush1124",
+"entity0_brush1126",
+"entity0_brush1112",
+"entity0_brush1099",
+"entity0_brush1086",
+"entity0_brush87",
+"entity0_brush1087",
+"entity30_brush0",
+"entity0_brush113",
+"entity0_brush114",
+"entity0_brush125",
+"entity0_brush1096",
+"entity0_brush91",
+"entity0_brush108",
+"entity0_brush1090",
+"entity0_brush1121",
+"entity0_brush149",
+"entity0_brush109",
+"entity0_brush138",
+"entity0_brush133",
+"entity0_brush172",
+"entity0_brush141",
+"entity0_brush1094",
+"entity0_brush412",
+"entity0_brush111",
+"entity0_brush1103",
+"entity0_brush129",
+"entity0_brush124",
+"entity0_brush75",
+"entity0_brush73",
+"entity0_brush132",
+"entity0_brush74",
+"entity0_brush689",
+"entity0_brush1145",
+"entity0_brush1146",
+"entity0_brush107",
+"entity0_brush137",
+"entity0_brush1148",
+"entity0_brush135",
+"entity0_brush123",
+"entity0_brush136",
+"entity0_brush1114",
+"entity0_brush134",
+"entity0_brush1113",
+"entity0_brush140",
+"entity0_brush139",
+"entity148_brush0",
+"entity0_brush932",
+"entity0_brush1149",
+"entity0_brush143",
+"entity0_brush946",
+"entity0_brush958",
+"entity0_brush945",
+"entity0_brush142",
+"entity0_brush1093",
+"entity0_brush959",
+"entity0_brush1091",
+"entity0_brush1127",
+"entity0_brush1140",
+"entity0_brush1147",
+"entity0_brush947",
+"entity0_brush1129",
+"entity313_brush0",
+"entity0_brush1141",
+"entity366_brush1",
+"entity0_brush1092",
+"entity0_brush924",
+"entity0_brush923",
+"entity0_brush1139",
+"entity0_brush931",
+"entity0_brush1105",
+"entity0_brush1138",
+"entity0_brush960",
+"entity0_brush926",
+"entity366_brush2",
+"entity351_brush0",
+"entity0_brush145",
+"entity0_brush1135",
+"entity0_brush1104",
+"entity0_brush1137",
+"entity0_brush1106",
+"entity0_brush1123",
+"entity0_brush1134",
+"entity0_brush980",
+"entity0_brush882",
+"entity366_brush0",
+"entity0_brush1125",
+"entity0_brush944",
+"entity0_brush144",
+"entity0_brush893",
+"entity0_brush1133",
+"entity0_brush899",
+"entity0_brush943",
+"entity0_brush1142",
+"entity0_brush1120",
+"entity0_brush1143",
+"entity0_brush146",
+"entity0_brush876",
+"entity0_brush1150",
+"entity0_brush942",
+"entity0_brush922",
+"entity0_brush1130",
+"entity0_brush902",
+"entity0_brush147",
+"entity0_brush808",
+"entity0_brush928",
+"entity0_brush921",
+"entity0_brush941",
+"entity0_brush897",
+"entity0_brush1122",
+"entity0_brush900",
+"entity0_brush156",
+"entity0_brush1101",
+"entity0_brush810",
+"entity0_brush816",
+"entity0_brush956",
+"entity0_brush169",
+"entity0_brush148",
+"entity0_brush955",
+"entity0_brush925",
+"entity0_brush1035",
+"entity0_brush152",
+"entity0_brush891",
+"entity0_brush950",
+"entity0_brush898",
+"entity234_brush2",
+"entity0_brush1033",
+"entity0_brush888",
+"entity234_brush1",
+"entity0_brush151",
+"entity0_brush889",
+"entity0_brush929",
+"entity0_brush883",
+"entity0_brush812",
+"entity0_brush813",
+"entity0_brush887",
+"entity0_brush167",
+"entity0_brush1038",
+"entity0_brush168",
+"entity0_brush957",
+"entity0_brush917",
+"entity0_brush153",
+"entity0_brush877",
+"entity0_brush150",
+"entity234_brush3",
+"entity0_brush157",
+"entity0_brush1031",
+"entity0_brush818",
+"entity234_brush5",
+"entity186_brush0",
+"entity0_brush1036",
+"entity0_brush827",
+"entity0_brush930",
+"entity314_brush0",
+"entity0_brush209",
+"entity234_brush4",
+"entity0_brush809",
+"entity0_brush173",
+"entity0_brush920",
+"entity0_brush817",
+"entity0_brush912",
+"entity0_brush878",
+"entity0_brush911",
+"entity0_brush176",
+"entity0_brush159",
+"entity0_brush949",
+"entity0_brush160",
+"entity0_brush826",
+"entity0_brush948",
+"entity0_brush175",
+"entity0_brush825",
+"entity0_brush814",
+"entity0_brush909",
+"entity0_brush155",
+"entity0_brush824",
+"entity0_brush901",
+"entity0_brush875",
+"entity234_brush0",
+"entity0_brush823",
+"entity0_brush951",
+"entity0_brush210",
+"entity0_brush890",
+"entity0_brush881",
+"entity0_brush953",
+"entity0_brush913",
+"entity0_brush892",
+"entity0_brush952",
+"entity0_brush821",
+"entity0_brush975",
+"entity0_brush879",
+"entity0_brush978",
+"entity0_brush977",
+"entity0_brush174",
+"entity0_brush954",
+"entity0_brush910",
+"entity0_brush919",
+"entity0_brush916",
+"entity0_brush979",
+"entity0_brush158",
+"entity0_brush815",
+"entity0_brush164",
+"entity0_brush820",
+"entity0_brush914",
+"entity0_brush212",
+"entity0_brush161",
+"entity0_brush885",
+"entity0_brush976",
+"entity0_brush918",
+"entity0_brush857",
+"entity0_brush854",
+"entity0_brush855",
+"entity0_brush886",
+"entity0_brush884",
+"entity235_brush0",
+"entity0_brush853",
+"entity0_brush874",
+"entity0_brush1032",
+"entity0_brush860",
+"entity0_brush811",
+"entity0_brush171",
+"entity178_brush0",
+"entity0_brush903",
+"entity0_brush859",
+"entity0_brush807",
+"entity0_brush906",
+"entity0_brush894",
+"entity0_brush1151",
+"entity0_brush165",
+"entity0_brush806",
+"entity0_brush162",
+"entity0_brush908",
+"entity0_brush154",
+"entity0_brush904",
+"entity0_brush856",
+"entity0_brush907",
+"entity0_brush1039",
+"entity0_brush866",
+"entity0_brush880",
+"entity0_brush871",
+"entity0_brush163",
+"entity0_brush1034",
+"entity0_brush851",
+"entity0_brush905",
+"entity0_brush865",
+"entity0_brush915",
+"entity0_brush698",
+"entity0_brush852",
+"entity0_brush850",
+"entity0_brush1037",
+"entity0_brush858",
+"entity0_brush873",
+"entity0_brush179",
+"entity0_brush843",
+"entity0_brush170",
+"entity0_brush224",
+"entity0_brush225",
+"entity0_brush227",
+"entity0_brush842",
+"entity0_brush693",
+"entity0_brush188",
+"entity0_brush867",
+"entity0_brush846",
+"entity0_brush872",
+"entity0_brush849",
+"entity0_brush895",
+"entity0_brush845",
+"entity0_brush226",
+"entity0_brush863",
+"entity0_brush869",
+"entity0_brush840",
+"entity0_brush228",
+"entity0_brush862",
+"entity0_brush841",
+"entity0_brush839",
+"entity0_brush180",
+"entity0_brush836",
+"entity0_brush833",
+"entity0_brush832",
+"entity0_brush189",
+"entity0_brush229",
+"entity0_brush831",
+"entity0_brush864",
+"entity0_brush835",
+"entity0_brush870",
+"entity0_brush896",
+"entity0_brush838",
+"entity0_brush834",
+"entity0_brush861",
+"entity0_brush220",
+"entity0_brush868",
+"entity0_brush223",
+"entity0_brush829",
+"entity0_brush216",
+"entity0_brush178",
+"entity0_brush830",
+"entity0_brush716",
+"entity0_brush765",
+"entity0_brush828",
+"entity0_brush758",
+"entity0_brush221",
+"entity0_brush230",
+"entity0_brush837",
+"entity0_brush217",
+"entity0_brush185",
+"entity0_brush190",
+"entity0_brush757",
+"entity0_brush777",
+"entity0_brush755",
+"entity0_brush754",
+"entity0_brush714",
+"entity0_brush804",
+"entity0_brush177",
+"entity0_brush753",
+"entity0_brush759",
+"entity0_brush701",
+"entity0_brush213",
+"entity0_brush1063",
+"entity0_brush512",
+"entity0_brush782",
+"entity0_brush197",
+"entity0_brush798",
+"entity0_brush186",
+"entity0_brush715",
+"entity0_brush756",
+"entity0_brush1064",
+"entity0_brush187",
+"entity0_brush198",
+"entity0_brush201",
+"entity0_brush181",
+"entity0_brush713",
+"entity0_brush776",
+"entity0_brush751",
+"entity0_brush725",
+"entity0_brush199",
+"entity0_brush694",
+"entity0_brush202",
+"entity0_brush193",
+"entity0_brush722",
+"entity0_brush191",
+"entity0_brush215",
+"entity0_brush752",
+"entity0_brush200",
+"entity0_brush196",
+"entity0_brush724",
+"entity0_brush721",
+"entity0_brush194",
+"entity0_brush690",
+"entity0_brush695",
+"entity0_brush218",
+"entity0_brush733",
+"entity0_brush704",
+"entity0_brush282",
+"entity0_brush207",
+"entity0_brush730",
+"entity0_brush195",
+"entity0_brush205",
+"entity0_brush786",
+"entity0_brush790",
+"entity0_brush787",
+"entity0_brush1068",
+"entity0_brush749",
+"entity0_brush785",
+"entity47_brush1",
+"entity0_brush766",
+"entity0_brush705",
+"entity0_brush192",
+"entity0_brush732",
+"entity0_brush729",
+"entity46_brush1",
+"entity0_brush771",
+"entity47_brush2",
+"entity47_brush0",
+"entity0_brush747",
+"entity0_brush746",
+"entity0_brush214",
+"entity0_brush784",
+"entity0_brush769",
+"entity0_brush222",
+"entity46_brush2",
+"entity46_brush0",
+"entity0_brush741",
+"entity0_brush1067",
+"entity0_brush745",
+"entity0_brush183",
+"entity0_brush788",
+"entity0_brush789",
+"entity0_brush792",
+"entity0_brush738",
+"entity0_brush781",
+"entity0_brush982",
+"entity0_brush772",
+"entity0_brush184",
+"entity0_brush796",
+"entity0_brush204",
+"entity0_brush206",
+"entity0_brush243",
+"entity0_brush740",
+"entity0_brush737",
+"entity0_brush248",
+"entity0_brush514",
+"entity0_brush748",
+"entity0_brush283",
+"entity0_brush275",
+"entity0_brush1069",
+"entity0_brush723",
+"entity0_brush779",
+"entity0_brush276",
+"entity0_brush278",
+"entity0_brush743",
+"entity0_brush775",
+"entity0_brush794",
+"entity0_brush272",
+"entity0_brush692",
+"entity0_brush773",
+"entity0_brush1065",
+"entity0_brush274",
+"entity0_brush208",
+"entity0_brush284",
+"entity0_brush231",
+"entity0_brush203",
+"entity0_brush744",
+"entity0_brush182",
+"entity0_brush742",
+"entity0_brush731",
+"entity0_brush285",
+"entity0_brush394",
+"entity0_brush249",
+"entity0_brush513",
+"entity0_brush795",
+"entity0_brush585",
+"entity0_brush254",
+"entity0_brush780",
+"entity0_brush719",
+"entity0_brush1008",
+"entity0_brush1009",
+"entity0_brush311",
+"entity0_brush345",
+"entity0_brush760",
+"entity0_brush250",
+"entity0_brush256",
+"entity0_brush315",
+"entity0_brush1066",
+"entity0_brush762",
+"entity0_brush774",
+"entity0_brush761",
+"entity0_brush584",
+"entity0_brush664",
+"entity0_brush665",
+"entity0_brush1010",
+"entity0_brush800",
+"entity0_brush696",
+"entity0_brush312",
+"entity0_brush702",
+"entity0_brush799",
+"entity0_brush675",
+"entity0_brush770",
+"entity0_brush286",
+"entity0_brush763",
+"entity0_brush587",
+"entity0_brush718",
+"entity0_brush739",
+"entity0_brush727",
+"entity215_brush0",
+"entity0_brush720",
+"entity0_brush764",
+"entity0_brush266",
+"entity137_brush1",
+"entity0_brush706",
+"entity0_brush619",
+"entity0_brush805",
+"entity215_brush2",
+"entity0_brush316",
+"entity0_brush314",
+"entity0_brush1011",
+"entity215_brush3",
+"entity0_brush319",
+"entity215_brush1",
+"entity0_brush717",
+"entity0_brush699",
+"entity0_brush703",
+"entity215_brush5",
+"entity137_brush0",
+"entity0_brush288",
+"entity0_brush726",
+"entity0_brush313",
+"entity0_brush728",
+"entity0_brush700",
+"entity0_brush674",
+"entity215_brush4",
+"entity0_brush791",
+"entity0_brush735",
+"entity0_brush767",
+"entity214_brush0",
+"entity0_brush281",
+"entity0_brush606",
+"entity0_brush1154",
+"entity0_brush235",
+"entity0_brush233",
+"entity0_brush232",
+"entity0_brush637",
+"entity0_brush600",
+"entity0_brush734",
+"entity0_brush994",
+"entity0_brush736",
+"entity0_brush265",
+"entity0_brush238",
+"entity0_brush602",
+"entity0_brush1005",
+"entity0_brush793",
+"entity0_brush240",
+"entity0_brush279",
+"entity0_brush236",
+"entity0_brush673",
+"entity0_brush280",
+"entity0_brush1083",
+"entity138_brush0",
+"entity0_brush801",
+"entity0_brush237",
+"entity0_brush993",
+"entity0_brush1012",
+"entity0_brush803",
+"entity0_brush1116",
+"entity0_brush1081",
+"entity221_brush0",
+"entity213_brush0",
+"entity0_brush1153",
+"entity0_brush591",
+"entity0_brush1082",
+"entity0_brush986",
+"entity0_brush599",
+"entity0_brush711",
+"entity0_brush802",
+"entity0_brush710",
+"entity0_brush707",
+"entity218_brush0",
+"entity0_brush668",
+"entity0_brush234",
+"entity0_brush338",
+"entity0_brush709",
+"entity0_brush318",
+"entity0_brush592",
+"entity0_brush712",
+"entity0_brush241",
+"entity0_brush290",
+"entity0_brush624",
+"entity0_brush663",
+"entity0_brush277",
+"entity0_brush625",
+"entity0_brush628",
+"entity0_brush708",
+"entity0_brush242",
+"entity0_brush635",
+"entity0_brush263",
+"entity0_brush672",
+"entity0_brush768",
+"entity0_brush287",
+"entity0_brush627",
+"entity0_brush626",
+"entity0_brush617",
+"entity0_brush667",
+"entity0_brush317",
+"entity0_brush292",
+"entity0_brush995",
+"entity0_brush273",
+"entity0_brush323",
+"entity0_brush309",
+"entity0_brush289",
+"entity0_brush294",
+"entity0_brush593",
+"entity0_brush605",
+"entity0_brush295",
+"entity0_brush662",
+"entity0_brush343",
+"entity0_brush262",
+"entity0_brush244",
+"entity0_brush1156",
+"entity0_brush268",
+"entity0_brush996",
+"entity0_brush269",
+"entity0_brush983",
+"entity0_brush590",
+"entity222_brush0",
+"entity0_brush270",
+"entity0_brush1001",
+"entity0_brush291",
+"entity0_brush987",
+"entity0_brush988",
+"entity0_brush598",
+"entity0_brush1006",
+"entity0_brush246",
+"entity0_brush251",
+"entity0_brush1119",
+"entity0_brush245",
+"entity0_brush676",
+"entity211_brush0",
+"entity0_brush261",
+"entity0_brush247",
+"entity0_brush271",
+"entity0_brush252",
+"entity0_brush324",
+"entity0_brush308",
+"entity0_brush253",
+"entity0_brush682",
+"entity0_brush307",
+"entity0_brush264",
+"entity0_brush255",
+"entity0_brush607",
+"entity0_brush1157",
+"entity0_brush310",
+"entity0_brush681",
+"entity0_brush679",
+"entity0_brush526",
+"entity0_brush524",
+"entity0_brush684",
+"entity0_brush678",
+"entity0_brush293",
+"entity0_brush304",
+"entity0_brush608",
+"entity0_brush297",
+"entity219_brush0",
+"entity0_brush630",
+"entity0_brush984",
+"entity0_brush515",
+"entity0_brush518",
+"entity0_brush519",
+"entity0_brush992",
+"entity0_brush594",
+"entity0_brush1115",
+"entity0_brush341",
+"entity0_brush548",
+"entity0_brush657",
+"entity0_brush685",
+"entity0_brush259",
+"entity0_brush258",
+"entity133_brush0",
+"entity133_brush2",
+"entity133_brush1",
+"entity133_brush7",
+"entity0_brush305",
+"entity0_brush257",
+"entity0_brush260",
+"entity0_brush1080",
+"entity0_brush634",
+"entity133_brush3",
+"entity0_brush991",
+"entity0_brush644",
+"entity0_brush547",
+"entity133_brush4",
+"entity133_brush6",
+"entity0_brush340",
+"entity0_brush549",
+"entity0_brush550",
+"entity0_brush306",
+"entity0_brush656",
+"entity0_brush660",
+"entity0_brush647",
+"entity0_brush658",
+"entity0_brush645",
+"entity0_brush1117",
+"entity0_brush583",
+"entity0_brush344",
+"entity0_brush522",
+"entity0_brush661",
+"entity0_brush985",
+"entity0_brush342",
+"entity0_brush516",
+"entity0_brush683",
+"entity0_brush659",
+"entity0_brush688",
+"entity0_brush646",
+"entity0_brush301",
+"entity0_brush523",
+"entity0_brush680",
+"entity0_brush1158",
+"entity0_brush520",
+"entity0_brush543",
+"entity0_brush554",
+"entity0_brush555",
+"entity0_brush556",
+"entity0_brush540",
+"entity0_brush551",
+"entity102_brush0",
+"entity97_brush0",
+"entity0_brush527",
+"entity0_brush532",
+"entity0_brush534",
+"entity0_brush553",
+"entity0_brush545",
+"entity0_brush544",
+"entity0_brush302",
+"entity0_brush533",
+"entity0_brush1044",
+"entity0_brush537",
+"entity0_brush298",
+"entity0_brush622",
+"entity0_brush303",
+"entity0_brush586",
+"entity0_brush529",
+"entity0_brush299",
+"entity98_brush0",
+"entity0_brush539",
+"entity0_brush1003",
+"entity0_brush1002",
+"entity0_brush621",
+"entity0_brush536",
+"entity0_brush339",
+"entity0_brush321",
+"entity0_brush350",
+"entity0_brush348",
+"entity316_brush0",
+"entity0_brush325",
+"entity0_brush612",
+"entity0_brush620",
+"entity0_brush383",
+"entity0_brush384",
+"entity0_brush623",
+"entity217_brush0",
+"entity0_brush582",
+"entity0_brush629",
+"entity0_brush559",
+"entity0_brush589",
+"entity0_brush1025",
+"entity0_brush631",
+"entity0_brush588",
+"entity0_brush565",
+"entity0_brush332",
+"entity0_brush1028",
+"entity0_brush1024",
+"entity0_brush577",
+"entity0_brush561",
+"entity0_brush576",
+"entity0_brush563",
+"entity0_brush1004",
+"entity0_brush655",
+"entity0_brush580",
+"entity0_brush328",
+"entity0_brush650",
+"entity0_brush1030",
+"entity0_brush552",
+"entity0_brush542",
+"entity0_brush521",
+"entity0_brush300",
+"entity0_brush990",
+"entity0_brush615",
+"entity0_brush609",
+"entity0_brush296",
+"entity0_brush579",
+"entity0_brush329",
+"entity0_brush562",
+"entity0_brush578",
+"entity0_brush531",
+"entity0_brush1000",
+"entity0_brush557",
+"entity0_brush535",
+"entity0_brush330",
+"entity139_brush0",
+"entity0_brush1026",
+"entity0_brush597",
+"entity0_brush546",
+"entity0_brush643",
+"entity0_brush603",
+"entity0_brush1029",
+"entity315_brush0",
+"entity0_brush596",
+"entity0_brush613",
+"entity0_brush530",
+"entity0_brush525",
+"entity132_brush2",
+"entity132_brush1",
+"entity0_brush349",
+"entity0_brush614",
+"entity0_brush386",
+"entity0_brush633",
+"entity0_brush1023",
+"entity0_brush347",
+"entity0_brush1162",
+"entity0_brush334",
+"entity0_brush327",
+"entity0_brush337",
+"entity132_brush3",
+"entity0_brush335",
+"entity132_brush5",
+"entity0_brush1045",
+"entity0_brush517",
+"entity132_brush4",
+"entity220_brush0",
+"entity0_brush322",
+"entity0_brush336",
+"entity0_brush671",
+"entity0_brush326",
+"entity0_brush382",
+"entity0_brush595",
+"entity0_brush331",
+"entity0_brush604",
+"entity0_brush352",
+"entity0_brush1027",
+"entity0_brush528",
+"entity132_brush0",
+"entity0_brush611",
+"entity0_brush346",
+"entity0_brush648",
+"entity0_brush997",
+"entity0_brush391",
+"entity0_brush1015",
+"entity0_brush388",
+"entity224_brush0",
+"entity0_brush558",
+"entity0_brush575",
+"entity0_brush649",
+"entity0_brush666",
+"entity0_brush651",
+"entity0_brush653",
+"entity0_brush999",
+"entity0_brush654",
+"entity0_brush392",
+"entity0_brush989",
+"entity0_brush510",
+"entity0_brush354",
+"entity0_brush351",
+"entity0_brush333",
+"entity0_brush1160",
+"entity0_brush564",
+"entity0_brush632",
+"entity0_brush508",
+"entity0_brush507",
+"entity0_brush506",
+"entity0_brush1040",
+"entity0_brush652",
+"entity0_brush1161",
+"entity140_brush0",
+"entity0_brush389",
+"entity212_brush0",
+"entity0_brush998",
+"entity0_brush509",
+"entity0_brush1014",
+"entity0_brush1007",
+"entity223_brush0",
+"entity0_brush481",
+"entity0_brush502",
+"entity0_brush1042",
+"entity0_brush501",
+"entity0_brush1041",
+"entity0_brush451",
+"entity0_brush452",
+"entity0_brush355",
+"entity0_brush453",
+"entity0_brush353",
+"entity0_brush446",
+"entity0_brush642",
+"entity0_brush505",
+"entity0_brush484",
+"entity83_brush0",
+"entity0_brush447",
+"entity0_brush459",
+"entity0_brush458",
+"entity0_brush462",
+"entity0_brush1159",
+"entity0_brush463",
+"entity0_brush449",
+"entity0_brush610",
+"entity0_brush457",
+"entity0_brush479",
+"entity0_brush450",
+"entity0_brush1017",
+"entity0_brush423",
+"entity0_brush641",
+"entity0_brush469",
+"entity0_brush366",
+"entity0_brush448",
+"entity0_brush470",
+"entity0_brush454",
+"entity0_brush1018",
+"entity0_brush415",
+"entity0_brush567",
+"entity0_brush566",
+"entity0_brush640",
+"entity0_brush570",
+"entity0_brush618",
+"entity0_brush467",
+"entity0_brush460",
+"entity0_brush569",
+"entity0_brush378",
+"entity0_brush375",
+"entity0_brush455",
+"entity0_brush368",
+"entity0_brush511",
+"entity0_brush568",
+"entity0_brush473",
+"entity0_brush422",
+"entity0_brush483",
+"entity0_brush1020",
+"entity88_brush0",
+"entity0_brush466",
+"entity0_brush380",
+"entity0_brush1019",
+"entity0_brush639",
+"entity0_brush387",
+"entity0_brush489",
+"entity0_brush494",
+"entity0_brush495",
+"entity0_brush498",
+"entity0_brush499",
+"entity0_brush487",
+"entity0_brush486",
+"entity0_brush492",
+"entity0_brush490",
+"entity0_brush356",
+"entity0_brush365",
+"entity0_brush465",
+"entity70_brush1",
+"entity70_brush2",
+"entity0_brush390",
+"entity0_brush367",
+"entity0_brush385",
+"entity0_brush359",
+"entity0_brush485",
+"entity0_brush357",
+"entity0_brush361",
+"entity0_brush1155",
+"entity0_brush362",
+"entity0_brush377",
+"entity0_brush504",
+"entity0_brush491",
+"entity0_brush497",
+"entity0_brush376",
+"entity0_brush373",
+"entity0_brush482",
+"entity0_brush488",
+"entity0_brush496",
+"entity0_brush456",
+"entity0_brush472",
+"entity0_brush416",
+"entity0_brush493",
+"entity0_brush381",
+"entity0_brush363",
+"entity0_brush364",
+"entity0_brush379",
+"entity0_brush370",
+"entity0_brush371",
+"entity0_brush1043",
+"entity0_brush372",
+"entity0_brush480",
+"entity0_brush358",
+"entity0_brush478",
+"entity0_brush581",
+"entity0_brush418",
+"entity0_brush369",
+"entity0_brush1053",
+"entity0_brush1050",
+"entity0_brush1052",
+"entity0_brush393",
+"entity0_brush477",
+"entity0_brush476",
+"entity0_brush419",
+"entity271_brush0",
+"entity0_brush475",
+"entity0_brush420",
+"entity0_brush468",
+"entity0_brush461",
+"entity0_brush1051",
+"entity317_brush0",
+"entity0_brush474",
+"entity0_brush425",
+"entity0_brush427",
+"entity0_brush430",
+"entity0_brush429",
+"entity0_brush426",
+"entity0_brush503",
+"entity0_brush500",
+"entity0_brush431",
+"entity0_brush424",
+"entity0_brush428",
+"entity0_brush441",
+"entity0_brush433",
+"entity0_brush435",
+"entity0_brush438",
+"entity0_brush437",
+"entity0_brush434",
+"entity0_brush439",
+"entity0_brush432",
+"entity0_brush436",
+"entity0_brush440",
+"entity0_brush1060",
+"entity0_brush1059",
+"entity0_brush1061",
+"entity0_brush417",
+"entity0_brush1058",
+"entity0_brush1048",
+"entity0_brush421",
+"entity0_brush1049",
+"entity0_brush1047",
+"entity0_brush1056",
+"entity0_brush1057",
+"entity0_brush1054",
+"entity0_brush442",
+"entity270_brush0",
+"entity0_brush471",
+"entity0_brush1046",
+"entity0_brush443",
+"entity0_brush1055",
+}
+0-0-0: 1188

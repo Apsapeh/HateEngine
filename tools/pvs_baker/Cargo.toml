@@ -1,0 +1,20 @@
+[package]
+name = "pvs_baker"
+version = "0.1.0"
+edition = "2021"
+
+[profile.release]
+debug = false
+strip = true
+lto = true
+panic = "abort"
+opt-level = 3
+codegen-units = 1
+
+
+[dependencies]
+cfor = "1.1.0"
+cgmath = "0.18.0"
+glfw = "0.59.0"
+image = "0.25.5"
+tobj = "4.0.2"

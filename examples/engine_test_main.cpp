@@ -320,7 +320,7 @@ int main() {
                   light->setPosition(entity.position);
                   light->setColor({10, 0, 0, 1});
                   model->bindObj(light);
-                  model->addEntityObjectToLevel(light);
+                  //model->addEntityObjectToLevel(light);
 
                   auto lights = static_cast<std::vector<HateEngine::OmniLight*>*>(data);
                   lights->push_back(light);
@@ -351,7 +351,7 @@ int main() {
     /*HateEngine::ObjMapModel objmodel =
             herfile.loadObjMap("untitled.obj", "unnamed.map", true, 15, 1);*/
     // objmodel.offset(0, -180, -20);
-    objmodel.offset(-30, -20, 60);
+    //objmodel.offset(-30, -20, 60);
 
     for (auto& m: objmodel.getLOD(0)) {
         glm::vec3 min = m->getAABBMin();
@@ -368,6 +368,142 @@ int main() {
     }
 
     lvl.addObjectRef(&objmodel);
+
+
+    std::unordered_set<std::string> enabled = {
+"entity0_brush4",
+"entity0_brush1",
+"entity0_brush19",
+"entity310_brush0",
+"entity0_brush1074",
+"entity0_brush30",
+"entity0_brush41",
+"entity0_brush25",
+"entity0_brush7",
+"entity0_brush97",
+"entity0_brush99",
+"entity0_brush81",
+"entity14_brush2",
+"entity0_brush1100",
+"entity0_brush974",
+"entity0_brush410",
+"entity29_brush0",
+"entity0_brush63",
+"entity0_brush1084",
+"entity0_brush93",
+"entity0_brush1085",
+"entity0_brush64",
+"entity0_brush1089",
+"entity0_brush1099",
+"entity30_brush0",
+"entity0_brush412",
+"entity0_brush129",
+"entity0_brush132",
+"entity0_brush107",
+"entity0_brush1114",
+"entity148_brush0",
+"entity0_brush1149",
+"entity0_brush1140",
+"entity366_brush1",
+"entity0_brush1139",
+"entity0_brush1152",
+"entity0_brush816",
+"entity0_brush956",
+"entity0_brush169",
+"entity0_brush955",
+"entity0_brush888",
+"entity0_brush166",
+"entity0_brush818",
+"entity314_brush0",
+"entity0_brush817",
+"entity0_brush815",
+"entity0_brush894",
+"entity0_brush908",
+"entity0_brush1039",
+"entity0_brush867",
+"entity0_brush831",
+"entity0_brush835",
+"entity0_brush757",
+"entity0_brush754",
+"entity0_brush753",
+"entity0_brush725",
+"entity0_brush199",
+"entity0_brush722",
+"entity0_brush194",
+"entity0_brush218",
+"entity0_brush733",
+"entity0_brush786",
+"entity0_brush790",
+"entity0_brush766",
+"entity0_brush746",
+"entity0_brush784",
+"entity0_brush789",
+"entity0_brush781",
+"entity0_brush779",
+"entity0_brush278",
+"entity0_brush274",
+"entity0_brush182",
+"entity0_brush249",
+"entity0_brush795",
+"entity0_brush254",
+"entity0_brush719",
+"entity0_brush1008",
+"entity0_brush345",
+"entity0_brush702",
+"entity0_brush764",
+"entity0_brush266",
+"entity0_brush1011",
+"entity214_brush0",
+"entity0_brush1154",
+"entity0_brush240",
+"entity0_brush236",
+"entity0_brush673",
+"entity0_brush1083",
+"entity0_brush711",
+"entity218_brush0",
+"entity0_brush242",
+"entity0_brush672",
+"entity0_brush627",
+"entity0_brush309",
+"entity0_brush343",
+"entity222_brush0",
+"entity0_brush988",
+"entity0_brush310",
+"entity0_brush519",
+"entity0_brush548",
+"entity0_brush305",
+"entity0_brush340",
+"entity0_brush549",
+"entity0_brush550",
+"entity0_brush647",
+"entity0_brush516",
+"entity0_brush543",
+"entity0_brush554",
+"entity102_brush0",
+"entity0_brush532",
+"entity0_brush544",
+"entity0_brush1044",
+"entity98_brush0",
+"entity0_brush1003",
+"entity0_brush629",
+"entity0_brush1024",
+"entity0_brush561",
+"entity132_brush3",
+"entity0_brush326",
+"entity0_brush331",
+"entity212_brush0",
+"entity0_brush1014",
+"entity0_brush375",
+"entity0_brush430",
+"entity367_brush0",
+};
+
+    for (int i = 0; i < objmodel.getLODCount(); i++) {
+        for (auto& lod: objmodel.getLOD(i)) {
+            lod->setVisible(enabled.count(lod->getName()));
+        }
+    }
+
 
     /*for (auto& m: objmodel.getMeshes()) {
         std::cout << "POS: " << m->getPosition().x << " " << m->getPosition().y << " "
