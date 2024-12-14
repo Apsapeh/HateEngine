@@ -1,5 +1,6 @@
-use glfw::{Action, Context, Key};
 use cgmath::{perspective, Deg, Matrix, Matrix4, Point3, Vector3};
+use core::panic;
+use glfw::{ffi::glfwGetKey, Action, Context, Key};
 use std::{ffi::CString, process::exit};
 
 mod gl;
@@ -20,17 +21,24 @@ const FRAGMENT_SHADER_SOURCE: &str = r#"
 #version 330 core
 out vec4 FragColor;
 
+uniform uvec3 color;
+
 void main() {
-    FragColor = vec4(1.0, 0.5, 0.2, 1.0);
+    FragColor = vec4(color.x / 255.0, color.y / 255.0, color.z / 255.0, 1.0);
 }
 "#;
+
+const WIDTH: u32 = 512;
+const HEIGHT: u32 = 512;
 
 unsafe fn main_fn() {
     use glfw::fail_on_errors;
     let mut glfw = glfw::init(fail_on_errors!()).unwrap();
 
     glfw.window_hint(glfw::WindowHint::ContextVersion(3, 3));
-    glfw.window_hint(glfw::WindowHint::OpenGlProfile(glfw::OpenGlProfileHint::Core));
+    glfw.window_hint(glfw::WindowHint::OpenGlProfile(
+        glfw::OpenGlProfileHint::Core,
+    ));
     glfw.window_hint(glfw::WindowHint::OpenGlForwardCompat(true));
     //let minor = 3;
     //glfw.window_hint(glfw::WindowHint::ContextVersion(3, minor));
@@ -38,8 +46,8 @@ unsafe fn main_fn() {
     // Create a windowed mode window and its OpenGL context
     let (mut window, events) = glfw
         .create_window(
-            1024,
-            1024,
+            WIDTH,
+            HEIGHT,
             "Hello this is window",
             glfw::WindowMode::Windowed,
         )
@@ -48,16 +56,11 @@ unsafe fn main_fn() {
     // Make the window's context current
     window.make_current();
     window.set_key_polling(true);
-    window.set_size(1024, 1024);
+    //window.set_size(1024, 1024);
     // disable vsync
     glfw.set_swap_interval(glfw::SwapInterval::None);
 
     gl::load(|s| window.get_proc_address(s) as *const _);
-
-    
-
-    
-
 
     // Компилируем шейдеры и создаем программу
     // Компилируем шейдеры и создаем программу
@@ -121,12 +124,19 @@ unsafe fn main_fn() {
     gl::BindBuffer(gl::ARRAY_BUFFER, 0);
     gl::BindVertexArray(0);
 
-    
     let mut vbos = Vec::new();
     let mut vaos = Vec::new();
+    let mut ebos = Vec::new();
+    let mut colors = Vec::new();
 
     let path = "examples/E1M1.obj";
     let mut obj = tobj::load_obj(path, &tobj::GPU_LOAD_OPTIONS).unwrap().0;
+
+    for o in &mut obj {
+        for v in &mut o.mesh.positions {
+            *v /= 16.0f32;
+        }
+    }
 
     for o in &obj {
         let mut vbo = 0;
@@ -145,8 +155,18 @@ unsafe fn main_fn() {
             o.mesh.positions.as_ptr() as *const _,
             gl::STATIC_DRAW,
         );
-        
-        
+
+        let mut ebo = 0;
+        gl::GenBuffers(1, &mut ebo);
+        ebos.push(ebo);
+        gl::BindBuffer(gl::ELEMENT_ARRAY_BUFFER, ebo);
+        gl::BufferData(
+            gl::ELEMENT_ARRAY_BUFFER,
+            (o.mesh.indices.len() * std::mem::size_of::<u32>()) as isize,
+            o.mesh.indices.as_ptr() as *const _,
+            gl::STATIC_DRAW,
+        );
+
         gl::VertexAttribPointer(
             0,
             3,
@@ -158,34 +178,47 @@ unsafe fn main_fn() {
         gl::EnableVertexAttribArray(0);
         gl::BindVertexArray(0);
         gl::BindBuffer(gl::ARRAY_BUFFER, 0);
+        gl::BindBuffer(gl::ELEMENT_ARRAY_BUFFER, 0);
+
+        colors.push(gen_color());
     }
-
-
-    gl::Viewport(0, 0, 1024, 1024);
-
 
     // Матрицы камеры
     let projection = perspective(Deg(90.0), 1.0, 0.1, 10000.0);
-    let view = Matrix4::look_at_rh(
-        Point3::new(0.0, 0.0, 2.0), // Позиция камеры
-        Point3::new(0.0, 0.0, -1.0), // Направление камеры
-        Vector3::new(0.0, 1.0, 0.0), // Вектор "вверх"
-    );
 
     let name = CString::new("projection").unwrap();
     let projection_loc = gl::GetUniformLocation(shader_program, name.as_ptr());
     let name = CString::new("view").unwrap();
     let view_loc = gl::GetUniformLocation(shader_program, name.as_ptr());
+    let name = CString::new("color").unwrap();
+    let color_loc = gl::GetUniformLocation(shader_program, name.as_ptr());
 
     /*println!("projection_loc: {}", projection_loc);
     println!("view_loc: {}", view_loc);
     exit(0);*/
 
+    gl::Enable(gl::DEPTH_TEST);
+    // disable cullface
+    gl::Enable(gl::CULL_FACE);
+    // set clockwise
+    gl::FrontFace(gl::CCW);
+
     // Loop until the user closes the window
     let mut last_time = std::time::Instant::now();
     let mut frame_counter = 0;
     let mut all_elapsed = 0f32;
+    //let mut cam_pos = Point3::new(0.0, 0.0, 2.0);
+    let mut cam_pos = Point3::new(30.0, 5.0, 17.0);
+    let mut buffer = vec![(0u8, 0u8, 0u8); (WIDTH * HEIGHT) as usize];
+
     while !window.should_close() {
+        let mut eye = cam_pos;
+        eye.z += 1.0;
+        let view = Matrix4::look_at(
+            eye,                         // Позиция камеры
+            cam_pos,                     // Направление камеры
+            Vector3::new(0.0, 1.0, 0.0), // Вектор "вверх"
+        );
         let now = std::time::Instant::now();
         let elapsed = now.duration_since(last_time);
         //println!("fps: {}", 1.0 / elapsed.as_secs_f32());
@@ -201,10 +234,8 @@ unsafe fn main_fn() {
         }
 
         gl::ClearColor(0.2, 0.3, 0.3, 1.0);
-        gl::Clear(gl::COLOR_BUFFER_BIT);
-        gl::Viewport(0, 0, 1024, 1024);
-
-
+        gl::Clear(gl::COLOR_BUFFER_BIT | gl::DEPTH_BUFFER_BIT);
+        gl::Viewport(0, 0, WIDTH as i32, HEIGHT as i32);
 
         gl::UseProgram(shader_program);
 
@@ -215,34 +246,92 @@ unsafe fn main_fn() {
         //gl::DrawArrays(gl::TRIANGLES, 0, 3);
 
         for i in 0..obj.len() {
+            gl::Uniform3uiv(color_loc, 1, colors[i].as_ptr());
             gl::BindVertexArray(vaos[i]);
 
             //gl::BindBuffer(gl::ARRAY_BUFFER, vbos[i]);
-            gl::DrawArrays(gl::TRIANGLES, 0, obj[i].mesh.indices.len() as i32);
-            
+            //gl::DrawArrays(gl::TRIANGLES, 0, obj[i].mesh.indices.len() as i32);
+
+            //gl::BindBuffer(gl::ELEMENT_ARRAY_BUFFER, ebos[i]);
+            gl::DrawElements(
+                gl::TRIANGLES,
+                obj[i].mesh.indices.len() as i32,
+                gl::UNSIGNED_INT,
+                0 as *const _,
+            );
+
             //gl::BindBuffer(gl::ARRAY_BUFFER, 0);
             //gl::BindVertexArray(0);
         }
 
-        let mut buffer = vec![0u8; 1024 * 1024 * 3];
-        gl::ReadPixels(0, 0, 1024, 1024, gl::RGB, gl::UNSIGNED_BYTE, buffer.as_mut_ptr() as *mut _);
+        gl::ReadPixels(
+            0,
+            0,
+            WIDTH as i32,
+            HEIGHT as i32,
+            gl::RGB,
+            gl::UNSIGNED_BYTE,
+            buffer.as_mut_ptr() as *mut _,
+        );
 
+        let mut unique_colors = std::collections::HashSet::new();
+        for i in 0..buffer.len() {
+            unique_colors.insert(buffer[i]);
+        }
+        for color in unique_colors {
+            //println!("color: ({}, {}, {})", color.0, color.1, color.2);
+            //println!("color: ({}, {}, {})", color.0, color.1, color.2);
+            if let Some(color_idx) = colors.iter().position(|&x| {
+                x[0] == color.0 as u32 && x[1] == color.1 as u32 && x[2] == color.2 as u32
+            }) {
+
+                //println!("color_idx: {}", color_idx);
+                //println!("\"{}\",", obj[color_idx].name);
+            }
+        }
+        //panic!();
 
         //let image: image::ImageBuffer<image::Rgb<u8>, Vec<u8>> = image::ImageBuffer::from_raw(1024, 1024, buffer).unwrap();
         //let image = image::DynamicImage::ImageRgb8(image);
         //image.save("out.png").unwrap();
         //panic!()
 
-        
         // Swap front and back buffers
         //window.swap_buffers();
 
         // Poll for and process events
-        glfw.poll_events();
+        //glfw.poll_events();
+        /*for (_, event) in glfw::flush_messages(&events) {
+            if let glfw::WindowEvent::Key(Key::Right, _, Action::Press, _) = event {
+                cam_pos.x -= 10.0 * elapsed.as_secs_f32();
+            }
+            if let glfw::WindowEvent::Key(Key::Left, _, Action::Press, _) = event {
+                cam_pos.x += 10.0 * elapsed.as_secs_f32();
+            }
+
+        }*/
+
+        // glfw check key is holding
+        if window.get_key(Key::Right) == Action::Press {
+            cam_pos.x += 10.0 * elapsed.as_secs_f32();
+        }
+        if window.get_key(Key::Left) == Action::Press {
+            cam_pos.x -= 10.0 * elapsed.as_secs_f32();
+        }
+        if window.get_key(Key::Up) == Action::Press {
+            cam_pos.z -= 10.0 * elapsed.as_secs_f32();
+        }
+        if window.get_key(Key::Down) == Action::Press {
+            cam_pos.z += 10.0 * elapsed.as_secs_f32();
+        }
+        if window.get_key(Key::Space) == Action::Press {
+            cam_pos.y += 10.0 * elapsed.as_secs_f32();
+        }
+        if window.get_key(Key::LeftShift) == Action::Press {
+            cam_pos.y -= 10.0 * elapsed.as_secs_f32();
+        }
     }
 }
-
-
 
 fn check_shader_compile_errors(shader: u32) {
     unsafe {
@@ -259,7 +348,10 @@ fn check_shader_compile_errors(shader: u32) {
                 std::ptr::null_mut(),
                 buffer.as_mut_ptr() as *mut gl::types::GLchar,
             );
-            eprintln!("Shader compilation error: {}", String::from_utf8_lossy(&buffer));
+            eprintln!(
+                "Shader compilation error: {}",
+                String::from_utf8_lossy(&buffer)
+            );
         }
     }
 }
@@ -279,12 +371,42 @@ fn check_program_link_errors(program: u32) {
                 std::ptr::null_mut(),
                 buffer.as_mut_ptr() as *mut gl::types::GLchar,
             );
-            eprintln!("Program linking error: {}", String::from_utf8_lossy(&buffer));
+            eprintln!(
+                "Program linking error: {}",
+                String::from_utf8_lossy(&buffer)
+            );
         }
     }
 }
 
+static mut color_r: u8 = 0;
+static mut color_g: u8 = 0;
+static mut color_b: u8 = 0;
 
+fn gen_color() -> [u32; 3] {
+    unsafe {
+        let r = [color_r as u32, color_g as u32, color_b as u32];
+
+        if color_b as u32 + 10 > 255 {
+            color_b = 0;
+
+            if color_g as u32 + 10 > 255 {
+                color_g = 0;
+                if color_r as u32 + 10 > 255 {
+                    color_r = 0;
+                } else {
+                    color_r += 10;
+                }
+            } else {
+                color_g += 10;
+            }
+        } else {
+            color_b += 10;
+        }
+
+        r
+    }
+}
 
 fn main() {
     unsafe {
