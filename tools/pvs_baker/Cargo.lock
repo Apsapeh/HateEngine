@@ -308,6 +308,10 @@ dependencies = [
 ]
 
 [[package]]
+name = "glad-gl"
+version = "2.0.8"
+
+[[package]]
 name = "glfw"
 version = "0.59.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -672,6 +676,7 @@ version = "0.1.0"
 dependencies = [
  "cfor",
  "cgmath",
+ "glad-gl",
  "glfw",
  "image",
  "tobj",

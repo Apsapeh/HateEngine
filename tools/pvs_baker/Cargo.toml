@@ -13,6 +13,7 @@ codegen-units = 1
 
 
 [dependencies]
+glad-gl = {path = "lib/glad-gl"}
 cfor = "1.1.0"
 cgmath = "0.18.0"
 glfw = "0.59.0"

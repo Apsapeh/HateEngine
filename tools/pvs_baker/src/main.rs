@@ -1,70 +1,13 @@
 use cgmath::{perspective, Deg, Matrix, Matrix4, Point3, Vector3};
-use core::panic;
+use glad_gl::gl;
 use glfw::{ffi::glfwGetKey, Action, Context, Key};
 use std::{ffi::CString, process::exit};
 
-mod gl;
+mod shader;
 
-/*const VERTEX_SHADER_SOURCE: &str = r#"
-#version 330 core
-layout (location = 0) in vec3 aPos;
-layout (location = 1) in uvec3 aColor;
-
-out vec3 color;
-
-uniform mat4 projection;
-uniform mat4 view;
-
-void main() {
-    gl_Position = projection * view * vec4(aPos, 1.0);
-    color = vec3(aColor.x / 255.0, aColor.y / 255.0, aColor.z / 255.0);
-}
-"#;
-
-const FRAGMENT_SHADER_SOURCE: &str = r#"
-#version 330 core
-out vec4 FragColor;
-
-in vec3 color;
-
-//uniform uvec3 color;
-
-void main() {
-    //FragColor = vec4(color.x / 255.0, color.y / 255.0, color.z / 255.0, 1.0);
-    FragColor = vec4(0.5, 0.5, 0.5, 1.0);
-}
-"#;*/
-
-const VERTEX_SHADER_SOURCE: &str = r#"
-#version 330 core
-layout (location = 0) in vec3 aPos;
-layout (location = 1) in uvec3 aColor;
-
-out vec3 color;
-
-uniform mat4 projection;
-uniform mat4 view;
-
-void main() {
-    gl_Position = projection * view * vec4(aPos, 1.0);
-    color = vec3(float(aColor.x) / 255.0, float(aColor.y) / 255.0, float(aColor.z) / 255.0);
-}
-"#;
-
-const FRAGMENT_SHADER_SOURCE: &str = r#"
-#version 330 core
-in vec3 color;
-out vec4 FragColor;
-
-
-void main() {
-    FragColor = vec4(color.x, color.y, color.z, 1.0);
-    //FragColor = vec4(0.5, 0.5, 0.5, 1.0);
-}
-"#;
-
-const WIDTH: u32 = 512;
-const HEIGHT: u32 = 512;
+const WIDTH: u32 = 256;
+const HEIGHT: u32 = 256;
+const PBOS_COUNT: u32 = 6;
 
 unsafe fn main_fn() {
     use glfw::fail_on_errors;
@@ -93,32 +36,8 @@ unsafe fn main_fn() {
 
     gl::load(|s| window.get_proc_address(s) as *const _);
 
-    // Компилируем шейдеры и создаем программу
-    // Компилируем шейдеры и создаем программу
-    let vertex_shader = gl::CreateShader(gl::VERTEX_SHADER);
-    let c_str_vert = CString::new(VERTEX_SHADER_SOURCE.as_bytes()).unwrap();
-    gl::ShaderSource(vertex_shader, 1, &c_str_vert.as_ptr(), std::ptr::null());
-    gl::CompileShader(vertex_shader);
-    check_shader_compile_errors(vertex_shader);
+    let shader_program = shader::load_shader_program();
 
-    let fragment_shader = gl::CreateShader(gl::FRAGMENT_SHADER);
-    let c_str_frag = CString::new(FRAGMENT_SHADER_SOURCE.as_bytes()).unwrap();
-    gl::ShaderSource(fragment_shader, 1, &c_str_frag.as_ptr(), std::ptr::null());
-    gl::CompileShader(fragment_shader);
-    check_shader_compile_errors(fragment_shader);
-
-    let shader_program = gl::CreateProgram();
-    gl::AttachShader(shader_program, vertex_shader);
-    gl::AttachShader(shader_program, fragment_shader);
-    gl::LinkProgram(shader_program);
-    check_program_link_errors(shader_program);
-
-    gl::DeleteShader(vertex_shader);
-    gl::DeleteShader(fragment_shader);
-
-    /*et mut vbos = Vec::new();
-    let mut vaos = Vec::new();
-    let mut ebos = Vec::new();*/
     let mut colors = Vec::new();
 
     let path = "examples/E1M1.obj";
@@ -136,86 +55,11 @@ unsafe fn main_fn() {
     let mut big_color = Vec::new();
 
     for o in &mut obj {
-        /*if vbos.len() > 256 {
-            //break;
-        }
-
-
-        let mut vbo = 0;
-        gl::GenBuffers(1, &mut vbo);
-        vbos.push(vbo);
-
-        let mut vao = 0;
-        gl::GenVertexArrays(1, &mut vao);
-        vaos.push(vao);
-        gl::BindVertexArray(vao);
-
-        gl::BindBuffer(gl::ARRAY_BUFFER, vbo);
-        gl::BufferData(
-            gl::ARRAY_BUFFER,
-            (o.mesh.positions.len() * std::mem::size_of::<f32>()) as isize,
-            o.mesh.positions.as_ptr() as *const _,
-            gl::STATIC_DRAW,
-        );
-
-        let mut ebo = 0;
-        gl::GenBuffers(1, &mut ebo);
-        ebos.push(ebo);
-        gl::BindBuffer(gl::ELEMENT_ARRAY_BUFFER, ebo);
-        gl::BufferData(
-            gl::ELEMENT_ARRAY_BUFFER,
-            (o.mesh.indices.len() * std::mem::size_of::<u32>()) as isize,
-            o.mesh.indices.as_ptr() as *const _,
-            gl::STATIC_DRAW,
-        );
-
-        gl::VertexAttribPointer(
-            0,
-            3,
-            gl::FLOAT,
-            gl::FALSE,
-            (3 * std::mem::size_of::<f32>()) as i32,
-            std::ptr::null(),
-        );
-
-        let color = gen_color();
-        let mut color_vec = vec![0u32; o.mesh.positions.len()];
-        for i in 0..o.mesh.positions.len() / 3 {
-            color_vec[3*i]   = color[0];
-            color_vec[3*i+1] = color[1];
-            color_vec[3*i+2] = color[2];
-        }
-
-        let mut color_vbo = 0;
-        gl::GenBuffers(1, &mut color_vbo);
-        gl::BindBuffer(gl::ARRAY_BUFFER, color_vbo);
-        gl::BufferData(
-            gl::ARRAY_BUFFER,
-            (color_vec.len() * std::mem::size_of::<u32>()) as isize,
-            color_vec.as_ptr() as *const _,
-            gl::STATIC_DRAW,
-        );
-        gl::VertexAttribPointer(
-            1,
-            3,
-            gl::UNSIGNED_INT,
-            gl::FALSE,
-            0,
-            std::ptr::null(),
-        );
-
-        gl::EnableVertexAttribArray(1);
-
-        gl::EnableVertexAttribArray(0);
-        gl::BindVertexArray(0);
-        gl::BindBuffer(gl::ARRAY_BUFFER, 0);
-        gl::BindBuffer(gl::ELEMENT_ARRAY_BUFFER, 0);*/
-
-        big_vbo.extend_from_slice(&o.mesh.positions);
         for i in &mut o.mesh.indices {
             *i += big_vbo.len() as u32 / 3;
         }
         big_ebo.extend_from_slice(&o.mesh.indices);
+        big_vbo.extend_from_slice(&o.mesh.positions);
 
         let color = gen_color();
         let mut color_vec = vec![0u32; o.mesh.positions.len()];
@@ -228,7 +72,6 @@ unsafe fn main_fn() {
 
         colors.push(color);
     }
-
 
     println!("vbo len: {}", big_vbo.len());
     println!("ebo len: {}", big_ebo.len());
@@ -294,9 +137,9 @@ unsafe fn main_fn() {
     let name = CString::new("view").unwrap();
     let view_loc = gl::GetUniformLocation(shader_program, name.as_ptr());
 
-    /*println!("projection_loc: {}", projection_loc);
-    println!("view_loc: {}", view_loc);
-    exit(0);*/
+    let pbos = genPBOs();
+
+    let fbos = genFBOs();
 
     gl::Enable(gl::DEPTH_TEST);
     // disable cullface
@@ -342,38 +185,46 @@ unsafe fn main_fn() {
         gl::UniformMatrix4fv(projection_loc, 1, gl::FALSE, projection.as_ptr());
         gl::UniformMatrix4fv(view_loc, 1, gl::FALSE, view.as_ptr());
 
-        /*for i in 0..vbos.len() {
-            gl::BindVertexArray(vaos[i]);
-            gl::DrawElements(
-                gl::TRIANGLES,
-                obj[i].mesh.indices.len() as i32,
-                gl::UNSIGNED_INT,
-                0 as *const _,
-            );
-        }*/
+        let view = get_view(cam_pos, Point3::new(0.0, 0.0, 1.0));
+        gl::UniformMatrix4fv(view_loc, 1, gl::FALSE, view.as_ptr());
+        render_to_fbo_async_copy_to_pbo(fbos[0], pbos[0], vao, buffer.len() as i32);
+        
+        let view = get_view(cam_pos, Point3::new(0.0, 0.0, -1.0));
+        gl::UniformMatrix4fv(view_loc, 1, gl::FALSE, view.as_ptr());
+        render_to_fbo_async_copy_to_pbo(fbos[1], pbos[1], vao, buffer.len() as i32);
+        
+        let view = get_view(cam_pos, Point3::new(0.0, 1.0, 0.0));
+        gl::UniformMatrix4fv(view_loc, 1, gl::FALSE, view.as_ptr());
+        render_to_fbo_async_copy_to_pbo(fbos[2], pbos[2], vao, buffer.len() as i32);
+        
+        let view = get_view(cam_pos, Point3::new(0.0, -1.0, 0.0));
+        gl::UniformMatrix4fv(view_loc, 1, gl::FALSE, view.as_ptr());
+        render_to_fbo_async_copy_to_pbo(fbos[3], pbos[3], vao, buffer.len() as i32);
+        
+        let view = get_view(cam_pos, Point3::new(1.0, 0.0, 0.0));
+        gl::UniformMatrix4fv(view_loc, 1, gl::FALSE, view.as_ptr());
+        render_to_fbo_async_copy_to_pbo(fbos[4], pbos[4], vao, buffer.len() as i32);
+        
+        let view = get_view(cam_pos, Point3::new(-1.0, 0.0, 0.0));
+        gl::UniformMatrix4fv(view_loc, 1, gl::FALSE, view.as_ptr());
+        render_to_fbo_async_copy_to_pbo(fbos[5], pbos[5], vao, buffer.len() as i32);
 
-        gl::BindVertexArray(vao);
-        gl::DrawElements(
-            gl::TRIANGLES,
-            big_ebo.len() as i32,
-            gl::UNSIGNED_INT,
-            0 as *const _,
-        );
+        gl::Finish();
 
-        gl::BindVertexArray(0);
+        //gl::MapBuffer(gl::PIXEL_PACK_BUFFER, gl::READ_ONLY);
+        /*for pbo in pbos {
+            gl::BindBuffer(gl::PIXEL_PACK_BUFFER, pbo);
+            let data = gl::MapBuffer(gl::PIXEL_PACK_BUFFER, gl::READ_ONLY);
+            let data_arr =
+                std::slice::from_raw_parts(data as *const u8, WIDTH as usize * HEIGHT as usize * 3);
+            let buffer = data_arr.to_vec();
 
-        //gl::BindBuffer(gl::ARRAY_BUFFER, vbo);
-        //gl::EnableV
-
-        /*gl::ReadPixels(
-            0,
-            0,
-            WIDTH as i32,
-            HEIGHT as i32,
-            gl::RGB,
-            gl::UNSIGNED_BYTE,
-            buffer.as_mut_ptr() as *mut _,
-        );*/
+            let image: image::ImageBuffer<image::Rgb<u8>, Vec<u8>> =
+                image::ImageBuffer::from_raw(WIDTH, HEIGHT, buffer).unwrap();
+            let image = image::DynamicImage::ImageRgb8(image);
+            image.save(format!("{}.png", pbo)).unwrap();
+        }
+        panic!();*/
 
         /*let mut unique_colors = std::collections::HashSet::new();
         for i in 0..buffer.len() {
@@ -419,50 +270,108 @@ unsafe fn main_fn() {
     }
 }
 
-fn check_shader_compile_errors(shader: u32) {
-    unsafe {
-        let mut success = gl::FALSE as gl::types::GLint;
-        gl::GetShaderiv(shader, gl::COMPILE_STATUS, &mut success);
-        if success != gl::TRUE as gl::types::GLint {
-            let mut len = 0;
-            gl::GetShaderiv(shader, gl::INFO_LOG_LENGTH, &mut len);
-            let mut buffer = Vec::with_capacity(len as usize);
-            buffer.set_len((len as usize) - 1);
-            gl::GetShaderInfoLog(
-                shader,
-                len,
-                std::ptr::null_mut(),
-                buffer.as_mut_ptr() as *mut gl::types::GLchar,
-            );
-            eprintln!(
-                "Shader compilation error: {}",
-                String::from_utf8_lossy(&buffer)
-            );
-        }
-    }
+unsafe fn render_to_fbo_async_copy_to_pbo(fbo: u32, pbo: u32, vao: u32, count: i32) {
+    gl::BindFramebuffer(gl::FRAMEBUFFER, fbo);
+    gl::BindVertexArray(vao);
+    gl::DrawElements(gl::TRIANGLES, count, gl::UNSIGNED_INT, 0 as *const _);
+
+    gl::BindVertexArray(0);
+
+    gl::BindBuffer(gl::PIXEL_PACK_BUFFER, pbo);
+    gl::ReadPixels(
+        0,
+        0,
+        WIDTH as i32,
+        HEIGHT as i32,
+        gl::RGB,
+        gl::UNSIGNED_BYTE,
+        //buffer.as_mut_ptr() as *mut _,
+        0 as *mut _,
+    );
+
+    gl::BindBuffer(gl::PIXEL_PACK_BUFFER, 0);
+    //gl::BindFramebuffer(gl::FRAMEBUFFER, 0);
 }
 
-fn check_program_link_errors(program: u32) {
-    unsafe {
-        let mut success = gl::FALSE as gl::types::GLint;
-        gl::GetProgramiv(program, gl::LINK_STATUS, &mut success);
-        if success != gl::TRUE as gl::types::GLint {
-            let mut len = 0;
-            gl::GetProgramiv(program, gl::INFO_LOG_LENGTH, &mut len);
-            let mut buffer = Vec::with_capacity(len as usize);
-            buffer.set_len((len as usize) - 1);
-            gl::GetProgramInfoLog(
-                program,
-                len,
-                std::ptr::null_mut(),
-                buffer.as_mut_ptr() as *mut gl::types::GLchar,
-            );
-            eprintln!(
-                "Program linking error: {}",
-                String::from_utf8_lossy(&buffer)
-            );
-        }
+unsafe fn genFBO() -> u32 {
+    let mut fbo: u32 = 0;
+
+    gl::GenFramebuffers(1, &mut fbo);
+    gl::BindFramebuffer(gl::FRAMEBUFFER, fbo);
+
+    let mut texture: u32 = 0;
+    gl::GenTextures(1, &mut texture);
+    gl::BindTexture(gl::TEXTURE_2D, texture);
+    gl::TexImage2D(
+        gl::TEXTURE_2D,
+        0,
+        gl::RGB as i32,
+        WIDTH as i32,
+        HEIGHT as i32,
+        0,
+        gl::RGB,
+        gl::UNSIGNED_BYTE,
+        std::ptr::null(),
+    );
+    gl::TexParameteri(gl::TEXTURE_2D, gl::TEXTURE_MIN_FILTER, gl::NEAREST as i32);
+    gl::TexParameteri(gl::TEXTURE_2D, gl::TEXTURE_MAG_FILTER, gl::NEAREST as i32);
+    gl::FramebufferTexture2D(
+        gl::FRAMEBUFFER,
+        gl::COLOR_ATTACHMENT0,
+        gl::TEXTURE_2D,
+        texture,
+        0,
+    );
+
+    if gl::CheckFramebufferStatus(gl::FRAMEBUFFER) != gl::FRAMEBUFFER_COMPLETE {
+        panic!("Framebuffer creation failed");
     }
+
+    gl::BindFramebuffer(gl::FRAMEBUFFER, 0);
+    gl::BindTexture(gl::TEXTURE_2D, 0);
+
+    fbo
+}
+
+unsafe fn genFBOs() -> Vec<u32> {
+    let mut fbos = Vec::new();
+
+    for i in 0..PBOS_COUNT {
+        fbos.push(genFBO());
+    }
+
+    fbos
+}
+
+unsafe fn genPBOs() -> Vec<u32> {
+    let mut pbos = Vec::new();
+
+    for i in 0..PBOS_COUNT {
+        let mut pbo: u32 = 0;
+        gl::GenBuffers(1, &mut pbo);
+        pbos.push(pbo);
+        gl::BindBuffer(gl::PIXEL_PACK_BUFFER, pbo);
+        gl::BufferData(
+            gl::PIXEL_PACK_BUFFER,
+            (WIDTH * HEIGHT * 3) as isize,
+            std::ptr::null(),
+            gl::STREAM_READ,
+        );
+        gl::BindBuffer(gl::PIXEL_PACK_BUFFER, 0);
+    }
+    pbos
+}
+
+fn get_view(pos: Point3<f32>, dir: Point3<f32>) -> Matrix4<f32> {
+    let mut eye = pos;
+    eye.x += dir.x;
+    eye.y += dir.y;
+    eye.z += dir.z;
+    Matrix4::look_at_rh(
+        eye,                         // Позиция камеры
+        pos,                     // Направление камеры
+        Vector3::new(0.0, 1.0, 0.0), // Вектор "вверх"
+    )
 }
 
 static mut COLOR_R: u8 = 0;
