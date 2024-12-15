@@ -7,7 +7,7 @@ mod shader;
 
 const WIDTH: u32 = 256;
 const HEIGHT: u32 = 256;
-const PBOS_COUNT: u32 = 6;
+const PBOS_COUNT: u32 = 60;
 
 unsafe fn main_fn() {
     use glfw::fail_on_errors;
@@ -208,6 +208,10 @@ unsafe fn main_fn() {
         let view = get_view(cam_pos, Point3::new(-1.0, 0.0, 0.0));
         gl::UniformMatrix4fv(view_loc, 1, gl::FALSE, view.as_ptr());
         render_to_fbo_async_copy_to_pbo(fbos[5], pbos[5], vao, buffer.len() as i32);
+
+        for i in 6..PBOS_COUNT {
+            render_to_fbo_async_copy_to_pbo(fbos[i as usize], pbos[i as usize], vao, buffer.len() as i32);
+        }
 
         gl::Finish();
 
