@@ -1,4 +1,5 @@
-use std::thread;
+use core::panic;
+use std::{collections::HashSet, thread};
 
 use cfor::cfor;
 use cgmath::{Matrix, Matrix4, Point3, Vector3};
@@ -67,6 +68,10 @@ fn main() {
     }
 }
 
+struct PtrWrapper<T>(pub *const T);
+
+unsafe impl<T> Send for PtrWrapper<T> {}
+
 unsafe fn run(path: String, grid_size: f32, cell_size: f32, cell_step: f32) {
     let (mut glfw, mut window, view_loc) = window::create_window(WIDTH, HEIGHT);
     let (vao, indices_count, colors, obj) = obj_loader::load_obj_vao(path, 16.0);
@@ -74,9 +79,9 @@ unsafe fn run(path: String, grid_size: f32, cell_size: f32, cell_step: f32) {
     let mut point_renderers = vec![
         render::PointRenderer::new(WIDTH, HEIGHT, vao, indices_count as u32, view_loc),
         render::PointRenderer::new(WIDTH, HEIGHT, vao, indices_count as u32, view_loc),
-        //render::PointRenderer::new(WIDTH, HEIGHT, vao, indices_count as u32, view_loc),
-        //render::PointRenderer::new(WIDTH, HEIGHT, vao, indices_count as u32, view_loc),
-        //render::PointRenderer::new(WIDTH, HEIGHT, vao, indices_count as u32, view_loc),
+        render::PointRenderer::new(WIDTH, HEIGHT, vao, indices_count as u32, view_loc),
+        render::PointRenderer::new(WIDTH, HEIGHT, vao, indices_count as u32, view_loc),
+        render::PointRenderer::new(WIDTH, HEIGHT, vao, indices_count as u32, view_loc),
     ];
 
     let mut min_point = Vector3::new(f32::MAX, f32::MAX, f32::MAX);
@@ -98,13 +103,15 @@ unsafe fn run(path: String, grid_size: f32, cell_size: f32, cell_step: f32) {
     let width_count = ((max_point.x - min_point.x) / cell_size).abs().ceil() as u32;
     let depth_count = ((max_point.z - min_point.z) / cell_size).abs().ceil() as u32;
 
-    let pool = threadpool::ThreadPool::new(1);
+    let pool = threadpool::ThreadPool::new(100);
 
+    let mut prev_time = glfw.get_time();
     for h in 0..height_count {
         for w in 0..width_count {
             for d in 0..depth_count {
                 //let pos = Vector3::new(min_point.x + (x as f32 * cell_size), min_point.y + (y as f32 * cell_size), min_point.z + (z as f32 * cell_size));
                 //point_renderers[0].render(pos);
+                glfw.poll_events();
                 let mut center = Point3::new(
                     min_point.x + (w as f32 * cell_size) + (cell_size / 2.0),
                     min_point.y + (h as f32 * cell_size) + (cell_size / 2.0),
@@ -125,70 +132,56 @@ unsafe fn run(path: String, grid_size: f32, cell_size: f32, cell_step: f32) {
                     })
                 });
 
-                println!("points: {}", points.len());
+                println!("points: {}, elapsed: {}", points.len(), glfw.get_time() - prev_time);
+                prev_time = glfw.get_time();
 
                 //let threads = vec![];
                 for point in points {
                     'waiter: loop {
                         for renderer in &mut point_renderers {
-                            if renderer.is_ready() {
-                                //println!("{}-{}-{}", h, w, d);
+                            if renderer.is_copy_ready() {
+                                renderer.bind_maps();
 
-                                let mut pbos_data = Vec::new();
-                                pbos_data.reserve(6);
-                                for pbo in &renderer.pbos {
-                                    gl::BindBuffer(gl::PIXEL_PACK_BUFFER, *pbo);
-                                    let data = gl::MapBuffer(gl::PIXEL_PACK_BUFFER, gl::READ_ONLY);
-                                    let data_arr =
-                                        std::slice::from_raw_parts(data as *const u8, WIDTH as usize * HEIGHT as usize * 3);
-                                    let buffer = data_arr.to_vec();
-                                    pbos_data.push(buffer);
-
-                                    gl::UnmapBuffer(gl::PIXEL_PACK_BUFFER);
-                                    gl::BindBuffer(gl::PIXEL_PACK_BUFFER, 0);
-                                }
-
-                                //println!("pbos_data: {}", pbos_data.len());
-
+                                let px = point.x as i32;
+                                let py = point.y as i32;
+                                let pz = point.z as i32;
+                                
+                                let thread_ready = renderer.thread_ready.clone();
+                                let maps = renderer.maps.clone();
                                 pool.execute(move || {
-                                    //let mut unique_colors = std::collections::HashSet::new();
-                                    for data in &pbos_data {
-                                        //cfor!(let mut i = 0; i < data.len(); i += 3; {
-                                 //           unique_colors.insert((data[i] as u32, data[i + 1] as u32, data[i + 2] as u32));
-                                        //})
-
-                                        /*if !unique_colors.contains(&data) {
-
-                                            unique_colors.insert(data);
-                                        }*/
-
-                                        for p in data {
-                                            println!("{}", p);
+                                    let maps = maps.lock().unwrap();
+                                    let mut unique_colors = HashSet::new();
+                                    for map in &*maps {
+                                        let map_ptr = map.0 as *const (u8, u8, u8);
+                                        let arr = unsafe { std::slice::from_raw_parts(map_ptr, (WIDTH * HEIGHT) as usize) };
+                                        //println!("map: {}", arr.len());
+                                        for a in arr {
+                                            unique_colors.insert(a);
                                         }
-                                        //println!("data: {}", data.len());
                                     }
-                                    //disable optimization
-                                    //#[allow(unused_assignments, unused_variables)]
-                                    //let d = pbos_data;
-                                    //println!("unique colors: {}", unique_colors.len());
-                                    let n = pbos_data.len();
-                                    for i in 0..n {
-                                        pbos_data[i].clear();
 
+                                    /*let mut string_out = String::new();
+                                    for color in unique_colors {
+                                        string_out.push_str(&format!("{} {} {}\n", color.0, color.1, color.2));
                                     }
-                                    pbos_data.clear();
-                                    pbos_data.shrink_to_fit();
-                                    drop(pbos_data);
+
+                                    std::fs::write(format!("outs/{}-{}-{}_{}-{}-{}.txt", h, w, d, px, py, pz), string_out).unwrap();*/
                                     
+                                    //renderer.copy_to_texture(&point);
+                                    *thread_ready.lock().unwrap() = true;
+
                                 });
 
-
+                                break 'waiter;
+                            }
+                            
+                            else if renderer.is_thread_ready() {
+                                //println!("Start");
                                 renderer.render(point);
                                 break 'waiter;
                             }
                         }
                     }
-                    
                 }
                 //panic!();
             }
