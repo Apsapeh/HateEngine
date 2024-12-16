@@ -1,7 +1,7 @@
 use tobj;
 use glad_gl::gl;
 
-pub unsafe fn load_obj_vao(path: String, grid_size: f32) -> (u32, usize, Vec<[u32; 3]>, Vec<tobj::Model>) {
+pub unsafe fn load_obj_vao(path: String, grid_size: f32) -> (u32, usize, Vec<[u8; 3]>, Vec<tobj::Model>) {
     let mut obj = tobj::load_obj(path, &tobj::GPU_LOAD_OPTIONS).unwrap().0;
 
     for o in &mut obj {
@@ -23,7 +23,7 @@ pub unsafe fn load_obj_vao(path: String, grid_size: f32) -> (u32, usize, Vec<[u3
         big_vbo.extend_from_slice(&o.mesh.positions);
 
         let color = gen_color();
-        let mut color_vec = vec![0u32; o.mesh.positions.len()];
+        let mut color_vec = vec![0u8; o.mesh.positions.len()];
         for i in 0..o.mesh.positions.len() / 3 {
             color_vec[3 * i] = color[0];
             color_vec[3 * i + 1] = color[1];
@@ -73,11 +73,11 @@ pub unsafe fn load_obj_vao(path: String, grid_size: f32) -> (u32, usize, Vec<[u3
     gl::BindBuffer(gl::ARRAY_BUFFER, color_vbo);
     gl::BufferData(
         gl::ARRAY_BUFFER,
-        (big_color.len() * std::mem::size_of::<u32>()) as isize,
+        (big_color.len() * std::mem::size_of::<u8>()) as isize,
         big_color.as_ptr() as *const _,
         gl::STATIC_DRAW,
     );
-    gl::VertexAttribPointer(1, 3, gl::UNSIGNED_INT, gl::FALSE, 0, std::ptr::null());
+    gl::VertexAttribPointer(1, 3, gl::UNSIGNED_BYTE, gl::FALSE, 0, std::ptr::null());
 
     gl::EnableVertexAttribArray(1);
     gl::EnableVertexAttribArray(0);
@@ -94,25 +94,27 @@ static mut COLOR_R: u8 = 0;
 static mut COLOR_G: u8 = 0;
 static mut COLOR_B: u8 = 0;
 
-fn gen_color() -> [u32; 3] {
-    unsafe {
-        let r = [COLOR_R as u32, COLOR_G as u32, COLOR_B as u32];
+const COLOR_INCREMENT: u8 = 16; // 2^4 for optimized division, 4096 colors 
 
-        if COLOR_B as u32 + 10 > 255 {
+fn gen_color() -> [u8; 3] {
+    unsafe {
+        let r = [COLOR_R, COLOR_G, COLOR_B];
+
+        if COLOR_B > 255 - COLOR_INCREMENT {
             COLOR_B = 0;
 
-            if COLOR_G as u32 + 10 > 255 {
+            if COLOR_G > 255 - COLOR_INCREMENT {
                 COLOR_G = 0;
-                if COLOR_R as u32 + 10 > 255 {
+                if COLOR_R > 255 - COLOR_INCREMENT {
                     COLOR_R = 0;
                 } else {
-                    COLOR_R += 10;
+                    COLOR_R += COLOR_INCREMENT;
                 }
             } else {
-                COLOR_G += 10;
+                COLOR_G += COLOR_INCREMENT;
             }
         } else {
-            COLOR_B += 10;
+            COLOR_B += COLOR_INCREMENT;
         }
 
         r

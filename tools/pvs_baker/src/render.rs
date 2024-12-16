@@ -303,7 +303,7 @@ unsafe fn gen_pbos(count: u32, width: u32, height: u32) -> Vec<u32> {
     pbos
 }
 
-fn get_view(pos: Point3<f32>, dir: Point3<f32>, up: Vector3<f32>) -> Matrix4<f32> {
+pub fn get_view(pos: Point3<f32>, dir: Point3<f32>, up: Vector3<f32>) -> Matrix4<f32> {
     let mut eye = pos;
     eye.x += dir.x;
     eye.y += dir.y;
