@@ -1,8 +1,8 @@
+use crate::shader;
 use cgmath::{perspective, Deg, Matrix};
 use glad_gl::gl;
-use glfw::{Context, fail_on_errors};
+use glfw::{fail_on_errors, Context};
 use std::ffi::CString;
-use crate::shader;
 
 pub unsafe fn create_window(width: u32, height: u32) -> (glfw::Glfw, glfw::PWindow, i32) {
     let mut glfw = glfw::init(fail_on_errors!()).unwrap();
@@ -31,7 +31,6 @@ pub unsafe fn create_window(width: u32, height: u32) -> (glfw::Glfw, glfw::PWind
     gl::load(|s| window.get_proc_address(s) as *const _);
 
     let shader_program = shader::load_shader_program();
-
 
     let name = CString::new("projection").unwrap();
     let projection_loc = gl::GetUniformLocation(shader_program, name.as_ptr());

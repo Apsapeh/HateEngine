@@ -1,7 +1,12 @@
-use tobj;
-use glad_gl::gl;
+use std::collections::HashMap;
 
-pub unsafe fn load_obj_vao(path: String, grid_size: f32) -> (u32, usize, Vec<[u8; 3]>, Vec<tobj::Model>) {
+use glad_gl::gl;
+use tobj;
+
+pub unsafe fn load_obj_vao(
+    path: String,
+    grid_size: f32,
+) -> (u32, usize, HashMap<(u8, u8, u8), String>, Vec<tobj::Model>) {
     let mut obj = tobj::load_obj(path, &tobj::GPU_LOAD_OPTIONS).unwrap().0;
 
     for o in &mut obj {
@@ -13,7 +18,7 @@ pub unsafe fn load_obj_vao(path: String, grid_size: f32) -> (u32, usize, Vec<[u8
     let mut big_vbo = Vec::new();
     let mut big_ebo = Vec::new();
     let mut big_color = Vec::new();
-    let mut colors = Vec::new();
+    let mut colors = HashMap::new();
 
     for o in &mut obj {
         for i in &mut o.mesh.indices {
@@ -31,7 +36,8 @@ pub unsafe fn load_obj_vao(path: String, grid_size: f32) -> (u32, usize, Vec<[u8
         }
         big_color.extend_from_slice(&color_vec);
 
-        colors.push(color);
+        let color = (color[0] >> 4, color[1] >> 4, color[2] >> 4);
+        colors.insert(color, o.name.clone());
     }
 
     let mut vbo = 0;
@@ -89,12 +95,11 @@ pub unsafe fn load_obj_vao(path: String, grid_size: f32) -> (u32, usize, Vec<[u8
     (vao, big_ebo.len(), colors, obj)
 }
 
-
 static mut COLOR_R: u8 = 0;
 static mut COLOR_G: u8 = 0;
 static mut COLOR_B: u8 = 0;
 
-const COLOR_INCREMENT: u8 = 16; // 2^4 for optimized division, 4096 colors 
+const COLOR_INCREMENT: u8 = 16; // 2^4 for optimized division, 4096 colors
 
 fn gen_color() -> [u8; 3] {
     unsafe {

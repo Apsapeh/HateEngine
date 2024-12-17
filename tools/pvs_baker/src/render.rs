@@ -1,16 +1,15 @@
 use std::os::raw::c_void;
-use std::{ptr, thread};
-use std::sync::{Arc, Mutex, RwLock};
+use std::ptr;
+use std::sync::{Arc, Mutex};
 
 use cgmath::{Matrix, Matrix4, Point3, Vector3};
 use glad_gl::gl;
 
 #[derive(Copy, Clone)]
-pub struct PtrWrapper<T> (pub *const T);
+pub struct PtrWrapper<T>(pub *const T);
 
 unsafe impl<T> Send for PtrWrapper<T> {}
 unsafe impl<T> Sync for PtrWrapper<T> {}
-
 
 pub struct PointRenderer {
     width: u32,
@@ -55,7 +54,6 @@ impl PointRenderer {
 
     pub fn render(&mut self, pos: Point3<f32>) {
         unsafe {
-            
             *self.thread_ready.lock().unwrap() = false;
 
             let view = get_view(pos, Point3::new(0.0, 0.0, 1.0), Vector3::new(0.0, 1.0, 0.0));
@@ -144,7 +142,7 @@ impl PointRenderer {
         self.is_maps_binded = true;
     }
 
-    pub fn unbind_maps(& self) {
+    pub fn unbind_maps(&self) {
         //println!("Unbind maps");
         unsafe {
             for i in 0..6 {
@@ -178,16 +176,16 @@ impl PointRenderer {
     }
 
     pub fn is_thread_ready(&mut self) -> bool {
-            let state = self.thread_ready.lock().unwrap();
-            if *state {
-                if self.is_maps_binded {
-                    self.unbind_maps();
-                    self.is_maps_binded = false;
-                }
-                return true;
-            } else {
-                return false;
+        let state = self.thread_ready.lock().unwrap();
+        if *state {
+            if self.is_maps_binded {
+                self.unbind_maps();
+                self.is_maps_binded = false;
             }
+            return true;
+        } else {
+            return false;
+        }
     }
 
     #[inline]
