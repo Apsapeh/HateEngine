@@ -167,7 +167,7 @@ int main() {
 
     game.setMouseCapture(true);
     // std::cout << "\n\n\n\n" << glfwGetInputMode(game.window, GLFW_CURSOR) << "\n\n\n\n";
-    game.setOneThreadMode(true);
+    game.setOneThreadMode(false);
     game.setVSync(false);
 
     game.Input.addKeyToAction("forward", HateEngine::KeyW);
@@ -222,8 +222,40 @@ int main() {
 
     HateEngine::CubeMesh colorCube;
     colorCube.offset(3, 3, 3);
-    colorCube.setColor({0.4, 0.1, 0.1});
-    // colorCube.disableLightShading();
+    // colorCube.setUV({0, 0,0.19731724, 0,0.19731724, 0.19731724,0.3946345, 0.19731724,0.19731724,
+    // 0.19731724,0.19731724, 0,0, 0.3946345,0, 0.19731724,0.19731724, 0.19731724,0.5919517,
+    // 0,0.5919517, 0.19731724,0.3946345, 0.19731724,0, 0.3946345,0.19731724, 0.3946345,0.19731724,
+    // 0.5919517,0.3946345, 0.3946345,0.19731724, 0.3946345,0.19731724, 0.19731724,0.5919517,
+    // 0,0.789269, 0,0.789269, 0.19731724,0.19731724, 0.789269,0, 0.789269,0, 0.5919517,0.5919517,
+    // 0.19731724,0.5919517, 0.3946345,0.3946345, 0.3946345,0.19731724, 0.5919517,0.19731724,
+    // 0.3946345,0.3946345, 0.3946345,0.789269, 0.19731724,0.789269, 0,0.9865862, 0,0.19731724,
+    // 0.789269,0.19731724, 0.9865862,0, 0.9865862,});
+    colorCube.setLightUV({
+            0,          0, 0.16666667, 0, 0.16666667, 1, 0.16666667, 1, 0,          1,
+            0,          0, 0.16666667, 0, 0.33333334, 0, 0.33333334, 1, 0.33333334, 1,
+            0.16666667, 1, 0.16666667, 0, 0.33333334, 0, 0.33333334, 1, 0.5,        1,
+            0.5,        1, 0.5,        0, 0.33333334, 0, 0.5,        0, 0.6666667,  0,
+            0.6666667,  1, 0.6666667,  1, 0.5,        1, 0.5,        0, 0.6666667,  0,
+            0.8333334,  0, 0.8333334,  1, 0.8333334,  1, 0.6666667,  1, 0.6666667,  0,
+            0.8333334,  1, 0.8333334,  0, 1,          0, 1,          0, 1,          1,
+            0.8333334,  1,
+    });
+
+
+    HateEngine::Texture cube_lightmap(
+            "examples/Assets/cube_lightmap.png", HateEngine::Texture::Repeat,
+            HateEngine::Texture::Nearest
+    );
+    colorCube.setLightTexture(&cube_lightmap);
+    colorCube.disableLightShading();
+    colorCube.setSize(3, 3, 3);
+
+    HateEngine::Texture bri("examples/Assets/brick.png");
+    colorCube.setTexture(&bri);
+
+
+    // colorCube.setColor({0.4, 0.1, 0.1});
+    //  colorCube.disableLightShading();
 
     lvl.addObjectRef(&colorCube);
 
@@ -320,7 +352,7 @@ int main() {
                   light->setPosition(entity.position);
                   light->setColor({10, 0, 0, 1});
                   model->bindObj(light);
-                  //model->addEntityObjectToLevel(light);
+                  // model->addEntityObjectToLevel(light);
 
                   auto lights = static_cast<std::vector<HateEngine::OmniLight*>*>(data);
                   lights->push_back(light);
@@ -329,7 +361,7 @@ int main() {
                   // cube->setSize(0.1, 0.1, 0.1);
                   cube->setPosition(entity.position);
                   model->bindObj(cube);
-                  //model->addEntityObjectToLevel(cube);
+                  // model->addEntityObjectToLevel(cube);
               }}},
             new std::vector<HateEngine::OmniLight*>,
             [](void* data) {
@@ -351,7 +383,7 @@ int main() {
     /*HateEngine::ObjMapModel objmodel =
             herfile.loadObjMap("untitled.obj", "unnamed.map", true, 15, 1);*/
     // objmodel.offset(0, -180, -20);
-    //objmodel.offset(-30, -20, 60);
+    // objmodel.offset(-30, -20, 60);
 
     for (auto& m: objmodel.getLOD(0)) {
         glm::vec3 min = m->getAABBMin();
@@ -371,140 +403,42 @@ int main() {
 
 
     std::unordered_set<std::string> enabled = {
-"entity0_brush0",
-"entity0_brush1",
-"entity0_brush2",
-"entity0_brush3",
-"entity0_brush4",
-"entity0_brush5",
-"entity0_brush6",
-"entity0_brush8",
-"entity0_brush9",
-"entity0_brush10",
-"entity0_brush11",
-"entity0_brush12",
-"entity0_brush13",
-"entity0_brush15",
-"entity0_brush16",
-"entity0_brush17",
-"entity0_brush18",
-"entity0_brush19",
-"entity0_brush20",
-"entity0_brush21",
-"entity0_brush22",
-"entity0_brush23",
-"entity0_brush24",
-"entity0_brush25",
-"entity0_brush27",
-"entity0_brush28",
-"entity0_brush29",
-"entity0_brush30",
-"entity0_brush31",
-"entity0_brush32",
-"entity0_brush33",
-"entity0_brush34",
-"entity0_brush36",
-"entity0_brush38",
-"entity0_brush39",
-"entity0_brush40",
-"entity0_brush41",
-"entity0_brush42",
-"entity0_brush43",
-"entity0_brush44",
-"entity0_brush45",
-"entity0_brush46",
-"entity0_brush47",
-"entity0_brush49",
-"entity0_brush50",
-"entity0_brush51",
-"entity0_brush52",
-"entity0_brush53",
-"entity0_brush54",
-"entity0_brush55",
-"entity0_brush56",
-"entity0_brush60",
-"entity0_brush61",
-"entity0_brush62",
-"entity0_brush63",
-"entity0_brush64",
-"entity0_brush65",
-"entity0_brush66",
-"entity0_brush67",
-"entity0_brush68",
-"entity0_brush69",
-"entity0_brush70",
-"entity0_brush71",
-"entity0_brush72",
-"entity0_brush73",
-"entity0_brush74",
-"entity0_brush75",
-"entity0_brush76",
-"entity0_brush77",
-"entity0_brush78",
-"entity0_brush79",
-"entity0_brush80",
-"entity0_brush81",
-"entity0_brush82",
-"entity0_brush83",
-"entity0_brush84",
-"entity0_brush85",
-"entity0_brush86",
-"entity0_brush87",
-"entity0_brush88",
-"entity0_brush95",
-"entity0_brush120",
-"entity0_brush121",
-"entity0_brush131",
-"entity0_brush132",
-"entity0_brush134",
-"entity0_brush135",
-"entity0_brush136",
-"entity0_brush137",
-"entity0_brush141",
-"entity0_brush395",
-"entity0_brush397",
-"entity0_brush398",
-"entity0_brush399",
-"entity0_brush401",
-"entity0_brush402",
-"entity0_brush403",
-"entity0_brush404",
-"entity0_brush405",
-"entity0_brush406",
-"entity0_brush407",
-"entity0_brush408",
-"entity0_brush409",
-"entity0_brush410",
-"entity0_brush411",
-"entity0_brush412",
-"entity0_brush413",
-"entity0_brush414",
-"entity0_brush1062",
-"entity0_brush1073",
-"entity0_brush1075",
-"entity0_brush1084",
-"entity0_brush1085",
-"entity0_brush1086",
-"entity0_brush1087",
-"entity0_brush1088",
-"entity0_brush1089",
-"entity0_brush1107",
-"entity0_brush1109",
-"entity0_brush1112",
-"entity14_brush0",
-"entity14_brush1",
-"entity14_brush2",
-"entity15_brush0",
-"entity15_brush1",
-"entity15_brush2",
-"entity310_brush0",
-"entity338_brush0",
-"entity339_brush0",
-"entity352_brush0",
-"entity353_brush0",
+            "entity0_brush0",    "entity0_brush1",    "entity0_brush2",    "entity0_brush3",
+            "entity0_brush4",    "entity0_brush5",    "entity0_brush6",    "entity0_brush8",
+            "entity0_brush9",    "entity0_brush10",   "entity0_brush11",   "entity0_brush12",
+            "entity0_brush13",   "entity0_brush15",   "entity0_brush16",   "entity0_brush17",
+            "entity0_brush18",   "entity0_brush19",   "entity0_brush20",   "entity0_brush21",
+            "entity0_brush22",   "entity0_brush23",   "entity0_brush24",   "entity0_brush25",
+            "entity0_brush27",   "entity0_brush28",   "entity0_brush29",   "entity0_brush30",
+            "entity0_brush31",   "entity0_brush32",   "entity0_brush33",   "entity0_brush34",
+            "entity0_brush36",   "entity0_brush38",   "entity0_brush39",   "entity0_brush40",
+            "entity0_brush41",   "entity0_brush42",   "entity0_brush43",   "entity0_brush44",
+            "entity0_brush45",   "entity0_brush46",   "entity0_brush47",   "entity0_brush49",
+            "entity0_brush50",   "entity0_brush51",   "entity0_brush52",   "entity0_brush53",
+            "entity0_brush54",   "entity0_brush55",   "entity0_brush56",   "entity0_brush60",
+            "entity0_brush61",   "entity0_brush62",   "entity0_brush63",   "entity0_brush64",
+            "entity0_brush65",   "entity0_brush66",   "entity0_brush67",   "entity0_brush68",
+            "entity0_brush69",   "entity0_brush70",   "entity0_brush71",   "entity0_brush72",
+            "entity0_brush73",   "entity0_brush74",   "entity0_brush75",   "entity0_brush76",
+            "entity0_brush77",   "entity0_brush78",   "entity0_brush79",   "entity0_brush80",
+            "entity0_brush81",   "entity0_brush82",   "entity0_brush83",   "entity0_brush84",
+            "entity0_brush85",   "entity0_brush86",   "entity0_brush87",   "entity0_brush88",
+            "entity0_brush95",   "entity0_brush120",  "entity0_brush121",  "entity0_brush131",
+            "entity0_brush132",  "entity0_brush134",  "entity0_brush135",  "entity0_brush136",
+            "entity0_brush137",  "entity0_brush141",  "entity0_brush395",  "entity0_brush397",
+            "entity0_brush398",  "entity0_brush399",  "entity0_brush401",  "entity0_brush402",
+            "entity0_brush403",  "entity0_brush404",  "entity0_brush405",  "entity0_brush406",
+            "entity0_brush407",  "entity0_brush408",  "entity0_brush409",  "entity0_brush410",
+            "entity0_brush411",  "entity0_brush412",  "entity0_brush413",  "entity0_brush414",
+            "entity0_brush1062", "entity0_brush1073", "entity0_brush1075", "entity0_brush1084",
+            "entity0_brush1085", "entity0_brush1086", "entity0_brush1087", "entity0_brush1088",
+            "entity0_brush1089", "entity0_brush1107", "entity0_brush1109", "entity0_brush1112",
+            "entity14_brush0",   "entity14_brush1",   "entity14_brush2",   "entity15_brush0",
+            "entity15_brush1",   "entity15_brush2",   "entity310_brush0",  "entity338_brush0",
+            "entity339_brush0",  "entity352_brush0",  "entity353_brush0",
 
 
-};
+    };
 
     for (int i = 0; i < objmodel.getLODCount(); i++) {
         for (auto& lod: objmodel.getLOD(i)) {

@@ -93,8 +93,16 @@ void Mesh::setTexture(Texture* tex) {
     this->texture = tex;
 }
 
+void Mesh::setLightTexture(Texture* tex) {
+    this->light_texture = tex;
+}
+
 void Mesh::setUV(std::vector<float> uv) {
     this->UV = std::move(uv);
+}
+
+void Mesh::setLightUV(std::vector<float> uv) {
+    this->light_UV = std::move(uv);
 }
 
 void Mesh::setColors(std::vector<float> colors, uint8_t channels) {
@@ -209,8 +217,16 @@ Texture* Mesh::getTexture() const {
     return this->texture;
 }
 
+Texture* Mesh::getLightTexture() const {
+    return this->light_texture;
+}
+
 const std::vector<float>* Mesh::getUV() const {
     return &this->UV;
+}
+
+const std::vector<float>* Mesh::getLightUV() const {
+    return &this->light_UV;
 }
 
 const std::vector<float>* Mesh::getColors() const {

@@ -331,12 +331,29 @@ glMaterialfv(GL_FRONT_AND_BACK, GL_SHININESS, mat_shininess);*/
 
         // Render Textures
         if (mesh->getTexture() != nullptr and not mesh->getTexture()->is_unable_to_load) {
+            glActiveTexture(GL_TEXTURE0);
             if (not mesh->getTexture()->is_loaded)
                 mesh->getTexture()->Load(loadTexture, unloadTexture);
 
             glEnable(GL_TEXTURE_2D);
             glBindTexture(GL_TEXTURE_2D, mesh->getTexture()->getTextureID());
+            glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+            glClientActiveTexture(GL_TEXTURE0);
+            glEnableClientState(GL_TEXTURE_COORD_ARRAY);
             glTexCoordPointer(2, GL_FLOAT, 0, mesh->getUV()->data());
+        }
+
+        if (mesh->getLightTexture() != nullptr and not mesh->getLightTexture()->is_unable_to_load) {
+            glActiveTexture(GL_TEXTURE1);
+            if (not mesh->getLightTexture()->is_loaded)
+                mesh->getLightTexture()->Load(loadTexture, unloadTexture);
+
+            glEnable(GL_TEXTURE_2D);
+            glBindTexture(GL_TEXTURE_2D, mesh->getLightTexture()->getTextureID());
+            glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+            glClientActiveTexture(GL_TEXTURE1);
+            glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+            glTexCoordPointer(2, GL_FLOAT, 0, mesh->getLightUV()->data());
         }
 
         glVertexPointer(3, GL_FLOAT, 0, mesh->getVertices()->data());
@@ -356,6 +373,13 @@ glMaterialfv(GL_FRONT_AND_BACK, GL_SHININESS, mat_shininess);*/
         );
 
         if (mesh->getTexture() != nullptr) {
+            glActiveTexture(GL_TEXTURE0);
+            glBindTexture(GL_TEXTURE_2D, 0);
+            glDisable(GL_TEXTURE_2D);
+        }
+
+        if (mesh->getLightTexture() != nullptr) {
+            glActiveTexture(GL_TEXTURE1);
             glBindTexture(GL_TEXTURE_2D, 0);
             glDisable(GL_TEXTURE_2D);
         }

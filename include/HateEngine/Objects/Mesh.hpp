@@ -15,7 +15,9 @@ namespace HateEngine {
         std::vector<float> normals;
         std::vector<float> colors;
         Texture* texture = nullptr;
+        Texture* light_texture = nullptr;
         std::vector<float> UV = {};
+        std::vector<float> light_UV = {};
         uint8_t color_channels = 4;
         float max_light_dist = 0;
         float center_max_size = 0;
@@ -40,7 +42,9 @@ namespace HateEngine {
         void setIndicies(std::vector<uint32_t> vec);
         void setNormals(std::vector<float> vec);
         void setTexture(Texture* tex);
+        void setLightTexture(Texture* tex);
         void setUV(std::vector<float> UV);
+        void setLightUV(std::vector<float> UV);
         void setColors(std::vector<float> colors, uint8_t channels = 4);
         void setColor(glm::vec4 color);
         void setColor(glm::vec3 color);
@@ -74,7 +78,9 @@ namespace HateEngine {
         const std::vector<uint32_t>* getIndicies() const;
         const std::vector<float>* getNormals() const;
         Texture* getTexture() const;
+        Texture* getLightTexture() const;
         const std::vector<float>* getUV() const;
+        const std::vector<float>* getLightUV() const;
         const std::vector<float>* getColors() const;
         const uint8_t getColorChannels() const;
         // const std::vector<std::vector<float>>* getTexturesCoords();
