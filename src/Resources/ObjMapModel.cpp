@@ -799,7 +799,7 @@ std::vector<Mesh*> ObjMapModel::generateLod(
                 mesh_normals.push_back(face.normal[1]);
                 mesh_normals.push_back(face.normal[2]);
 
-
+                // UV generation
                 for (const auto& t: triangles) {
                     if (isPointInTriangle(p, t.points) or isPointOnTriangleEdge(p, t.points)) {
                         glm::vec3 bary_coords = ComputeBarycentricCoordinates(

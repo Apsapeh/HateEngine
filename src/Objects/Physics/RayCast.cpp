@@ -56,6 +56,10 @@ RayCast::RayCast(PhysEngine* physEngine, float length) {
     this->rayCastCallback.physEngine = physEngine;
 }
 
+RayCast::RayCast(float length) {
+    this->length = length;
+}
+
 void RayCast::changeLength(float length) {
     this->length = length;
 }
@@ -155,4 +159,8 @@ std::vector<uint8_t> RayCast::getEnabledCollisionMaskBits() {
             result.push_back(i);
     }
     return result;
+}
+
+float RayCast::getLength() const {
+    return this->length;
 }

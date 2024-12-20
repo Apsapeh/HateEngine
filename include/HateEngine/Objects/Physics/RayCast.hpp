@@ -67,5 +67,7 @@ namespace HateEngine {
 
         bool getCollisionMaskBit(uint8_t bit);
         std::vector<uint8_t> getEnabledCollisionMaskBits();
+
+        float getLength() const;
     };
 } // namespace HateEngine

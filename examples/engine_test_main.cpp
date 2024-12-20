@@ -1,6 +1,7 @@
 #include "GLFW/glfw3.h"
 #include "HateEngine/AudioBus.hpp"
 #include "HateEngine/Input.hpp"
+#include "HateEngine/Objects/Decal.hpp"
 #include "HateEngine/Objects/Light/OmniLight.hpp"
 #include "HateEngine/Objects/Light/SpotLight.hpp"
 #include "HateEngine/Objects/Physics/CapsuleShape.hpp"
@@ -107,6 +108,9 @@ HateEngine::LabelUI ambient_bus_volume_label;
 HateEngine::LabelUI music_bus_volume_label;
 
 
+HateEngine::Decal decal;
+
+
 int main() {
     xAxMesh.setSize(1, 0.1, 0.1);
     xAxMesh.offset(0, 6, 0);
@@ -138,7 +142,7 @@ int main() {
     // dirLight.rotate(45, 0, 0);
     glm::vec3 dir = dirLight.getDirection();
 
-    light.setVisible(false);
+    light.setVisible(true);
 
     // HATE_FATAL_F("Direction x: %f, y: %f, z: %f", dir.x, dir.y, dir.z);
 
@@ -247,7 +251,7 @@ int main() {
             HateEngine::Texture::Nearest
     );
     colorCube.setLightTexture(&cube_lightmap);
-    colorCube.disableLightShading();
+    // colorCube.disableLightShading();
     colorCube.setSize(3, 3, 3);
 
     HateEngine::Texture bri("examples/Assets/brick.png");
@@ -264,6 +268,13 @@ int main() {
     // audioPlayer2.play();
 
     /*===============================================================*/
+
+
+    camera.bindObj(&decal);
+    decal.setRayLength(10);
+
+    lvl.addObjectRef(decal.getMesh());
+    decal.setPhysEngine(lvl.getPhysEngine());
 
 
     HateEngine::TriggerArea trigger;
@@ -811,6 +822,7 @@ int frames_count = 0;
 float speed = 1;
 double fps_time = 0.0;
 void _process(HateEngine::Engine* engine, double delta) {
+    decal.bake();
     // std::cout << test_glmodel.getGlobalPosition().z << "\n";
     if (fps_time < 0.5) {
         ++frames_count;
