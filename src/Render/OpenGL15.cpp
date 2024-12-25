@@ -350,7 +350,7 @@ glMaterialfv(GL_FRONT_AND_BACK, GL_SHININESS, mat_shininess);*/
 
             glEnable(GL_TEXTURE_2D);
             glBindTexture(GL_TEXTURE_2D, mesh->getLightTexture()->getTextureID());
-            glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_ADD);
+            glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
             glClientActiveTexture(GL_TEXTURE1);
             glEnableClientState(GL_TEXTURE_COORD_ARRAY);
             glTexCoordPointer(2, GL_FLOAT, 0, mesh->getLightUV()->data());

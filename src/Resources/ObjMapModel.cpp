@@ -25,8 +25,8 @@ std::vector<std::string> split(const std::string& str, const std::string& delimi
 void trim(std::string& str);
 
 ObjMapModel::ObjMapModel(
-        std::string obj_filename, std::string map_file_name, float grid_size,
-        bool generate_collision, float lod_dist, float lod_step
+        std::string obj_filename, std::string map_file_name, std::string lightmap_file_name,
+        float grid_size, bool generate_collision, float lod_dist, float lod_step
 ) {
     bindObj(&static_body);
     this->generate_collision = generate_collision;
@@ -37,6 +37,23 @@ ObjMapModel::ObjMapModel(
     if (pos != std::string::npos)
         obj_file_path = obj_filename.substr(0, pos + 1);
 
+    // get folder .heluv
+    pos = lightmap_file_name.find_last_of("/\\");
+    if (pos != std::string::npos)
+        heluv_file_path = lightmap_file_name.substr(0, pos + 1);
+
+    if (!lightmap_file_name.empty()) {
+        std::ifstream lightmap_file(lightmap_file_name);
+        if (!lightmap_file.is_open()) {
+            HATE_ERROR_F("Failed to open file: %s", lightmap_file_name.c_str());
+            return;
+        }
+        std::vector<uint8_t> lightmap_data(
+                (std::istreambuf_iterator<char>(lightmap_file)), (std::istreambuf_iterator<char>())
+        );
+        parseHeluv(lightmap_data);
+    }
+
     std::ifstream file(obj_filename);
     if (!file.is_open()) {
         HATE_ERROR_F("Failed to open file: %s", obj_filename.c_str());
@@ -44,23 +61,20 @@ ObjMapModel::ObjMapModel(
     }
 
     std::string data((std::istreambuf_iterator<char>(file)), (std::istreambuf_iterator<char>()));
-    auto t0 = std::chrono::high_resolution_clock::now();
     parseObj(data, grid_size, lod_dist, lod_step);
-    auto t1 = std::chrono::high_resolution_clock::now();
-    HATE_DEBUG_F(
-            "Parsing took: %d ms",
-            std::chrono::duration_cast<std::chrono::milliseconds>(t1 - t0).count()
-    );
 
-    std::ifstream map_file(map_file_name);
-    if (!map_file.is_open()) {
-        HATE_ERROR_F("Failed to open file: %s", map_file_name.c_str());
-        return;
+
+    if (!map_file_name.empty()) {
+        std::ifstream map_file(map_file_name);
+        if (!map_file.is_open()) {
+            HATE_ERROR_F("Failed to open file: %s", map_file_name.c_str());
+            return;
+        }
+        std::string map_data(
+                (std::istreambuf_iterator<char>(map_file)), (std::istreambuf_iterator<char>())
+        );
+        parseMap(map_data, grid_size);
     }
-    std::string map_data(
-            (std::istreambuf_iterator<char>(map_file)), (std::istreambuf_iterator<char>())
-    );
-    parseMap(map_data, grid_size);
 }
 
 
@@ -118,6 +132,49 @@ void ObjMapModel::addEntityObjectToLevel(Particles* object) {
 }
 
 /*======================================> PARSERS <==============================================*/
+void ObjMapModel::parseHeluv(std::vector<uint8_t>& data) {
+    uint8_t* ptr = data.data();
+    uint32_t version = *(uint32_t*) ptr;
+    ptr += 4;
+
+    uint32_t obj_count = *(uint32_t*) ptr;
+    ptr += 4;
+
+    for (uint32_t i = 0; i < obj_count; i++) {
+        uint16_t name_len = *(uint16_t*) ptr;
+        ptr += 2;
+        uint32_t faces_count = *(uint32_t*) ptr;
+        ptr += 4;
+
+        std::string name((char*) ptr, name_len);
+        ptr += name_len;
+
+        HateEngine::Texture* tex = new HateEngine::Texture(
+                this->heluv_file_path + name + ".png", Texture::Repeat, Texture::Linear, false
+        );
+
+        std::vector<std::vector<glm::vec2>> faces;
+        for (uint32_t j = 0; j < faces_count; j++) {
+            uint8_t uvs_count = *ptr;
+            ptr += 1;
+
+            std::vector<glm::vec2> uv;
+            for (uint8_t k = 0; k < uvs_count; k++) {
+                float u = *(float*) ptr;
+                ptr += 4;
+                float v = *(float*) ptr;
+                ptr += 4;
+                uv.push_back(glm::vec2(u, v));
+            }
+
+            faces.push_back(uv);
+        }
+        heluv[name] = {faces, tex};
+    }
+    int a = 5;
+}
+
+
 void ObjMapModel::parseObj(
         std::string data, float grid_size, float lod_dist, float lod_step, HERFile* her
 ) {
@@ -152,6 +209,7 @@ void ObjMapModel::parseObj(
             std::vector<int32_t> v_indices;
             std::vector<int32_t> n_indices;
             std::vector<int32_t> t_indices;
+            std::vector<glm::vec2> light_tex;
             int32_t prev_n_index = 0;
             for (uint32_t i = 1; i < words.size(); i++) {
                 std::vector<std::string> indices = split(words[i], "/");
@@ -176,11 +234,27 @@ void ObjMapModel::parseObj(
                     }
                     prev_n_index = n_i;
                 }
+
+                if (this->heluv.count(current_obj->name)) {
+                    uint32_t face_index = current_obj->faces.size();
+                    uint32_t uv_index = i - 1;
+
+                    if (face_index < this->heluv[current_obj->name].uv.size() and
+                        uv_index < this->heluv[current_obj->name].uv[face_index].size()) {
+                        light_tex.push_back(this->heluv[current_obj->name].uv[face_index][uv_index]
+                        );
+                    } else {
+                        light_tex.push_back(glm::vec2(0, 0));
+                    }
+                } else {
+                    light_tex.push_back(glm::vec2(0, 0));
+                }
             }
 
             ObjFace face;
             face.indices = v_indices;
             face.tex_indices = t_indices;
+            face.light_tex = light_tex;
             face.normal[0] = normals[n_indices[0]].x;
             face.normal[1] = normals[n_indices[0]].y;
             face.normal[2] = normals[n_indices[0]].z;
@@ -389,40 +463,6 @@ void ObjMapModel::parseMap(std::string data, float grid_size) {
 }
 
 
-/*inline static bool isPointInPolygon(const glm::vec2 point, const std::vector<glm::vec2>& polygon)
-{ bool is_in = 0;
-
-    for (uint32_t i = 0; i < polygon.size(); i++) {
-        glm::vec2 a = polygon[i];
-        glm::vec2 b;
-        if (i == polygon.size() - 1)
-            b = polygon[0];
-        else
-            b = polygon[i + 1];
-
-        float xByY = 0;
-        if (std::abs(a.y - b.y) < 0.01f)
-            continue;
-        if (std::abs(a.x - b.x) < 0.01f)
-            xByY = a.x;
-        else
-            xByY = a.x + (b.x - a.x) * (point.y - a.y) / (b.y - a.y);
-
-        if (std::abs(point.x - xByY) < 0.01f) {
-            return false;
-        }
-
-        float min_y = std::min(a.y, b.y);
-        float max_y = std::max(a.y, b.y);
-
-        if (point.y > min_y && point.y < max_y && point.x < xByY) {
-            is_in = !is_in;
-        }
-    }
-
-    return is_in;
-}*/
-
 // Вспомогательная функция для вычисления знака векторного произведения
 inline float sign(const glm::vec2& p1, const glm::vec2& p2, const glm::vec2& p3) {
     return (p1.x - p3.x) * (p2.y - p3.y) - (p2.x - p3.x) * (p1.y - p3.y);
@@ -532,12 +572,73 @@ glm::vec3 ComputeBarycentricCoordinates(
     // точкой)
     if (u < -1e-6 || v < -1e-6 || w < -1e-6 || u > 1.0f + 1e-6 || v > 1.0f + 1e-6 ||
         w > 1.0f + 1e-6) {
-        /*std::cout << "Point outside the triangle (due to numerical issues or calculation errors)."
-                  << std::endl;*/
         return glm::vec3(-1.0f, -1.0f, -1.0f); // Возвращаем ошибочные координаты
     }
 
     return glm::vec3(u, v, w);
+}
+
+
+struct Triangle {
+    std::vector<glm::vec2> points;
+    glm::vec2 tex[3];
+    glm::vec2 light_tex[3];
+};
+
+void add_vertex_and_uvs(
+        glm::vec3 new_a, glm::vec2 p, std::vector<Triangle>& triangles,
+        std::vector<float>& mesh_vertices, std::vector<float>& mesh_UVs,
+        std::vector<float>& mesh_lightmap_UVs
+) {
+    mesh_vertices.push_back(new_a.x);
+    mesh_vertices.push_back(new_a.y);
+    mesh_vertices.push_back(new_a.z);
+
+    for (const auto& t: triangles) {
+        if (isPointInTriangle(p, t.points) or isPointOnTriangleEdge(p, t.points)) {
+            glm::vec3 bary_coords =
+                    ComputeBarycentricCoordinates(p, t.points[0], t.points[1], t.points[2]);
+
+            glm::vec2 uv =
+                    bary_coords.x * t.tex[0] + bary_coords.y * t.tex[1] + bary_coords.z * t.tex[2];
+
+            glm::vec2 light_uv = bary_coords.x * t.light_tex[0] + bary_coords.y * t.light_tex[1] +
+                                 bary_coords.z * t.light_tex[2];
+
+            mesh_UVs.push_back(uv.x);
+            mesh_UVs.push_back(uv.y);
+            mesh_lightmap_UVs.push_back(light_uv.x);
+            mesh_lightmap_UVs.push_back(light_uv.y);
+            break;
+        }
+
+        bool on_p0 =
+                std::abs(p.x - t.points[0].x) < 0.01f and std::abs(p.y - t.points[0].y) < 0.01f;
+        bool on_p1 =
+                std::abs(p.x - t.points[1].x) < 0.01f and std::abs(p.y - t.points[1].y) < 0.01f;
+        bool on_p2 =
+                std::abs(p.x - t.points[2].x) < 0.01f and std::abs(p.y - t.points[2].y) < 0.01f;
+
+        if (on_p0 or on_p1 or on_p2) {
+            if (on_p0) {
+                mesh_UVs.push_back(t.tex[0].x);
+                mesh_UVs.push_back(t.tex[0].y);
+                mesh_lightmap_UVs.push_back(t.light_tex[0].x);
+                mesh_lightmap_UVs.push_back(t.light_tex[0].y);
+            } else if (on_p1) {
+                mesh_UVs.push_back(t.tex[1].x);
+                mesh_UVs.push_back(t.tex[1].y);
+                mesh_lightmap_UVs.push_back(t.light_tex[1].x);
+                mesh_lightmap_UVs.push_back(t.light_tex[1].y);
+            } else {
+                mesh_UVs.push_back(t.tex[2].x);
+                mesh_UVs.push_back(t.tex[2].y);
+                mesh_lightmap_UVs.push_back(t.light_tex[2].x);
+                mesh_lightmap_UVs.push_back(t.light_tex[2].y);
+            }
+            break;
+        }
+    }
 }
 
 
@@ -553,6 +654,7 @@ std::vector<Mesh*> ObjMapModel::generateLod(
         std::vector<uint32_t> mesh_indicies;
         std::vector<float> mesh_normals;
         std::vector<float> mesh_UVs;
+        std::vector<float> mesh_lightmap_UVs;
         // Mesh mesh;
 
         std::vector<ObjFace> of = {obj.faces[0]};
@@ -601,12 +703,9 @@ std::vector<Mesh*> ObjMapModel::generateLod(
             }
 
             // Triangulate the polygon
-            struct Triange {
-                std::vector<glm::vec2> points;
-                glm::vec2 tex[3];
-            };
 
-            std::vector<Triange> triangles;
+
+            std::vector<Triangle> triangles;
             std::vector<uint32_t> poly_ccw_idx;
             glm::vec2 poly_center = {0, 0};
             poly_center.x = (poly_min.x + poly_max.x) / 2;
@@ -630,7 +729,7 @@ std::vector<Mesh*> ObjMapModel::generateLod(
             );
 
             for (uint32_t i = 2; i < poly_ccw_idx.size(); i++) {
-                Triange t;
+                Triangle t;
                 t.points.push_back(poly[poly_ccw_idx[0]]);
                 t.points.push_back(poly[poly_ccw_idx[i - 1]]);
                 t.points.push_back(poly[poly_ccw_idx[i]]);
@@ -638,6 +737,10 @@ std::vector<Mesh*> ObjMapModel::generateLod(
                 t.tex[0] = tex_coords[face.tex_indices[poly_ccw_idx[0]]];
                 t.tex[1] = tex_coords[face.tex_indices[poly_ccw_idx[i - 1]]];
                 t.tex[2] = tex_coords[face.tex_indices[poly_ccw_idx[i]]];
+
+                t.light_tex[0] = face.light_tex[poly_ccw_idx[0]];
+                t.light_tex[1] = face.light_tex[poly_ccw_idx[i - 1]];
+                t.light_tex[2] = face.light_tex[poly_ccw_idx[i]];
 
                 triangles.push_back(t);
             }
@@ -780,59 +883,35 @@ std::vector<Mesh*> ObjMapModel::generateLod(
                     );
 
                     for (uint32_t i = 2; i < cell.size(); ++i) {
-                        mesh_indicies.push_back(mesh_vertices.size() / 3 + cell[0]);
-                        mesh_indicies.push_back(mesh_vertices.size() / 3 + cell[i - 1]);
-                        mesh_indicies.push_back(mesh_vertices.size() / 3 + cell[i]);
-                    }
-                }
-            }
-
-            uint32_t i = 0;
-            for (const auto& p: grid) {
-                glm::vec3 a = {p.x, p.y, KEY};
-                glm::vec3 new_a = T_inv * a;
-                mesh_vertices.push_back(new_a.x);
-                mesh_vertices.push_back(new_a.y);
-                mesh_vertices.push_back(new_a.z);
-
-                mesh_normals.push_back(face.normal[0]);
-                mesh_normals.push_back(face.normal[1]);
-                mesh_normals.push_back(face.normal[2]);
-
-                // UV generation
-                for (const auto& t: triangles) {
-                    if (isPointInTriangle(p, t.points) or isPointOnTriangleEdge(p, t.points)) {
-                        glm::vec3 bary_coords = ComputeBarycentricCoordinates(
-                                p, t.points[0], t.points[1], t.points[2]
+                        mesh_indicies.push_back(mesh_vertices.size() / 3);
+                        glm::vec3 a = {grid[cell[0]].x, grid[cell[0]].y, KEY};
+                        glm::vec3 new_a = T_inv * a;
+                        add_vertex_and_uvs(
+                                new_a, {a.x, a.y}, triangles, mesh_vertices, mesh_UVs,
+                                mesh_lightmap_UVs
                         );
 
-                        glm::vec2 uv = bary_coords.x * t.tex[0] + bary_coords.y * t.tex[1] +
-                                       bary_coords.z * t.tex[2];
+                        mesh_indicies.push_back(mesh_vertices.size() / 3);
+                        a = {grid[cell[i - 1]].x, grid[cell[i - 1]].y, KEY};
+                        new_a = T_inv * a;
+                        add_vertex_and_uvs(
+                                new_a, {a.x, a.y}, triangles, mesh_vertices, mesh_UVs,
+                                mesh_lightmap_UVs
+                        );
 
-                        mesh_UVs.push_back(uv.x);
-                        mesh_UVs.push_back(uv.y);
-                        break;
-                    }
+                        mesh_indicies.push_back(mesh_vertices.size() / 3);
+                        a = {grid[cell[i]].x, grid[cell[i]].y, KEY};
+                        new_a = T_inv * a;
+                        add_vertex_and_uvs(
+                                new_a, {a.x, a.y}, triangles, mesh_vertices, mesh_UVs,
+                                mesh_lightmap_UVs
+                        );
 
-                    bool on_p0 = std::abs(p.x - t.points[0].x) < 0.01f and
-                                 std::abs(p.y - t.points[0].y) < 0.01f;
-                    bool on_p1 = std::abs(p.x - t.points[1].x) < 0.01f and
-                                 std::abs(p.y - t.points[1].y) < 0.01f;
-                    bool on_p2 = std::abs(p.x - t.points[2].x) < 0.01f and
-                                 std::abs(p.y - t.points[2].y) < 0.01f;
-
-                    if (on_p0 or on_p1 or on_p2) {
-                        if (on_p0) {
-                            mesh_UVs.push_back(t.tex[0].x);
-                            mesh_UVs.push_back(t.tex[0].y);
-                        } else if (on_p1) {
-                            mesh_UVs.push_back(t.tex[1].x);
-                            mesh_UVs.push_back(t.tex[1].y);
-                        } else {
-                            mesh_UVs.push_back(t.tex[2].x);
-                            mesh_UVs.push_back(t.tex[2].y);
+                        for (uint32_t i = 0; i < 3; i++) {
+                            mesh_normals.push_back(face.normal[0]);
+                            mesh_normals.push_back(face.normal[1]);
+                            mesh_normals.push_back(face.normal[2]);
                         }
-                        break;
                     }
                 }
             }
@@ -869,10 +948,15 @@ std::vector<Mesh*> ObjMapModel::generateLod(
         mesh->setName(obj.name);
         mesh->setPosition(center);
         mesh->setUV(mesh_UVs);
+        mesh->setLightUV(mesh_lightmap_UVs);
         bindObj(mesh);
 
         if (obj.material != "" and this->materials.count(obj.material) > 0) {
             mesh->setTexture(&this->textures[this->materials[obj.material].texture_id]);
+        }
+
+        if (heluv.count(obj.name)) {
+            mesh->setLightTexture(heluv[obj.name].texture);
         }
         //  mesh->disableLightShading();
 

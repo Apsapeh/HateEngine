@@ -1,6 +1,7 @@
 #pragma once
 #include <cstddef>
 #include <string>
+#include <sys/types.h>
 #include <unordered_map>
 #include "../Objects/Model.hpp"
 #include "../Objects/Physics/ConvexShape.hpp"
@@ -10,6 +11,7 @@
 #include "../Objects/GLTFAnimationPlayer.hpp"
 
 #include "../Objects/Particles.hpp"
+#include "HateEngine/Resources/Texture.hpp"
 #include "glm/fwd.hpp"
 
 namespace HateEngine {
@@ -52,6 +54,7 @@ namespace HateEngine {
             std::vector<int32_t> indices;
             glm::vec3 normal = {0.0f, 0.0f, 0.0f};
             std::vector<int32_t> tex_indices;
+            std::vector<glm::vec2> light_tex;
         };
 
         struct ObjObject {
@@ -59,6 +62,13 @@ namespace HateEngine {
             std::string material = "";
             std::vector<ObjFace> faces;
         };
+
+        struct HeluvObj {
+            std::vector<std::vector<glm::vec2>> uv;
+            Texture* texture;
+        };
+
+        void parseHeluv(std::vector<uint8_t>& data);
 
         void parseObj(
                 std::string data, float grid_size, float lod_dist, float lod_step,
@@ -80,6 +90,8 @@ namespace HateEngine {
         std::string obj_file_name;
         std::string map_file_name;
         std::string obj_file_path;
+        std::string heluv_file_path;
+        std::unordered_map<std::string, HeluvObj> heluv;
         std::unordered_map<std::string, Material> materials;
         std::vector<Entity> entities;
         void* entities_data = nullptr;
@@ -104,7 +116,8 @@ namespace HateEngine {
          * @param str File name
          */
         ObjMapModel(
-                std::string obj_file_name, std::string map_file_name, float grid_size = 16.0f,
+                std::string obj_file_name, std::string map_file_name,
+                std::string lightmap_file_name, float grid_size = 16.0f,
                 bool generate_collision = true, float lod_dist = 15, float lod_step = 1.0
         );
 

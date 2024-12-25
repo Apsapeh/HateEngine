@@ -7,6 +7,7 @@ std::mutex UUID::mutex;
 
 UUID::UUID() {
     // FIXME: Почему-то мьютексы не работают на винде с мсвц 15
+    // Я дебил, проблема не в винде, а во мне, просто не успевает создаться мьютекс
     // std::lock_guard<std::mutex> guard(this->mutex);
     this->id = counter++;
 }

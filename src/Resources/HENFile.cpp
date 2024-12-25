@@ -10,6 +10,7 @@ HENFile::HENFile(std::string path) {
     std::ifstream file(path, std::ios::binary);
     if (!file.is_open()) {
         HATE_ERROR_F("Error: Could not open file: %s", path.c_str());
+        return;
     }
 
     this->load(

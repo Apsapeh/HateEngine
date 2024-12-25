@@ -153,7 +153,7 @@ int main() {
 
     // sun.setPosition({1.0, 1.0, 1.0});
     sun.rotate(-45, 45, 0);
-    sun.setVisible(true);
+    sun.setVisible(false);
 
     mesh2.setPosition(3, 3, 3);
 
@@ -354,7 +354,8 @@ int main() {
     );*/
 
     HateEngine::ObjMapModel objmodel(
-            "examples/Assets/Ignore/E1M1.obj", "examples/Assets/Ignore/E1M1.map", 16.0, true, 15, 1
+            "examples/Assets/Ignore/E1M1.obj", "examples/Assets/Ignore/E1M1.map",
+            "examples/Assets/ignore/E1M1/light.heluv", 16.0, true, 15, 1
     );
     objmodel.deserializeEntities(
             {{"light",
@@ -369,10 +370,10 @@ int main() {
                   lights->push_back(light);
 
                   HateEngine::CubeMesh* cube = new HateEngine::CubeMesh();
-                  // cube->setSize(0.1, 0.1, 0.1);
+                  cube->setSize(0.1, 0.1, 0.1);
                   cube->setPosition(entity.position);
                   model->bindObj(cube);
-                  // model->addEntityObjectToLevel(cube);
+                  model->addEntityObjectToLevel(cube);
               }}},
             new std::vector<HateEngine::OmniLight*>,
             [](void* data) {
@@ -386,8 +387,8 @@ int main() {
 
 
     // HateEngine::HENFile henfile("examples/Assets/Ignore/E1M1.hen");
-    HateEngine::HENFile henfile = herfile["E1M1.hen"].asHENFile();
-    const auto* nodes = henfile.getNodes();
+    // HateEngine::HENFile henfile = herfile["E1M1.hen"].asHENFile();
+    // const auto* nodes = henfile.getNodes();
 
 
     // objmodel.setScale(0.0625, 0.0625, 0.0625);
@@ -453,7 +454,8 @@ int main() {
 
     for (int i = 0; i < objmodel.getLODCount(); i++) {
         for (auto& lod: objmodel.getLOD(i)) {
-            lod->setVisible(enabled.count(lod->getName()));
+            lod->setTexture(&bri);
+            // lod->setVisible(enabled.count(lod->getName()));
         }
     }
 
@@ -592,6 +594,31 @@ int main() {
     cube_part_ptr = &cube_part;
     lvl.addObjectRef(&cube_part);
 
+
+    HateEngine::ObjMapModel lightmap_model(
+            "examples/Assets/lightmap/example.obj", "", "examples/Assets/lightmap/light.heluv", 1.0,
+            true, 15, 1
+    );
+    lvl.addObjectRef(&lightmap_model);
+
+    HateEngine::Texture cube3_lightmap(
+            "examples/Assets/lightmap/4.png", HateEngine::Texture::Repeat,
+            HateEngine::Texture::Linear
+    );
+    for (auto& m: lightmap_model.getLOD(0)) {
+        if (m->getName() == "Cube.004") {
+            // m->setTexture(&bri);
+            m->setLightTexture(&cube3_lightmap);
+            std::cout << m->getVertices()->size() << "\n";
+            std::cout << m->getLightUV()->size() << "\n";
+            std::cout << m->getUV()->size() << "\n";
+        }
+        m->setTexture(&bri);
+        // m->setLightTexture(&cube3_lightmap);
+        // std::cout << m->getLightUV()->size() << "\n";
+    }
+
+
     /*cube_part.setPosition(0, 3, 0);
     cube_part.pause = true;*/
     // std::cout << part->getPosition().z << "\n";
@@ -660,7 +687,6 @@ int main() {
     fps_widget.is_movable = false;
     fps_widget.is_closable = false;
 
-    // FIXME: Crash if the font is not loaded
     HateEngine::UIFont* f = new HateEngine::UIFont("examples/Assets/Comfortaa-Regular.ttf", 36);
     HateEngine::UIFont* f_2 = new HateEngine::UIFont("examples/Assets/NanumGothic-Regular.ttf", 12);
 

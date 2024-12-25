@@ -167,8 +167,6 @@ static void Load(tgModel& model, std::vector<Mesh*>* meshes, std::vector<Texture
                 }
             }
 
-            // TODO: Add scale, rotation, translation
-
             // std::cout << "LOAD\n";
 
             // =====> Set Mesh Properties <=====

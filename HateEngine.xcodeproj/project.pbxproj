@@ -1,0 +1,1658 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 54;
+	objects = {
+
+/* Begin PBXAggregateTarget section */
+		731824BAC09B4174AC930371 /* ZERO_CHECK */ = {
+			isa = PBXAggregateTarget;
+			buildConfigurationList = 3BF0EA6140A841BCA1722110 /* Build configuration list for PBXAggregateTarget "ZERO_CHECK" */;
+			buildPhases = (
+				6E28329BBC57190DE76CC4CE /* Generate CMakeFiles/ZERO_CHECK */,
+			);
+			dependencies = (
+			);
+			name = ZERO_CHECK;
+			productName = ZERO_CHECK;
+		};
+		A5938A3D58AC4D49A1ECC1AD /* ALL_BUILD */ = {
+			isa = PBXAggregateTarget;
+			buildConfigurationList = F6602F07F72745CAB6FC5E5E /* Build configuration list for PBXAggregateTarget "ALL_BUILD" */;
+			buildPhases = (
+				7CDB93839E39B8DCBF4A9267 /* Generate CMakeFiles/ALL_BUILD */,
+			);
+			dependencies = (
+				DC555730CA9D470F82402CD3 /* PBXTargetDependency */,
+				90B1EF75CD644E4895A1D4E8 /* PBXTargetDependency */,
+				E4B3991600414BF9B5AACD80 /* PBXTargetDependency */,
+			);
+			name = ALL_BUILD;
+			productName = ALL_BUILD;
+		};
+/* End PBXAggregateTarget section */
+
+/* Begin PBXBuildFile section */
+		061CAAB097B842E180B9D2E3 /* HateEngine_Input.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DDC166F3462E4ABB98691968 /* HateEngine_Input.cpp */; };
+		08E00FCD20F742A0BA0A4E07 /* CoordsUI.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 52D3A2AAA2EF4E6CA4A87872 /* CoordsUI.cpp */; };
+		0DCE044620C14CFDB55A6A4E /* TriggerArea.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C6C04F5996344A0393C5B967 /* TriggerArea.cpp */; };
+		10CCE35A60D5432194D7970B /* Texture.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8130A4CA2F784C828FA39E93 /* Texture.cpp */; };
+		14C3A2A3A6974992B4A46787 /* PhysicalBody.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F55A2337C61C4AB0A0940976 /* PhysicalBody.cpp */; };
+		14F93CEBCFED4F38911E979A /* ObjMapModel.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F9A54B5759CB4AD18ABF12DF /* ObjMapModel.cpp */; };
+		18BD6B2546EA46B694AA76CC /* AudioServer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8B87B6B252BF4CBCB36BE9FB /* AudioServer.cpp */; };
+		1B8EF4F72BEA44F289B9EE07 /* HERFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E994A8AE403449A7B58EA3C4 /* HERFile.cpp */; };
+		25F42652DA704C858DDC366F /* SphereShape.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 17329140E02346BCAF7E6F78 /* SphereShape.cpp */; };
+		2C6CF913484049E6A6858D97 /* GLTFAnimationPlayer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1B8ED2D8809240D3B746ED45 /* GLTFAnimationPlayer.cpp */; };
+		2DF8F7D204494A55BF7B7C73 /* Object.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BFB80792F0584A51A2BB53BC /* Object.cpp */; };
+		3036B624786B45CC92816D4C /* ImageUI.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 942884511492411EBEB9FDE3 /* ImageUI.cpp */; };
+		31B4FC85B8604F7BB654C6C2 /* engine_test_main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F76A88A05941441ABF67AD59 /* engine_test_main.cpp */; };
+		3B080C7E1AD84E479D7E7B51 /* PhysEngine.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B32C6328211B4059A2563390 /* PhysEngine.cpp */; };
+		3E2B86320B404C58855FAE26 /* UUID.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7DB156D7F14E408A8D1B4EC2 /* UUID.cpp */; };
+		473C2A2B7D1948229A3871CA /* BillboardMesh.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 59DE68B38FB44B9BB0491120 /* BillboardMesh.cpp */; };
+		4883AA5487204831B3571533 /* CollisionShape.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BF97378A6FA14033BAB52CA3 /* CollisionShape.cpp */; };
+		4A8EB40A37C84998B0AB6BF9 /* Level.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C8A72C8C8FA1457793FA3B52 /* Level.cpp */; };
+		4CF530EEC224462DBD66EA57 /* AudioPlayer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6BC3AC12EF604E66A874B6D5 /* AudioPlayer.cpp */; };
+		4F97880E5F6B4B289ABF0214 /* Decal.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 930E464EBEED44E5991ECDB4 /* Decal.cpp */; };
+		586589D2EE7448E9ACD733E5 /* UIFont.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 771EAE9A6F104843BE6858B9 /* UIFont.cpp */; };
+		6431C6192DC6480CA0D6A9F7 /* Audio.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A3E8A47EDD3147D4A67E17F1 /* Audio.cpp */; };
+		6F4ABE4B7B894E35B5FBFF53 /* StaticBody.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D65F79D906324D6FBDE48419 /* StaticBody.cpp */; };
+		7095C5BA49144DE589A3BF43 /* HateEngine.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2FF8753DCDE049DCBE24DBDC /* HateEngine.cpp */; };
+		77FA1BE4F6C342AFA4EBCEC5 /* OmniLight.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 67E497661D564470B0CACD18 /* OmniLight.cpp */; };
+		798AF8864A0A433980C3E50B /* DirectionalLight.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7612624012B24DD09C77F1E2 /* DirectionalLight.cpp */; };
+		7E15492669634E47832E2D65 /* BoxShape.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9D029D02BCC94996B2726633 /* BoxShape.cpp */; };
+		89CA3DABB09346A7AC19B11F /* AudioBus.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 80B0CF9E2CC342379507BBDC /* AudioBus.cpp */; };
+		8A890B6F1C9940D98B818FE3 /* blowfish.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 49F0C6D6F42B4690BF653A26 /* blowfish.cpp */; };
+		8C6CBA28A0974257A42EFA98 /* gl.c in Sources */ = {isa = PBXBuildFile; fileRef = 900DFB409C2547D2B6E58D2B /* gl.c */; };
+		934301D9EB474A97B2BCECAC /* ObjectUI.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2141646E3DF6479085DAC8BB /* ObjectUI.cpp */; };
+		940B88B24CEC43709A53FAC9 /* OpenGL15.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3766F05C6FDA4AA98BD26571 /* OpenGL15.cpp */; };
+		9E6B4D1346844CAB85573048 /* RigidBody.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D785C57BF13D45718FA17B70 /* RigidBody.cpp */; };
+		A0583EE7F2ED4D018D4F2986 /* SpotLight.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 26DC7CC3799A4708BCDE413F /* SpotLight.cpp */; };
+		A5AAB4C8A1F74A28AFD26ADA /* AudioStream.cpp in Sources */ = {isa = PBXBuildFile; fileRef = ECD7A0512D7742898F69131E /* AudioStream.cpp */; };
+		A5BA80018C60462EA204EE02 /* GLTFModel.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2526F24D8FFF4B8397D750A2 /* GLTFModel.cpp */; };
+		BA6C713A5F6B45169700CDD0 /* WidgetUI.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E48DDA11F2DA4EB08B70E633 /* WidgetUI.cpp */; };
+		BB494CBFC17145838E2C744A /* ButtonUI.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D339B237EA2A4018B4C557C5 /* ButtonUI.cpp */; };
+		BD4F505BD6C545B685018465 /* CheckboxUI.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1FAFFB0277C04B11965CBB71 /* CheckboxUI.cpp */; };
+		C1045518A20A471FB525A82D /* HENFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AC001D5635F4477A89B604CD /* HENFile.cpp */; };
+		C2519F0A8E0742E6B01DF97D /* Light.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 54716B9CC3624E929DB112F1 /* Light.cpp */; };
+		C743AD1194DF44E0A760C767 /* Model.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6450ECA057EE4EE89497B322 /* Model.cpp */; };
+		C7A67395A9554E998405714C /* LabelUI.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9896874A63A144E894450E5A /* LabelUI.cpp */; };
+		C92292B11B6C4F3C819A94A4 /* CapsuleShape.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F001670B803E4512B16C3384 /* CapsuleShape.cpp */; };
+		D081E86532404F3C953132F6 /* Log.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 87E4E4D567E6434B93AC7FF2 /* Log.cpp */; };
+		D5C86E6B4FE54E6BAC4E1ABD /* RayCast.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 88861A0DABAC4E09ADABB28D /* RayCast.cpp */; };
+		DAFDAB876EE248A5A85137F1 /* ConvexShape.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9C80D9CA88A24250AAC5BF19 /* ConvexShape.cpp */; };
+		EA4DBF547E58402AB78C560B /* Mesh.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A3E7D3B009D54327899B36BB /* Mesh.cpp */; };
+		EAB924DAFD0F4692A622A404 /* CubeMesh.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9FBA3E6C8A5043D99160F9DD /* CubeMesh.cpp */; };
+		F701656D5F834D80AC355C1F /* Camera.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D1A74FBA433848F180EA121B /* Camera.cpp */; };
+		FCD3FD093533482480997642 /* Particles.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 90252E0A42394B8CA0310755 /* Particles.cpp */; };
+		FEC6A3512C6C42858F39CEE8 /* OpenGL15_NuklearUI.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D79A1192B04844F7AEC027BE /* OpenGL15_NuklearUI.cpp */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		07826B246BEF497CA778506A /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 4FA44D72C7764CA4B38ED1F4 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 5879DF091EBF45B8BA390E19;
+			remoteInfo = Example_1;
+		};
+		084F174144CB46BABE9E6E6B /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 4FA44D72C7764CA4B38ED1F4 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 731824BAC09B4174AC930371;
+			remoteInfo = ZERO_CHECK;
+		};
+		3287E23A133F434C83CA2C52 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 4FA44D72C7764CA4B38ED1F4 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = B52D452054D64B958195ADD9;
+			remoteInfo = HateEngine;
+		};
+		7F23CD505205456A80A26303 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 4FA44D72C7764CA4B38ED1F4 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 731824BAC09B4174AC930371;
+			remoteInfo = ZERO_CHECK;
+		};
+		93165303D2CE4B57A7B3D494 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 4FA44D72C7764CA4B38ED1F4 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 731824BAC09B4174AC930371;
+			remoteInfo = ZERO_CHECK;
+		};
+		C7C4F8D7A8304073826257AA /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 4FA44D72C7764CA4B38ED1F4 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = B52D452054D64B958195ADD9;
+			remoteInfo = HateEngine;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		1676A2C6EFC047DAAA07D7A6 /* libHateEngine.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = libHateEngine.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		17329140E02346BCAF7E6F78 /* SphereShape.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 4; name = SphereShape.cpp; path = src/Objects/Physics/SphereShape.cpp; sourceTree = SOURCE_ROOT; };
+		1B8ED2D8809240D3B746ED45 /* GLTFAnimationPlayer.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 4; name = GLTFAnimationPlayer.cpp; path = src/Objects/GLTFAnimationPlayer.cpp; sourceTree = SOURCE_ROOT; };
+		1FAFFB0277C04B11965CBB71 /* CheckboxUI.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 4; name = CheckboxUI.cpp; path = src/UI/CheckboxUI.cpp; sourceTree = SOURCE_ROOT; };
+		2141646E3DF6479085DAC8BB /* ObjectUI.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 4; name = ObjectUI.cpp; path = src/UI/ObjectUI.cpp; sourceTree = SOURCE_ROOT; };
+		2526F24D8FFF4B8397D750A2 /* GLTFModel.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 4; name = GLTFModel.cpp; path = src/Resources/GLTFModel.cpp; sourceTree = SOURCE_ROOT; };
+		26DC7CC3799A4708BCDE413F /* SpotLight.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 4; name = SpotLight.cpp; path = src/Objects/Light/SpotLight.cpp; sourceTree = SOURCE_ROOT; };
+		2FF8753DCDE049DCBE24DBDC /* HateEngine.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 4; name = HateEngine.cpp; path = src/HateEngine.cpp; sourceTree = SOURCE_ROOT; };
+		3766F05C6FDA4AA98BD26571 /* OpenGL15.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 4; name = OpenGL15.cpp; path = src/Render/OpenGL15.cpp; sourceTree = SOURCE_ROOT; };
+		49F0C6D6F42B4690BF653A26 /* blowfish.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 4; name = blowfish.cpp; path = deps/blowfish/blowfish.cpp; sourceTree = SOURCE_ROOT; };
+		52D3A2AAA2EF4E6CA4A87872 /* CoordsUI.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 4; name = CoordsUI.cpp; path = src/UI/CoordsUI.cpp; sourceTree = SOURCE_ROOT; };
+		54716B9CC3624E929DB112F1 /* Light.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 4; name = Light.cpp; path = src/Objects/Light/Light.cpp; sourceTree = SOURCE_ROOT; };
+		59DE68B38FB44B9BB0491120 /* BillboardMesh.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 4; name = BillboardMesh.cpp; path = src/Objects/BillboardMesh.cpp; sourceTree = SOURCE_ROOT; };
+		6450ECA057EE4EE89497B322 /* Model.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 4; name = Model.cpp; path = src/Objects/Model.cpp; sourceTree = SOURCE_ROOT; };
+		67E497661D564470B0CACD18 /* OmniLight.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 4; name = OmniLight.cpp; path = src/Objects/Light/OmniLight.cpp; sourceTree = SOURCE_ROOT; };
+		6BC3AC12EF604E66A874B6D5 /* AudioPlayer.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 4; name = AudioPlayer.cpp; path = src/Objects/AudioPlayer.cpp; sourceTree = SOURCE_ROOT; };
+		7612624012B24DD09C77F1E2 /* DirectionalLight.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 4; name = DirectionalLight.cpp; path = src/Objects/Light/DirectionalLight.cpp; sourceTree = SOURCE_ROOT; };
+		771EAE9A6F104843BE6858B9 /* UIFont.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 4; name = UIFont.cpp; path = src/Resources/UIFont.cpp; sourceTree = SOURCE_ROOT; };
+		7DB156D7F14E408A8D1B4EC2 /* UUID.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 4; name = UUID.cpp; path = src/Utilities/UUID.cpp; sourceTree = SOURCE_ROOT; };
+		7DCF16D2E3544EB0B89C5905 /* Example_1 */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; path = Example_1; sourceTree = BUILT_PRODUCTS_DIR; };
+		80B0CF9E2CC342379507BBDC /* AudioBus.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 4; name = AudioBus.cpp; path = src/Objects/AudioBus.cpp; sourceTree = SOURCE_ROOT; };
+		8130A4CA2F784C828FA39E93 /* Texture.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 4; name = Texture.cpp; path = src/Resources/Texture.cpp; sourceTree = SOURCE_ROOT; };
+		87E4E4D567E6434B93AC7FF2 /* Log.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 4; name = Log.cpp; path = src/Log.cpp; sourceTree = SOURCE_ROOT; };
+		88861A0DABAC4E09ADABB28D /* RayCast.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 4; name = RayCast.cpp; path = src/Objects/Physics/RayCast.cpp; sourceTree = SOURCE_ROOT; };
+		8B87B6B252BF4CBCB36BE9FB /* AudioServer.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 4; name = AudioServer.cpp; path = src/AudioServer.cpp; sourceTree = SOURCE_ROOT; };
+		900DFB409C2547D2B6E58D2B /* gl.c */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.c; fileEncoding = 4; name = gl.c; path = lib/gl/gl.c; sourceTree = SOURCE_ROOT; };
+		90252E0A42394B8CA0310755 /* Particles.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 4; name = Particles.cpp; path = src/Objects/Particles.cpp; sourceTree = SOURCE_ROOT; };
+		930E464EBEED44E5991ECDB4 /* Decal.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 4; name = Decal.cpp; path = src/Objects/Decal.cpp; sourceTree = SOURCE_ROOT; };
+		942884511492411EBEB9FDE3 /* ImageUI.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 4; name = ImageUI.cpp; path = src/UI/ImageUI.cpp; sourceTree = SOURCE_ROOT; };
+		976F35373B1640A0B739CCDC /* CMakeLists.txt */ = {isa = PBXFileReference; explicitFileType = sourcecode.text; fileEncoding = 4; lastKnownFileType = text; path = CMakeLists.txt; sourceTree = SOURCE_ROOT; };
+		9896874A63A144E894450E5A /* LabelUI.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 4; name = LabelUI.cpp; path = src/UI/LabelUI.cpp; sourceTree = SOURCE_ROOT; };
+		9C80D9CA88A24250AAC5BF19 /* ConvexShape.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 4; name = ConvexShape.cpp; path = src/Objects/Physics/ConvexShape.cpp; sourceTree = SOURCE_ROOT; };
+		9D029D02BCC94996B2726633 /* BoxShape.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 4; name = BoxShape.cpp; path = src/Objects/Physics/BoxShape.cpp; sourceTree = SOURCE_ROOT; };
+		9FBA3E6C8A5043D99160F9DD /* CubeMesh.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 4; name = CubeMesh.cpp; path = src/Objects/CubeMesh.cpp; sourceTree = SOURCE_ROOT; };
+		A3E7D3B009D54327899B36BB /* Mesh.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 4; name = Mesh.cpp; path = src/Objects/Mesh.cpp; sourceTree = SOURCE_ROOT; };
+		A3E8A47EDD3147D4A67E17F1 /* Audio.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 4; name = Audio.cpp; path = src/Resources/Audio.cpp; sourceTree = SOURCE_ROOT; };
+		AC001D5635F4477A89B604CD /* HENFile.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 4; name = HENFile.cpp; path = src/Resources/HENFile.cpp; sourceTree = SOURCE_ROOT; };
+		B32C6328211B4059A2563390 /* PhysEngine.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 4; name = PhysEngine.cpp; path = src/PhysEngine.cpp; sourceTree = SOURCE_ROOT; };
+		BCB5ECAFD04344CC97250C73 /* CMakeLists.txt */ = {isa = PBXFileReference; explicitFileType = sourcecode.text; fileEncoding = 4; lastKnownFileType = text; path = CMakeLists.txt; sourceTree = SOURCE_ROOT; };
+		BF97378A6FA14033BAB52CA3 /* CollisionShape.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 4; name = CollisionShape.cpp; path = src/Objects/Physics/CollisionShape.cpp; sourceTree = SOURCE_ROOT; };
+		BFB80792F0584A51A2BB53BC /* Object.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 4; name = Object.cpp; path = src/Objects/Object.cpp; sourceTree = SOURCE_ROOT; };
+		C6C04F5996344A0393C5B967 /* TriggerArea.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 4; name = TriggerArea.cpp; path = src/Objects/Physics/TriggerArea.cpp; sourceTree = SOURCE_ROOT; };
+		C8A72C8C8FA1457793FA3B52 /* Level.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 4; name = Level.cpp; path = src/Resources/Level.cpp; sourceTree = SOURCE_ROOT; };
+		D1A74FBA433848F180EA121B /* Camera.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 4; name = Camera.cpp; path = src/Objects/Camera.cpp; sourceTree = SOURCE_ROOT; };
+		D339B237EA2A4018B4C557C5 /* ButtonUI.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 4; name = ButtonUI.cpp; path = src/UI/ButtonUI.cpp; sourceTree = SOURCE_ROOT; };
+		D65F79D906324D6FBDE48419 /* StaticBody.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 4; name = StaticBody.cpp; path = src/Objects/Physics/StaticBody.cpp; sourceTree = SOURCE_ROOT; };
+		D785C57BF13D45718FA17B70 /* RigidBody.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 4; name = RigidBody.cpp; path = src/Objects/Physics/RigidBody.cpp; sourceTree = SOURCE_ROOT; };
+		D79A1192B04844F7AEC027BE /* OpenGL15_NuklearUI.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 4; name = OpenGL15_NuklearUI.cpp; path = src/Render/OpenGL15_NuklearUI.cpp; sourceTree = SOURCE_ROOT; };
+		DDC166F3462E4ABB98691968 /* HateEngine_Input.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 4; name = HateEngine_Input.cpp; path = src/HateEngine_Input.cpp; sourceTree = SOURCE_ROOT; };
+		E48DDA11F2DA4EB08B70E633 /* WidgetUI.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 4; name = WidgetUI.cpp; path = src/UI/WidgetUI.cpp; sourceTree = SOURCE_ROOT; };
+		E4AF1783A2E14E999C99C982 /* CMakeLists.txt */ = {isa = PBXFileReference; explicitFileType = sourcecode.text; fileEncoding = 4; lastKnownFileType = text; path = CMakeLists.txt; sourceTree = SOURCE_ROOT; };
+		E994A8AE403449A7B58EA3C4 /* HERFile.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 4; name = HERFile.cpp; path = src/Resources/HERFile.cpp; sourceTree = SOURCE_ROOT; };
+		ECD7A0512D7742898F69131E /* AudioStream.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 4; name = AudioStream.cpp; path = src/Resources/AudioStream.cpp; sourceTree = SOURCE_ROOT; };
+		F001670B803E4512B16C3384 /* CapsuleShape.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 4; name = CapsuleShape.cpp; path = src/Objects/Physics/CapsuleShape.cpp; sourceTree = SOURCE_ROOT; };
+		F55A2337C61C4AB0A0940976 /* PhysicalBody.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 4; name = PhysicalBody.cpp; path = src/Objects/Physics/PhysicalBody.cpp; sourceTree = SOURCE_ROOT; };
+		F76A88A05941441ABF67AD59 /* engine_test_main.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 4; name = engine_test_main.cpp; path = examples/engine_test_main.cpp; sourceTree = SOURCE_ROOT; };
+		F9A54B5759CB4AD18ABF12DF /* ObjMapModel.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 4; name = ObjMapModel.cpp; path = src/Resources/ObjMapModel.cpp; sourceTree = SOURCE_ROOT; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		285E82D893DB41A2B00EC1E9 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		8716FBB1A6114F72A669094E /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		5517EBBD029E432AB8985F26 /* ALL_BUILD */ = {
+			isa = PBXGroup;
+			children = (
+				734B42B8BC194BA3AE9F3777 /* CMake Rules */,
+				BCB5ECAFD04344CC97250C73 /* CMakeLists.txt */,
+			);
+			name = ALL_BUILD;
+			sourceTree = "<group>";
+		};
+		604D30386696429B8C4FF8AC /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Resources;
+			sourceTree = "<group>";
+		};
+		6DCF5B0193474CC382D39C97 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				7DCF16D2E3544EB0B89C5905 /* Example_1 */,
+				1676A2C6EFC047DAAA07D7A6 /* libHateEngine.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		734B42B8BC194BA3AE9F3777 /* CMake Rules */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = "CMake Rules";
+			sourceTree = "<group>";
+		};
+		7F7067A4C56A4AE9867D2BEC = {
+			isa = PBXGroup;
+			children = (
+				B22498C9A6D148DC8EBA94BC /* Example_1 */,
+				CC73125D48ED436998F1F128 /* HateEngine */,
+				5517EBBD029E432AB8985F26 /* ALL_BUILD */,
+				6DCF5B0193474CC382D39C97 /* Products */,
+				B877952E3D784EA49D33DC40 /* Frameworks */,
+				604D30386696429B8C4FF8AC /* Resources */,
+			);
+			sourceTree = "<group>";
+		};
+		A7F227DDB9864D688C0ADFB4 /* Source Files */ = {
+			isa = PBXGroup;
+			children = (
+				49F0C6D6F42B4690BF653A26 /* blowfish.cpp */,
+				900DFB409C2547D2B6E58D2B /* gl.c */,
+				8B87B6B252BF4CBCB36BE9FB /* AudioServer.cpp */,
+				2FF8753DCDE049DCBE24DBDC /* HateEngine.cpp */,
+				DDC166F3462E4ABB98691968 /* HateEngine_Input.cpp */,
+				87E4E4D567E6434B93AC7FF2 /* Log.cpp */,
+				80B0CF9E2CC342379507BBDC /* AudioBus.cpp */,
+				6BC3AC12EF604E66A874B6D5 /* AudioPlayer.cpp */,
+				59DE68B38FB44B9BB0491120 /* BillboardMesh.cpp */,
+				D1A74FBA433848F180EA121B /* Camera.cpp */,
+				9FBA3E6C8A5043D99160F9DD /* CubeMesh.cpp */,
+				930E464EBEED44E5991ECDB4 /* Decal.cpp */,
+				1B8ED2D8809240D3B746ED45 /* GLTFAnimationPlayer.cpp */,
+				7612624012B24DD09C77F1E2 /* DirectionalLight.cpp */,
+				54716B9CC3624E929DB112F1 /* Light.cpp */,
+				67E497661D564470B0CACD18 /* OmniLight.cpp */,
+				26DC7CC3799A4708BCDE413F /* SpotLight.cpp */,
+				A3E7D3B009D54327899B36BB /* Mesh.cpp */,
+				6450ECA057EE4EE89497B322 /* Model.cpp */,
+				BFB80792F0584A51A2BB53BC /* Object.cpp */,
+				90252E0A42394B8CA0310755 /* Particles.cpp */,
+				9D029D02BCC94996B2726633 /* BoxShape.cpp */,
+				F001670B803E4512B16C3384 /* CapsuleShape.cpp */,
+				BF97378A6FA14033BAB52CA3 /* CollisionShape.cpp */,
+				9C80D9CA88A24250AAC5BF19 /* ConvexShape.cpp */,
+				F55A2337C61C4AB0A0940976 /* PhysicalBody.cpp */,
+				88861A0DABAC4E09ADABB28D /* RayCast.cpp */,
+				D785C57BF13D45718FA17B70 /* RigidBody.cpp */,
+				17329140E02346BCAF7E6F78 /* SphereShape.cpp */,
+				D65F79D906324D6FBDE48419 /* StaticBody.cpp */,
+				C6C04F5996344A0393C5B967 /* TriggerArea.cpp */,
+				B32C6328211B4059A2563390 /* PhysEngine.cpp */,
+				3766F05C6FDA4AA98BD26571 /* OpenGL15.cpp */,
+				D79A1192B04844F7AEC027BE /* OpenGL15_NuklearUI.cpp */,
+				A3E8A47EDD3147D4A67E17F1 /* Audio.cpp */,
+				ECD7A0512D7742898F69131E /* AudioStream.cpp */,
+				2526F24D8FFF4B8397D750A2 /* GLTFModel.cpp */,
+				AC001D5635F4477A89B604CD /* HENFile.cpp */,
+				E994A8AE403449A7B58EA3C4 /* HERFile.cpp */,
+				C8A72C8C8FA1457793FA3B52 /* Level.cpp */,
+				F9A54B5759CB4AD18ABF12DF /* ObjMapModel.cpp */,
+				8130A4CA2F784C828FA39E93 /* Texture.cpp */,
+				771EAE9A6F104843BE6858B9 /* UIFont.cpp */,
+				D339B237EA2A4018B4C557C5 /* ButtonUI.cpp */,
+				1FAFFB0277C04B11965CBB71 /* CheckboxUI.cpp */,
+				52D3A2AAA2EF4E6CA4A87872 /* CoordsUI.cpp */,
+				942884511492411EBEB9FDE3 /* ImageUI.cpp */,
+				9896874A63A144E894450E5A /* LabelUI.cpp */,
+				2141646E3DF6479085DAC8BB /* ObjectUI.cpp */,
+				E48DDA11F2DA4EB08B70E633 /* WidgetUI.cpp */,
+				7DB156D7F14E408A8D1B4EC2 /* UUID.cpp */,
+			);
+			name = "Source Files";
+			sourceTree = "<group>";
+		};
+		B22498C9A6D148DC8EBA94BC /* Example_1 */ = {
+			isa = PBXGroup;
+			children = (
+				FF5CFC86097545EAA9930ADE /* Source Files */,
+				976F35373B1640A0B739CCDC /* CMakeLists.txt */,
+			);
+			name = Example_1;
+			sourceTree = "<group>";
+		};
+		B877952E3D784EA49D33DC40 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		CC73125D48ED436998F1F128 /* HateEngine */ = {
+			isa = PBXGroup;
+			children = (
+				A7F227DDB9864D688C0ADFB4 /* Source Files */,
+				E4AF1783A2E14E999C99C982 /* CMakeLists.txt */,
+			);
+			name = HateEngine;
+			sourceTree = "<group>";
+		};
+		FF5CFC86097545EAA9930ADE /* Source Files */ = {
+			isa = PBXGroup;
+			children = (
+				F76A88A05941441ABF67AD59 /* engine_test_main.cpp */,
+			);
+			name = "Source Files";
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		5879DF091EBF45B8BA390E19 /* Example_1 */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = EF809DA4513F4369829A2CCC /* Build configuration list for PBXNativeTarget "Example_1" */;
+			buildPhases = (
+				DED8360369DD4C1197EA5B24 /* Sources */,
+				285E82D893DB41A2B00EC1E9 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				7B66DC9D9F494988A72D6A7A /* PBXTargetDependency */,
+				CFD235A0957041C18E043F05 /* PBXTargetDependency */,
+			);
+			name = Example_1;
+			productName = Example_1;
+			productReference = 7DCF16D2E3544EB0B89C5905 /* Example_1 */;
+			productType = "com.apple.product-type.tool";
+		};
+		B52D452054D64B958195ADD9 /* HateEngine */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = DB87B9C4811944DD9731E044 /* Build configuration list for PBXNativeTarget "HateEngine" */;
+			buildPhases = (
+				C30481D4C7704F5498919299 /* Sources */,
+				8716FBB1A6114F72A669094E /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				0102DA3768B74ABD85BCDE95 /* PBXTargetDependency */,
+			);
+			name = HateEngine;
+			productName = HateEngine;
+			productReference = 1676A2C6EFC047DAAA07D7A6 /* libHateEngine.a */;
+			productType = "com.apple.product-type.library.static";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		4FA44D72C7764CA4B38ED1F4 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 1620;
+			};
+			buildConfigurationList = 16EC54E427AF4CAB901612D7 /* Build configuration list for PBXProject "HateEngine" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 7F7067A4C56A4AE9867D2BEC;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				A5938A3D58AC4D49A1ECC1AD /* ALL_BUILD */,
+				5879DF091EBF45B8BA390E19 /* Example_1 */,
+				B52D452054D64B958195ADD9 /* HateEngine */,
+				731824BAC09B4174AC930371 /* ZERO_CHECK */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		6E28329BBC57190DE76CC4CE /* Generate CMakeFiles/ZERO_CHECK */ = {
+			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Generate CMakeFiles/ZERO_CHECK";
+			outputPaths = (
+				/Users/ghost/CLionProjects/HateEngine/CMakeFiles/ZERO_CHECK,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "set -e\nif test \"$CONFIGURATION\" = \"Debug\"; then :\n  cd /Users/ghost/CLionProjects/HateEngine\n  make -f /Users/ghost/CLionProjects/HateEngine/CMakeScripts/ReRunCMake.make\nfi\nif test \"$CONFIGURATION\" = \"Release\"; then :\n  cd /Users/ghost/CLionProjects/HateEngine\n  make -f /Users/ghost/CLionProjects/HateEngine/CMakeScripts/ReRunCMake.make\nfi\nif test \"$CONFIGURATION\" = \"MinSizeRel\"; then :\n  cd /Users/ghost/CLionProjects/HateEngine\n  make -f /Users/ghost/CLionProjects/HateEngine/CMakeScripts/ReRunCMake.make\nfi\nif test \"$CONFIGURATION\" = \"RelWithDebInfo\"; then :\n  cd /Users/ghost/CLionProjects/HateEngine\n  make -f /Users/ghost/CLionProjects/HateEngine/CMakeScripts/ReRunCMake.make\nfi\n";
+			showEnvVarsInLog = 0;
+		};
+		7CDB93839E39B8DCBF4A9267 /* Generate CMakeFiles/ALL_BUILD */ = {
+			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Generate CMakeFiles/ALL_BUILD";
+			outputPaths = (
+				/Users/ghost/CLionProjects/HateEngine/CMakeFiles/ALL_BUILD,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "set -e\nif test \"$CONFIGURATION\" = \"Debug\"; then :\n  cd /Users/ghost/CLionProjects/HateEngine\n  echo Build\\ all\\ projects\nfi\nif test \"$CONFIGURATION\" = \"Release\"; then :\n  cd /Users/ghost/CLionProjects/HateEngine\n  echo Build\\ all\\ projects\nfi\nif test \"$CONFIGURATION\" = \"MinSizeRel\"; then :\n  cd /Users/ghost/CLionProjects/HateEngine\n  echo Build\\ all\\ projects\nfi\nif test \"$CONFIGURATION\" = \"RelWithDebInfo\"; then :\n  cd /Users/ghost/CLionProjects/HateEngine\n  echo Build\\ all\\ projects\nfi\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		C30481D4C7704F5498919299 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				8A890B6F1C9940D98B818FE3 /* blowfish.cpp in Sources */,
+				8C6CBA28A0974257A42EFA98 /* gl.c in Sources */,
+				18BD6B2546EA46B694AA76CC /* AudioServer.cpp in Sources */,
+				7095C5BA49144DE589A3BF43 /* HateEngine.cpp in Sources */,
+				061CAAB097B842E180B9D2E3 /* HateEngine_Input.cpp in Sources */,
+				D081E86532404F3C953132F6 /* Log.cpp in Sources */,
+				89CA3DABB09346A7AC19B11F /* AudioBus.cpp in Sources */,
+				4CF530EEC224462DBD66EA57 /* AudioPlayer.cpp in Sources */,
+				473C2A2B7D1948229A3871CA /* BillboardMesh.cpp in Sources */,
+				F701656D5F834D80AC355C1F /* Camera.cpp in Sources */,
+				EAB924DAFD0F4692A622A404 /* CubeMesh.cpp in Sources */,
+				4F97880E5F6B4B289ABF0214 /* Decal.cpp in Sources */,
+				2C6CF913484049E6A6858D97 /* GLTFAnimationPlayer.cpp in Sources */,
+				798AF8864A0A433980C3E50B /* DirectionalLight.cpp in Sources */,
+				C2519F0A8E0742E6B01DF97D /* Light.cpp in Sources */,
+				77FA1BE4F6C342AFA4EBCEC5 /* OmniLight.cpp in Sources */,
+				A0583EE7F2ED4D018D4F2986 /* SpotLight.cpp in Sources */,
+				EA4DBF547E58402AB78C560B /* Mesh.cpp in Sources */,
+				C743AD1194DF44E0A760C767 /* Model.cpp in Sources */,
+				2DF8F7D204494A55BF7B7C73 /* Object.cpp in Sources */,
+				FCD3FD093533482480997642 /* Particles.cpp in Sources */,
+				7E15492669634E47832E2D65 /* BoxShape.cpp in Sources */,
+				C92292B11B6C4F3C819A94A4 /* CapsuleShape.cpp in Sources */,
+				4883AA5487204831B3571533 /* CollisionShape.cpp in Sources */,
+				DAFDAB876EE248A5A85137F1 /* ConvexShape.cpp in Sources */,
+				14C3A2A3A6974992B4A46787 /* PhysicalBody.cpp in Sources */,
+				D5C86E6B4FE54E6BAC4E1ABD /* RayCast.cpp in Sources */,
+				9E6B4D1346844CAB85573048 /* RigidBody.cpp in Sources */,
+				25F42652DA704C858DDC366F /* SphereShape.cpp in Sources */,
+				6F4ABE4B7B894E35B5FBFF53 /* StaticBody.cpp in Sources */,
+				0DCE044620C14CFDB55A6A4E /* TriggerArea.cpp in Sources */,
+				3B080C7E1AD84E479D7E7B51 /* PhysEngine.cpp in Sources */,
+				940B88B24CEC43709A53FAC9 /* OpenGL15.cpp in Sources */,
+				FEC6A3512C6C42858F39CEE8 /* OpenGL15_NuklearUI.cpp in Sources */,
+				6431C6192DC6480CA0D6A9F7 /* Audio.cpp in Sources */,
+				A5AAB4C8A1F74A28AFD26ADA /* AudioStream.cpp in Sources */,
+				A5BA80018C60462EA204EE02 /* GLTFModel.cpp in Sources */,
+				C1045518A20A471FB525A82D /* HENFile.cpp in Sources */,
+				1B8EF4F72BEA44F289B9EE07 /* HERFile.cpp in Sources */,
+				4A8EB40A37C84998B0AB6BF9 /* Level.cpp in Sources */,
+				14F93CEBCFED4F38911E979A /* ObjMapModel.cpp in Sources */,
+				10CCE35A60D5432194D7970B /* Texture.cpp in Sources */,
+				586589D2EE7448E9ACD733E5 /* UIFont.cpp in Sources */,
+				BB494CBFC17145838E2C744A /* ButtonUI.cpp in Sources */,
+				BD4F505BD6C545B685018465 /* CheckboxUI.cpp in Sources */,
+				08E00FCD20F742A0BA0A4E07 /* CoordsUI.cpp in Sources */,
+				3036B624786B45CC92816D4C /* ImageUI.cpp in Sources */,
+				C7A67395A9554E998405714C /* LabelUI.cpp in Sources */,
+				934301D9EB474A97B2BCECAC /* ObjectUI.cpp in Sources */,
+				BA6C713A5F6B45169700CDD0 /* WidgetUI.cpp in Sources */,
+				3E2B86320B404C58855FAE26 /* UUID.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		DED8360369DD4C1197EA5B24 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				31B4FC85B8604F7BB654C6C2 /* engine_test_main.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		0102DA3768B74ABD85BCDE95 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 731824BAC09B4174AC930371 /* ZERO_CHECK */;
+			targetProxy = 084F174144CB46BABE9E6E6B /* PBXContainerItemProxy */;
+		};
+		7B66DC9D9F494988A72D6A7A /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 731824BAC09B4174AC930371 /* ZERO_CHECK */;
+			targetProxy = 7F23CD505205456A80A26303 /* PBXContainerItemProxy */;
+		};
+		90B1EF75CD644E4895A1D4E8 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 5879DF091EBF45B8BA390E19 /* Example_1 */;
+			targetProxy = 07826B246BEF497CA778506A /* PBXContainerItemProxy */;
+		};
+		CFD235A0957041C18E043F05 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = B52D452054D64B958195ADD9 /* HateEngine */;
+			targetProxy = 3287E23A133F434C83CA2C52 /* PBXContainerItemProxy */;
+		};
+		DC555730CA9D470F82402CD3 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 731824BAC09B4174AC930371 /* ZERO_CHECK */;
+			targetProxy = 93165303D2CE4B57A7B3D494 /* PBXContainerItemProxy */;
+		};
+		E4B3991600414BF9B5AACD80 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = B52D452054D64B958195ADD9 /* HateEngine */;
+			targetProxy = C7C4F8D7A8304073826257AA /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		00CD8E0ADCE04703BFA65D5E /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = arm64;
+				COMBINE_HIDPI_IMAGES = YES;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_INLINES_ARE_PRIVATE_EXTERN = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"'CMAKE_INTDIR=\"$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)\"'",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				INSTALL_PATH = "";
+				ONLY_ACTIVE_ARCH = NO;
+				OTHER_LDFLAGS = " $(inherited)";
+				OTHER_REZFLAGS = "";
+				PRODUCT_NAME = ALL_BUILD;
+				SECTORDER_FLAGS = "";
+				USE_HEADERMAP = NO;
+				WARNING_CFLAGS = "$(inherited)";
+			};
+			name = Debug;
+		};
+		046899FD901A43ADB220AA23 /* RelWithDebInfo */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = arm64;
+				COMBINE_HIDPI_IMAGES = YES;
+				CONFIGURATION_BUILD_DIR = /Users/ghost/CLionProjects/HateEngine/build/macosx/arm64/release/RelWithDebInfo;
+				EXECUTABLE_PREFIX = "";
+				EXECUTABLE_SUFFIX = "";
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_INLINES_ARE_PRIVATE_EXTERN = NO;
+				GCC_OPTIMIZATION_LEVEL = fast;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"'CMAKE_INTDIR=\"$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)\"'",
+					GLM_ENABLE_EXPERIMENTAL,
+					GLFW_INCLUDE_NONE,
+					GL_SILENCE_DEPRECATION,
+					MA_NO_RUNTIME_LINKING,
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				HEADER_SEARCH_PATHS = (
+					/Users/ghost/CLionProjects/HateEngine/include,
+					"$(inherited)",
+				);
+				INSTALL_PATH = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					/Users/ghost/.xmake/packages/g/glfw/3.4/3ce34c98157445c898b9d2bf71391976/lib,
+					/Users/ghost/.xmake/packages/r/reactphysics3d/0.9.0/cdc31d6dc38d4c7a8e0ea00446ae6d89/lib,
+					/Users/ghost/.xmake/packages/s/soloud/2020.02.07/7199bd136238442ea754461e75b03617/lib,
+					/Users/ghost/CLionProjects/HateEngine/build/macosx/arm64/release,
+					"$(inherited)",
+				);
+				LIBRARY_SEARCH_PATHS = (
+					"/Users/ghost/.xmake/packages/g/glfw/3.4/3ce34c98157445c898b9d2bf71391976/lib/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)",
+					/Users/ghost/.xmake/packages/g/glfw/3.4/3ce34c98157445c898b9d2bf71391976/lib,
+					"/Users/ghost/.xmake/packages/r/reactphysics3d/0.9.0/cdc31d6dc38d4c7a8e0ea00446ae6d89/lib/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)",
+					/Users/ghost/.xmake/packages/r/reactphysics3d/0.9.0/cdc31d6dc38d4c7a8e0ea00446ae6d89/lib,
+					"/Users/ghost/.xmake/packages/s/soloud/2020.02.07/7199bd136238442ea754461e75b03617/lib/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)",
+					/Users/ghost/.xmake/packages/s/soloud/2020.02.07/7199bd136238442ea754461e75b03617/lib,
+					"/Users/ghost/CLionProjects/HateEngine/build/macosx/arm64/release/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)",
+					/Users/ghost/CLionProjects/HateEngine/build/macosx/arm64/release,
+					"$(inherited)",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 11.5;
+				ONLY_ACTIVE_ARCH = NO;
+				OTHER_CPLUSPLUSFLAGS = (
+					"-DNDEBUG",
+					"'-std=c++11'",
+					"-target",
+					"'arm64-apple-macos15.1'",
+					"-isysroot",
+					"'/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX15.2.sdk'",
+					"-DNDEBUG",
+					"'-fvisibility=hidden'",
+				);
+				OTHER_LDFLAGS = (
+					"-target",
+					"'arm64-apple-macos15.1'",
+					"-isysroot",
+					"'/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX15.2.sdk'",
+					"-lz",
+					"-Wl,-search_paths_first",
+					"-Wl,-headerpad_max_install_names",
+					"-lglfw3",
+					"-lreactphysics3d",
+					"-lsoloud",
+					/Users/ghost/CLionProjects/HateEngine/build/macosx/arm64/release/RelWithDebInfo/libHateEngine.a,
+					"-framework",
+					Cocoa,
+					"-framework",
+					IOKit,
+					"-framework",
+					OpenGL,
+					"-framework",
+					AudioToolbox,
+					"-framework",
+					CoreAudio,
+					"-framework",
+					AudioUnit,
+					"-framework",
+					AVFoundation,
+					"-framework",
+					CoreFoundation,
+					"-framework",
+					Foundation,
+					"-lglfw3",
+					"-lreactphysics3d",
+					"-lsoloud",
+					"-framework",
+					Cocoa,
+					"-framework",
+					IOKit,
+					"-framework",
+					OpenGL,
+					"-framework",
+					AudioToolbox,
+					"-framework",
+					CoreAudio,
+					"-framework",
+					AudioUnit,
+					"-framework",
+					AVFoundation,
+					"-framework",
+					CoreFoundation,
+					"-framework",
+					Foundation,
+					"$(inherited)",
+				);
+				OTHER_REZFLAGS = "";
+				PRODUCT_NAME = Example_1;
+				SECTORDER_FLAGS = "";
+				SYSTEM_HEADER_SEARCH_PATHS = (
+					/Users/ghost/.xmake/packages/g/glfw/3.4/3ce34c98157445c898b9d2bf71391976/include,
+					/opt/homebrew/Cellar/glm/1.0.0/include,
+					/Users/ghost/.xmake/packages/r/reactphysics3d/0.9.0/cdc31d6dc38d4c7a8e0ea00446ae6d89/include,
+					/Users/ghost/.xmake/packages/s/soloud/2020.02.07/7199bd136238442ea754461e75b03617/include,
+					/Users/ghost/.xmake/packages/m/miniaudio/0.11.21/0cc95ce6e678408683fc6942a77b4bc5/include,
+					"$(inherited)",
+				);
+				TARGET_TEMP_DIR = "/Users/ghost/CLionProjects/HateEngine/build/Example_1.build/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)";
+				USE_HEADERMAP = NO;
+				WARNING_CFLAGS = "$(inherited)";
+			};
+			name = RelWithDebInfo;
+		};
+		072BD4F4E890448CB950097C /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = arm64;
+				COMBINE_HIDPI_IMAGES = YES;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_INLINES_ARE_PRIVATE_EXTERN = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"'CMAKE_INTDIR=\"$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)\"'",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				INSTALL_PATH = "";
+				ONLY_ACTIVE_ARCH = NO;
+				OTHER_LDFLAGS = " $(inherited)";
+				OTHER_REZFLAGS = "";
+				PRODUCT_NAME = ZERO_CHECK;
+				SECTORDER_FLAGS = "";
+				USE_HEADERMAP = NO;
+				WARNING_CFLAGS = "$(inherited)";
+			};
+			name = Release;
+		};
+		0C26720D08FE4B629695B0A2 /* MinSizeRel */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = arm64;
+				COMBINE_HIDPI_IMAGES = YES;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_INLINES_ARE_PRIVATE_EXTERN = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"'CMAKE_INTDIR=\"$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)\"'",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				INSTALL_PATH = "";
+				ONLY_ACTIVE_ARCH = NO;
+				OTHER_LDFLAGS = " $(inherited)";
+				OTHER_REZFLAGS = "";
+				PRODUCT_NAME = ZERO_CHECK;
+				SECTORDER_FLAGS = "";
+				USE_HEADERMAP = NO;
+				WARNING_CFLAGS = "$(inherited)";
+			};
+			name = MinSizeRel;
+		};
+		54DF025A45B84BE7AC032442 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = arm64;
+				COMBINE_HIDPI_IMAGES = YES;
+				CONFIGURATION_BUILD_DIR = /Users/ghost/CLionProjects/HateEngine/build/macosx/arm64/release/Debug;
+				EXECUTABLE_PREFIX = "";
+				EXECUTABLE_SUFFIX = "";
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_INLINES_ARE_PRIVATE_EXTERN = NO;
+				GCC_OPTIMIZATION_LEVEL = fast;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"'CMAKE_INTDIR=\"$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)\"'",
+					GLM_ENABLE_EXPERIMENTAL,
+					GLFW_INCLUDE_NONE,
+					GL_SILENCE_DEPRECATION,
+					MA_NO_RUNTIME_LINKING,
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				HEADER_SEARCH_PATHS = (
+					/Users/ghost/CLionProjects/HateEngine/include,
+					"$(inherited)",
+				);
+				INSTALL_PATH = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					/Users/ghost/.xmake/packages/g/glfw/3.4/3ce34c98157445c898b9d2bf71391976/lib,
+					/Users/ghost/.xmake/packages/r/reactphysics3d/0.9.0/cdc31d6dc38d4c7a8e0ea00446ae6d89/lib,
+					/Users/ghost/.xmake/packages/s/soloud/2020.02.07/7199bd136238442ea754461e75b03617/lib,
+					/Users/ghost/CLionProjects/HateEngine/build/macosx/arm64/release,
+					"$(inherited)",
+				);
+				LIBRARY_SEARCH_PATHS = (
+					"/Users/ghost/.xmake/packages/g/glfw/3.4/3ce34c98157445c898b9d2bf71391976/lib/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)",
+					/Users/ghost/.xmake/packages/g/glfw/3.4/3ce34c98157445c898b9d2bf71391976/lib,
+					"/Users/ghost/.xmake/packages/r/reactphysics3d/0.9.0/cdc31d6dc38d4c7a8e0ea00446ae6d89/lib/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)",
+					/Users/ghost/.xmake/packages/r/reactphysics3d/0.9.0/cdc31d6dc38d4c7a8e0ea00446ae6d89/lib,
+					"/Users/ghost/.xmake/packages/s/soloud/2020.02.07/7199bd136238442ea754461e75b03617/lib/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)",
+					/Users/ghost/.xmake/packages/s/soloud/2020.02.07/7199bd136238442ea754461e75b03617/lib,
+					"/Users/ghost/CLionProjects/HateEngine/build/macosx/arm64/release/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)",
+					/Users/ghost/CLionProjects/HateEngine/build/macosx/arm64/release,
+					"$(inherited)",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 11.5;
+				ONLY_ACTIVE_ARCH = NO;
+				OTHER_CPLUSPLUSFLAGS = (
+					"'-std=c++11'",
+					"-target",
+					"'arm64-apple-macos15.1'",
+					"-isysroot",
+					"'/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX15.2.sdk'",
+					"-DNDEBUG",
+					"'-fvisibility=hidden'",
+				);
+				OTHER_LDFLAGS = (
+					"-target",
+					"'arm64-apple-macos15.1'",
+					"-isysroot",
+					"'/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX15.2.sdk'",
+					"-lz",
+					"-Wl,-search_paths_first",
+					"-Wl,-headerpad_max_install_names",
+					"-lglfw3",
+					"-lreactphysics3d",
+					"-lsoloud",
+					/Users/ghost/CLionProjects/HateEngine/build/macosx/arm64/release/Debug/libHateEngine.a,
+					"-framework",
+					Cocoa,
+					"-framework",
+					IOKit,
+					"-framework",
+					OpenGL,
+					"-framework",
+					AudioToolbox,
+					"-framework",
+					CoreAudio,
+					"-framework",
+					AudioUnit,
+					"-framework",
+					AVFoundation,
+					"-framework",
+					CoreFoundation,
+					"-framework",
+					Foundation,
+					"-lglfw3",
+					"-lreactphysics3d",
+					"-lsoloud",
+					"-framework",
+					Cocoa,
+					"-framework",
+					IOKit,
+					"-framework",
+					OpenGL,
+					"-framework",
+					AudioToolbox,
+					"-framework",
+					CoreAudio,
+					"-framework",
+					AudioUnit,
+					"-framework",
+					AVFoundation,
+					"-framework",
+					CoreFoundation,
+					"-framework",
+					Foundation,
+					"$(inherited)",
+				);
+				OTHER_REZFLAGS = "";
+				PRODUCT_NAME = Example_1;
+				SECTORDER_FLAGS = "";
+				SYSTEM_HEADER_SEARCH_PATHS = (
+					/Users/ghost/.xmake/packages/g/glfw/3.4/3ce34c98157445c898b9d2bf71391976/include,
+					/opt/homebrew/Cellar/glm/1.0.0/include,
+					/Users/ghost/.xmake/packages/r/reactphysics3d/0.9.0/cdc31d6dc38d4c7a8e0ea00446ae6d89/include,
+					/Users/ghost/.xmake/packages/s/soloud/2020.02.07/7199bd136238442ea754461e75b03617/include,
+					/Users/ghost/.xmake/packages/m/miniaudio/0.11.21/0cc95ce6e678408683fc6942a77b4bc5/include,
+					"$(inherited)",
+				);
+				TARGET_TEMP_DIR = "/Users/ghost/CLionProjects/HateEngine/build/Example_1.build/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)";
+				USE_HEADERMAP = NO;
+				WARNING_CFLAGS = "$(inherited)";
+			};
+			name = Debug;
+		};
+		62E5C3F8F7C24BE19733937E /* RelWithDebInfo */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = arm64;
+				INSTALL_PATH = install;
+				MACOSX_DEPLOYMENT_TARGET = 11.5;
+				SDKROOT = /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX15.2.sdk;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SYMROOT = /Users/ghost/CLionProjects/HateEngine/build;
+			};
+			name = RelWithDebInfo;
+		};
+		67831528AAD44F42BEE4EDA5 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = arm64;
+				COMBINE_HIDPI_IMAGES = YES;
+				CONFIGURATION_BUILD_DIR = /Users/ghost/CLionProjects/HateEngine/build/macosx/arm64/release/Release;
+				EXECUTABLE_PREFIX = "";
+				EXECUTABLE_SUFFIX = "";
+				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
+				GCC_INLINES_ARE_PRIVATE_EXTERN = NO;
+				GCC_OPTIMIZATION_LEVEL = fast;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"'CMAKE_INTDIR=\"$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)\"'",
+					GLM_ENABLE_EXPERIMENTAL,
+					GLFW_INCLUDE_NONE,
+					GL_SILENCE_DEPRECATION,
+					MA_NO_RUNTIME_LINKING,
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				HEADER_SEARCH_PATHS = (
+					/Users/ghost/CLionProjects/HateEngine/include,
+					"$(inherited)",
+				);
+				INSTALL_PATH = "";
+				"INSTALL_PATH[sdk=*]" = out;
+				LD_RUNPATH_SEARCH_PATHS = (
+					/Users/ghost/.xmake/packages/g/glfw/3.4/3ce34c98157445c898b9d2bf71391976/lib,
+					/Users/ghost/.xmake/packages/r/reactphysics3d/0.9.0/cdc31d6dc38d4c7a8e0ea00446ae6d89/lib,
+					/Users/ghost/.xmake/packages/s/soloud/2020.02.07/7199bd136238442ea754461e75b03617/lib,
+					/Users/ghost/CLionProjects/HateEngine/build/macosx/arm64/release,
+					"$(inherited)",
+				);
+				LIBRARY_SEARCH_PATHS = (
+					"/Users/ghost/.xmake/packages/g/glfw/3.4/3ce34c98157445c898b9d2bf71391976/lib/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)",
+					/Users/ghost/.xmake/packages/g/glfw/3.4/3ce34c98157445c898b9d2bf71391976/lib,
+					"/Users/ghost/.xmake/packages/r/reactphysics3d/0.9.0/cdc31d6dc38d4c7a8e0ea00446ae6d89/lib/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)",
+					/Users/ghost/.xmake/packages/r/reactphysics3d/0.9.0/cdc31d6dc38d4c7a8e0ea00446ae6d89/lib,
+					"/Users/ghost/.xmake/packages/s/soloud/2020.02.07/7199bd136238442ea754461e75b03617/lib/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)",
+					/Users/ghost/.xmake/packages/s/soloud/2020.02.07/7199bd136238442ea754461e75b03617/lib,
+					"/Users/ghost/CLionProjects/HateEngine/build/macosx/arm64/release/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)",
+					/Users/ghost/CLionProjects/HateEngine/build/macosx/arm64/release,
+					"$(inherited)",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 11.5;
+				ONLY_ACTIVE_ARCH = NO;
+				OTHER_CPLUSPLUSFLAGS = (
+					"-DNDEBUG",
+					"'-std=c++11'",
+					"-target",
+					"'arm64-apple-macos15.1'",
+					"-isysroot",
+					"'/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX15.2.sdk'",
+					"-DNDEBUG",
+					"'-fvisibility=hidden'",
+				);
+				OTHER_LDFLAGS = (
+					"-target",
+					"'arm64-apple-macos15.1'",
+					"-isysroot",
+					"'/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX15.2.sdk'",
+					"-lz",
+					"-Wl,-search_paths_first",
+					"-Wl,-headerpad_max_install_names",
+					"-lglfw3",
+					"-lreactphysics3d",
+					"-lsoloud",
+					/Users/ghost/CLionProjects/HateEngine/build/macosx/arm64/release/Release/libHateEngine.a,
+					"-framework",
+					Cocoa,
+					"-framework",
+					IOKit,
+					"-framework",
+					OpenGL,
+					"-framework",
+					AudioToolbox,
+					"-framework",
+					CoreAudio,
+					"-framework",
+					AudioUnit,
+					"-framework",
+					AVFoundation,
+					"-framework",
+					CoreFoundation,
+					"-framework",
+					Foundation,
+					"-lglfw3",
+					"-lreactphysics3d",
+					"-lsoloud",
+					"-framework",
+					Cocoa,
+					"-framework",
+					IOKit,
+					"-framework",
+					OpenGL,
+					"-framework",
+					AudioToolbox,
+					"-framework",
+					CoreAudio,
+					"-framework",
+					AudioUnit,
+					"-framework",
+					AVFoundation,
+					"-framework",
+					CoreFoundation,
+					"-framework",
+					Foundation,
+					"$(inherited)",
+				);
+				OTHER_REZFLAGS = "";
+				PRODUCT_NAME = Example_1;
+				SECTORDER_FLAGS = "";
+				SYSTEM_HEADER_SEARCH_PATHS = (
+					/Users/ghost/.xmake/packages/g/glfw/3.4/3ce34c98157445c898b9d2bf71391976/include,
+					/opt/homebrew/Cellar/glm/1.0.0/include,
+					/Users/ghost/.xmake/packages/r/reactphysics3d/0.9.0/cdc31d6dc38d4c7a8e0ea00446ae6d89/include,
+					/Users/ghost/.xmake/packages/s/soloud/2020.02.07/7199bd136238442ea754461e75b03617/include,
+					/Users/ghost/.xmake/packages/m/miniaudio/0.11.21/0cc95ce6e678408683fc6942a77b4bc5/include,
+					"$(inherited)",
+				);
+				TARGET_TEMP_DIR = "/Users/ghost/CLionProjects/HateEngine/build/Example_1.build/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)";
+				USE_HEADERMAP = NO;
+				WARNING_CFLAGS = "$(inherited)";
+			};
+			name = Release;
+		};
+		69BA7FB321F444C7BA66404E /* MinSizeRel */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = arm64;
+				COMBINE_HIDPI_IMAGES = YES;
+				CONFIGURATION_BUILD_DIR = /Users/ghost/CLionProjects/HateEngine/build/macosx/arm64/release/MinSizeRel;
+				EXECUTABLE_PREFIX = "";
+				EXECUTABLE_SUFFIX = "";
+				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
+				GCC_INLINES_ARE_PRIVATE_EXTERN = NO;
+				GCC_OPTIMIZATION_LEVEL = fast;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"'CMAKE_INTDIR=\"$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)\"'",
+					GLM_ENABLE_EXPERIMENTAL,
+					GLFW_INCLUDE_NONE,
+					GL_SILENCE_DEPRECATION,
+					MA_NO_RUNTIME_LINKING,
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				HEADER_SEARCH_PATHS = (
+					/Users/ghost/CLionProjects/HateEngine/include,
+					"$(inherited)",
+				);
+				INSTALL_PATH = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					/Users/ghost/.xmake/packages/g/glfw/3.4/3ce34c98157445c898b9d2bf71391976/lib,
+					/Users/ghost/.xmake/packages/r/reactphysics3d/0.9.0/cdc31d6dc38d4c7a8e0ea00446ae6d89/lib,
+					/Users/ghost/.xmake/packages/s/soloud/2020.02.07/7199bd136238442ea754461e75b03617/lib,
+					/Users/ghost/CLionProjects/HateEngine/build/macosx/arm64/release,
+					"$(inherited)",
+				);
+				LIBRARY_SEARCH_PATHS = (
+					"/Users/ghost/.xmake/packages/g/glfw/3.4/3ce34c98157445c898b9d2bf71391976/lib/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)",
+					/Users/ghost/.xmake/packages/g/glfw/3.4/3ce34c98157445c898b9d2bf71391976/lib,
+					"/Users/ghost/.xmake/packages/r/reactphysics3d/0.9.0/cdc31d6dc38d4c7a8e0ea00446ae6d89/lib/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)",
+					/Users/ghost/.xmake/packages/r/reactphysics3d/0.9.0/cdc31d6dc38d4c7a8e0ea00446ae6d89/lib,
+					"/Users/ghost/.xmake/packages/s/soloud/2020.02.07/7199bd136238442ea754461e75b03617/lib/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)",
+					/Users/ghost/.xmake/packages/s/soloud/2020.02.07/7199bd136238442ea754461e75b03617/lib,
+					"/Users/ghost/CLionProjects/HateEngine/build/macosx/arm64/release/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)",
+					/Users/ghost/CLionProjects/HateEngine/build/macosx/arm64/release,
+					"$(inherited)",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 11.5;
+				ONLY_ACTIVE_ARCH = NO;
+				OTHER_CPLUSPLUSFLAGS = (
+					"-DNDEBUG",
+					"'-std=c++11'",
+					"-target",
+					"'arm64-apple-macos15.1'",
+					"-isysroot",
+					"'/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX15.2.sdk'",
+					"-DNDEBUG",
+					"'-fvisibility=hidden'",
+				);
+				OTHER_LDFLAGS = (
+					"-target",
+					"'arm64-apple-macos15.1'",
+					"-isysroot",
+					"'/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX15.2.sdk'",
+					"-lz",
+					"-Wl,-search_paths_first",
+					"-Wl,-headerpad_max_install_names",
+					"-lglfw3",
+					"-lreactphysics3d",
+					"-lsoloud",
+					/Users/ghost/CLionProjects/HateEngine/build/macosx/arm64/release/MinSizeRel/libHateEngine.a,
+					"-framework",
+					Cocoa,
+					"-framework",
+					IOKit,
+					"-framework",
+					OpenGL,
+					"-framework",
+					AudioToolbox,
+					"-framework",
+					CoreAudio,
+					"-framework",
+					AudioUnit,
+					"-framework",
+					AVFoundation,
+					"-framework",
+					CoreFoundation,
+					"-framework",
+					Foundation,
+					"-lglfw3",
+					"-lreactphysics3d",
+					"-lsoloud",
+					"-framework",
+					Cocoa,
+					"-framework",
+					IOKit,
+					"-framework",
+					OpenGL,
+					"-framework",
+					AudioToolbox,
+					"-framework",
+					CoreAudio,
+					"-framework",
+					AudioUnit,
+					"-framework",
+					AVFoundation,
+					"-framework",
+					CoreFoundation,
+					"-framework",
+					Foundation,
+					"$(inherited)",
+				);
+				OTHER_REZFLAGS = "";
+				PRODUCT_NAME = Example_1;
+				SECTORDER_FLAGS = "";
+				SYSTEM_HEADER_SEARCH_PATHS = (
+					/Users/ghost/.xmake/packages/g/glfw/3.4/3ce34c98157445c898b9d2bf71391976/include,
+					/opt/homebrew/Cellar/glm/1.0.0/include,
+					/Users/ghost/.xmake/packages/r/reactphysics3d/0.9.0/cdc31d6dc38d4c7a8e0ea00446ae6d89/include,
+					/Users/ghost/.xmake/packages/s/soloud/2020.02.07/7199bd136238442ea754461e75b03617/include,
+					/Users/ghost/.xmake/packages/m/miniaudio/0.11.21/0cc95ce6e678408683fc6942a77b4bc5/include,
+					"$(inherited)",
+				);
+				TARGET_TEMP_DIR = "/Users/ghost/CLionProjects/HateEngine/build/Example_1.build/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)";
+				USE_HEADERMAP = NO;
+				WARNING_CFLAGS = "$(inherited)";
+			};
+			name = MinSizeRel;
+		};
+		6A9559D6426243849F254EB4 /* MinSizeRel */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = arm64;
+				COMBINE_HIDPI_IMAGES = YES;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_INLINES_ARE_PRIVATE_EXTERN = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"'CMAKE_INTDIR=\"$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)\"'",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				INSTALL_PATH = "";
+				ONLY_ACTIVE_ARCH = NO;
+				OTHER_LDFLAGS = " $(inherited)";
+				OTHER_REZFLAGS = "";
+				PRODUCT_NAME = ALL_BUILD;
+				SECTORDER_FLAGS = "";
+				USE_HEADERMAP = NO;
+				WARNING_CFLAGS = "$(inherited)";
+			};
+			name = MinSizeRel;
+		};
+		6BEF34F78D834A00B10856D8 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = arm64;
+				COMBINE_HIDPI_IMAGES = YES;
+				CONFIGURATION_BUILD_DIR = /Users/ghost/CLionProjects/HateEngine/build/macosx/arm64/release/Release;
+				EXECUTABLE_PREFIX = lib;
+				EXECUTABLE_SUFFIX = .a;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
+				GCC_INLINES_ARE_PRIVATE_EXTERN = NO;
+				GCC_OPTIMIZATION_LEVEL = 3;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"'CMAKE_INTDIR=\"$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)\"'",
+					GLM_ENABLE_EXPERIMENTAL,
+					GLFW_INCLUDE_NONE,
+					GL_SILENCE_DEPRECATION,
+					MA_NO_RUNTIME_LINKING,
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				HEADER_SEARCH_PATHS = (
+					/Users/ghost/CLionProjects/HateEngine/deps,
+					/Users/ghost/CLionProjects/HateEngine/include,
+					"$(inherited)",
+				);
+				INSTALL_PATH = "";
+				LIBRARY_STYLE = STATIC;
+				MACOSX_DEPLOYMENT_TARGET = 11.5;
+				ONLY_ACTIVE_ARCH = NO;
+				OTHER_CFLAGS = (
+					"-DNDEBUG",
+					"-target",
+					"'arm64-apple-macos15.1'",
+					"-isysroot",
+					"'/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX15.2.sdk'",
+					"-DNDEBUG",
+					"'-fvisibility=hidden'",
+					"$(inherited)",
+				);
+				OTHER_CPLUSPLUSFLAGS = (
+					"-DNDEBUG",
+					"'-std=c++11'",
+					"-target",
+					"'arm64-apple-macos15.1'",
+					"-isysroot",
+					"'/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX15.2.sdk'",
+					"-DNDEBUG",
+					"'-fvisibility=hidden'",
+				);
+				OTHER_LIBTOOLFLAGS = "";
+				OTHER_REZFLAGS = "";
+				PRODUCT_NAME = HateEngine;
+				SECTORDER_FLAGS = "";
+				SYSTEM_HEADER_SEARCH_PATHS = (
+					/Users/ghost/.xmake/packages/g/glfw/3.4/3ce34c98157445c898b9d2bf71391976/include,
+					/opt/homebrew/Cellar/glm/1.0.0/include,
+					/Users/ghost/.xmake/packages/t/tinygltf/v2.8.13/2269141da409442eb1896b511da58031/include,
+					/Users/ghost/.xmake/packages/n/nlohmann_json/v3.11.3/3ad40a5be1c943fd85cacabbe09b829a/include,
+					/Users/ghost/.xmake/packages/s/stb/2024.06.01/02de83de61ce4f5fb77ee3a484b692aa/include,
+					/Users/ghost/.xmake/packages/s/stb/2024.06.01/02de83de61ce4f5fb77ee3a484b692aa/include/stb,
+					/Users/ghost/.xmake/packages/r/reactphysics3d/0.9.0/cdc31d6dc38d4c7a8e0ea00446ae6d89/include,
+					/Users/ghost/.xmake/packages/t/termcolor/5635ae00/82a580ae3e6247659f268c7cba178a7e/include,
+					/Users/ghost/.xmake/packages/s/soloud/2020.02.07/7199bd136238442ea754461e75b03617/include,
+					/Users/ghost/.xmake/packages/m/miniaudio/0.11.21/0cc95ce6e678408683fc6942a77b4bc5/include,
+					"$(inherited)",
+				);
+				TARGET_TEMP_DIR = "/Users/ghost/CLionProjects/HateEngine/build/HateEngine.build/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)";
+				USE_HEADERMAP = NO;
+				WARNING_CFLAGS = "$(inherited)";
+			};
+			name = Release;
+		};
+		78BDB7B566914078BAA305A7 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = arm64;
+				INSTALL_PATH = install;
+				MACOSX_DEPLOYMENT_TARGET = 11.5;
+				SDKROOT = /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX15.2.sdk;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SYMROOT = /Users/ghost/CLionProjects/HateEngine/build;
+			};
+			name = Release;
+		};
+		7FC731B7566C4304BF1E0F36 /* MinSizeRel */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = arm64;
+				INSTALL_PATH = install;
+				MACOSX_DEPLOYMENT_TARGET = 11.5;
+				SDKROOT = /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX15.2.sdk;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SYMROOT = /Users/ghost/CLionProjects/HateEngine/build;
+			};
+			name = MinSizeRel;
+		};
+		803BCA9EFBD64E27A3D3ED75 /* MinSizeRel */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = arm64;
+				COMBINE_HIDPI_IMAGES = YES;
+				CONFIGURATION_BUILD_DIR = /Users/ghost/CLionProjects/HateEngine/build/macosx/arm64/release/MinSizeRel;
+				EXECUTABLE_PREFIX = lib;
+				EXECUTABLE_SUFFIX = .a;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
+				GCC_INLINES_ARE_PRIVATE_EXTERN = NO;
+				GCC_OPTIMIZATION_LEVEL = 3;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"'CMAKE_INTDIR=\"$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)\"'",
+					GLM_ENABLE_EXPERIMENTAL,
+					GLFW_INCLUDE_NONE,
+					GL_SILENCE_DEPRECATION,
+					MA_NO_RUNTIME_LINKING,
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				HEADER_SEARCH_PATHS = (
+					/Users/ghost/CLionProjects/HateEngine/deps,
+					/Users/ghost/CLionProjects/HateEngine/include,
+					"$(inherited)",
+				);
+				INSTALL_PATH = "";
+				LIBRARY_STYLE = STATIC;
+				MACOSX_DEPLOYMENT_TARGET = 11.5;
+				ONLY_ACTIVE_ARCH = NO;
+				OTHER_CFLAGS = (
+					"-DNDEBUG",
+					"-target",
+					"'arm64-apple-macos15.1'",
+					"-isysroot",
+					"'/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX15.2.sdk'",
+					"-DNDEBUG",
+					"'-fvisibility=hidden'",
+					"$(inherited)",
+				);
+				OTHER_CPLUSPLUSFLAGS = (
+					"-DNDEBUG",
+					"'-std=c++11'",
+					"-target",
+					"'arm64-apple-macos15.1'",
+					"-isysroot",
+					"'/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX15.2.sdk'",
+					"-DNDEBUG",
+					"'-fvisibility=hidden'",
+				);
+				OTHER_LIBTOOLFLAGS = "";
+				OTHER_REZFLAGS = "";
+				PRODUCT_NAME = HateEngine;
+				SECTORDER_FLAGS = "";
+				SYSTEM_HEADER_SEARCH_PATHS = (
+					/Users/ghost/.xmake/packages/g/glfw/3.4/3ce34c98157445c898b9d2bf71391976/include,
+					/opt/homebrew/Cellar/glm/1.0.0/include,
+					/Users/ghost/.xmake/packages/t/tinygltf/v2.8.13/2269141da409442eb1896b511da58031/include,
+					/Users/ghost/.xmake/packages/n/nlohmann_json/v3.11.3/3ad40a5be1c943fd85cacabbe09b829a/include,
+					/Users/ghost/.xmake/packages/s/stb/2024.06.01/02de83de61ce4f5fb77ee3a484b692aa/include,
+					/Users/ghost/.xmake/packages/s/stb/2024.06.01/02de83de61ce4f5fb77ee3a484b692aa/include/stb,
+					/Users/ghost/.xmake/packages/r/reactphysics3d/0.9.0/cdc31d6dc38d4c7a8e0ea00446ae6d89/include,
+					/Users/ghost/.xmake/packages/t/termcolor/5635ae00/82a580ae3e6247659f268c7cba178a7e/include,
+					/Users/ghost/.xmake/packages/s/soloud/2020.02.07/7199bd136238442ea754461e75b03617/include,
+					/Users/ghost/.xmake/packages/m/miniaudio/0.11.21/0cc95ce6e678408683fc6942a77b4bc5/include,
+					"$(inherited)",
+				);
+				TARGET_TEMP_DIR = "/Users/ghost/CLionProjects/HateEngine/build/HateEngine.build/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)";
+				USE_HEADERMAP = NO;
+				WARNING_CFLAGS = "$(inherited)";
+			};
+			name = MinSizeRel;
+		};
+		81CD8B48BD5C432B8AEB3F49 /* RelWithDebInfo */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = arm64;
+				COMBINE_HIDPI_IMAGES = YES;
+				CONFIGURATION_BUILD_DIR = /Users/ghost/CLionProjects/HateEngine/build/macosx/arm64/release/RelWithDebInfo;
+				EXECUTABLE_PREFIX = lib;
+				EXECUTABLE_SUFFIX = .a;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_INLINES_ARE_PRIVATE_EXTERN = NO;
+				GCC_OPTIMIZATION_LEVEL = 3;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"'CMAKE_INTDIR=\"$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)\"'",
+					GLM_ENABLE_EXPERIMENTAL,
+					GLFW_INCLUDE_NONE,
+					GL_SILENCE_DEPRECATION,
+					MA_NO_RUNTIME_LINKING,
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				HEADER_SEARCH_PATHS = (
+					/Users/ghost/CLionProjects/HateEngine/deps,
+					/Users/ghost/CLionProjects/HateEngine/include,
+					"$(inherited)",
+				);
+				INSTALL_PATH = "";
+				LIBRARY_STYLE = STATIC;
+				MACOSX_DEPLOYMENT_TARGET = 11.5;
+				ONLY_ACTIVE_ARCH = NO;
+				OTHER_CFLAGS = (
+					"-DNDEBUG",
+					"-target",
+					"'arm64-apple-macos15.1'",
+					"-isysroot",
+					"'/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX15.2.sdk'",
+					"-DNDEBUG",
+					"'-fvisibility=hidden'",
+					"$(inherited)",
+				);
+				OTHER_CPLUSPLUSFLAGS = (
+					"-DNDEBUG",
+					"'-std=c++11'",
+					"-target",
+					"'arm64-apple-macos15.1'",
+					"-isysroot",
+					"'/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX15.2.sdk'",
+					"-DNDEBUG",
+					"'-fvisibility=hidden'",
+				);
+				OTHER_LIBTOOLFLAGS = "";
+				OTHER_REZFLAGS = "";
+				PRODUCT_NAME = HateEngine;
+				SECTORDER_FLAGS = "";
+				SYSTEM_HEADER_SEARCH_PATHS = (
+					/Users/ghost/.xmake/packages/g/glfw/3.4/3ce34c98157445c898b9d2bf71391976/include,
+					/opt/homebrew/Cellar/glm/1.0.0/include,
+					/Users/ghost/.xmake/packages/t/tinygltf/v2.8.13/2269141da409442eb1896b511da58031/include,
+					/Users/ghost/.xmake/packages/n/nlohmann_json/v3.11.3/3ad40a5be1c943fd85cacabbe09b829a/include,
+					/Users/ghost/.xmake/packages/s/stb/2024.06.01/02de83de61ce4f5fb77ee3a484b692aa/include,
+					/Users/ghost/.xmake/packages/s/stb/2024.06.01/02de83de61ce4f5fb77ee3a484b692aa/include/stb,
+					/Users/ghost/.xmake/packages/r/reactphysics3d/0.9.0/cdc31d6dc38d4c7a8e0ea00446ae6d89/include,
+					/Users/ghost/.xmake/packages/t/termcolor/5635ae00/82a580ae3e6247659f268c7cba178a7e/include,
+					/Users/ghost/.xmake/packages/s/soloud/2020.02.07/7199bd136238442ea754461e75b03617/include,
+					/Users/ghost/.xmake/packages/m/miniaudio/0.11.21/0cc95ce6e678408683fc6942a77b4bc5/include,
+					"$(inherited)",
+				);
+				TARGET_TEMP_DIR = "/Users/ghost/CLionProjects/HateEngine/build/HateEngine.build/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)";
+				USE_HEADERMAP = NO;
+				WARNING_CFLAGS = "$(inherited)";
+			};
+			name = RelWithDebInfo;
+		};
+		A554F17FDF184A819DFE75E9 /* RelWithDebInfo */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = arm64;
+				COMBINE_HIDPI_IMAGES = YES;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_INLINES_ARE_PRIVATE_EXTERN = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"'CMAKE_INTDIR=\"$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)\"'",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				INSTALL_PATH = "";
+				ONLY_ACTIVE_ARCH = NO;
+				OTHER_LDFLAGS = " $(inherited)";
+				OTHER_REZFLAGS = "";
+				PRODUCT_NAME = ALL_BUILD;
+				SECTORDER_FLAGS = "";
+				USE_HEADERMAP = NO;
+				WARNING_CFLAGS = "$(inherited)";
+			};
+			name = RelWithDebInfo;
+		};
+		B8A306BB767144B5B68FCDDE /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = arm64;
+				INSTALL_PATH = install;
+				MACOSX_DEPLOYMENT_TARGET = 11.5;
+				SDKROOT = /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX15.2.sdk;
+				SYMROOT = /Users/ghost/CLionProjects/HateEngine/build;
+			};
+			name = Debug;
+		};
+		BA10001F233740A887BD9FC0 /* RelWithDebInfo */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = arm64;
+				COMBINE_HIDPI_IMAGES = YES;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_INLINES_ARE_PRIVATE_EXTERN = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"'CMAKE_INTDIR=\"$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)\"'",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				INSTALL_PATH = "";
+				ONLY_ACTIVE_ARCH = NO;
+				OTHER_LDFLAGS = " $(inherited)";
+				OTHER_REZFLAGS = "";
+				PRODUCT_NAME = ZERO_CHECK;
+				SECTORDER_FLAGS = "";
+				USE_HEADERMAP = NO;
+				WARNING_CFLAGS = "$(inherited)";
+			};
+			name = RelWithDebInfo;
+		};
+		D48F178BDABB4D219AE8FD56 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = arm64;
+				COMBINE_HIDPI_IMAGES = YES;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_INLINES_ARE_PRIVATE_EXTERN = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"'CMAKE_INTDIR=\"$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)\"'",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				INSTALL_PATH = "";
+				ONLY_ACTIVE_ARCH = NO;
+				OTHER_LDFLAGS = " $(inherited)";
+				OTHER_REZFLAGS = "";
+				PRODUCT_NAME = ALL_BUILD;
+				SECTORDER_FLAGS = "";
+				USE_HEADERMAP = NO;
+				WARNING_CFLAGS = "$(inherited)";
+			};
+			name = Release;
+		};
+		F1DD3FB5C40A427E85F3CD8B /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = arm64;
+				COMBINE_HIDPI_IMAGES = YES;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_INLINES_ARE_PRIVATE_EXTERN = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"'CMAKE_INTDIR=\"$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)\"'",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				INSTALL_PATH = "";
+				ONLY_ACTIVE_ARCH = NO;
+				OTHER_LDFLAGS = " $(inherited)";
+				OTHER_REZFLAGS = "";
+				PRODUCT_NAME = ZERO_CHECK;
+				SECTORDER_FLAGS = "";
+				USE_HEADERMAP = NO;
+				WARNING_CFLAGS = "$(inherited)";
+			};
+			name = Debug;
+		};
+		FF29FB7F26D44A2484891FC6 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = arm64;
+				COMBINE_HIDPI_IMAGES = YES;
+				CONFIGURATION_BUILD_DIR = /Users/ghost/CLionProjects/HateEngine/build/macosx/arm64/release/Debug;
+				EXECUTABLE_PREFIX = lib;
+				EXECUTABLE_SUFFIX = .a;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_INLINES_ARE_PRIVATE_EXTERN = NO;
+				GCC_OPTIMIZATION_LEVEL = 3;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"'CMAKE_INTDIR=\"$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)\"'",
+					GLM_ENABLE_EXPERIMENTAL,
+					GLFW_INCLUDE_NONE,
+					GL_SILENCE_DEPRECATION,
+					MA_NO_RUNTIME_LINKING,
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				HEADER_SEARCH_PATHS = (
+					/Users/ghost/CLionProjects/HateEngine/deps,
+					/Users/ghost/CLionProjects/HateEngine/include,
+					"$(inherited)",
+				);
+				INSTALL_PATH = "";
+				LIBRARY_STYLE = STATIC;
+				MACOSX_DEPLOYMENT_TARGET = 11.5;
+				ONLY_ACTIVE_ARCH = NO;
+				OTHER_CFLAGS = (
+					"-target",
+					"'arm64-apple-macos15.1'",
+					"-isysroot",
+					"'/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX15.2.sdk'",
+					"-DNDEBUG",
+					"'-fvisibility=hidden'",
+					"$(inherited)",
+				);
+				OTHER_CPLUSPLUSFLAGS = (
+					"'-std=c++11'",
+					"-target",
+					"'arm64-apple-macos15.1'",
+					"-isysroot",
+					"'/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX15.2.sdk'",
+					"-DNDEBUG",
+					"'-fvisibility=hidden'",
+				);
+				OTHER_LIBTOOLFLAGS = "";
+				OTHER_REZFLAGS = "";
+				PRODUCT_NAME = HateEngine;
+				SECTORDER_FLAGS = "";
+				SYSTEM_HEADER_SEARCH_PATHS = (
+					/Users/ghost/.xmake/packages/g/glfw/3.4/3ce34c98157445c898b9d2bf71391976/include,
+					/opt/homebrew/Cellar/glm/1.0.0/include,
+					/Users/ghost/.xmake/packages/t/tinygltf/v2.8.13/2269141da409442eb1896b511da58031/include,
+					/Users/ghost/.xmake/packages/n/nlohmann_json/v3.11.3/3ad40a5be1c943fd85cacabbe09b829a/include,
+					/Users/ghost/.xmake/packages/s/stb/2024.06.01/02de83de61ce4f5fb77ee3a484b692aa/include,
+					/Users/ghost/.xmake/packages/s/stb/2024.06.01/02de83de61ce4f5fb77ee3a484b692aa/include/stb,
+					/Users/ghost/.xmake/packages/r/reactphysics3d/0.9.0/cdc31d6dc38d4c7a8e0ea00446ae6d89/include,
+					/Users/ghost/.xmake/packages/t/termcolor/5635ae00/82a580ae3e6247659f268c7cba178a7e/include,
+					/Users/ghost/.xmake/packages/s/soloud/2020.02.07/7199bd136238442ea754461e75b03617/include,
+					/Users/ghost/.xmake/packages/m/miniaudio/0.11.21/0cc95ce6e678408683fc6942a77b4bc5/include,
+					"$(inherited)",
+				);
+				TARGET_TEMP_DIR = "/Users/ghost/CLionProjects/HateEngine/build/HateEngine.build/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)";
+				USE_HEADERMAP = NO;
+				WARNING_CFLAGS = "$(inherited)";
+			};
+			name = Debug;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		16EC54E427AF4CAB901612D7 /* Build configuration list for PBXProject "HateEngine" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				B8A306BB767144B5B68FCDDE /* Debug */,
+				78BDB7B566914078BAA305A7 /* Release */,
+				7FC731B7566C4304BF1E0F36 /* MinSizeRel */,
+				62E5C3F8F7C24BE19733937E /* RelWithDebInfo */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		3BF0EA6140A841BCA1722110 /* Build configuration list for PBXAggregateTarget "ZERO_CHECK" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				F1DD3FB5C40A427E85F3CD8B /* Debug */,
+				072BD4F4E890448CB950097C /* Release */,
+				0C26720D08FE4B629695B0A2 /* MinSizeRel */,
+				BA10001F233740A887BD9FC0 /* RelWithDebInfo */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		DB87B9C4811944DD9731E044 /* Build configuration list for PBXNativeTarget "HateEngine" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				FF29FB7F26D44A2484891FC6 /* Debug */,
+				6BEF34F78D834A00B10856D8 /* Release */,
+				803BCA9EFBD64E27A3D3ED75 /* MinSizeRel */,
+				81CD8B48BD5C432B8AEB3F49 /* RelWithDebInfo */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		EF809DA4513F4369829A2CCC /* Build configuration list for PBXNativeTarget "Example_1" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				54DF025A45B84BE7AC032442 /* Debug */,
+				67831528AAD44F42BEE4EDA5 /* Release */,
+				69BA7FB321F444C7BA66404E /* MinSizeRel */,
+				046899FD901A43ADB220AA23 /* RelWithDebInfo */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		F6602F07F72745CAB6FC5E5E /* Build configuration list for PBXAggregateTarget "ALL_BUILD" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				00CD8E0ADCE04703BFA65D5E /* Debug */,
+				D48F178BDABB4D219AE8FD56 /* Release */,
+				6A9559D6426243849F254EB4 /* MinSizeRel */,
+				A554F17FDF184A819DFE75E9 /* RelWithDebInfo */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 4FA44D72C7764CA4B38ED1F4 /* Project object */;
+}

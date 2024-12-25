@@ -42,7 +42,6 @@ std::vector<Mesh*> Model::getMeshes(glm::vec3 camera_pos) const {
     if (LODs.size() == 1) {
         return LODs[0].meshes;
     } else {
-        // TODO: Implement
         // Get AABB from LOD0
         std::vector<Mesh*> result;
 

@@ -27,7 +27,6 @@ namespace HateEngine {
             bool bind_scale;
             bool bind_visible;
         };
-        // FIXME
         std::unordered_map<UUID, BindedObj> bindedObjects;
 
         glm::vec3 parent_position = {0, 0, 0};

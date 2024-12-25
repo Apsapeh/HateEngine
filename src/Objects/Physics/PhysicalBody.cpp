@@ -47,7 +47,6 @@ void PhysicalBody::Init(reactphysics3d::RigidBody* body) {
             this->angularLockAxisFactor.z, this->angularLockAxisFactor.y,
             this->angularLockAxisFactor.x
     ));
-    // TODO: Add set pref
 }
 
 void PhysicalBody::Update() {
