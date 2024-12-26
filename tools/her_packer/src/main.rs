@@ -308,7 +308,6 @@ impl MyApp {
 
     fn parse_proj_file(&mut self) {
         let proj_file = std::fs::read_to_string(&self.project_path.clone().unwrap()).unwrap();
-
         let proj: hpprj_toml::HpprjToml = toml::from_str(&proj_file).unwrap();
 
         self.password = proj.password;
@@ -327,6 +326,11 @@ impl MyApp {
                 .parent()
                 .unwrap()
                 .join(&res.path);
+
+            if !path.exists() {
+                eprintln!("File not found: {}", path.display().to_string());
+                continue;
+            }
 
             let size_bytes = std::fs::metadata(&path).unwrap().len();
             let size = if size_bytes < 1024 {

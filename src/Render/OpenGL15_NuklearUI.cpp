@@ -21,7 +21,6 @@
 #include <glm/ext/matrix_clip_space.hpp>
 #include <glm/ext/vector_int2.hpp>
 #include "HateEngine/Log.hpp"
-#include "HateEngine/Resources/Level.hpp"
 
 #define NK_INCLUDE_FIXED_TYPES
 #define NK_INCLUDE_STANDARD_IO
@@ -132,10 +131,11 @@ void OpenGL15::loadFont(UIFont* font) {
     nk_font_atlas_end(&rapi_data->atlas, nk_handle_id((int) font_tex), &rapi_data->null);
 
 
-    font->is_loaded = true;
+    font->is_gpu_loaded = true;
     font->textureGL_ID = font_tex;
     rapi_data->font = fnt;
     font->render_api_data = rapi_data;
+
     // nk_init_default(&ctx, &font->handle);
 }
 
@@ -204,9 +204,12 @@ void OpenGL15::DrawNuklearUI(std::unordered_map<UUID, Level::SceneUIWidget>* wid
                                 obj->text_color.w);
 
                 // const nk_user_font* prev_font = ctx.style.font;
-                if (obj->font != nullptr and not obj->font->is_unable_to_load) {
-                    if (not obj->font->is_loaded)
+                if (obj->font != nullptr and obj->font->is_loaded) {
+                    // HATE_INFO("FONT OK")
+                    if (not obj->font->is_gpu_loaded) {
                         obj->font->Load(loadFont, unloadFont);
+                        HATE_INFO("FONT LOADED")
+                    }
 
                     ctx.style.font = &((UIFontRAPI_Data*) obj->font->render_api_data)->font->handle;
                 }
@@ -266,8 +269,10 @@ void OpenGL15::DrawNuklearUI(std::unordered_map<UUID, Level::SceneUIWidget>* wid
                     struct nk_image* button_image = nullptr;
                     if (button->pressed_texture != nullptr and
                         nk_input_is_mouse_hovering_rect(&ctx.input, bounds) and
-                        nk_input_is_mouse_down(&ctx.input, NK_BUTTON_LEFT)) {
-                        if (not button->getPressedTexture()->is_loaded)
+                        nk_input_is_mouse_down(&ctx.input, NK_BUTTON_LEFT) and
+                        button->pressed_texture->is_loaded) {
+
+                        if (not button->getPressedTexture()->is_gpu_loaded)
                             button->getPressedTexture()->Load(loadTexture, unloadTexture);
 
                         if (button->nk_img_pressed == nullptr) {
@@ -277,9 +282,8 @@ void OpenGL15::DrawNuklearUI(std::unordered_map<UUID, Level::SceneUIWidget>* wid
                         }
 
                         button_image = (struct nk_image*) button->nk_img_pressed;
-                    } else if (button->hover_texture != nullptr and
-                               nk_input_is_mouse_hovering_rect(&ctx.input, bounds)) {
-                        if (not button->getHoverTexture()->is_loaded)
+                    } else if (button->hover_texture != nullptr and nk_input_is_mouse_hovering_rect(&ctx.input, bounds) and button->hover_texture->is_loaded) {
+                        if (not button->getHoverTexture()->is_gpu_loaded)
                             button->getHoverTexture()->Load(loadTexture, unloadTexture);
 
                         if (button->nk_img_hover == nullptr) {
@@ -289,8 +293,8 @@ void OpenGL15::DrawNuklearUI(std::unordered_map<UUID, Level::SceneUIWidget>* wid
                         }
 
                         button_image = (struct nk_image*) button->nk_img_hover;
-                    } else if (button->normal_texture != nullptr) {
-                        if (not button->getNormalTexture()->is_loaded)
+                    } else if (button->normal_texture != nullptr and button->normal_texture->is_loaded) {
+                        if (not button->getNormalTexture()->is_gpu_loaded)
                             button->getNormalTexture()->Load(loadTexture, unloadTexture);
 
                         if (button->nk_img_normal == nullptr) {
@@ -365,15 +369,17 @@ void OpenGL15::DrawNuklearUI(std::unordered_map<UUID, Level::SceneUIWidget>* wid
                     ImageUI* image = (ImageUI*) obj;
                     Texture* texture = image->texture;
 
-                    if (not texture->is_loaded)
-                        texture->Load(loadTexture, unloadTexture);
+                    if (texture->is_loaded) {
+                        if (not texture->is_gpu_loaded)
+                            texture->Load(loadTexture, unloadTexture);
 
-                    if (image->nk_image == nullptr) {
-                        struct nk_image img = nk_image_id(texture->getTextureID());
-                        image->nk_image = new struct nk_image(img);
+                        if (image->nk_image == nullptr) {
+                            struct nk_image img = nk_image_id(texture->getTextureID());
+                            image->nk_image = new struct nk_image(img);
+                        }
+
+                        nk_image(&ctx, *((struct nk_image*) image->nk_image));
                     }
-
-                    nk_image(&ctx, *((struct nk_image*) image->nk_image));
                 }
                 nk_style_pop_font(&ctx);
             }

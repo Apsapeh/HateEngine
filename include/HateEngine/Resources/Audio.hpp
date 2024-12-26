@@ -2,9 +2,10 @@
 #include <cstdint>
 #include <string>
 #include <soloud_wav.h>
+#include "Resource.hpp"
 
 namespace HateEngine {
-    class Audio {
+    class Audio : public Resource {
         SoLoud::Wav soloudWav;
 
     public:

@@ -3,7 +3,7 @@
 #include <string>
 #include <sys/types.h>
 #include <unordered_map>
-#include "../Objects/Model.hpp"
+#include "Model.hpp"
 #include "../Objects/Physics/ConvexShape.hpp"
 #include "../Objects/Physics/StaticBody.hpp"
 #include "../Objects/Light/Light.hpp"

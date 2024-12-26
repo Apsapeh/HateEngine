@@ -32,13 +32,14 @@ Texture::Texture(const Texture& texture, bool copy_tex_data) {
     this->autoload = texture.autoload;
     this->fileName = texture.fileName;
     this->is_loaded = texture.is_loaded;
+    this->is_gpu_loaded = texture.is_gpu_loaded;
     this->API_unloader = texture.API_unloader;
 
     if (copy_tex_data) {
         /*if (texture.textureGL_ID == 0 and this->autoload)
             Load();*/
 
-        if (this->is_loaded) {
+        if (this->is_gpu_loaded) {
             glGenTextures(1, &this->textureGL_ID);
             glBindTexture(GL_TEXTURE_2D, this->textureGL_ID);
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, this->texWrap);
@@ -89,7 +90,7 @@ Texture::Texture(
     this->MipMapLodBias = mipmap_bias;
     this->autoload = autoload;
 
-    this->is_unable_to_load = !loadFromFile();
+    this->is_loaded = loadFromFile();
 
     /*if (autoload)
         Load();*/
@@ -112,6 +113,7 @@ Texture::Texture(
     this->MipMapLodBias = mipmap_bias;
 
     this->autoload = autoload;
+    this->is_loaded = true;
     /*if (autoload)
         Load();*/
 }
@@ -124,6 +126,10 @@ Texture::Texture(
     Texture::TexType textureFormat = Texture::RGB;
 
     unsigned char* s_data = stbi_load_from_memory(data.data(), data.size(), &width, &height, &n, 0);
+    if (s_data == nullptr) {
+        HATE_ERROR("Texture: Error loading from memory")
+        return;
+    }
     if (n == 4)
         textureFormat = Texture::RGBA;
     this->data = std::vector<uint8_t>(s_data, s_data + width * height * n);
@@ -138,6 +144,7 @@ Texture::Texture(
     if (mipmap)
         this->texMipMapFiltering += GL_NEAREST_MIPMAP_LINEAR - GL_NEAREST;
     this->MipMapLodBias = mipmap_bias;
+    this->is_loaded = true;
 }
 
 Texture::~Texture() {
@@ -164,9 +171,14 @@ bool Texture::Load(
     this->API_unloader = API_unloader;
     if (this->API_unloader == nullptr) {
         HATE_WARNING("Error: API_unloader is not set");
+        return false;
     }
 
-    if (this->is_loaded) {
+    if (not this->is_loaded) {
+        return false;
+    }
+
+    if (this->is_gpu_loaded) {
         this->data.clear();
         this->data.shrink_to_fit();
         return true;
@@ -176,7 +188,7 @@ bool Texture::Load(
         return false;
 
     API_load_func(this);
-    this->is_loaded = true;
+    this->is_gpu_loaded = true;
 
     this->data.clear();
     this->data.shrink_to_fit();
@@ -184,9 +196,9 @@ bool Texture::Load(
 }
 
 void Texture::Unload() {
-    if (this->is_loaded) {
+    if (this->is_gpu_loaded) {
         this->API_unloader(this);
-        is_loaded = false;
+        is_gpu_loaded = false;
         autoload = false;
     }
 }

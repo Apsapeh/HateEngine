@@ -3,6 +3,7 @@
 #include "HateEngine/Resources/Audio.hpp"
 #include "HateEngine/AudioServer.hpp"
 #include "soloud_audiosource.h"
+#include <HateEngine/Log.hpp>
 
 using namespace HateEngine;
 
@@ -40,10 +41,14 @@ AudioPlayer::~AudioPlayer() {
 
 void AudioPlayer::play() {
     SoLoud::AudioSource* audioSource;
-    if (audioStream != nullptr)
+    if (audioStream != nullptr and audioStream->isLoaded())
         audioSource = audioStream->GetSoLoudWavStream();
-    else
+    else if (audio->isLoaded())
         audioSource = audio->GetSoLoudWav();
+    else {
+        HATE_ERROR("Audio is not loaded");
+        return;
+    }
 
     if (type == Audio2D) {
         if (bus == nullptr)

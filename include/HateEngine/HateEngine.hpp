@@ -4,7 +4,7 @@
 #include <mutex>
 #include <string>
 // #include "Utilities/UUID_Generator.hpp"
-#include "Resources/Level.hpp"
+#include "Level.hpp"
 #include "Input.hpp"
 
 namespace HateEngine {
@@ -24,9 +24,9 @@ namespace HateEngine {
 
 
         struct SceneObject {
-            Object* obj;
+            Object* obj = nullptr;
             // UUID_Generator::UUID id;
-            bool is_ref;
+            bool is_ref = false;
         };
 
         struct InputEventInfo {
@@ -41,7 +41,7 @@ namespace HateEngine {
             glm::vec2 position = {0, 0};
         };
 
-        GLFWwindow* window;
+        GLFWwindow* window = nullptr;
 
     private:
         void (*processLoop)(Engine*, double) = nullptr;
@@ -64,7 +64,7 @@ namespace HateEngine {
         glm::ivec2 resolution = {0, 0};
         glm::vec2 displayScale = {0.0f, 0.0f};
         float aspectRatio;
-        Level* level;
+        Level* level = nullptr;
 
         std::string windowTitle = "";
         bool needChangeMouseCaptureMode = false;

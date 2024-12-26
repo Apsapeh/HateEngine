@@ -22,13 +22,10 @@ using namespace HateEngine;
 
 #include <iostream>
 bool UIFont::loadFromFile() {
-    // read file
-
     std::ifstream file(this->fileName, std::ios::binary);
     if (!file.is_open()) {
         // HATE_ERROR("Error: Could not open file: %s", this->fileName.c_str());
         HATE_ERROR_F("UIFont: Could not open file: %s", this->fileName.c_str());
-        this->is_unable_to_load = true;
         return false;
     }
 
@@ -43,6 +40,7 @@ bool UIFont::loadFromFile() {
     unsigned char* dt = this->data.data();
     file.read((char*) dt, file_size);
     file.close();
+    this->is_loaded = true;
     return true;
 }
 
@@ -61,7 +59,7 @@ UIFont::~UIFont() {
 bool UIFont::Load(
         void (*API_load_func)(UIFont* texture_ptr), void (*API_unloader)(UIFont* texture_ptr)
 ) {
-    if (this->is_unable_to_load) {
+    if (!this->is_loaded) {
         return false;
     }
 
@@ -70,7 +68,7 @@ bool UIFont::Load(
         HATE_WARNING("Error: API_unloader is not set");
     }
 
-    if (this->is_loaded) {
+    if (this->is_gpu_loaded) {
         this->data.clear();
         this->data.shrink_to_fit();
         return true;
@@ -83,7 +81,7 @@ bool UIFont::Load(
         return false;
 
     API_load_func(this);
-    this->is_loaded = true;
+    this->is_gpu_loaded = true;
 
     this->data.clear();
     this->data.shrink_to_fit();
@@ -91,9 +89,9 @@ bool UIFont::Load(
 }
 
 void UIFont::Unload() {
-    if (this->is_loaded) {
+    if (this->is_gpu_loaded) {
         this->API_unloader(this);
-        is_loaded = false;
+        is_gpu_loaded = false;
     }
 }
 
@@ -106,4 +104,8 @@ uint32_t UIFont::getTextureID() {
 
 float UIFont::getPixelHeight() {
     return this->pixel_height;
+}
+
+bool UIFont::isGPULoaded() {
+    return this->is_gpu_loaded;
 }

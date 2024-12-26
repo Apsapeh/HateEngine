@@ -1,7 +1,8 @@
 #pragma once
 #include <cstdint>
 #include <string>
-#include "../Objects/Model.hpp"
+#include "Model.hpp"
+#include "Resource.hpp"
 
 namespace HateEngine {
     class GLTFModel : public Model {

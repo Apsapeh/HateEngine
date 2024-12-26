@@ -2,11 +2,12 @@
 #include <cstdint>
 #include <string>
 #include <vector>
+#include "Resource.hpp"
 
 namespace HateEngine {
     class OpenGL15;
 
-    class Texture {
+    class Texture : public Resource {
         friend OpenGL15;
 
     private:
@@ -21,8 +22,7 @@ namespace HateEngine {
         float MipMapLodBias = -1.0f;
         bool autoload;
         uint32_t textureGL_ID = 0;
-        bool is_loaded = false;
-        bool is_unable_to_load = false;
+        bool is_gpu_loaded = false;
 
         void (*API_unloader)(Texture*);
 
@@ -62,5 +62,7 @@ namespace HateEngine {
         int getHeight() const;
 
         void setAutoload(bool value);
+
+        bool isGPULoaded();
     };
 } // namespace HateEngine

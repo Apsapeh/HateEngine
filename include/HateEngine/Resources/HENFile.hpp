@@ -4,6 +4,7 @@
 #include <string>
 #include <vector>
 #include <memory>
+#include "Resource.hpp"
 
 namespace HateEngine {
     struct HENNodeLink {
@@ -16,7 +17,7 @@ namespace HateEngine {
         std::vector<HENNodeLink> links;
     };
 
-    class HENFile {
+    class HENFile : public Resource {
     private:
         std::shared_ptr<std::vector<HENNode>> nodes;
 

@@ -16,7 +16,7 @@
 namespace HateEngine {
     class HERResource {
         friend class HERFile;
-        std::vector<uint8_t> data;
+        std::vector<uint8_t> data = {};
 
     public:
         std::vector<uint8_t>* getRawData();

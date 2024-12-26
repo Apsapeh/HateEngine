@@ -242,9 +242,7 @@ void Engine::Run() {
             }
 
             if (physics_engine_iterate_loop_delta >= physics_engine_iterate_loop_delay) {
-                // uint32_t i = 0;
-                /*std::cout << "Physics Engine Iteration: " <<
-                physics_engine_iterate_loop_delta << std::endl;*/
+
                 if (this->level != nullptr) {
                     while (physics_engine_iterate_loop_delta - 0.0001 > 0.0f) {
                         float d = physics_engine_iterate_loop_delay;
@@ -270,7 +268,7 @@ void Engine::Run() {
                 AudioServer::setListener3DDirection(this->level->camera->getGlobalDirection());
             }
 
-            ogl.Render();
+            // ogl.Render();
         }
 
         AudioServer::Update3D();
@@ -391,7 +389,7 @@ void Engine::threadPhysicsEngineIterateLoop() {
         std::this_thread::sleep_for(std::chrono::microseconds(a));
 
         delta = glfwGetTime() - oldTime;
-        if (this->level != nullptr)
+        if (this->level != nullptr and this->level->getPhysEngine() != nullptr)
             this->level->getPhysEngine()->IteratePhysics((float) delta);
         oldTime = glfwGetTime();
         func_delta = glfwGetTime() - oldTime;

@@ -1,6 +1,7 @@
 #include <HateEngine/Resources/HENFile.hpp>
 #include <HateEngine/Log.hpp>
 #include <cstdint>
+#include <cstring>
 #include <fstream>
 #include <iostream>
 
@@ -21,6 +22,7 @@ HENFile::HENFile(std::string path) {
             &file
     );
     file.close();
+    this->is_loaded = true;
 }
 
 HENFile::HENFile(const char* data, uint32_t size) {
@@ -28,11 +30,12 @@ HENFile::HENFile(const char* data, uint32_t size) {
     this->load(
             [](char* ptr, long n, void* data_p) {
                 const char** file = (const char**) data_p;
-                memcpy(ptr, *file, n);
+                std::memcpy(ptr, *file, n);
                 *file += n;
             },
             data_wrap
     );
+    this->is_loaded = true;
 }
 
 void HENFile::load(void (*get_bytes)(char* ptr, long n, void* data_p), void* data_p) {

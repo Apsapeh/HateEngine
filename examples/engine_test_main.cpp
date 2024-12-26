@@ -28,7 +28,7 @@
 #include <HateEngine/Objects/BillboardMesh.hpp>
 #include <HateEngine/Resources/GLTFModel.hpp>
 #include <HateEngine/Resources/Texture.hpp>
-#include <HateEngine/Resources/Level.hpp>
+#include <HateEngine/Level.hpp>
 #include <HateEngine/Resources/HERFile.hpp>
 #include <HateEngine/Resources/ObjMapModel.hpp>
 #include <cmath>
@@ -66,8 +66,8 @@ HateEngine::CubeMesh xAxMesh;
 // HateEngine::GLTFModel glmodel("examples/Assets/employee.glb");
 // HateEngine::GLTFModel glmodel("examples/Assets/billy-plane-sep.glb");
 // HateEngine::GLTFModel glmodel("examples/Assets/ignore/fire.glb");
-// HateEngine::GLTFModel test_glmodel("examples/Assets/SHOTGUN4.glb");
-HateEngine::GLTFModel* test_glmodel;
+HateEngine::GLTFModel test_glmodel("examples/Assets/SHOTGUN4.glb");
+// HateEngine::GLTFModel* test_glmodel;
 HateEngine::GLTFModel playerCapsuleMesh("examples/Assets/capsule.glb");
 
 
@@ -194,8 +194,8 @@ int main() {
 
     HateEngine::HERFile herfile("examples/Assets/test.her", "password");
     HateEngine::Texture tex_floor = herfile["ground.png"].asTexture();
-    HateEngine::GLTFModel her_model = herfile["new_shotgun.glb"].asGLBModel();
-    test_glmodel = &her_model;
+    // HateEngine::GLTFModel her_model = herfile["new_shotgun.glb"].asGLBModel();
+    // test_glmodel = &her_model;
 
 
     HateEngine::GLTFModel radioModel("examples/Assets/radio.glb");
@@ -255,6 +255,7 @@ int main() {
     colorCube.setSize(3, 3, 3);
 
     HateEngine::Texture bri("examples/Assets/brick.png");
+    // HATE_FATAL_F("BRI loaded: %d", bri.isLoaded());
     colorCube.setTexture(&bri);
 
 
@@ -305,11 +306,11 @@ int main() {
     // delete audio;
     audioPlayer.play();*/
 
-    playerCapsuleMesh.bindObj(test_glmodel);
+    playerCapsuleMesh.bindObj(&test_glmodel);
 
     // test_glmodel->offset(0.5, -0.5, -2);
-    test_glmodel->setScale(0.25, 0.25, 0.25);
-    test_glmodel->setRotation(0, 180, 0);
+    test_glmodel.setScale(0.25, 0.25, 0.25);
+    test_glmodel.setRotation(0, 180, 0);
 
 
     // HateEngine::Texture tex_floor("examples/Assets/ground.png");
@@ -328,7 +329,7 @@ int main() {
     // HateEngine::GLTFModel glmodel2("examples/Assets/ignore/bolg.glb");
 
     game.setLevelRef(&lvl);
-    lvl.addObjectRef(test_glmodel);
+    lvl.addObjectRef(&test_glmodel);
     // HateEngine::CubeMesh test_mesh;
     // HateEngine::Level level2;
     // level2.addObjectRef(&test2);
@@ -397,7 +398,7 @@ int main() {
     // objmodel.offset(0, -180, -20);
     // objmodel.offset(-30, -20, 60);
 
-    for (auto& m: objmodel.getLOD(0)) {
+    /*for (auto& m: objmodel.getLOD(0)) {
         glm::vec3 min = m->getAABBMin();
         glm::vec3 max = m->getAABBMax();
 
@@ -409,7 +410,7 @@ int main() {
         cube.setPosition(center.x, center.y, center.z);
         // cube.setPosition(m->getGlobalPosition());
         // lvl.addObjectClone(cube);
-    }
+    }*/
 
     lvl.addObjectRef(&objmodel);
 
@@ -605,7 +606,7 @@ int main() {
             "examples/Assets/lightmap/4.png", HateEngine::Texture::Repeat,
             HateEngine::Texture::Linear
     );
-    for (auto& m: lightmap_model.getLOD(0)) {
+    /*for (auto& m: lightmap_model.getLOD(0)) {
         if (m->getName() == "Cube.004") {
             // m->setTexture(&bri);
             m->setLightTexture(&cube3_lightmap);
@@ -616,7 +617,7 @@ int main() {
         m->setTexture(&bri);
         // m->setLightTexture(&cube3_lightmap);
         // std::cout << m->getLightUV()->size() << "\n";
-    }
+    }*/
 
 
     /*cube_part.setPosition(0, 3, 0);
@@ -935,7 +936,7 @@ void _physics_process(HateEngine::Engine* engine, double delta) {
     // HATE_DEBUG_F("Y: %f", rigidBody.getPosition().y);
     //  ray->isCollide();
     //  std::cout << engine->getResolution().x << " | " << engine->getResolution().y << "\n";
-    test_glmodel->rotate(1, 0, 0);
+    test_glmodel.rotate(1, 0, 0);
     // std::cout << camera.getRotationEuler().x << " " << camera.getRotationEuler().y << " " <<
     // camera.getRotationEuler().z << "\n"; std::cout << "FPS: " << 1.0 / delta << "\n";
     glm::vec3 mesh1_r = mesh1.getGlobalRotationEuler();

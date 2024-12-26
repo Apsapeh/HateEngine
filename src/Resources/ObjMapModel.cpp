@@ -8,6 +8,7 @@
 #include <string>
 #include <unordered_map>
 #include <vector>
+#include <array>
 
 #include "HateEngine/Log.hpp"
 #include "HateEngine/Objects/Object.hpp"
@@ -75,6 +76,8 @@ ObjMapModel::ObjMapModel(
         );
         parseMap(map_data, grid_size);
     }
+
+    is_loaded = true;
 }
 
 
@@ -87,6 +90,7 @@ ObjMapModel::ObjMapModel(
     this->generate_collision = generate_collision;
     parseObj(obj_file_data, grid_size, lod_dist, lod_step, her);
     parseMap(map_file_data, grid_size);
+    is_loaded = true;
 }
 
 ObjMapModel::~ObjMapModel() {

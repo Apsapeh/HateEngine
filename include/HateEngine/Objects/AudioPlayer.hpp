@@ -18,7 +18,7 @@ namespace HateEngine {
         AudioStream* audioStream = nullptr;
         AudioBus* bus = nullptr;
         bool owns_audio = false;
-        SoLoud::handle soloudHandle;
+        SoLoud::handle soloudHandle = 0;
 
     protected:
         void setParentPosition(glm::vec3 vec) override;

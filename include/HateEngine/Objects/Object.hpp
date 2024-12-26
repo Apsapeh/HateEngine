@@ -3,6 +3,7 @@
 #include <glm/matrix.hpp>
 #include <glm/vec3.hpp>
 #include <unordered_map>
+#include <string>
 #include "../Utilities/UUID.hpp"
 
 namespace HateEngine {

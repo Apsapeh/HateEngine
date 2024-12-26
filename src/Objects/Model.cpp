@@ -1,4 +1,4 @@
-#include <HateEngine/Objects/Model.hpp>
+#include <HateEngine/Resources/Model.hpp>
 #include <cstddef>
 #include "HateEngine/Objects/Mesh.hpp"
 
@@ -13,6 +13,8 @@ Model::Model(const Model& model, bool copy_textures) : Object(model) {
     for (const auto m: model.meshes)
         this->meshes.push_back(new Mesh(*m));*/
     // this->textures = model.textures;
+    if (not model.is_loaded)
+        return;
 
     this->LODs.reserve(model.LODs.size());
     for (const auto l: model.LODs) {
@@ -29,6 +31,8 @@ Model::Model(const Model& model, bool copy_textures) : Object(model) {
             this->textures.push_back(Texture(t, true));
     } else
         this->textures = model.textures;
+
+    is_loaded = true;
 }
 
 void Model::addLOD(float distance, std::vector<Mesh*> meshes) {

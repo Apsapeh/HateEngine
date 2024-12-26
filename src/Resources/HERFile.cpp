@@ -58,6 +58,11 @@ HERFile::HERFile(std::string path, std::string password) {
     this->password = password;
 
     std::ifstream file(path, std::ios::binary);
+    if (!file.is_open()) {
+        HATE_ERROR_F("HERFile: File %s not found", path.c_str());
+        return;
+    }
+
     uint32_t version;
     file.read((char*) &version, sizeof(version));
 
@@ -109,16 +114,21 @@ ObjMapModel HERFile::loadObjMap(
 }
 
 HERResource HERFile::operator[](std::string key) {
-    std::ifstream file(path, std::ios::binary);
-    Blowfish blowfish;
-    blowfish.SetKey((const unsigned char*) password.c_str(), password.size());
-
     HERResource result;
 
     if (this->resources.find(key) == this->resources.end()) {
         HATE_ERROR_F("HERFile [%s]: Resource %s not found", path.c_str(), key.c_str());
         return result;
     }
+
+    std::ifstream file(path, std::ios::binary);
+    if (!file.is_open()) {
+        HATE_ERROR_F("HERFile: File %s not found", path.c_str());
+        return HERResource();
+    }
+
+    Blowfish blowfish;
+    blowfish.SetKey((const unsigned char*) password.c_str(), password.size());
 
     HERResourceRaw& resource = this->resources[key];
     file.seekg(resource.offset + this->dataPointer);

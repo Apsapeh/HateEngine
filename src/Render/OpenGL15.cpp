@@ -6,13 +6,12 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-#include "HateEngine/Log.hpp"
-#include "HateEngine/Objects/GLTFAnimationPlayer.hpp"
-#include "HateEngine/Objects/Light/Light.hpp"
-#include "HateEngine/Objects/Light/SpotLight.hpp"
-#include "HateEngine/Objects/Mesh.hpp"
-#include "HateEngine/Objects/Model.hpp"
-#include "HateEngine/Resources/Level.hpp"
+#include <HateEngine/Log.hpp>
+#include <HateEngine/Objects/GLTFAnimationPlayer.hpp>
+#include <HateEngine/Objects/Light/Light.hpp>
+#include <HateEngine/Objects/Light/SpotLight.hpp>
+#include <HateEngine/Objects/Mesh.hpp>
+#include <HateEngine/Resources/Model.hpp>
 #include "glm/ext/matrix_float4x4.hpp"
 #include "glm/fwd.hpp"
 #include "glm/geometric.hpp"
@@ -263,6 +262,8 @@ void OpenGL15::Draw3D(
     }
 
     for (const auto obj: *models) {
+        if (not obj->isLoaded())
+            continue;
         auto model_meshes = ((Model*) obj)->getMeshes(camera->getGlobalPosition());
         for (const auto& mesh: model_meshes) {
             if (mesh->getCorrectTransparency())
@@ -330,9 +331,9 @@ glMaterialfv(GL_FRONT_AND_BACK, GL_SHININESS, mat_shininess);*/
 
 
         // Render Textures
-        if (mesh->getTexture() != nullptr and not mesh->getTexture()->is_unable_to_load) {
+        if (mesh->getTexture() != nullptr and mesh->getTexture()->is_loaded) {
             glActiveTexture(GL_TEXTURE0);
-            if (not mesh->getTexture()->is_loaded)
+            if (not mesh->getTexture()->is_gpu_loaded)
                 mesh->getTexture()->Load(loadTexture, unloadTexture);
 
             glEnable(GL_TEXTURE_2D);
@@ -343,9 +344,9 @@ glMaterialfv(GL_FRONT_AND_BACK, GL_SHININESS, mat_shininess);*/
             glTexCoordPointer(2, GL_FLOAT, 0, mesh->getUV()->data());
         }
 
-        if (mesh->getLightTexture() != nullptr and not mesh->getLightTexture()->is_unable_to_load) {
+        /*if (mesh->getLightTexture() != nullptr and not mesh->getLightTexture()->is_loaded) {
             glActiveTexture(GL_TEXTURE1);
-            if (not mesh->getLightTexture()->is_loaded)
+            if (not mesh->getLightTexture()->is_gpu_loaded)
                 mesh->getLightTexture()->Load(loadTexture, unloadTexture);
 
             glEnable(GL_TEXTURE_2D);
@@ -354,7 +355,7 @@ glMaterialfv(GL_FRONT_AND_BACK, GL_SHININESS, mat_shininess);*/
             glClientActiveTexture(GL_TEXTURE1);
             glEnableClientState(GL_TEXTURE_COORD_ARRAY);
             glTexCoordPointer(2, GL_FLOAT, 0, mesh->getLightUV()->data());
-        }
+        }*/
 
         glVertexPointer(3, GL_FLOAT, 0, mesh->getVertices()->data());
         glNormalPointer(GL_FLOAT, 0, mesh->getNormals()->data());

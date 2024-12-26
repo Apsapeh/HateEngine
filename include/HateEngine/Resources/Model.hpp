@@ -3,10 +3,10 @@
 #include <cstdint>
 #include "../Objects/Mesh.hpp"
 #include "../Objects/Object.hpp"
-#include "../Resources/Texture.hpp"
+#include "Texture.hpp"
 
 namespace HateEngine {
-    class Model : public Object {
+    class Model : public Object, public Resource {
         friend class GLTFAnimationPlayer;
 
     protected:
