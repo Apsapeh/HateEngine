@@ -45,14 +45,14 @@ ObjMapModel::ObjMapModel(
 
     if (!lightmap_file_name.empty()) {
         std::ifstream lightmap_file(lightmap_file_name);
-        if (!lightmap_file.is_open()) {
+        if (lightmap_file.is_open()) {
+            std::vector<uint8_t> lightmap_data(
+                    (std::istreambuf_iterator<char>(lightmap_file)),
+                    (std::istreambuf_iterator<char>())
+            );
+            parseHeluv(lightmap_data);
+        } else
             HATE_ERROR_F("Failed to open file: %s", lightmap_file_name.c_str());
-            return;
-        }
-        std::vector<uint8_t> lightmap_data(
-                (std::istreambuf_iterator<char>(lightmap_file)), (std::istreambuf_iterator<char>())
-        );
-        parseHeluv(lightmap_data);
     }
 
     std::ifstream file(obj_filename);
@@ -67,14 +67,13 @@ ObjMapModel::ObjMapModel(
 
     if (!map_file_name.empty()) {
         std::ifstream map_file(map_file_name);
-        if (!map_file.is_open()) {
+        if (map_file.is_open()) {
+            std::string map_data(
+                    (std::istreambuf_iterator<char>(map_file)), (std::istreambuf_iterator<char>())
+            );
+            parseMap(map_data, grid_size);
+        } else
             HATE_ERROR_F("Failed to open file: %s", map_file_name.c_str());
-            return;
-        }
-        std::string map_data(
-                (std::istreambuf_iterator<char>(map_file)), (std::istreambuf_iterator<char>())
-        );
-        parseMap(map_data, grid_size);
     }
 
     is_loaded = true;
@@ -82,20 +81,28 @@ ObjMapModel::ObjMapModel(
 
 
 ObjMapModel::ObjMapModel(
-        HERFile* her, std::string obj_file_data, std::string map_file_data, float grid_size,
-        bool generate_collision, float lod_dist, float lod_step
+        HERFile* her, std::string obj_file_data, std::string map_file_data,
+        std::vector<uint8_t> heluv_data, float grid_size, bool generate_collision, float lod_dist,
+        float lod_step
 
 ) {
     bindObj(&static_body);
     this->generate_collision = generate_collision;
+    if (!heluv_data.empty())
+        parseHeluv(heluv_data);
     parseObj(obj_file_data, grid_size, lod_dist, lod_step, her);
-    parseMap(map_file_data, grid_size);
+    if (!map_file_data.empty())
+        parseMap(map_file_data, grid_size);
     is_loaded = true;
 }
 
 ObjMapModel::~ObjMapModel() {
     if (entities_data_deleter != nullptr)
         entities_data_deleter(entities_data);
+
+    for (auto& l: heluv) {
+        delete l.second.texture;
+    }
 }
 
 void ObjMapModel::deserializeEntities(
@@ -136,7 +143,7 @@ void ObjMapModel::addEntityObjectToLevel(Particles* object) {
 }
 
 /*======================================> PARSERS <==============================================*/
-void ObjMapModel::parseHeluv(std::vector<uint8_t>& data) {
+void ObjMapModel::parseHeluv(std::vector<uint8_t>& data, HERFile* her) {
     uint8_t* ptr = data.data();
     uint32_t version = *(uint32_t*) ptr;
     ptr += 4;
@@ -153,9 +160,14 @@ void ObjMapModel::parseHeluv(std::vector<uint8_t>& data) {
         std::string name((char*) ptr, name_len);
         ptr += name_len;
 
-        HateEngine::Texture* tex = new HateEngine::Texture(
-                this->heluv_file_path + name + ".png", Texture::Repeat, Texture::Linear, false
-        );
+        std::string tex_filename = this->heluv_file_path + name + ".png";
+        HateEngine::Texture* tex;
+        if (her != nullptr) {
+            tex = new HateEngine::Texture(
+                    (*her)[tex_filename].asTexture(Texture::Repeat, Texture::Linear, false)
+            );
+        } else
+            tex = new HateEngine::Texture(tex_filename, Texture::Repeat, Texture::Linear, false);
 
         std::vector<std::vector<glm::vec2>> faces;
         for (uint32_t j = 0; j < faces_count; j++) {

@@ -56,7 +56,9 @@ target("HateEngine")
         set_policy("build.merge_archive", true)
         set_symbols("hidden")
         set_fpmodels("fast")
-        --set_optimize("aggressive")
+        set_optimize("aggressive")
+        set_policy("build.optimization.lto", true)
+        
     end
 
     --set_warnings("pedantic")
@@ -120,6 +122,8 @@ target("Example_1")
         set_strip("all")
         set_fpmodels("fast")
         set_optimize("aggressive")
+        -- lto
+        set_policy("build.optimization.lto", true)
     end
     
     if has_config("show_warnings") then

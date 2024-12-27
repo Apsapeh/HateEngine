@@ -1,4 +1,0 @@
-/Users/ghost/CLionProjects/HateEngine/CMakeFiles/Example_1.dir
-/Users/ghost/CLionProjects/HateEngine/CMakeFiles/HateEngine.dir
-/Users/ghost/CLionProjects/HateEngine/CMakeFiles/ALL_BUILD.dir
-/Users/ghost/CLionProjects/HateEngine/CMakeFiles/ZERO_CHECK.dir

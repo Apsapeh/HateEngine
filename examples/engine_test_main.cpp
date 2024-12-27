@@ -355,8 +355,8 @@ int main() {
     );*/
 
     HateEngine::ObjMapModel objmodel(
-            "examples/Assets/Ignore/E1M1.obj", "examples/Assets/Ignore/E1M1.map",
-            "examples/Assets/ignore/E1M1/light.heluv", 16.0, true, 15, 1
+            "examples/Assets/Ignore/E1M1.obj", "examples/Assets/Ignore/E1M1.MAP",
+            "examples/Assets/Ignore/E1M1/light.heluv", 16.0, true, 15, 1
     );
     objmodel.deserializeEntities(
             {{"light",
@@ -456,7 +456,9 @@ int main() {
     for (int i = 0; i < objmodel.getLODCount(); i++) {
         for (auto& lod: objmodel.getLOD(i)) {
             lod->setTexture(&bri);
-            // lod->setVisible(enabled.count(lod->getName()));
+            // HATE_INFO_F("LOD name: %s, light_texture: %d", lod->getName().c_str(),
+            // lod->getLightTexture() != nullptr);
+            //  lod->setVisible(enabled.count(lod->getName()));
         }
     }
 
@@ -590,10 +592,10 @@ int main() {
 
     cube_part.setPosition(4, 4, 4);
 
-    cube_part.play();
+    // cube_part.play();
 
     cube_part_ptr = &cube_part;
-    lvl.addObjectRef(&cube_part);
+    // lvl.addObjectRef(&cube_part);
 
 
     HateEngine::ObjMapModel lightmap_model(
@@ -849,8 +851,6 @@ int frames_count = 0;
 float speed = 1;
 double fps_time = 0.0;
 void _process(HateEngine::Engine* engine, double delta) {
-    decal.bake();
-    // std::cout << test_glmodel.getGlobalPosition().z << "\n";
     if (fps_time < 0.5) {
         ++frames_count;
         fps_time += delta;

@@ -68,7 +68,7 @@ namespace HateEngine {
             Texture* texture;
         };
 
-        void parseHeluv(std::vector<uint8_t>& data);
+        void parseHeluv(std::vector<uint8_t>& data, class HERFile* her = nullptr);
 
         void parseObj(
                 std::string data, float grid_size, float lod_dist, float lod_step,
@@ -130,8 +130,8 @@ namespace HateEngine {
          */
         ObjMapModel(
                 class HERFile* her, std::string obj_file_data, std::string map_file_data,
-                float grid_size = 16.0f, bool generate_collision = true, float lod_dist = 15,
-                float lod_step = 1.0
+                std::vector<uint8_t> heluv_data, float grid_size = 16.0f,
+                bool generate_collision = true, float lod_dist = 15, float lod_step = 1.0
         );
 
         ~ObjMapModel();

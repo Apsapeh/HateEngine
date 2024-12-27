@@ -1,4 +1,5 @@
 #include <HateEngine/Utilities/UUID.hpp>
+#include <cstdlib>
 
 using namespace HateEngine;
 
@@ -10,6 +11,9 @@ UUID::UUID() {
     // Я дебил, проблема не в винде, а во мне, просто не успевает создаться мьютекс
     // std::lock_guard<std::mutex> guard(this->mutex);
     this->id = counter++;
+    if (this->id == 25) {
+        // std::abort();
+    }
 }
 
 UUID::UUID(const uint64_t& id) {

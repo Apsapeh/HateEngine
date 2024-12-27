@@ -205,10 +205,8 @@ void OpenGL15::DrawNuklearUI(std::unordered_map<UUID, Level::SceneUIWidget>* wid
 
                 // const nk_user_font* prev_font = ctx.style.font;
                 if (obj->font != nullptr and obj->font->is_loaded) {
-                    // HATE_INFO("FONT OK")
                     if (not obj->font->is_gpu_loaded) {
                         obj->font->Load(loadFont, unloadFont);
-                        HATE_INFO("FONT LOADED")
                     }
 
                     ctx.style.font = &((UIFontRAPI_Data*) obj->font->render_api_data)->font->handle;

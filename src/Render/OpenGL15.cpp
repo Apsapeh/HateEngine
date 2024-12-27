@@ -262,30 +262,32 @@ void OpenGL15::Draw3D(
     }
 
     for (const auto obj: *models) {
-        if (not obj->isLoaded())
-            continue;
-        auto model_meshes = ((Model*) obj)->getMeshes(camera->getGlobalPosition());
-        for (const auto& mesh: model_meshes) {
-            if (mesh->getCorrectTransparency())
-                correct_buffer.push_back(mesh);
-            else
-                render(mesh, lights);
+        if (obj->isLoaded()) {
+            auto model_meshes = ((Model*) obj)->getMeshes(camera->getGlobalPosition());
+            for (const auto& mesh: model_meshes) {
+                if (mesh->getCorrectTransparency())
+                    correct_buffer.push_back(mesh);
+                else
+                    render(mesh, lights);
+            }
         }
     }
 
     // Render transparent objects in correct order
-    glm::vec3 camera_pos = camera->getGlobalPosition();
-    std::sort(correct_buffer.begin(), correct_buffer.end(), [camera_pos](Mesh* a, Mesh* b) {
-        /*return glm::distance(a->getGlobalPosition() + a->getAABBRadius(), camera_pos) >
-               glm::distance(b->getGlobalPosition() + b->getAABBRadius(), camera_pos);*/
-        return a->getAABBDistanceToPoint(camera_pos) > b->getAABBDistanceToPoint(camera_pos);
-    });
+    if (not correct_buffer.empty()) {
+        glm::vec3 camera_pos = camera->getGlobalPosition();
+        std::sort(correct_buffer.begin(), correct_buffer.end(), [camera_pos](Mesh* a, Mesh* b) {
+            /*return glm::distance(a->getGlobalPosition() + a->getAABBRadius(), camera_pos) >
+                   glm::distance(b->getGlobalPosition() + b->getAABBRadius(), camera_pos);*/
+            return a->getAABBDistanceToPoint(camera_pos) > b->getAABBDistanceToPoint(camera_pos);
+        });
 
-    for (const auto obj: correct_buffer) {
-        render(obj, lights);
+        for (const auto obj: correct_buffer) {
+            render(obj, lights);
+        }
+
+        correct_buffer.clear();
     }
-
-    correct_buffer.clear();
 
     glDisable(GL_DEPTH_TEST);
     glDisable(GL_CULL_FACE);
@@ -295,10 +297,11 @@ void OpenGL15::Draw3D(
 void OpenGL15::render(const Mesh* mesh, std::vector<Light*>* lights_vec) {
     if (mesh->getGlobalVisible()) {
         glPushMatrix();
+        glPushClientAttrib(GL_CLIENT_ALL_ATTRIB_BITS);
+        glPushAttrib(GL_ALL_ATTRIB_BITS);
 
         if (!mesh->getFaceCulling())
             glDisable(GL_CULL_FACE);
-
 
         std::vector<int> light_indicies;
         if (mesh->isLightShading()) {
@@ -307,28 +310,14 @@ void OpenGL15::render(const Mesh* mesh, std::vector<Light*>* lights_vec) {
                 max_light_render_dist = this->maxLightRenderDist;
             light_indicies = getNearestLights(lights_vec, mesh, max_light_render_dist);
             renderLight(lights_vec, light_indicies);
-            /*GLfloat mat_ambient[] = {0.5f, 0.5f, 0.5f, 1.0f};
-GLfloat mat_diffuse[] = {1.0f, 0.0f, 0.0f, 1.0f}; // Цвет объекта
-GLfloat mat_specular[] = {0.3f, 0.3f, 0.3f, 1.0f};
-GLfloat mat_shininess[] = {25.0f};
-
-glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, mat_ambient);
-glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, mat_diffuse);
-glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, mat_specular);
-glMaterialfv(GL_FRONT_AND_BACK, GL_SHININESS, mat_shininess);*/
-        } else {
-            glDisable(GL_LIGHTING);
         }
 
         glm::vec3 par_pos = mesh->getGlobalPosition();
         glTranslatef(par_pos.x, par_pos.y, par_pos.z);
-        // std::cout << "Render pos: " << par_pos.x << " | " << par_pos.y << " |
-        // " << par_pos.z << "\n";
         glMultMatrixf(glm::value_ptr(mesh->getGlobalRotationMatrix()));
 
         glm::vec3 scale = mesh->getGlobalScale();
         glScalef(scale.x, scale.y, scale.z);
-
 
         // Render Textures
         if (mesh->getTexture() != nullptr and mesh->getTexture()->is_loaded) {
@@ -344,10 +333,12 @@ glMaterialfv(GL_FRONT_AND_BACK, GL_SHININESS, mat_shininess);*/
             glTexCoordPointer(2, GL_FLOAT, 0, mesh->getUV()->data());
         }
 
-        /*if (mesh->getLightTexture() != nullptr and not mesh->getLightTexture()->is_loaded) {
+        if (mesh->getLightTexture() != nullptr and mesh->getLightTexture()->is_loaded) {
             glActiveTexture(GL_TEXTURE1);
             if (not mesh->getLightTexture()->is_gpu_loaded)
                 mesh->getLightTexture()->Load(loadTexture, unloadTexture);
+
+            // HATE_INFO_F("Name: %s", mesh->name.c_str());
 
             glEnable(GL_TEXTURE_2D);
             glBindTexture(GL_TEXTURE_2D, mesh->getLightTexture()->getTextureID());
@@ -355,11 +346,10 @@ glMaterialfv(GL_FRONT_AND_BACK, GL_SHININESS, mat_shininess);*/
             glClientActiveTexture(GL_TEXTURE1);
             glEnableClientState(GL_TEXTURE_COORD_ARRAY);
             glTexCoordPointer(2, GL_FLOAT, 0, mesh->getLightUV()->data());
-        }*/
+        }
 
         glVertexPointer(3, GL_FLOAT, 0, mesh->getVertices()->data());
         glNormalPointer(GL_FLOAT, 0, mesh->getNormals()->data());
-
 
         if (mesh->isColorEnabled()) {
             glEnable(GL_COLOR_MATERIAL);
@@ -373,32 +363,9 @@ glMaterialfv(GL_FRONT_AND_BACK, GL_SHININESS, mat_shininess);*/
                 mesh->getIndicies()->data()
         );
 
-        if (mesh->getTexture() != nullptr) {
-            glActiveTexture(GL_TEXTURE0);
-            glBindTexture(GL_TEXTURE_2D, 0);
-            glDisable(GL_TEXTURE_2D);
-        }
-
-        if (mesh->getLightTexture() != nullptr) {
-            glActiveTexture(GL_TEXTURE1);
-            glBindTexture(GL_TEXTURE_2D, 0);
-            glDisable(GL_TEXTURE_2D);
-        }
-
         glPopMatrix();
-        for (int i = 0; i < light_indicies.size(); ++i)
-            glDisable(GL_LIGHT0 + i);
-
-        if (!mesh->isLightShading())
-            glEnable(GL_LIGHTING);
-
-        if (!mesh->getFaceCulling())
-            glEnable(GL_CULL_FACE);
-
-        if (mesh->isColorEnabled()) {
-            glDisableClientState(GL_COLOR_ARRAY);
-            glDisable(GL_COLOR_MATERIAL);
-        }
+        glPopClientAttrib();
+        glPopAttrib();
     }
 }
 

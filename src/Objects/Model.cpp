@@ -45,7 +45,7 @@ void Model::addLOD(float distance, std::vector<Mesh*> meshes) {
 std::vector<Mesh*> Model::getMeshes(glm::vec3 camera_pos) const {
     if (LODs.size() == 1) {
         return LODs[0].meshes;
-    } else {
+    } else if (LODs.size() > 1) {
         // Get AABB from LOD0
         std::vector<Mesh*> result;
 
@@ -66,6 +66,8 @@ std::vector<Mesh*> Model::getMeshes(glm::vec3 camera_pos) const {
 
 
         return result;
+    } else {
+        return {};
     }
 }
 

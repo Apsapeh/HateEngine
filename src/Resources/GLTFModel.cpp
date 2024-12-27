@@ -224,13 +224,22 @@ GLTFModel::GLTFModel(std::string file_name) {
         return;
     }
 
+    // Check file is exists
+    std::ifstream file(file_name);
+    if (!file.is_open()) {
+        HATE_ERROR("File not found: " + file_name);
+        return;
+    }
+    file.close();
+
     bool ret;
     if (file_ext == ".gltf")
         ret = loader.LoadASCIIFromFile(&model, &err, &warn, file_name);
-    else if (file_ext == ".glb")
+    else if (file_ext == ".glb") {
         ret = loader.LoadBinaryFromFile(&model, &err, &warn, file_name);
+    }
 
-    if (process_error(err, warn, ret))
+    /*if (process_error(err, warn, ret))
         return;
 
     // Load model
@@ -242,7 +251,7 @@ GLTFModel::GLTFModel(std::string file_name) {
     for (auto& m: meshes)
         bindObj((Object*) m);
 
-    addLOD(0, meshes);
+    addLOD(0, meshes);*/
     is_loaded = true;
 }
 

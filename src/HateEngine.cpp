@@ -268,7 +268,7 @@ void Engine::Run() {
                 AudioServer::setListener3DDirection(this->level->camera->getGlobalDirection());
             }
 
-            // ogl.Render();
+            ogl.Render();
         }
 
         AudioServer::Update3D();

@@ -236,6 +236,8 @@ fn run(path: String, entity_map_path: String, output: String, grid_size: f32, te
         }),
     ];*/
 
+    let mut sum_area = 0u64;
+
     let mut counter = 0;
     for m in &meshes {
         println!(
@@ -245,16 +247,32 @@ fn run(path: String, entity_map_path: String, output: String, grid_size: f32, te
             meshes_names[counter]
         );
         let light_map = LightMap::new(m, &meshes, &lights, texel_per_unit);
+        let mut pixels = light_map.pixels.clone();
+
+        for p in pixels.iter_mut() {
+            let delta = 255u8 - *p;
+            if delta > 40 {
+                *p += 40;
+            }
+            else {
+                *p = 255;
+            }
+        }
+
         image::save_buffer(
             format!("{}/{}.png", output, meshes_names[counter]),
-            &light_map.pixels,
+            &pixels,
             light_map.width as u32,
             light_map.height as u32,
             image::ColorType::Rgb8,
         )
         .unwrap();
         counter += 1;
+
+        sum_area += light_map.pixels.len() as u64;
     }
+
+    println!("Total area: {}", sum_area);
 }
 
 fn lightmap_mesh_new(vertices: Vec<Vertex>, triangles: Vec<[u32; 3]>) -> Mesh {
