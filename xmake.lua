@@ -3,6 +3,7 @@ add_requires(
     "glm 1.0.0", 
     "tinygltf 2.8.13", 
     "reactphysics3d 0.9.0", 
+    "recastnavigation 1.6.0",
     "glu",
     "termcolor 5635ae00856eeddffcbf7091d13e2987abde91a2"
 )
@@ -45,7 +46,7 @@ target("HateEngine")
         "deps/blowfish/blowfish.cpp",
         "src/**.cpp"
     )
-    add_packages("glfw", "glm", "tinygltf", "reactphysics3d", "glu", "termcolor", "soloud")
+    add_packages("glfw", "glm", "tinygltf", "reactphysics3d", "glu", "termcolor", "soloud", "recastnavigation")
     add_defines("GLM_ENABLE_EXPERIMENTAL")
     
     if is_mode("debug") then
@@ -57,8 +58,10 @@ target("HateEngine")
         set_symbols("hidden")
         set_fpmodels("fast")
         set_optimize("aggressive")
-        set_policy("build.optimization.lto", true)
         
+        if not (is_plat("mingw") and is_arch("i386")) then
+            set_policy("build.optimization.lto", true)
+        end
     end
 
     --set_warnings("pedantic")
@@ -97,12 +100,12 @@ target("Example_1")
     add_includedirs("include")
 
     add_deps("HateEngine")
-    add_packages("glfw", "glm", "reactphysics3d", "ncvm", "soloud")
+    add_packages("glfw", "glm", "reactphysics3d", "soloud", "recastnavigation")
     add_defines("GLM_ENABLE_EXPERIMENTAL")
 
     if is_plat("mingw") then 
-        add_cxxflags("-specs=msvcr120.spec", {force=true})        
-        add_ldflags("-specs=msvcr120.spec -static-libstdc++ -static-libgcc", {force = true})
+        add_cxxflags("-specs=msvcr120v2.spec", {force=true})        
+        add_ldflags("-specs=msvcr120v2.spec -static-libstdc++ -static-libgcc", {force = true})
         --add_ldflags("-static")
     end
 
@@ -123,7 +126,9 @@ target("Example_1")
         set_fpmodels("fast")
         set_optimize("aggressive")
         -- lto
-        set_policy("build.optimization.lto", true)
+        if not (is_plat("mingw") and is_arch("i386")) then
+            set_policy("build.optimization.lto", true)
+        end
     end
     
     if has_config("show_warnings") then

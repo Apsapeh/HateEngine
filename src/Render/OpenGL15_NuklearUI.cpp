@@ -148,15 +148,7 @@ void OpenGL15::unloadFont(UIFont* font) {
 void OpenGL15::DrawNuklearUI(std::unordered_map<UUID, Level::SceneUIWidget>* widgets) {
     Level* start_level = engine->getLevel();
     pump_input(&ctx, engine->window);
-    /*if (nk_begin(&ctx, "Show", nk_rect(0, 0, 220, 220),
-    NK_WINDOW_NOT_INTERACTIVE|NK_WINDOW_BORDER)) {
-        ctx.style.window.fixed_background = nk_style_item_color(nk_rgba(0, 0, 0,
-    0)); ctx.style.text.color = nk_rgb(255, 0, 0); nk_layout_row_static(&ctx,
-    30, 80, 1); nk_label(&ctx, ("FPS: " +
-    std::to_string(glfwGetTime())).c_str(), NK_TEXT_LEFT);
 
-    }
-    nk_end(&ctx);*/
     for (const auto& it: *widgets) {
         const WidgetUI* widget = it.second.obj;
         glm::ivec2 res = engine->getResolution();
@@ -280,7 +272,9 @@ void OpenGL15::DrawNuklearUI(std::unordered_map<UUID, Level::SceneUIWidget>* wid
                         }
 
                         button_image = (struct nk_image*) button->nk_img_pressed;
-                    } else if (button->hover_texture != nullptr and nk_input_is_mouse_hovering_rect(&ctx.input, bounds) and button->hover_texture->is_loaded) {
+                    } else if (button->hover_texture != nullptr and
+                               nk_input_is_mouse_hovering_rect(&ctx.input, bounds) and
+                               button->hover_texture->is_loaded) {
                         if (not button->getHoverTexture()->is_gpu_loaded)
                             button->getHoverTexture()->Load(loadTexture, unloadTexture);
 
@@ -291,7 +285,8 @@ void OpenGL15::DrawNuklearUI(std::unordered_map<UUID, Level::SceneUIWidget>* wid
                         }
 
                         button_image = (struct nk_image*) button->nk_img_hover;
-                    } else if (button->normal_texture != nullptr and button->normal_texture->is_loaded) {
+                    } else if (button->normal_texture != nullptr and
+                               button->normal_texture->is_loaded) {
                         if (not button->getNormalTexture()->is_gpu_loaded)
                             button->getNormalTexture()->Load(loadTexture, unloadTexture);
 

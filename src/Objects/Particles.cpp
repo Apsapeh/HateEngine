@@ -48,9 +48,7 @@ Particle::Particle() {
 Particles::Particles(
         const Mesh& mesh, uint32_t particles_count, Particle::ParticleSettings settings,
         float spawn_delay
-) :
-    rd(),
-    mesh(mesh) {
+) : rd(), mesh(mesh) {
     this->maxParticles = particles_count;
     this->spawnDelay = spawn_delay;
     this->set = settings;

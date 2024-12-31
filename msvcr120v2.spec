@@ -20,7 +20,7 @@
  as %(asm_options) %m.s %A }  }
 
 *cpp:
-%{posix:-D_POSIX_SOURCE} %{mthreads:-D_MT} %{municode:-DUNICODE} %{!no-pthread:-D_REENTRANT} %{pthread:-U_REENTRANT} %{mcrtdll=crtdll*:-U__MSVCRT__ -D__CRTDLL__} %{mcrtdll=msvcrt10*:-D__MSVCRT_VERSION__=0x100} %{mcrtdll=msvcrt20*:-D__MSVCRT_VERSION__=0x200} %{mcrtdll=msvcrt40*:-D__MSVCRT_VERSION__=0x400} %{mcrtdll=msvcrt-os*:-D__MSVCRT_VERSION__=0x700} %{mcrtdll=msvcr70*:-D__MSVCRT_VERSION__=0x700} %{mcrtdll=msvcr71*:-D__MSVCRT_VERSION__=0x701} %{mcrtdll=msvcr80*:-D__MSVCRT_VERSION__=0x800} %{mcrtdll=msvcr90*:-D__MSVCRT_VERSION__=0x900} %{mcrtdll=msvcr100*:-D__MSVCRT_VERSION__=0xA00} %{mcrtdll=msvcr110*:-D__MSVCRT_VERSION__=0xB00} %{mcrtdll=msvcr120*:-D__MSVCRT_VERSION__=0xC00} %{mcrtdll=ucrt*:-D_UCRT} 
+%{posix:-D_POSIX_SOURCE} %{mthreads:-D_MT} %{municode:-DUNICODE} %{!no-pthread:-D_REENTRANT} %{pthread:-U_REENTRANT} %{mcrtdll=crtdll*:-U__MSVCRT__ -D__CRTDLL__} %{mcrtdll=msvcrt10*:-D__MSVCRT_VERSION__=0x100} %{mcrtdll=msvcrt20*:-D__MSVCRT_VERSION__=0x200} %{mcrtdll=msvcrt40*:-D__MSVCRT_VERSION__=0x400} %{mcrtdll=msvcr40*:-D__MSVCRT_VERSION__=0x400} %{mcrtdll=msvcrtd*:-D__MSVCRT_VERSION__=0x600} %{mcrtdll=msvcrt-os*:-D__MSVCRT_VERSION__=0x700} %{mcrtdll=msvcr70*:-D__MSVCRT_VERSION__=0x700} %{mcrtdll=msvcr71*:-D__MSVCRT_VERSION__=0x701} %{mcrtdll=msvcr80*:-D__MSVCRT_VERSION__=0x800} %{mcrtdll=msvcr90*:-D__MSVCRT_VERSION__=0x900} %{mcrtdll=msvcr100*:-D__MSVCRT_VERSION__=0xA00} %{mcrtdll=msvcr110*:-D__MSVCRT_VERSION__=0xB00} %{mcrtdll=msvcr120*:-D__MSVCRT_VERSION__=0xC00} %{mcrtdll=ucrt*:-D_UCRT} 
 
 *cpp_options:
 %(cpp_unique_options) %1 %{m*} %{std*&ansi&trigraphs} %{W*&pedantic*} %{w} %{f*} %{g*:%{%:debug-level-gt(0):%{g*} %{!fno-working-directory:-fworking-directory}}} %{O*} %{undef} %{save-temps*:-fpch-preprocess}
@@ -62,7 +62,7 @@ cc1 -E %{traditional|traditional-cpp:-traditional-cpp}
 
 
 *libgcc:
-%{mthreads:-lmingwthrd} -lmingw32      %{static|static-libgcc:-lgcc -lgcc_eh}  %{!static:    %{!static-libgcc:      %{!shared:        %{!shared-libgcc:-lgcc -lgcc_eh}        %{shared-libgcc:-lgcc_s -lgcc}       }      %{shared:-lgcc_s -lgcc}     }   }     -lmoldname -lmingwex -lmsvcrt
+%{mthreads:-lmingwthrd} -lmingw32      %{static|static-libgcc:-lgcc -lgcc_eh}  %{!static:    %{!static-libgcc:      %{!shared:        %{!shared-libgcc:-lgcc -lgcc_eh}        %{shared-libgcc:-lgcc_s -lgcc}       }      %{shared:-lgcc_s -lgcc}     }   }     -lmingwex %{!mcrtdll=*:-lmsvcr120} %{mcrtdll=*:-l%*}    -lkernel32 
 
 *startfile:
 %{shared|mdll:dllcrt2%O%s}   %{!shared:%{!mdll:%{!municode:crt2%O%s}}}   %{!shared:%{!mdll:%{municode:crt2u%O%s}}}   %{pg:gcrt2%O%s}   crtbegin.o%s   %{fvtable-verify=none:%s;     fvtable-verify=preinit:vtv_start.o%s;     fvtable-verify=std:vtv_start.o%s}
@@ -71,7 +71,7 @@ cc1 -E %{traditional|traditional-cpp:-traditional-cpp}
 1
 
 *version:
-14.1.1
+14.2.1
 
 *multilib:
 . !m64 !m32;.:../lib64 m64 !m32;.:../lib !m64 m32;

@@ -2,4 +2,4 @@
 
 using namespace HateEngine;
 
-DirectionalLight::DirectionalLight() : Light(LightTypeEnum::DirectionalLight){};
+DirectionalLight::DirectionalLight() : Light(LightTypeEnum::DirectionalLight) {};

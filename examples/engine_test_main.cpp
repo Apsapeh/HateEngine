@@ -1,6 +1,7 @@
 #include "GLFW/glfw3.h"
 #include "HateEngine/AudioBus.hpp"
 #include "HateEngine/Input.hpp"
+#include "HateEngine/NavMeshAgent.hpp"
 #include "HateEngine/Objects/Decal.hpp"
 #include "HateEngine/Objects/Light/OmniLight.hpp"
 #include "HateEngine/Objects/Light/SpotLight.hpp"
@@ -10,6 +11,7 @@
 #include "HateEngine/Objects/Physics/StaticBody.hpp"
 #include "HateEngine/Objects/Physics/TriggerArea.hpp"
 #include "HateEngine/Resources/HENFile.hpp"
+#include "HateEngine/Resources/NavMesh.hpp"
 #include "glm/ext/vector_float2.hpp"
 #include "glm/ext/vector_float3.hpp"
 
@@ -110,6 +112,9 @@ HateEngine::LabelUI music_bus_volume_label;
 
 HateEngine::Decal decal;
 
+HateEngine::NavMeshAgent* nav_agent_ptr = nullptr;
+HateEngine::CubeMesh nav_agent_cube;
+
 
 int main() {
     xAxMesh.setSize(1, 0.1, 0.1);
@@ -153,7 +158,7 @@ int main() {
 
     // sun.setPosition({1.0, 1.0, 1.0});
     sun.rotate(-45, 45, 0);
-    sun.setVisible(false);
+    sun.setVisible(true);
 
     mesh2.setPosition(3, 3, 3);
 
@@ -203,7 +208,7 @@ int main() {
     radioModel.setPosition(0, 2, 0);
     radioModel.setScale(0.003, 0.003, 0.003);
     // radioModel.setScale(0.1, 0.1, 0.1);
-    lvl.addObjectRef(&radioModel);
+    // lvl.addObjectRef(&radioModel);
 
 
     /*========================> Audio Test <=========================*/
@@ -262,7 +267,7 @@ int main() {
     // colorCube.setColor({0.4, 0.1, 0.1});
     //  colorCube.disableLightShading();
 
-    lvl.addObjectRef(&colorCube);
+    // lvl.addObjectRef(&colorCube);
 
     // ambientPlayer.play();
     // audioPlayer1.play();
@@ -274,7 +279,7 @@ int main() {
     camera.bindObj(&decal);
     decal.setRayLength(10);
 
-    lvl.addObjectRef(decal.getMesh());
+    // lvl.addObjectRef(decal.getMesh());
     decal.setPhysEngine(lvl.getPhysEngine());
 
 
@@ -324,17 +329,17 @@ int main() {
     HateEngine::CubeMesh uv_test_cube;
     uv_test_cube.setTexture(&tex2);
     uv_test_cube.setPosition(0, 5, 0);
-    lvl.addObjectRef(&uv_test_cube);
+    // lvl.addObjectRef(&uv_test_cube);
 
     // HateEngine::GLTFModel glmodel2("examples/Assets/ignore/bolg.glb");
 
     game.setLevelRef(&lvl);
-    lvl.addObjectRef(&test_glmodel);
-    // HateEngine::CubeMesh test_mesh;
-    // HateEngine::Level level2;
-    // level2.addObjectRef(&test2);
-    // level2.setCameraRef(&camera);
-    // game.setLevelRef(&level2);
+    // lvl.addObjectRef(&test_glmodel);
+    //  HateEngine::CubeMesh test_mesh;
+    //  HateEngine::Level level2;
+    //  level2.addObjectRef(&test2);
+    //  level2.setCameraRef(&camera);
+    //  game.setLevelRef(&level2);
 
 
     HateEngine::Texture campfire_tex("examples/Assets/campfire.png");
@@ -345,7 +350,7 @@ int main() {
     billboardMesh.setTexture(&campfire_tex);
     billboardMesh.setTarget(&camera);
     billboardMesh.setCorrectTransparency(true);
-    lvl.addObjectRef(&billboardMesh);
+    // lvl.addObjectRef(&billboardMesh);
 
     /*const auto desers = std::make_pair(
             std::unordered_map<std::string, HateEngine::ObjMapModel::EntityDeserialzer>(
@@ -355,7 +360,7 @@ int main() {
     );*/
 
     HateEngine::ObjMapModel objmodel(
-            "examples/Assets/Ignore/E1M1.obj", "examples/Assets/Ignore/E1M1.MAP",
+            "examples/Assets/Ignore/_E1M1.obj", "examples/Assets/Ignore/E1M1.MAP",
             "examples/Assets/Ignore/E1M1/light.heluv", 16.0, true, 15, 1
     );
     objmodel.deserializeEntities(
@@ -598,16 +603,6 @@ int main() {
     // lvl.addObjectRef(&cube_part);
 
 
-    HateEngine::ObjMapModel lightmap_model(
-            "examples/Assets/lightmap/example.obj", "", "examples/Assets/lightmap/light.heluv", 1.0,
-            true, 15, 1
-    );
-    lvl.addObjectRef(&lightmap_model);
-
-    HateEngine::Texture cube3_lightmap(
-            "examples/Assets/lightmap/4.png", HateEngine::Texture::Repeat,
-            HateEngine::Texture::Linear
-    );
     /*for (auto& m: lightmap_model.getLOD(0)) {
         if (m->getName() == "Cube.004") {
             // m->setTexture(&bri);
@@ -831,6 +826,25 @@ int main() {
     lvl.addObjectRef(&audio_widget);
 
 
+    /* ==========================> Navigation Test <========================= */
+
+    HateEngine::ObjMapModel nav_obj_map(
+            "examples/Assets/NavMeshTest/dungeon.obj", "", "", 1, false, 10000000, 100000000
+    );
+    lvl.addObjectRef(&nav_obj_map);
+
+    HateEngine::NavMesh nav_mesh("examples/Assets/NavMeshTest/solo_navmesh.bin");
+
+    HateEngine::NavMeshAgent nav_mesh_agent(&nav_mesh, 2048);
+    nav_mesh_agent.computePath({40, 10, 0}, {11, 10, -40});
+
+    nav_agent_ptr = &nav_mesh_agent;
+    nav_agent_cube.setPosition(40, 10, 0);
+    lvl.addObjectRef(&nav_agent_cube);
+
+    /* ==========================> Navigation Test <========================= */
+
+
     game.setProcessLoop(_process);
     game.setFixedProcessLoop(_physics_process);
     game.setInputEvent(_input_event);
@@ -857,28 +871,12 @@ void _process(HateEngine::Engine* engine, double delta) {
     } else {
         // std::cout << "FPS: " << (float)count / del << std::endl;
         fps_label.text = "FPS: " + std::to_string((float) frames_count / fps_time);
+        // HATE_INFO_F("FPS: %f", (float) frames_count / fps_time);
 
         frames_count = 0;
         fps_time = 0.0;
     }
 
-
-    /*if (engine->Input.isKeyPressed(GLFW_KEY_P)) {
-        GLFWmonitor* monitor = glfwGetPrimaryMonitor();
-        const GLFWvidmode* mode = glfwGetVideoMode(monitor);
-
-        glfwWindowHint(GLFW_RED_BITS, mode->redBits);
-        glfwWindowHint(GLFW_GREEN_BITS, mode->greenBits);
-        glfwWindowHint(GLFW_BLUE_BITS, mode->blueBits);
-        glfwWindowHint(GLFW_REFRESH_RATE, mode->refreshRate);
-        glfwSetWindowMonitor(
-                engine->window, monitor, 0, 0, mode->width, mode->height, mode->refreshRate
-        );
-    }*/
-
-    // camera.lookAt(mesh1.getGlobalPosition());
-    // test_glmodel->lookAt(camera.getGlobalPosition());
-    //
     glm::vec3 cam_rot = camera.getRotationEuler();
     // HATE_INFO_F("Camera rotation: %f | %f | %f", cam_rot.x, cam_rot.y, cam_rot.z);
 
@@ -889,12 +887,6 @@ void _process(HateEngine::Engine* engine, double delta) {
         glm::vec2 dir = raw_dir * glm::vec2(delta * 60) * speed;
 
         glm::vec3 cam_rot = glm::radians(camera.getRotationEuler());
-
-        /*camera.offset(
-            cos(cam_rot.y) * dir.y * delta * speed,
-            0,
-            -sin(cam_rot.y) * dir.y * delta * speed
-        );*/
 
         // Full free movement with mouse up and down
         camera.offset(
@@ -947,6 +939,12 @@ void _physics_process(HateEngine::Engine* engine, double delta) {
             "Ambient: " + std::to_string(int(std::ceil(ambient_bus->getVolume() * 100)));
     music_bus_volume_label.text =
             "Music: " + std::to_string(int(std::ceil(music_bus->getVolume() * 100)));
+
+
+    glm::vec3 nav_dir =
+            nav_agent_ptr->getDirectionByPosition(nav_agent_cube.getGlobalPosition()) * delta * 5;
+
+    nav_agent_cube.offset(nav_dir.x, nav_dir.y, nav_dir.z);
 
 
     /*glm::vec2 dir = engine->Input.getVector(GLFW_KEY_A, GLFW_KEY_D, GLFW_KEY_W, GLFW_KEY_S) *

@@ -271,9 +271,11 @@ void ObjMapModel::parseObj(
             face.indices = v_indices;
             face.tex_indices = t_indices;
             face.light_tex = light_tex;
-            face.normal[0] = normals[n_indices[0]].x;
-            face.normal[1] = normals[n_indices[0]].y;
-            face.normal[2] = normals[n_indices[0]].z;
+            if (n_indices.size() > 0) {
+                face.normal[0] = normals[n_indices[0]].x;
+                face.normal[1] = normals[n_indices[0]].y;
+                face.normal[2] = normals[n_indices[0]].z;
+            }
 
             current_obj->faces.push_back(face);
         } else if (words[0] == "vt") {
@@ -597,8 +599,8 @@ glm::vec3 ComputeBarycentricCoordinates(
 
 struct Triangle {
     std::vector<glm::vec2> points;
-    glm::vec2 tex[3];
-    glm::vec2 light_tex[3];
+    glm::vec2 tex[3] = {glm::vec2(0.0f, 0.0f), glm::vec2(0.0f, 0.0f), glm::vec2(0.0f, 0.0f)};
+    glm::vec2 light_tex[3] = {glm::vec2(0.0f, 0.0f), glm::vec2(0.0f, 0.0f), glm::vec2(0.0f, 0.0f)};
 };
 
 void add_vertex_and_uvs(
@@ -750,13 +752,17 @@ std::vector<Mesh*> ObjMapModel::generateLod(
                 t.points.push_back(poly[poly_ccw_idx[i - 1]]);
                 t.points.push_back(poly[poly_ccw_idx[i]]);
 
-                t.tex[0] = tex_coords[face.tex_indices[poly_ccw_idx[0]]];
-                t.tex[1] = tex_coords[face.tex_indices[poly_ccw_idx[i - 1]]];
-                t.tex[2] = tex_coords[face.tex_indices[poly_ccw_idx[i]]];
+                if (!face.tex_indices.empty()) {
+                    t.tex[0] = tex_coords[face.tex_indices[poly_ccw_idx[0]]];
+                    t.tex[1] = tex_coords[face.tex_indices[poly_ccw_idx[i - 1]]];
+                    t.tex[2] = tex_coords[face.tex_indices[poly_ccw_idx[i]]];
+                }
 
-                t.light_tex[0] = face.light_tex[poly_ccw_idx[0]];
-                t.light_tex[1] = face.light_tex[poly_ccw_idx[i - 1]];
-                t.light_tex[2] = face.light_tex[poly_ccw_idx[i]];
+                if (!face.light_tex.empty()) {
+                    t.light_tex[0] = face.light_tex[poly_ccw_idx[0]];
+                    t.light_tex[1] = face.light_tex[poly_ccw_idx[i - 1]];
+                    t.light_tex[2] = face.light_tex[poly_ccw_idx[i]];
+                }
 
                 triangles.push_back(t);
             }
