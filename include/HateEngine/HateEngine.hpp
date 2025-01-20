@@ -3,7 +3,7 @@
 #include <cstdint>
 #include <mutex>
 #include <string>
-// #include "Utilities/UUID_Generator.hpp"
+#include "Utilities/Signal.hpp"
 #include "Level.hpp"
 #include "Input.hpp"
 
@@ -61,8 +61,10 @@ namespace HateEngine {
 
         glm::ivec2 resolution = {0, 0};
         glm::vec2 displayScale = {0.0f, 0.0f};
-        float aspectRatio;
+        float aspectRatio = 0;
         Level* level = nullptr;
+
+        std::mutex levelMutex;
 
         /* Thread safety queue operations*/
         enum ThreadSafeRequestType {
@@ -93,6 +95,8 @@ namespace HateEngine {
 
     public:
         InputClass Input;
+
+        Signal<Engine*, Level*, Level*> onLevelChanged;
 
         Engine(std::string window_lbl, int width, int height);
         void Run();

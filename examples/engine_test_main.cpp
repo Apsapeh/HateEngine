@@ -179,6 +179,11 @@ int main() {
     game.setOneThreadMode(false);
     game.setVSync(false);
 
+    game.onLevelChanged.connect([](HateEngine::Engine* e, HateEngine::Level* lvl, HateEngine::Level* old) {
+        HATE_INFO("Level changed");
+        HATE_INFO_F("Old: %p, New: %p", old, lvl);
+    });
+
     game.Input.addKeyToAction("forward", HateEngine::KeyW);
     game.Input.addKeyToAction("forward", HateEngine::KeyNumPad8);
     game.Input.addKeyToAction("backward", HateEngine::KeyS);

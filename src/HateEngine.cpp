@@ -12,6 +12,7 @@
 #include "GLFW/glfw3.h"
 #include "HateEngine/AudioServer.hpp"
 #include "HateEngine/Input.hpp"
+#include "HateEngine/Level.hpp"
 #include "glm/ext/vector_float2.hpp"
 #include "globalStaticParams.hpp"
 
@@ -210,6 +211,7 @@ void Engine::Run() {
         }
 
         // meshesMutex.lock();
+        std::lock_guard<std::mutex> lock(this->levelMutex);
         if (this->processLoop != nullptr)
             this->processLoop(this, delta);
 
@@ -310,7 +312,7 @@ void Engine::__changeFullScreenMode(ThreadSafeRequest req) {
 }
 
 void Engine::__changeLevelRef(ThreadSafeRequest req) {
-    this->level = (Level*) req.data;
+    this->setLevelRef((Level*) req.data);
 }
 
 
@@ -393,6 +395,7 @@ void Engine::threadFixedProcessLoop() {
         // std::cout << d / 10<< "\n";
         delta = glfwGetTime() - oldTime;
         oldTime = glfwGetTime();
+        std::lock_guard<std::mutex> lock(this->levelMutex);
         if (this->level != nullptr)
             this->level->Update(delta);
 
@@ -417,9 +420,10 @@ void Engine::threadPhysicsEngineIterateLoop() {
         std::this_thread::sleep_for(std::chrono::microseconds(a));
 
         delta = glfwGetTime() - oldTime;
+        oldTime = glfwGetTime();
+        std::lock_guard<std::mutex> lock(this->levelMutex);
         if (this->level != nullptr and this->level->getPhysEngine() != nullptr)
             this->level->getPhysEngine()->IteratePhysics((float) delta);
-        oldTime = glfwGetTime();
         func_delta = glfwGetTime() - oldTime;
     }
 }
@@ -451,7 +455,10 @@ void Engine::changeLevelRef(Level* lvl) {
 }
 
 void Engine::setLevelRef(Level* lvl) {
+    std::lock_guard<std::mutex> lock(this->levelMutex);
+    Level* old = this->level;
     this->level = lvl;
+    onLevelChanged.emit(this, this->level, old);
 }
 
 Level* Engine::getLevel() {
