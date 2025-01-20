@@ -58,18 +58,26 @@ namespace HateEngine {
 
         bool isOneThread = false;
         bool isVSync = true;
-        bool isMouseCaptured = false;
-        bool isFullScreen = false;
 
         glm::ivec2 resolution = {0, 0};
         glm::vec2 displayScale = {0.0f, 0.0f};
         float aspectRatio;
         Level* level = nullptr;
 
-        std::string windowTitle = "";
-        bool needChangeMouseCaptureMode = false;
-        bool needChangeWindowTitle = false;
-        bool needChangeFullScreenMode = false;
+        /* Thread safety queue operations*/
+        enum ThreadSafeRequestType {
+            ChangeWindowTitle,
+            ChangeMouseCaptureMode,
+            ChangeFullScreenMode,
+            ChangeLevelRef
+        };
+
+        struct ThreadSafeRequest {
+            ThreadSafeRequestType type;
+            void* data = nullptr;
+        };
+
+        std::vector<ThreadSafeRequest> threadSafeRequestsQueue;
 
         // Scene objects
         // std::unordered_map<UUID_Generator::UUID, SceneObject> objects;
@@ -77,6 +85,11 @@ namespace HateEngine {
         void threadFixedProcessLoop();
         // void frameBufferSizeChange(GLFWwindow* win, int w, int h);
         void threadPhysicsEngineIterateLoop();
+
+        void __changeWindowTitle(ThreadSafeRequest req);
+        void __changeMouseCaptureMode(ThreadSafeRequest req);
+        void __changeFullScreenMode(ThreadSafeRequest req);
+        void __changeLevelRef(ThreadSafeRequest req);
 
     public:
         InputClass Input;
@@ -105,6 +118,19 @@ namespace HateEngine {
         void setFixedProcessLoop(void (*func)(Engine*, double));
         void setInputEvent(void (*func)(Engine*, InputEventInfo));
 
+        /**
+         * @brief Thread safe request to change the scene
+         *
+         * @note It's not change scene immediately, only before the next frame
+         * @param lvl
+         */
+        void changeLevelRef(Level* lvl);
+        /**
+         * @brief Set the scene. NOT THREAD SAFE
+         *
+         * @warning It's set scene immediately, but not thread safe
+         * @param lvl The level to set
+         */
         void setLevelRef(Level* lvl);
         Level* getLevel();
         // UUID_Generator::UUID addObjectClone(Object object);

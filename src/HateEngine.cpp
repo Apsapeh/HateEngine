@@ -1,5 +1,6 @@
 // #include <bits/types/struct_sched_param.h>
 // #include <pthread.h>
+#include <cstdint>
 #include <glad/gl.h>
 
 #include <HateEngine/HateEngine.hpp>
@@ -42,7 +43,6 @@ using namespace HateEngine;
 
 Engine::Engine(std::string window_lbl, int width, int height) : Input(this) {
     // glfwInitHint(GLFW_PLATFORM, GLFW_PLATFORM_WAYLAND);
-    this->windowTitle = window_lbl;
     glfwInit();
     // Create window
     GLFWmonitor* monitor = NULL;
@@ -159,6 +159,7 @@ Engine::Engine(std::string window_lbl, int width, int height) : Input(this) {
             std::chrono::duration_cast<std::chrono::microseconds>(t2 - t1).count() / 10 - physDelay;
     this->physicsEngineIterateDelayMCS = physDelay - d_pp;
     AudioServer::Reinit();
+    this->threadSafeRequestsQueue.reserve(16);
 }
 
 void Engine::Run() {
@@ -188,35 +189,25 @@ void Engine::Run() {
         glfwPollEvents();
 
         /// Thread safety GLFW calls
-        if (this->needChangeMouseCaptureMode) {
-            glfwSetInputMode(
-                    this->window, GLFW_CURSOR,
-                    this->isMouseCaptured ? GLFW_CURSOR_DISABLED : GLFW_CURSOR_NORMAL
-            );
-            this->needChangeMouseCaptureMode = false;
+        if (!this->threadSafeRequestsQueue.empty()) {
+            for (auto& req: this->threadSafeRequestsQueue) {
+                switch (req.type) {
+                    case ThreadSafeRequestType::ChangeWindowTitle:
+                        __changeWindowTitle(req);
+                        break;
+                    case ThreadSafeRequestType::ChangeMouseCaptureMode:
+                        __changeMouseCaptureMode(req);
+                        break;
+                    case ThreadSafeRequestType::ChangeFullScreenMode:
+                        __changeFullScreenMode(req);
+                        break;
+                    case ThreadSafeRequestType::ChangeLevelRef:
+                        __changeLevelRef(req);
+                        break;
+                }
+            }
+            this->threadSafeRequestsQueue.clear();
         }
-        if (this->needChangeWindowTitle) {
-            glfwSetWindowTitle(this->window, this->windowTitle.c_str());
-            this->needChangeWindowTitle = false;
-        }
-        if (this->needChangeFullScreenMode) {
-            if (this->isFullScreen) {
-                GLFWmonitor* monitor = glfwGetPrimaryMonitor();
-                const GLFWvidmode* mode = glfwGetVideoMode(monitor);
-
-                glfwWindowHint(GLFW_RED_BITS, mode->redBits);
-                glfwWindowHint(GLFW_GREEN_BITS, mode->greenBits);
-                glfwWindowHint(GLFW_BLUE_BITS, mode->blueBits);
-                glfwWindowHint(GLFW_REFRESH_RATE, mode->refreshRate);
-                glfwSetWindowMonitor(
-                        this->window, monitor, 0, 0, mode->width, mode->height, mode->refreshRate
-                );
-            } else
-                glfwSetWindowMonitor(this->window, nullptr, 0, 0, 800, 600, GLFW_DONT_CARE);
-
-            this->needChangeFullScreenMode = false;
-        }
-        ///
 
         // meshesMutex.lock();
         if (this->processLoop != nullptr)
@@ -288,6 +279,41 @@ void Engine::Exit() {
     glfwSetWindowShouldClose(this->window, true);
 }
 
+
+void Engine::__changeWindowTitle(ThreadSafeRequest req) {
+    std::string* title = (std::string*) req.data;
+    glfwSetWindowTitle(this->window, title->c_str());
+    delete title;
+}
+
+void Engine::__changeMouseCaptureMode(ThreadSafeRequest req) {
+    glfwSetInputMode(
+            this->window, GLFW_CURSOR,
+            (bool) (uintptr_t) req.data ? GLFW_CURSOR_DISABLED : GLFW_CURSOR_NORMAL
+    );
+}
+
+void Engine::__changeFullScreenMode(ThreadSafeRequest req) {
+    if ((bool) (uintptr_t) req.data) {
+        GLFWmonitor* monitor = glfwGetPrimaryMonitor();
+        const GLFWvidmode* mode = glfwGetVideoMode(monitor);
+
+        glfwWindowHint(GLFW_RED_BITS, mode->redBits);
+        glfwWindowHint(GLFW_GREEN_BITS, mode->greenBits);
+        glfwWindowHint(GLFW_BLUE_BITS, mode->blueBits);
+        glfwWindowHint(GLFW_REFRESH_RATE, mode->refreshRate);
+        glfwSetWindowMonitor(
+                this->window, monitor, 0, 0, mode->width, mode->height, mode->refreshRate
+        );
+    } else
+        glfwSetWindowMonitor(this->window, nullptr, 0, 0, 800, 600, GLFW_DONT_CARE);
+}
+
+void Engine::__changeLevelRef(ThreadSafeRequest req) {
+    this->level = (Level*) req.data;
+}
+
+
 void Engine::setResolution(int width, int height) {
     HATE_WARNING("Engine::setResolution not implemented");
 
@@ -300,8 +326,10 @@ void Engine::setResolution(int width, int height) {
 }
 
 void Engine::setOneThreadMode(bool mode) {
-    if (this->isRunned)
+    if (this->isRunned) {
         HATE_ERROR("Engine::setOneThreadMode should be called before Engine::Run");
+        return;
+    }
     this->isOneThread = mode;
 }
 
@@ -311,17 +339,17 @@ void Engine::setVSync(bool vsync) {
 }
 
 void Engine::setMouseCapture(bool capture) {
-    /*if (capture)
-        glfwSetInputMode(this->window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-    else
-        glfwSetInputMode(this->window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);*/
-    this->isMouseCaptured = capture;
-    this->needChangeMouseCaptureMode = true;
+    ThreadSafeRequest req;
+    req.type = ThreadSafeRequestType::ChangeMouseCaptureMode;
+    req.data = (void*) (uintptr_t) capture;
+    this->threadSafeRequestsQueue.push_back(req);
 }
 
 void Engine::setFullScreen(bool fullScreen) {
-    this->isFullScreen = fullScreen;
-    this->needChangeFullScreenMode = true;
+    ThreadSafeRequest req;
+    req.type = ThreadSafeRequestType::ChangeFullScreenMode;
+    req.data = (void*) (uintptr_t) fullScreen;
+    this->threadSafeRequestsQueue.push_back(req);
 }
 
 glm::ivec2 Engine::getResolution() {
@@ -345,11 +373,11 @@ bool Engine::getVSync() {
 }
 
 bool Engine::getMouseCapture() {
-    return this->isMouseCaptured;
+    return glfwGetInputMode(this->window, GLFW_CURSOR) == GLFW_CURSOR_DISABLED;
 }
 
 bool Engine::getFullScreen() {
-    return this->isFullScreen;
+    return glfwGetWindowMonitor(this->window) != nullptr;
 }
 
 void Engine::threadFixedProcessLoop() {
@@ -398,8 +426,10 @@ void Engine::threadPhysicsEngineIterateLoop() {
 
 void Engine::changeWindowTitle(std::string title) {
     // glfwSetWindowTitle(this->window, title.c_str());
-    this->windowTitle = title;
-    glfwSetWindowTitle(this->window, this->windowTitle.c_str());
+    ThreadSafeRequest req;
+    req.type = ThreadSafeRequestType::ChangeWindowTitle;
+    req.data = new std::string(title);
+    this->threadSafeRequestsQueue.push_back(req);
 }
 
 void Engine::setProcessLoop(void (*func)(Engine*, double)) {
@@ -410,6 +440,14 @@ void Engine::setFixedProcessLoop(void (*func)(Engine*, double)) {
 }
 void Engine::setInputEvent(void (*func)(Engine*, InputEventInfo)) {
     this->inputEventFunc = func;
+}
+
+
+void Engine::changeLevelRef(Level* lvl) {
+    ThreadSafeRequest req;
+    req.type = ThreadSafeRequestType::ChangeLevelRef;
+    req.data = lvl;
+    this->threadSafeRequestsQueue.push_back(req);
 }
 
 void Engine::setLevelRef(Level* lvl) {
