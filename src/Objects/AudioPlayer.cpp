@@ -43,7 +43,7 @@ void AudioPlayer::play() {
     SoLoud::AudioSource* audioSource;
     if (audioStream != nullptr and audioStream->isLoaded())
         audioSource = audioStream->GetSoLoudWavStream();
-    else if (audio->isLoaded())
+    else if (audio != nullptr and audio->isLoaded())
         audioSource = audio->GetSoLoudWav();
     else {
         HATE_ERROR("Audio is not loaded");

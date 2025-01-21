@@ -50,7 +50,8 @@ Engine::Engine(std::string window_lbl, int width, int height) : Input(this) {
     glfwGetPrimaryMonitor();
     this->window = glfwCreateWindow(width, height, window_lbl.c_str(), monitor, NULL);
     if (this->window == NULL) {
-        HATE_FATAL("Failed to create GLFW window");
+        HATE_FATAL_F("Failed to create GLFW window: %s", glfwGetError(NULL));
+
         glfwTerminate();
     }
 

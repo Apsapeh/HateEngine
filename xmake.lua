@@ -8,11 +8,12 @@ add_requires(
     "termcolor 5635ae00856eeddffcbf7091d13e2987abde91a2"
 )
 
-add_requires("glfw 3.4", {configs = {wayland = is_plat("linux")}})
 
 if is_plat("mingw") and is_arch("i386") then
     add_requires("soloud", {configs = {cxflags = {"-DDISABLE_SSE", "-DDISABLE_SIMD"}}})
+    add_requires("glfw 3.3.8")
 else 
+    add_requires("glfw 3.4", {configs = {wayland = is_plat("linux")}})
     add_requires("soloud")
 end
 
@@ -93,7 +94,63 @@ target("Example_1")
     set_enabled(has_config("build_examples") == true)
     set_kind("binary")
     add_files(
-        "examples/*.cpp"
+        "examples/engine_test_main.cpp"
+    )
+    set_languages("cxx11")
+    --set_exceptions("no-cxx")
+    add_includedirs("include")
+
+    add_deps("HateEngine")
+    add_packages("glfw", "glm", "reactphysics3d", "soloud", "recastnavigation")
+    add_defines("GLM_ENABLE_EXPERIMENTAL")
+
+    if is_plat("mingw") then 
+        add_cxxflags("-specs=msvcr120v2.spec -Wl,-subsystem,windows", {force=true})        
+        add_ldflags("-specs=msvcr120v2.spec -static-libstdc++ -static-libgcc ", {force = true})
+        --add_ldflags("-static")
+    end
+
+    set_rundir("$(projectdir)")
+    -- add_cxxflags("-mmacosx-version-min=10.13 -stdlib=libc++", {force=true})
+    -- add_ldflags("-mmacosx-version-min=10.13 -stdlib=libc++", {force=true})
+
+
+    if is_mode("debug") then
+        set_symbols("debug")
+        set_optimize("none")
+        add_defines("__HATE_ENGINE_DEBUG")
+        --set_warnings("everything")
+    elseif is_mode("release") then
+        --set_policy("build.merge_archive", true)
+        set_symbols("hidden")
+        set_strip("all")
+        set_fpmodels("fast")
+        set_optimize("aggressive")
+        -- lto
+        if not (is_plat("mingw") and is_arch("i386")) then
+            set_policy("build.optimization.lto", true)
+        end
+    end
+    
+    if has_config("show_warnings") then
+        --set_warnings("everything")
+    end
+
+
+target("Example_Cube")
+    if is_plat("windows") then
+        add_defines("and=&&", "or=||", "not=!", "_WIN32_WINNT=0x0501")
+    end
+
+    if is_plat("linux") then
+        set_toolchains("clang")
+        add_ldflags("-static-libstdc++ -static-libgcc")
+        
+    end
+    set_enabled(has_config("build_examples") == true)
+    set_kind("binary")
+    add_files(
+        "examples/cube.cpp"
     )
     set_languages("cxx11")
     --set_exceptions("no-cxx")

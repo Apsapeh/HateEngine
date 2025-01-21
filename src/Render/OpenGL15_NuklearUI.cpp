@@ -276,7 +276,8 @@ void OpenGL15::DrawNuklearUI(std::unordered_map<UUID, Level::SceneUIWidget>* wid
                                nk_input_is_mouse_hovering_rect(&ctx.input, bounds) and
                                button->hover_texture->is_loaded) {
                         if (not button->getHoverTexture()->is_gpu_loaded)
-                            button->getHoverTexture()->Load(loadTexture, unloadTexture);
+                            if (!button->getHoverTexture()->Load(loadTexture, unloadTexture))
+                                continue;
 
                         if (button->nk_img_hover == nullptr) {
                             struct nk_image img =
@@ -298,6 +299,7 @@ void OpenGL15::DrawNuklearUI(std::unordered_map<UUID, Level::SceneUIWidget>* wid
 
                         button_image = (struct nk_image*) button->nk_img_normal;
                     }
+
 
                     if (button_image != nullptr and button->ignore_color_with_image) {
                         ctx.style.button.normal = nk_style_item_color(nk_rgba(0, 0, 0, 0));
@@ -389,6 +391,8 @@ static void draw(int width, int height) {
     glEnable(GL_BLEND);
 
     glEnableClientState(GL_COLOR_ARRAY);
+    glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+    glDisableClientState(GL_NORMAL_ARRAY);
     glPushMatrix();
 
     glm::mat4 Mp = glm::ortho(
@@ -456,6 +460,8 @@ static void draw(int width, int height) {
     glDisable(GL_TEXTURE_2D);
     glDisable(GL_BLEND);
     glDisableClientState(GL_COLOR_ARRAY);
+    glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+    glEnableClientState(GL_NORMAL_ARRAY);
 }
 
 static void pump_input(struct nk_context* ctx, GLFWwindow* win) {

@@ -73,7 +73,7 @@ OpenGL15::OpenGL15(Engine* engine) {
 
     glEnableClientState(GL_VERTEX_ARRAY);
     glEnableClientState(GL_NORMAL_ARRAY);
-    glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+    // glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 
     // glDisable(GL_FOG);
 
@@ -277,8 +277,6 @@ void OpenGL15::Draw3D(
     if (not correct_buffer.empty()) {
         glm::vec3 camera_pos = camera->getGlobalPosition();
         std::sort(correct_buffer.begin(), correct_buffer.end(), [camera_pos](Mesh* a, Mesh* b) {
-            /*return glm::distance(a->getGlobalPosition() + a->getAABBRadius(), camera_pos) >
-                   glm::distance(b->getGlobalPosition() + b->getAABBRadius(), camera_pos);*/
             return a->getAABBDistanceToPoint(camera_pos) > b->getAABBDistanceToPoint(camera_pos);
         });
 
@@ -320,7 +318,10 @@ void OpenGL15::render(const Mesh* mesh, std::vector<Light*>* lights_vec) {
         glScalef(scale.x, scale.y, scale.z);
 
         // Render Textures
+        bool texture_enabled = false;
         if (mesh->getTexture() != nullptr and mesh->getTexture()->is_loaded) {
+            texture_enabled = true;
+            glEnableClientState(GL_TEXTURE_COORD_ARRAY);
             glActiveTexture(GL_TEXTURE0);
             if (not mesh->getTexture()->is_gpu_loaded)
                 mesh->getTexture()->Load(loadTexture, unloadTexture);
@@ -334,6 +335,8 @@ void OpenGL15::render(const Mesh* mesh, std::vector<Light*>* lights_vec) {
         }
 
         if (mesh->getLightTexture() != nullptr and mesh->getLightTexture()->is_loaded) {
+            texture_enabled = true;
+            glEnableClientState(GL_TEXTURE_COORD_ARRAY);
             glActiveTexture(GL_TEXTURE1);
             if (not mesh->getLightTexture()->is_gpu_loaded)
                 mesh->getLightTexture()->Load(loadTexture, unloadTexture);
@@ -358,10 +361,15 @@ void OpenGL15::render(const Mesh* mesh, std::vector<Light*>* lights_vec) {
             glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
         }
 
+        // HATE_FATAL_F("Size: %d", mesh->getIndicies()->size());
         glDrawElements(
                 GL_TRIANGLES, mesh->getIndicies()->size(), GL_UNSIGNED_INT,
                 mesh->getIndicies()->data()
         );
+
+        if (texture_enabled) {
+            glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+        }
 
         glPopMatrix();
         glPopClientAttrib();

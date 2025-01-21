@@ -1,6 +1,6 @@
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")] // hide console window on Windows in release
 
-use std::path::PathBuf;
+use std::path::{self, PathBuf};
 
 use eframe::egui::{self, FontFamily, FontId, FontSelection, RichText};
 use hpprj_toml::{HpprjResource, HpprjToml};
@@ -185,40 +185,46 @@ impl eframe::App for MyApp {
             }*/
 
             for file in &i.raw.dropped_files {
-                let path = match file.path.clone() {
+                /*let path = match file.path.clone() {
                     Some(path) => path,
                     None => continue,
-                };
+                };*/
 
-                let size_bytes = std::fs::metadata(&path).unwrap().len();
-                let size = if size_bytes < 1024 {
-                    format!("{} B", size_bytes)
-                } else if size_bytes < 1024 * 1024 {
-                    format!("{:.2} KiB", size_bytes as f64 / 1024.0)
-                } else if size_bytes < 1024 * 1024 * 1024 {
-                    format!("{:.2} MiB", size_bytes as f64 / 1024.0 / 1024.0)
-                } else {
-                    format!("{:.2} GiB", size_bytes as f64 / 1024.0 / 1024.0 / 1024.0)
-                };
-                let mut name = fix_name_ascii(path.file_name().unwrap().to_str().unwrap());
-
-                // find name
-                while self.resource_files.iter().any(|f| f.name == name) {
-                    name = format!("_{}", name);
+                if let Some(path) = file.path.clone() {
+                    self.add_resource(path);
                 }
-
-                self.resource_files.push(ResourceFile {
-                    path,
-                    size,
-                    name,
-                    is_relative: false,
-                });
             }
         });
     }
 }
 
 impl MyApp {
+    fn add_resource(&mut self, path: PathBuf) {
+        let size_bytes = std::fs::metadata(&path).unwrap().len();
+        let size = if size_bytes < 1024 {
+            format!("{} B", size_bytes)
+        } else if size_bytes < 1024 * 1024 {
+            format!("{:.2} KiB", size_bytes as f64 / 1024.0)
+        } else if size_bytes < 1024 * 1024 * 1024 {
+            format!("{:.2} MiB", size_bytes as f64 / 1024.0 / 1024.0)
+        } else {
+            format!("{:.2} GiB", size_bytes as f64 / 1024.0 / 1024.0 / 1024.0)
+        };
+        let mut name = fix_name_ascii(path.file_name().unwrap().to_str().unwrap());
+
+        // find name
+        while self.resource_files.iter().any(|f| f.name == name) {
+            name = format!("_{}", name);
+        }
+
+        self.resource_files.push(ResourceFile {
+            path,
+            size,
+            name,
+            is_relative: false,
+        });
+    }
+
     fn on_btn_open_project(&mut self) {
         let path = rfd::FileDialog::new()
             .add_filter("", &["hpprj"])
@@ -270,11 +276,25 @@ impl MyApp {
     }
 
     fn on_btn_import_resource(&mut self) {
-        rfd_msg_dialog(
+        /*rfd_msg_dialog(
             "Import resource",
             "Not implemented yet",
             rfd::MessageLevel::Info,
-        );
+        );*/
+        let mut files_dlg = rfd::FileDialog::new();
+        if let Some(path) = &self.project_path {
+            let path = path::absolute(path).unwrap();                     
+            if let Some(path) = path.parent() {
+                files_dlg = files_dlg.set_directory(path);
+            }
+        }
+        let files = files_dlg.pick_files();
+
+        if let Some(files) = files {
+            for file in files {
+                self.add_resource(file);
+            }
+        }
     }
 
     fn on_btn_pack(&mut self) {
@@ -356,7 +376,7 @@ impl MyApp {
         let mut resources = Vec::new();
         for file in &self.resource_files {
             let path = if file.is_relative {
-                let hpprj_path = self.project_path.clone().unwrap();
+                let hpprj_path = path::absolute(self.project_path.clone().unwrap()).unwrap();
                 let hpprj_path = hpprj_path.parent().unwrap();
 
                 pathdiff::diff_paths(&file.path, &hpprj_path).unwrap()

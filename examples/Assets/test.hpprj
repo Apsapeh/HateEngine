@@ -12,6 +12,6 @@ name = "shotgun.glb"
 is_relative = true
 
 [[resources]]
-path = "ignore/E1M1.hen"
-name = "E1M1.hen"
+path = "/home/ghost/Desktop/HateEngine/examples/Assets/audio.ogg"
+name = "audio.ogg"
 is_relative = true

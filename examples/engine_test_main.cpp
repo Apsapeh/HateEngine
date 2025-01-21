@@ -117,6 +117,8 @@ HateEngine::CubeMesh nav_agent_cube;
 
 
 int main() {
+//int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
+//	LPSTR lpCmdLine, int nCmdShow) {
     xAxMesh.setSize(1, 0.1, 0.1);
     xAxMesh.offset(0, 6, 0);
 
@@ -176,7 +178,7 @@ int main() {
 
     game.setMouseCapture(true);
     // std::cout << "\n\n\n\n" << glfwGetInputMode(game.window, GLFW_CURSOR) << "\n\n\n\n";
-    game.setOneThreadMode(false);
+    game.setOneThreadMode(true);
     game.setVSync(false);
 
     game.onLevelChanged.connect([](HateEngine::Engine* e, HateEngine::Level* lvl, HateEngine::Level* old) {
@@ -232,6 +234,14 @@ int main() {
     audioPlayer1.setPosition(0, 2, 0);
     playerCapsuleMesh.bindObj(&audioPlayer2);
 
+    ambientPlayer.play();
+    audioPlayer1.play();
+    audioPlayer2.play();
+
+    /*===============================================================*/
+
+
+
     // playerCapsuleMesh.getLOD(0)[0]->setColor(glm::vec4(1, 0, 0, 1));
 
     HateEngine::CubeMesh colorCube;
@@ -274,11 +284,7 @@ int main() {
 
     // lvl.addObjectRef(&colorCube);
 
-    // ambientPlayer.play();
-    // audioPlayer1.play();
-    // audioPlayer2.play();
-
-    /*===============================================================*/
+    
 
 
     camera.bindObj(&decal);
@@ -833,19 +839,19 @@ int main() {
 
     /* ==========================> Navigation Test <========================= */
 
-    HateEngine::ObjMapModel nav_obj_map(
+    /*HateEngine::ObjMapModel nav_obj_map(
             "examples/Assets/NavMeshTest/dungeon.obj", "", "", 1, false, 10000000, 100000000
     );
-    lvl.addObjectRef(&nav_obj_map);
+    lvl.addObjectRef(&nav_obj_map);*/
 
-    HateEngine::NavMesh nav_mesh("examples/Assets/NavMeshTest/solo_navmesh.bin");
+    /*HateEngine::NavMesh nav_mesh("examples/Assets/NavMeshTest/solo_navmesh.bin");
 
     HateEngine::NavMeshAgent nav_mesh_agent(&nav_mesh, 2048);
     nav_mesh_agent.computePath({40, 10, 0}, {11, 10, -40});
 
     nav_agent_ptr = &nav_mesh_agent;
     nav_agent_cube.setPosition(40, 10, 0);
-    lvl.addObjectRef(&nav_agent_cube);
+    lvl.addObjectRef(&nav_agent_cube);*/
 
     /* ==========================> Navigation Test <========================= */
 
@@ -860,8 +866,8 @@ int main() {
     // std::cout << "Content scale: " << xscale << " " << yscale << "\n";
     //  while (true) {}
     game.Run();
-    int p = glfwGetPlatform();
-    std::cout << p << " | " << GLFW_PLATFORM_WAYLAND << "\n";
+    //int p = glfwGetPlatform();
+    //std::cout << p << " | " << GLFW_PLATFORM_WAYLAND << "\n";
     // HateEngine::AudioServer::Deinit();
 }
 
@@ -946,10 +952,10 @@ void _physics_process(HateEngine::Engine* engine, double delta) {
             "Music: " + std::to_string(int(std::ceil(music_bus->getVolume() * 100)));
 
 
-    glm::vec3 nav_dir =
+    /*glm::vec3 nav_dir =
             nav_agent_ptr->getDirectionByPosition(nav_agent_cube.getGlobalPosition()) * delta * 5;
 
-    nav_agent_cube.offset(nav_dir.x, nav_dir.y, nav_dir.z);
+    nav_agent_cube.offset(nav_dir.x, nav_dir.y, nav_dir.z);*/
 
 
     /*glm::vec2 dir = engine->Input.getVector(GLFW_KEY_A, GLFW_KEY_D, GLFW_KEY_W, GLFW_KEY_S) *
