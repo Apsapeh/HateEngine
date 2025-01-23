@@ -21,24 +21,51 @@ end
 add_rules("mode.debug", "mode.release")
 
 option("build_examples")
-option("show_warnings")
-set_default(false)
+    set_description("Build an examples")
+    set_default(false)
+option_end()
+
+option("__package_mode")
+    set_description("Don't use it, it's 'system' option for normaly support a xmake package system")
+    set_default(false)
 option_end()
 
 set_project("HateEngine")
+set_version("1.0.0")
 
-target("HateEngine")
+
+function set_mode_rules(merge)
+    merge = merge or false
+    if is_mode("debug") then
+        set_symbols("debug")
+        set_optimize("none")
+        add_defines("__HATE_ENGINE_DEBUG")
+    elseif is_mode("release") then
+        set_policy("build.merge_archive", merge)
+        --set_symbols("hidden")
+        set_strip("all")
+        set_fpmodels("fast")
+        set_optimize("aggressive")
+    end
+
     if is_plat("windows") then
         add_defines("and=&&", "or=||", "not=!", "_WIN32_WINNT=0x0501")
-    end
-    
-    if is_plat("linux") then
+    elseif is_plat("linux") then
         set_toolchains("clang")
+    elseif is_plat("mingw") then 
+        add_cxxflags("-specs=msvcr120v2.spec -Wl,-subsystem,windows", {force=true})        
+        add_shflags("-specs=msvcr120v2.spec", {force = true})
+        add_ldflags("-specs=msvcr120v2.spec", {force = true})
     end
+end
 
-    set_kind("$(kind)")
+
+function set_HateEngineLib_rules()
+    add_packages("glfw", "glm", "tinygltf", "reactphysics3d", "glu", "termcolor", "soloud", "recastnavigation")
+    add_defines("GLM_ENABLE_EXPERIMENTAL")
+
     set_languages("cxx11")
-    --set_exceptions("no-cxx")
+    set_exceptions("no-cxx")
     add_includedirs(
         "deps","include"
     )
@@ -47,147 +74,74 @@ target("HateEngine")
         "deps/blowfish/blowfish.cpp",
         "src/**.cpp"
     )
-    add_packages("glfw", "glm", "tinygltf", "reactphysics3d", "glu", "termcolor", "soloud", "recastnavigation")
+end
+
+
+if has_config("__package_mode") then 
+    target("HateEngine")
+        set_kind("$(kind)")
+        set_HateEngineLib_rules()
+        set_mode_rules(true)
+else 
+    target("HateEngine")
+        set_kind("static")
+        set_HateEngineLib_rules()
+        set_mode_rules(true)
+        --set_enabled((has_config("build_shared") == true and is_kind("shared")))
+
+
+    target("HateEngine-shared")
+        set_kind("shared")
+        set_basename("HateEngine")
+        set_HateEngineLib_rules()
+        set_mode_rules(true)
+        --set_kind("$(kind)")
+        --set_enabled(has_config("build_shared") == true)
+
+        -- add_cxxflags("-mmacosx-version-min=10.13 -stdlib=libc++", {force=true})
+        -- add_ldflags("-mmacosx-version-min=10.13 -stdlib=libc++", {force=true})
+        
+        -- after_link(function (target)
+        --     print(target:info()) -- тут дальше можно вычленить linkdirs чтоб объединить glfw и reactphysics в hateengine
+        --     import("utils.archive.merge_staticlib")
+        --     merge_staticlib(target, "libout.a", {"libfoo.a", "libbar.a"})
+        -- end)
+end
+
+
+
+
+
+------------------------------------ Examples ------------------------------------
+function set_Example_rules(custom_mode)
+    custom_mode = custom_mode or "shared"
+    set_mode_rules()
+    set_enabled(has_config("build_examples") == true)
+    set_rundir("$(projectdir)")
+    set_kind("binary")
+    set_languages("cxx11")
+    set_exceptions("no-cxx")
+    add_includedirs("include")
+
+    if custom_mode == "shared" then
+        add_deps("HateEngine-shared")
+    else
+        add_deps("HateEngine")
+    end
+
+    add_packages("glfw", "glm", "reactphysics3d", "soloud", "recastnavigation", {links = {}})
     add_defines("GLM_ENABLE_EXPERIMENTAL")
-    
-    if is_mode("debug") then
-        set_symbols("debug")
-        set_optimize("none")
-        add_defines("__HATE_ENGINE_DEBUG")
-    elseif is_mode("release") then
-        set_policy("build.merge_archive", true)
-        set_symbols("hidden")
-        set_fpmodels("fast")
-        set_optimize("aggressive")
-        
-        if not (is_plat("mingw") and is_arch("i386")) then
-            set_policy("build.optimization.lto", true)
-        end
-    end
-
-    --set_warnings("pedantic")
-    if has_config("show_warnings") then
-        --set_warnings("everything", "pedantic")
-        
-    end
-
-    -- add_cxxflags("-mmacosx-version-min=10.13 -stdlib=libc++", {force=true})
-    -- add_ldflags("-mmacosx-version-min=10.13 -stdlib=libc++", {force=true})
-    
-    -- after_link(function (target)
-    --     print(target:info()) -- тут дальше можно вычленить linkdirs чтоб объединить glfw и reactphysics в hateengine
-    --     import("utils.archive.merge_staticlib")
-    --     merge_staticlib(target, "libout.a", {"libfoo.a", "libbar.a"})
-    -- end)
-
+end
 
 target("Example_1")
-    if is_plat("windows") then
-        add_defines("and=&&", "or=||", "not=!", "_WIN32_WINNT=0x0501")
-    end
-
-    if is_plat("linux") then
-        set_toolchains("clang")
-        add_ldflags("-static-libstdc++ -static-libgcc")
-        
-    end
-    set_enabled(has_config("build_examples") == true)
-    set_kind("binary")
+    set_Example_rules()
     add_files(
         "examples/engine_test_main.cpp"
     )
-    set_languages("cxx11")
-    --set_exceptions("no-cxx")
-    add_includedirs("include")
-
-    add_deps("HateEngine")
-    add_packages("glfw", "glm", "reactphysics3d", "soloud", "recastnavigation")
-    add_defines("GLM_ENABLE_EXPERIMENTAL")
-
-    if is_plat("mingw") then 
-        add_cxxflags("-specs=msvcr120v2.spec -Wl,-subsystem,windows", {force=true})        
-        add_ldflags("-specs=msvcr120v2.spec -static-libstdc++ -static-libgcc ", {force = true})
-        --add_ldflags("-static")
-    end
-
-    set_rundir("$(projectdir)")
-    -- add_cxxflags("-mmacosx-version-min=10.13 -stdlib=libc++", {force=true})
-    -- add_ldflags("-mmacosx-version-min=10.13 -stdlib=libc++", {force=true})
-
-
-    if is_mode("debug") then
-        set_symbols("debug")
-        set_optimize("none")
-        add_defines("__HATE_ENGINE_DEBUG")
-        --set_warnings("everything")
-    elseif is_mode("release") then
-        --set_policy("build.merge_archive", true)
-        set_symbols("hidden")
-        set_strip("all")
-        set_fpmodels("fast")
-        set_optimize("aggressive")
-        -- lto
-        if not (is_plat("mingw") and is_arch("i386")) then
-            set_policy("build.optimization.lto", true)
-        end
-    end
-    
-    if has_config("show_warnings") then
-        --set_warnings("everything")
-    end
 
 
 target("Example_Cube")
-    if is_plat("windows") then
-        add_defines("and=&&", "or=||", "not=!", "_WIN32_WINNT=0x0501")
-    end
-
-    if is_plat("linux") then
-        set_toolchains("clang")
-        add_ldflags("-static-libstdc++ -static-libgcc")
-        
-    end
-    set_enabled(has_config("build_examples") == true)
-    set_kind("binary")
+    set_Example_rules("static")
     add_files(
         "examples/cube.cpp"
     )
-    set_languages("cxx11")
-    --set_exceptions("no-cxx")
-    add_includedirs("include")
-
-    add_deps("HateEngine")
-    add_packages("glfw", "glm", "reactphysics3d", "soloud", "recastnavigation")
-    add_defines("GLM_ENABLE_EXPERIMENTAL")
-
-    if is_plat("mingw") then 
-        add_cxxflags("-specs=msvcr120v2.spec", {force=true})        
-        add_ldflags("-specs=msvcr120v2.spec -static-libstdc++ -static-libgcc", {force = true})
-        --add_ldflags("-static")
-    end
-
-    set_rundir("$(projectdir)")
-    -- add_cxxflags("-mmacosx-version-min=10.13 -stdlib=libc++", {force=true})
-    -- add_ldflags("-mmacosx-version-min=10.13 -stdlib=libc++", {force=true})
-
-
-    if is_mode("debug") then
-        set_symbols("debug")
-        set_optimize("none")
-        add_defines("__HATE_ENGINE_DEBUG")
-        --set_warnings("everything")
-    elseif is_mode("release") then
-        --set_policy("build.merge_archive", true)
-        set_symbols("hidden")
-        set_strip("all")
-        set_fpmodels("fast")
-        set_optimize("aggressive")
-        -- lto
-        if not (is_plat("mingw") and is_arch("i386")) then
-            set_policy("build.optimization.lto", true)
-        end
-    end
-    
-    if has_config("show_warnings") then
-        --set_warnings("everything")
-    end

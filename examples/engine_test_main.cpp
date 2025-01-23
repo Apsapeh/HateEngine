@@ -1,4 +1,3 @@
-#include "GLFW/glfw3.h"
 #include "HateEngine/AudioBus.hpp"
 #include "HateEngine/Input.hpp"
 #include "HateEngine/NavMeshAgent.hpp"
@@ -6,16 +5,12 @@
 #include "HateEngine/Objects/Light/OmniLight.hpp"
 #include "HateEngine/Objects/Light/SpotLight.hpp"
 #include "HateEngine/Objects/Physics/CapsuleShape.hpp"
-#include "HateEngine/Objects/GLTFAnimationPlayer.hpp"
 #include "HateEngine/Objects/Physics/CollisionShape.hpp"
 #include "HateEngine/Objects/Physics/StaticBody.hpp"
 #include "HateEngine/Objects/Physics/TriggerArea.hpp"
-#include "HateEngine/Resources/HENFile.hpp"
-#include "HateEngine/Resources/NavMesh.hpp"
 #include "glm/ext/vector_float2.hpp"
 #include "glm/ext/vector_float3.hpp"
 
-#include "HateEngine/Objects/Light/Light.hpp"
 #include "HateEngine/Objects/Object.hpp"
 #include "HateEngine/Objects/Physics/BoxShape.hpp"
 #include "glm/fwd.hpp"
@@ -34,7 +29,6 @@
 #include <HateEngine/Resources/HERFile.hpp>
 #include <HateEngine/Resources/ObjMapModel.hpp>
 #include <cmath>
-#include <cstdint>
 #include <glm/ext.hpp>
 #include <glm/glm.hpp>
 #include <glm/gtx/quaternion.hpp>
@@ -663,9 +657,11 @@ int main() {
     lvl.getPhysEngine()->addObjectRef(&rigidBody);
     lvl.getPhysEngine()->addObjectRef(&playerBody);
     lvl.getPhysEngine()->addObjectRef(&floorBody);
-    playerBody.reactRigidBody->setAngularLockAxisFactor({0, 0, 0});
+    //playerBody.reactRigidBody->setAngularLockAxisFactor({0, 0, 0});
+    playerBody.setAngularLockAxisFactor(0, 0, 0);
     // playerBody.reactRigidBody->setLinearVelocity({2, 0.1, 2});
-    capsuleShape.reactCollider->getMaterial().setFrictionCoefficient(0);
+    //capsuleShape.reactCollider->getMaterial().setFrictionCoefficient(0);
+    capsuleShape.setFriction(0);
 
 
     lvl.addObjectRef(&playerCapsuleMesh);
@@ -862,7 +858,7 @@ int main() {
     lvl.setCameraRef(&camera);
     float xscale, yscale;
     // glfwGetPrimaryMonitor();
-    glfwGetMonitorContentScale(glfwGetPrimaryMonitor(), &xscale, &yscale);
+    //glfwGetMonitorContentScale(glfwGetPrimaryMonitor(), &xscale, &yscale);
     // std::cout << "Content scale: " << xscale << " " << yscale << "\n";
     //  while (true) {}
     game.Run();
@@ -1021,10 +1017,11 @@ void _physics_process(HateEngine::Engine* engine, double delta) {
                                 HateEngine::KeyDown
                         ) *
                         5;
-    float pb_x = playerBody.reactRigidBody->getLinearVelocity().x;
-    float pb_y = playerBody.reactRigidBody->getLinearVelocity().y;
-    float pb_z = playerBody.reactRigidBody->getLinearVelocity().z;
-    playerBody.reactRigidBody->setLinearVelocity({-raw_dir.y, pb_y, raw_dir.x});
+    //float pb_x = playerBody.reactRigidBody->getLinearVelocity().x;
+    //float pb_y = playerBody.reactRigidBody->getLinearVelocity().y;
+    //float pb_z = playerBody.reactRigidBody->getLinearVelocity().z;
+    //playerBody.reactRigidBody->setLinearVelocity({-raw_dir.y, pb_y, raw_dir.x});
+    //playerBody.setLinearVelocity({raw_dir.x, pb_y, raw_dir.y});
 
     // glmodel.rotate(0, glmodel_rot.x, 0);
     //  glmodel.offset(0, glmodel_rot.y / 10, 0);
