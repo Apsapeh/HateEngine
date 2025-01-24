@@ -7,13 +7,12 @@ add_requires(
     "glu",
     "termcolor 5635ae00856eeddffcbf7091d13e2987abde91a2"
 )
+add_requires("glfw 3.4", {configs = {wayland = is_plat("linux")}})
 
 
 if is_plat("mingw") and is_arch("i386") then
     add_requires("soloud", {configs = {cxflags = {"-DDISABLE_SSE", "-DDISABLE_SIMD"}}})
-    add_requires("glfw 3.3.8")
 else 
-    add_requires("glfw 3.4", {configs = {wayland = is_plat("linux")}})
     add_requires("soloud")
 end
 
@@ -62,7 +61,7 @@ end
 
 function set_HateEngineLib_rules()
     add_packages("glfw", "glm", "tinygltf", "reactphysics3d", "glu", "termcolor", "soloud", "recastnavigation")
-    add_defines("GLM_ENABLE_EXPERIMENTAL")
+    add_defines("GLM_ENABLE_EXPERIMENTAL", {public = true})
 
     set_languages("cxx11")
     set_exceptions("no-cxx")
@@ -83,16 +82,15 @@ if has_config("__package_mode") then
         set_HateEngineLib_rules()
         set_mode_rules(true)
 else 
-    target("HateEngine")
+    target("HateEngine-static")
         set_kind("static")
         set_HateEngineLib_rules()
         set_mode_rules(true)
         --set_enabled((has_config("build_shared") == true and is_kind("shared")))
 
 
-    target("HateEngine-shared")
+    target("HateEngine")
         set_kind("shared")
-        set_basename("HateEngine")
         set_HateEngineLib_rules()
         set_mode_rules(true)
         --set_kind("$(kind)")
@@ -124,17 +122,16 @@ function set_Example_rules(custom_mode)
     add_includedirs("include")
 
     if custom_mode == "shared" then
-        add_deps("HateEngine-shared")
-    else
         add_deps("HateEngine")
+    else
+        add_deps("HateEngine-static")
     end
 
     add_packages("glfw", "glm", "reactphysics3d", "soloud", "recastnavigation", {links = {}})
-    add_defines("GLM_ENABLE_EXPERIMENTAL")
 end
 
 target("Example_1")
-    set_Example_rules()
+    set_Example_rules("static")
     add_files(
         "examples/engine_test_main.cpp"
     )
