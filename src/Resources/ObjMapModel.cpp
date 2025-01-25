@@ -4,6 +4,7 @@
 #include <algorithm>
 #include <cstdint>
 #include <fstream>
+#include <cstdio>
 #include <sstream>
 #include <string>
 #include <unordered_map>
@@ -44,7 +45,25 @@ ObjMapModel::ObjMapModel(
         heluv_file_path = lightmap_file_name.substr(0, pos + 1);
 
     if (!lightmap_file_name.empty()) {
-        std::ifstream lightmap_file(lightmap_file_name);
+        FILE* file = fopen(lightmap_file_name.c_str(), "rb");
+        if (file) {
+            fseek(file, 0, SEEK_END);
+            long file_size = ftell(file);
+            rewind(file);
+
+            std::vector<uint8_t> buffer;
+            buffer.resize(file_size);
+
+            size_t read_size = fread(buffer.data(), 1, file_size, file);
+
+            fclose(file);
+            parseHeluv(buffer);
+        } else {
+            HATE_ERROR_F("Failed to open file: %s", lightmap_file_name.c_str());
+        }
+
+
+        /*std::ifstream lightmap_file(lightmap_file_name);
         if (lightmap_file.is_open()) {
             std::vector<uint8_t> lightmap_data(
                     (std::istreambuf_iterator<char>(lightmap_file)),
@@ -52,7 +71,7 @@ ObjMapModel::ObjMapModel(
             );
             parseHeluv(lightmap_data);
         } else
-            HATE_ERROR_F("Failed to open file: %s", lightmap_file_name.c_str());
+            */
     }
 
     std::ifstream file(obj_filename);
@@ -148,26 +167,36 @@ void ObjMapModel::parseHeluv(std::vector<uint8_t>& data, HERFile* her) {
     uint32_t version = *(uint32_t*) ptr;
     ptr += 4;
 
+    if (version < 2) {
+        HATE_ERROR_F("Heluv version %d is not supported, version 2 or higher is required", version);
+        return;
+    }
+
     uint32_t obj_count = *(uint32_t*) ptr;
     ptr += 4;
+
+    uint8_t image_format = *ptr; // 0 = RAW, 1 = PNG
+    ptr += 1;
 
     for (uint32_t i = 0; i < obj_count; i++) {
         uint16_t name_len = *(uint16_t*) ptr;
         ptr += 2;
         uint32_t faces_count = *(uint32_t*) ptr;
         ptr += 4;
+        uint32_t data_size = *(uint32_t*) ptr;
+        ptr += 4;
 
         std::string name((char*) ptr, name_len);
         ptr += name_len;
 
-        std::string tex_filename = this->heluv_file_path + name + ".png";
+        /*std::string tex_filename = this->heluv_file_path + name + ".png";
         HateEngine::Texture* tex;
         if (her != nullptr) {
             tex = new HateEngine::Texture(
                     (*her)[tex_filename].asTexture(Texture::Repeat, Texture::Linear, false)
             );
         } else
-            tex = new HateEngine::Texture(tex_filename, Texture::Repeat, Texture::Linear, false);
+            tex = new HateEngine::Texture(tex_filename, Texture::Repeat, Texture::Linear, false);*/
 
         std::vector<std::vector<glm::vec2>> faces;
         for (uint32_t j = 0; j < faces_count; j++) {
@@ -185,6 +214,13 @@ void ObjMapModel::parseHeluv(std::vector<uint8_t>& data, HERFile* her) {
 
             faces.push_back(uv);
         }
+
+        std::vector<uint8_t> tex_data;
+        tex_data.resize(data_size);
+        memcpy(tex_data.data(), ptr, data_size);
+        ptr += data_size;
+
+        Texture* tex = new HateEngine::Texture(tex_data, Texture::Repeat, Texture::Linear, false);
         heluv[name] = {faces, tex};
     }
     int a = 5;

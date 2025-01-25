@@ -131,7 +131,7 @@ Texture::Texture(
 
     unsigned char* s_data = stbi_load_from_memory(data.data(), data.size(), &width, &height, &n, 0);
     if (s_data == nullptr) {
-        HATE_ERROR("Texture: Error loading from memory")
+        HATE_ERROR_F("Texture: Error loading from memory: %s", stbi_failure_reason());
         return;
     }
     if (n == 4)

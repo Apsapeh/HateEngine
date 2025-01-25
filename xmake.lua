@@ -86,26 +86,12 @@ else
         set_kind("static")
         set_HateEngineLib_rules()
         set_mode_rules(true)
-        --set_enabled((has_config("build_shared") == true and is_kind("shared")))
-
 
     target("HateEngine")
         set_kind("shared")
         set_HateEngineLib_rules()
         set_mode_rules(true)
-        --set_kind("$(kind)")
-        --set_enabled(has_config("build_shared") == true)
-
-        -- add_cxxflags("-mmacosx-version-min=10.13 -stdlib=libc++", {force=true})
-        -- add_ldflags("-mmacosx-version-min=10.13 -stdlib=libc++", {force=true})
-        
-        -- after_link(function (target)
-        --     print(target:info()) -- тут дальше можно вычленить linkdirs чтоб объединить glfw и reactphysics в hateengine
-        --     import("utils.archive.merge_staticlib")
-        --     merge_staticlib(target, "libout.a", {"libfoo.a", "libbar.a"})
-        -- end)
 end
-
 
 
 
@@ -131,7 +117,7 @@ function set_Example_rules(custom_mode)
 end
 
 target("Example_1")
-    set_Example_rules("static")
+    set_Example_rules()
     add_files(
         "examples/engine_test_main.cpp"
     )

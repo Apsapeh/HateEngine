@@ -5,15 +5,15 @@
 <br>
 
 ### Русский
-Перекомпилированные *libstdc++-6.dll* и *libgcc_s_dw2-1.dll*
-**Компилятор**: i686-w64-mingw32-g++ (GCC) 14.2.0
-**Версия компилируемого gcc**: 14.2.0
-**Флаги конфигуратора**: 
+Перекомпилированные *libstdc++-6.dll* и *libgcc_s_dw2-1.dll* \
+**Компилятор**: i686-w64-mingw32-g++ (GCC) 14.2.0 \
+**Версия компилируемого gcc**: 14.2.0 \
+**Флаги конфигуратора**:  
 ```
 ../configure --prefix=/home/ghost/Downloads/mingw64-i686-libstdc++-msvcr120/out/ --host=i686-w64-mingw32 --target=i686-w64-mingw32 --disable-multilib --enable-languages=c,c++ --without-isl --disable-nls LDFLAGS="-specs=/home/ghost/Downloads/mingw64-i686-libstdc++-msvcr120/gcc-releases-gcc-14.2.0/msvcr120v2.spec" CFLAGS="-specs=/home/ghost/Downloads/mingw64-i686-libstdc++-msvcr120/gcc-releases-gcc-14.2.0/msvcr120v2.spec" CXXFLAGS="-specs=/home/ghost/Downloads/mingw64-i686-libstdc++-msvcr120/gcc-releases-gcc-14.2.0/msvcr120v2.spec"
 ```
 
-Во время компиляции возникали ошибки из-за отсутствия функции **getpid()**. Просто во всех файлах (штук 5), где были ошибки, заменил вызов функции на **0**. Надеюсь никак не повлияет на работоспособность *libstdc++-6.dll* и *libgcc_s_dw2-1.dll*.
+Во время компиляции возникали ошибки из-за отсутствия функции **getpid()**. Просто во всех файлах (штук 5), где были ошибки, заменил вызов функции на **0**. Надеюсь никак не повлияет на работоспособность *libstdc++-6.dll* и *libgcc_s_dw2-1.dll*. 
 
 Ещё, в файлах ниже, заменил **-lmsvcrt** на **-lmsvcr120**. Иначе *libgcc_s_dw2-1.dll* компилировалась с UCRT, а оно на WinXP работает не очень хорошо.
 

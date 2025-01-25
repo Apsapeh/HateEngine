@@ -5,14 +5,12 @@ use nalgebra::Vector3;
 
 #[derive(Debug, Clone)]
 pub struct Property {
-    pub value: String
+    pub value: String,
 }
 
 impl Property {
     pub fn new(value: String) -> Self {
-        Self {
-            value
-        }
+        Self { value }
     }
 
     #[allow(dead_code)]
@@ -49,12 +47,16 @@ impl Property {
 pub struct Entity {
     pub classname: String,
     pub pos: Vector3<f32>,
-    pub properties: HashMap<String, Property>
+    pub properties: HashMap<String, Property>,
 }
 
 impl Entity {
     pub fn new(classname: String) -> Entity {
-        Entity { classname, pos: Vector3::default(), properties: HashMap::new()}
+        Entity {
+            classname,
+            pos: Vector3::default(),
+            properties: HashMap::new(),
+        }
     }
 }
 

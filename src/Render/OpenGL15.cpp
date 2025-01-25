@@ -319,6 +319,7 @@ void OpenGL15::render(const Mesh* mesh, std::vector<Light*>* lights_vec) {
 
         // Render Textures
         bool texture_enabled = false;
+        bool light_texture_enabled = false;
         if (mesh->getTexture() != nullptr and mesh->getTexture()->is_loaded) {
             texture_enabled = true;
             glEnableClientState(GL_TEXTURE_COORD_ARRAY);
@@ -334,14 +335,15 @@ void OpenGL15::render(const Mesh* mesh, std::vector<Light*>* lights_vec) {
             glTexCoordPointer(2, GL_FLOAT, 0, mesh->getUV()->data());
         }
 
-        if (mesh->getLightTexture() != nullptr and mesh->getLightTexture()->is_loaded) {
+        if (texture_enabled and mesh->getLightTexture() != nullptr and
+            mesh->getLightTexture()->is_loaded) {
+            light_texture_enabled = true;
+
             texture_enabled = true;
             glEnableClientState(GL_TEXTURE_COORD_ARRAY);
             glActiveTexture(GL_TEXTURE1);
             if (not mesh->getLightTexture()->is_gpu_loaded)
                 mesh->getLightTexture()->Load(loadTexture, unloadTexture);
-
-            // HATE_INFO_F("Name: %s", mesh->name.c_str());
 
             glEnable(GL_TEXTURE_2D);
             glBindTexture(GL_TEXTURE_2D, mesh->getLightTexture()->getTextureID());
@@ -369,7 +371,9 @@ void OpenGL15::render(const Mesh* mesh, std::vector<Light*>* lights_vec) {
 
         if (texture_enabled) {
             glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+            glDisable(GL_TEXTURE_2D);
         }
+
 
         glPopMatrix();
         glPopClientAttrib();
@@ -454,16 +458,19 @@ inline std::vector<int> OpenGL15::getNearestLights(
     return result;
 }
 
+int err_count = 0;
 void OpenGL15::loadTexture(Texture* texture_ptr) {
     glGenTextures(1, &texture_ptr->textureGL_ID);
     glBindTexture(GL_TEXTURE_2D, texture_ptr->textureGL_ID);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, texture_ptr->texWrap);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, texture_ptr->texWrap);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_R, texture_ptr->texWrap);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, texture_ptr->texFiltering);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, texture_ptr->texMipMapFiltering);
     glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_LOD_BIAS, texture_ptr->MipMapLodBias);
 
+// #define in GL_COMPRESSED_RGB
+// #define in GL_R3_G3_B2
+//#define in GL_RGB
     if (texture_ptr->texMipMapFiltering != texture_ptr->texFiltering) // MipMap enabled
         gluBuild2DMipmaps(
                 GL_TEXTURE_2D, texture_ptr->textureFormat, texture_ptr->width, texture_ptr->height,
@@ -471,9 +478,8 @@ void OpenGL15::loadTexture(Texture* texture_ptr) {
         );
     else // MipMad disabled
         glTexImage2D(
-                GL_TEXTURE_2D, 0, texture_ptr->textureFormat, texture_ptr->width,
-                texture_ptr->height, 0, texture_ptr->textureFormat, GL_UNSIGNED_BYTE,
-                texture_ptr->data.data()
+                GL_TEXTURE_2D, 0, texture_ptr->textureFormat, texture_ptr->width, texture_ptr->height, 0,
+                texture_ptr->textureFormat, GL_UNSIGNED_BYTE, texture_ptr->data.data()
         );
 
     glBindTexture(GL_TEXTURE_2D, 0);

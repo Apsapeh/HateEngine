@@ -144,6 +144,7 @@ int main() {
     glm::vec3 dir = dirLight.getDirection();
 
     light.setVisible(true);
+    light.setColor({1.0, 0, 0, 1.0});
 
     // HATE_FATAL_F("Direction x: %f, y: %f, z: %f", dir.x, dir.y, dir.z);
 
@@ -154,7 +155,7 @@ int main() {
 
     // sun.setPosition({1.0, 1.0, 1.0});
     sun.rotate(-45, 45, 0);
-    sun.setVisible(true);
+    sun.setVisible(false);
 
     mesh2.setPosition(3, 3, 3);
 
@@ -173,7 +174,7 @@ int main() {
     game.setMouseCapture(true);
     // std::cout << "\n\n\n\n" << glfwGetInputMode(game.window, GLFW_CURSOR) << "\n\n\n\n";
     game.setOneThreadMode(true);
-    game.setVSync(false);
+    game.setVSync(true);
 
     game.onLevelChanged.connect([](HateEngine::Engine* e, HateEngine::Level* lvl, HateEngine::Level* old) {
         HATE_INFO("Level changed");
@@ -364,9 +365,14 @@ int main() {
             nullptr
     );*/
 
-    HateEngine::ObjMapModel objmodel(
+    HATE_WARNING("Deserializing");
+    /*HateEngine::ObjMapModel objmodel(
             "examples/Assets/Ignore/_E1M1.obj", "examples/Assets/Ignore/E1M1.MAP",
-            "examples/Assets/Ignore/E1M1/light.heluv", 16.0, true, 15, 1
+            "examples/Assets/Ignore/light.heluv", 16.0, true, 15, 100000000
+    );*/
+    HateEngine::ObjMapModel objmodel(
+            "examples/Assets/Ignore/E1M1.obj", "examples/Assets/Ignore/E1M1.MAP",
+            "examples/Assets/Ignore/light.heluv", 16.0, true, 15, 1
     );
     objmodel.deserializeEntities(
             {{"light",
@@ -384,7 +390,7 @@ int main() {
                   cube->setSize(0.1, 0.1, 0.1);
                   cube->setPosition(entity.position);
                   model->bindObj(cube);
-                  model->addEntityObjectToLevel(cube);
+                  //model->addEntityObjectToLevel(cube);
               }}},
             new std::vector<HateEngine::OmniLight*>,
             [](void* data) {
@@ -395,6 +401,8 @@ int main() {
                 delete lights;
             }
     );
+
+
 
 
     // HateEngine::HENFile henfile("examples/Assets/Ignore/E1M1.hen");
@@ -464,13 +472,33 @@ int main() {
     };
 
     for (int i = 0; i < objmodel.getLODCount(); i++) {
+        HateEngine::Mesh* mesh = objmodel.getLOD(i)[0];
+        if (mesh->getName() == "entity0_brush632") {
+            HATE_WARNING_F("UV SIZE: %d", mesh->getUV()->size());
+            
+            //HATE_FATAL_F("LIGHT UV SIZE: %d", mesh->getLightUV()->size());
+        }
+
+        
+
+
+        
         for (auto& lod: objmodel.getLOD(i)) {
-            lod->setTexture(&bri);
+            //lod->setLightTexture(nullptr);    
+            //lod->setTexture(mesh->getLightTexture());
+            //lod->setUV(*mesh->getLightUV());
+            lod->disableLightShading();
+            //lod->setTexture(&bri);
             // HATE_INFO_F("LOD name: %s, light_texture: %d", lod->getName().c_str(),
             // lod->getLightTexture() != nullptr);
             //  lod->setVisible(enabled.count(lod->getName()));
         }
     }
+
+    floor.disableLightShading();
+
+    lvl.setAmbientLightColor(255, 255, 255);
+    lvl.setAmbientLightIntensity(1);
 
 
     /*for (auto& m: objmodel.getMeshes()) {
