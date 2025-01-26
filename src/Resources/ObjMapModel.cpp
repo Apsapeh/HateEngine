@@ -189,15 +189,6 @@ void ObjMapModel::parseHeluv(std::vector<uint8_t>& data, HERFile* her) {
         std::string name((char*) ptr, name_len);
         ptr += name_len;
 
-        /*std::string tex_filename = this->heluv_file_path + name + ".png";
-        HateEngine::Texture* tex;
-        if (her != nullptr) {
-            tex = new HateEngine::Texture(
-                    (*her)[tex_filename].asTexture(Texture::Repeat, Texture::Linear, false)
-            );
-        } else
-            tex = new HateEngine::Texture(tex_filename, Texture::Repeat, Texture::Linear, false);*/
-
         std::vector<std::vector<glm::vec2>> faces;
         for (uint32_t j = 0; j < faces_count; j++) {
             uint8_t uvs_count = *ptr;

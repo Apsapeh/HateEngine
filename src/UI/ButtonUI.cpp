@@ -1,4 +1,5 @@
 #include <HateEngine/UI/ButtonUI.hpp>
+#define NK_INCLUDE_FIXED_TYPES
 #include <nuklear.h>
 
 using namespace HateEngine;

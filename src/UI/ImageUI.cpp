@@ -1,6 +1,7 @@
 #include <HateEngine/UI/ImageUI.hpp>
 #include "HateEngine/UI/ObjectUI.hpp"
 
+#define NK_INCLUDE_FIXED_TYPES
 #include <nuklear.h>
 
 using namespace HateEngine;

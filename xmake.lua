@@ -7,7 +7,8 @@ add_requires(
     "glu",
     "termcolor 5635ae00856eeddffcbf7091d13e2987abde91a2"
 )
-add_requires("glfw 3.4", {configs = {wayland = is_plat("linux")}})
+add_requires("glfw 3.4", {configs = {wayland = is_plat("linux") and not is_arch("i386")}})
+-- On my pc it doesn't compile for Linux i386 when Wayland enabled, because needed version of wayland
 
 
 if is_plat("mingw") and is_arch("i386") then
