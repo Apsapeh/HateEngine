@@ -61,18 +61,24 @@ def build_mac(verbose):
     if not sys.platform == "darwin":
         return
     build("Mac", "mac", "arm64", verbose, ["--target_minver=11.0"])
+    copy_files("build/mac/arm64/release", "build/all/mac-arm64", ["libHateEngine.dylib", "libHateEngine-static.a"])
     build("Mac", "mac", "x86_64", verbose, ["--target_minver=10.7"])
+    copy_files("build/mac/x86_64/release", "build/all/mac-64", ["libHateEngine.dylib", "libHateEngine-static.a"])
 
 
 def build(target_name: str, platform: str, arch: str, verbose: bool, additional_flags: list[str] = []) -> bool:
     print(f"Building {target_name} [{arch}]")
-    args = ["xmake", "f", "-m", "release", "-p", platform, "-a", arch] + additional_flags
-    result = subprocess.call(args, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    args = ["xmake", "f", "-m", "release", "-p", platform, "-a", arch, "-y"]
+    if verbose:
+        args.append("-v")
+    args += additional_flags
+    out = subprocess.DEVNULL if not verbose else None
+    result = subprocess.call(args, stdout=out, stderr=out)
     if result != 0:
         print(f"{target_name} [{arch}] configure failed")
         return False
 
-    result = subprocess.call(["xmake"], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    result = subprocess.call(["xmake"], stdout=out, stderr=out)
     if result != 0:
         print(f"{target_name} [{arch}] build failed")
         return False
