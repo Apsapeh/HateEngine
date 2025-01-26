@@ -61,9 +61,9 @@ def build_mac(verbose):
     if not sys.platform == "darwin":
         return
     build("Mac", "macosx", "arm64", verbose, ["--target_minver=11.0"])
-    copy_files("build/mac/arm64/release", "build/all/mac-arm64", ["libHateEngine.dylib", "libHateEngine-static.a"])
+    copy_files("build/macosx/arm64/release", "build/all/mac-arm64", ["libHateEngine.dylib", "libHateEngine-static.a"])
     build("Mac", "macosx", "x86_64", verbose, ["--target_minver=10.7"])
-    copy_files("build/mac/x86_64/release", "build/all/mac-64", ["libHateEngine.dylib", "libHateEngine-static.a"])
+    copy_files("build/macosx/x86_64/release", "build/all/mac-64", ["libHateEngine.dylib", "libHateEngine-static.a"])
 
 
 def build(target_name: str, platform: str, arch: str, verbose: bool, additional_flags: list[str] = []) -> bool:
