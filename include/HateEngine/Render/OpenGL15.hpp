@@ -27,7 +27,7 @@ namespace HateEngine {
          * \param lights  Vector of lights
          */
         inline void Draw3D(
-                Camera* camera, std::vector<Mesh*>* meshes, std::vector<Model*>* models,
+                Camera* camera, std::vector<Mesh*>* meshes, std::vector<Model*>* models, std::vector<ObjMapModel*>* obj_map_models, 
                 std::vector<GLTFAnimationPlayer*>* animation_plyaers,
                 std::vector<Particles*>* particles, std::vector<Light*>* lights
         );

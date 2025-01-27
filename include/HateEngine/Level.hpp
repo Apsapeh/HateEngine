@@ -17,6 +17,7 @@
 #include "Objects/Light/SpotLight.hpp"
 #include "Resources/ObjMapModel.hpp"
 #include "glm/ext/vector_float4.hpp"
+#include "Render/Renderable3DInterface.hpp"
 
 namespace HateEngine {
     class Level {
@@ -70,6 +71,8 @@ namespace HateEngine {
         std::vector<Mesh*> meshes;
         // This vector should be generated from models_obj
         std::vector<Model*> models;
+        // This vector should be generated from objMapModels_obj
+        std::vector<ObjMapModel*> objMapModels;
         // This vector should be generated from animationPlayers_obj
         std::vector<GLTFAnimationPlayer*> animationPlayers;
         // This vector should be generated from particles_obj
@@ -93,6 +96,7 @@ namespace HateEngine {
         std::mutex uiWidgetsMutex;
         std::mutex meshesMutex;
         std::mutex modelsMutex;
+        std::mutex objMapModelsMutex;
         std::mutex billboardsMutex;
         std::mutex animationPlayersMutex;
         std::mutex particlesMutex;
@@ -102,6 +106,7 @@ namespace HateEngine {
                 true; // Hack to improve performance, when adding multiple objects
         void updateMeshesVector();
         void updateModelsVector();
+        void updateObjMapModelsVector();
         void updateAnimationPlayersVector();
         void updateParticlesVector();
         void updateLightsVector();

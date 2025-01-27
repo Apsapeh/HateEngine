@@ -273,7 +273,7 @@ GLTFModel::GLTFModel(const char* data, uint32_t size, std::string dir) {
     for (auto& m: meshes)
         bindObj((Object*) m);
 
-    addLOD(0, meshes);
+    //addLOD(0, meshes);
     is_loaded = true;
 }
 
@@ -295,6 +295,6 @@ GLTFModel::GLTFModel(const uint8_t* data, uint32_t size, std::string dir) {
     for (auto& m: meshes)
         bindObj((Object*) m);
 
-    addLOD(0, meshes);
+    //addLOD(0, meshes);
     is_loaded = true;
 }

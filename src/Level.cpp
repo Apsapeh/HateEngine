@@ -278,7 +278,7 @@ UUID Level::addObjectRef(Model* object) {
 }
 
 UUID Level::addObjectRef(ObjMapModel* object) {
-    std::lock_guard<std::mutex> guard(modelsMutex);
+    std::lock_guard<std::mutex> guard(objMapModelsMutex);
     objMapModels_obj[object->getUUID()] = {object, true};
     this->physEngine.addObjectRef(object->getStaticBody());
 
@@ -296,7 +296,7 @@ UUID Level::addObjectRef(ObjMapModel* object) {
     ADD_OBJMAP_DEPS(lights)
     this->auto_updates_enabled = true;
 
-    updateModelsVector();
+    updateObjMapModelsVector();
     return object->getUUID();
 }
 
@@ -430,9 +430,16 @@ void Level::updateModelsVector() {
     models.reserve(this->models_obj.size());
     for (const auto& obj: models_obj)
         models.push_back((Model*) obj.second.obj);
-    for (const auto& obj: objMapModels_obj)
-        models.push_back((Model*) obj.second.obj);
     models.shrink_to_fit();
+}
+
+void Level::updateObjMapModelsVector() {
+    CHECK_AUTO_UPDATES_ENABLED()
+    objMapModels.clear();
+    objMapModels.reserve(this->objMapModels_obj.size());
+    for (const auto& obj: objMapModels_obj)
+        objMapModels.push_back((ObjMapModel*) obj.second.obj);
+    objMapModels.shrink_to_fit();
 }
 
 void Level::updateAnimationPlayersVector() {

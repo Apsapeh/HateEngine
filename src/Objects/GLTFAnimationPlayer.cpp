@@ -8,7 +8,7 @@ using namespace HateEngine;
 GLTFAnimationPlayer::GLTFAnimationPlayer(GLTFModel* model) {
     this->m_model = model;
     this->bindObj(this->m_model);
-    for (auto& anim: this->m_model->LODs[0].meshes) {
+    /*for (auto& anim: this->m_model->LODs[0].meshes) {
         std::string name = anim->getName();
         unsigned short pos = (unsigned short) name.find_first_of(']');
         std::string animName = name.substr(1, pos - 1);
@@ -24,7 +24,7 @@ GLTFAnimationPlayer::GLTFAnimationPlayer(GLTFModel* model) {
 
         animations[animName].frameCount =
                 std::max(animations[animName].frameCount, (uint32_t) (frame + 1));
-    }
+    }*/
 }
 
 void GLTFAnimationPlayer::Update(float delta) {

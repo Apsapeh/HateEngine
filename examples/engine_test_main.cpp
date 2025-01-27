@@ -173,8 +173,8 @@ int main() {
 
     game.setMouseCapture(true);
     // std::cout << "\n\n\n\n" << glfwGetInputMode(game.window, GLFW_CURSOR) << "\n\n\n\n";
-    game.setOneThreadMode(true);
-    game.setVSync(true);
+    game.setOneThreadMode(false);
+    game.setVSync(false);
 
     game.onLevelChanged.connect([](HateEngine::Engine* e, HateEngine::Level* lvl, HateEngine::Level* old) {
         HATE_INFO("Level changed");
@@ -372,7 +372,7 @@ int main() {
     );*/
     HateEngine::ObjMapModel objmodel(
             "examples/Assets/Ignore/E1M1.obj", "examples/Assets/Ignore/E1M1.MAP",
-            "examples/Assets/Ignore/light.heluv", 16.0, true, 15, 1
+            "examples/Assets/Ignore/light.heluv","examples/Assets/Ignore/E1M1.hepvs", 16.0, true, 15, 1
     );
     objmodel.deserializeEntities(
             {{"light",
@@ -471,7 +471,7 @@ int main() {
 
     };
 
-    for (int i = 0; i < objmodel.getLODCount(); i++) {
+    /*for (int i = 0; i < objmodel.getLODCount(); i++) {
         HateEngine::Mesh* mesh = objmodel.getLOD(i)[0];
         if (mesh->getName() == "entity0_brush632") {
             HATE_WARNING_F("UV SIZE: %d", mesh->getUV()->size());
@@ -493,7 +493,7 @@ int main() {
             // lod->getLightTexture() != nullptr);
             //  lod->setVisible(enabled.count(lod->getName()));
         }
-    }
+    }*/
 
     floor.disableLightShading();
 

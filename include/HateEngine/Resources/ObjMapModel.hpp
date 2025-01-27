@@ -1,8 +1,10 @@
 #pragma once
 #include <cstddef>
+#include <cstdint>
 #include <string>
 #include <sys/types.h>
 #include <unordered_map>
+#include "HateEngine/Objects/LODMesh.hpp"
 #include "Model.hpp"
 #include "../Objects/Physics/ConvexShape.hpp"
 #include "../Objects/Physics/StaticBody.hpp"
@@ -80,6 +82,8 @@ namespace HateEngine {
 
         void parseMap(std::string data, float grid_size);
 
+        void parseHepvs(std::vector<uint8_t>& data);
+
         std::vector<Mesh*> generateLod(
                 std::vector<glm::vec3> vertices, std::vector<glm::vec2> tex_coords,
                 std::vector<ObjObject> objects, float step = 1.0f
@@ -93,6 +97,10 @@ namespace HateEngine {
         std::string heluv_file_path;
         std::unordered_map<std::string, HeluvObj> heluv;
         std::unordered_map<std::string, Material> materials;
+        float hepvs_cell_size = 0.0f;
+        glm::vec3 hepvs_min_point = {0.0f, 0.0f, 0.0f};
+        glm::ivec3 hepvs_cell_count = {0, 0, 0};
+        std::vector<std::vector<LODMesh>> hepvs_table;
         std::vector<Entity> entities;
         void* entities_data = nullptr;
         void (*entities_data_deleter)(void*) = nullptr;
@@ -117,7 +125,7 @@ namespace HateEngine {
          */
         ObjMapModel(
                 std::string obj_file_name, std::string map_file_name,
-                std::string lightmap_file_name, float grid_size = 16.0f,
+                std::string lightmap_file_name, std::string hepvs_file_name, float grid_size = 16.0f,
                 bool generate_collision = true, float lod_dist = 15, float lod_step = 1.0
         );
 
@@ -130,7 +138,7 @@ namespace HateEngine {
          */
         ObjMapModel(
                 class HERFile* her, std::string obj_file_data, std::string map_file_data,
-                std::vector<uint8_t> heluv_data, float grid_size = 16.0f,
+                std::vector<uint8_t> heluv_data, std::vector<uint8_t> hepvs_data, float grid_size = 16.0f,
                 bool generate_collision = true, float lod_dist = 15, float lod_step = 1.0
         );
 
@@ -141,6 +149,7 @@ namespace HateEngine {
                 void* data, void (*data_deleter)(void*) = nullptr
         );
 
+
         void addEntityObjectToLevel(Mesh* object);
         void addEntityObjectToLevel(BillboardMesh* object);
         void addEntityObjectToLevel(Light* object);
@@ -150,5 +159,6 @@ namespace HateEngine {
         void addEntityObjectToLevel(Particles* object);
 
         StaticBody* getStaticBody();
+        std::vector<LODMesh>* getLODMeshes(glm::vec3 pos);
     };
 } // namespace HateEngine

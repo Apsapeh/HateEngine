@@ -122,7 +122,7 @@ void OpenGL15::Render() {
     glPushMatrix();
     if (level->camera != nullptr)
         this->Draw3D(
-                level->camera, &level->meshes, &level->models, &level->animationPlayers,
+                level->camera, &level->meshes, &level->models, &level->objMapModels, &level->animationPlayers,
                 &level->particles, &level->lights
         );
     // glFlush();
@@ -216,7 +216,7 @@ void OpenGL15::Render() {
 
 std::vector<Mesh*> correct_buffer = {};
 void OpenGL15::Draw3D(
-        Camera* camera, std::vector<Mesh*>* meshes, std::vector<Model*>* models,
+        Camera* camera, std::vector<Mesh*>* meshes, std::vector<Model*>* models, std::vector<ObjMapModel*>* obj_map_models,
         std::vector<GLTFAnimationPlayer*>* animation_players, std::vector<Particles*>* particles,
         std::vector<Light*>* lights
 ) {
@@ -261,14 +261,35 @@ void OpenGL15::Draw3D(
             render(obj, lights);
     }
 
-    for (const auto obj: *models) {
+    glm::vec3 pos = camera->getGlobalPosition();
+    for (auto obj: *models) {
         if (obj->isLoaded()) {
-            auto model_meshes = ((Model*) obj)->getMeshes(camera->getGlobalPosition());
-            for (const auto& mesh: model_meshes) {
-                if (mesh->getCorrectTransparency())
-                    correct_buffer.push_back(mesh);
-                else
-                    render(mesh, lights);
+            auto model_meshes = ((Model*) obj)->getLODMeshes();
+            for (auto& mesh: *model_meshes) {
+                const auto m = mesh.getMeshByPos(pos);
+                if (m != nullptr) {
+                    if (m->getCorrectTransparency())
+                        correct_buffer.push_back(m);
+                    else
+                        render(m, lights);
+                }
+            }
+        }
+    }
+
+    for (auto obj: *obj_map_models) {
+        if (obj->isLoaded()) {
+            auto model_meshes = obj->getLODMeshes(pos);
+            if (model_meshes == nullptr)
+                continue;
+            for (auto& mesh: *model_meshes) {
+                const auto m = mesh.getMeshByPos(pos);
+                if (m != nullptr) {
+                    if (m->getCorrectTransparency())
+                        correct_buffer.push_back(m);
+                    else
+                        render(m, lights);
+                }
             }
         }
     }
