@@ -28,10 +28,16 @@ MSVC is long untested, I don't know, it still works or not
 <br />
 
 # How to build
+### Autoconfigure and build for all supported platforms:
+```sh
+$ ./build.py all
+```
+
 ### Build only а library (static and dynamic): 
 ```sh
 $ xmake
 ```
+
 ### Build with аn examples
 ```sh
 $ xmake f -m release --build_examples=true

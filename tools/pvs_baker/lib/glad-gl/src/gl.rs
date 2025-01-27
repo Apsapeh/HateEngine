@@ -1,3 +1,4 @@
+#![allow(static_mut_refs)]
 pub use self::types::*;
 pub use self::enumerations::*;
 pub use self::functions::*;
@@ -41,7 +42,7 @@ unsafe impl Sync for FnPtr {}
 unsafe impl Send for FnPtr {}
 
 pub mod types {
-#![allow(dead_code, non_snake_case, non_camel_case_types)]
+#![allow(dead_code, non_snake_case, non_camel_case_types, static_mut_refs)]
 
 use std::os::raw;
 

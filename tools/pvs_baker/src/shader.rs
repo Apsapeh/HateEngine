@@ -4,27 +4,27 @@ use std::ffi::CString;
 const VERTEX_SHADER_SOURCE: &str = r#"
 #version 330 core
 layout (location = 0) in vec3 aPos;
-layout (location = 1) in uvec3 aColor;
+layout (location = 1) in vec3 aColor;
 
-out vec3 color;
+out vec4 color;
 
 uniform mat4 projection;
 uniform mat4 view;
 
 void main() {
     gl_Position = projection * view * vec4(aPos, 1.0);
-    color = vec3(float(aColor.x) / 255.0, float(aColor.y) / 255.0, float(aColor.z) / 255.0);
+    color = vec4(aColor.x, aColor.y, aColor.z, 1.0);
 }
 "#;
 
 const FRAGMENT_SHADER_SOURCE: &str = r#"
 #version 330 core
-in vec3 color;
+in vec4 color;
 out vec4 FragColor;
 
 
 void main() {
-    FragColor = vec4(color.x, color.y, color.z, 1.0);
+    FragColor = color;
     //FragColor = vec4(0.5, 0.5, 0.5, 1.0);
 }
 "#;

@@ -17,7 +17,7 @@ pub unsafe fn load_obj_vao(
 
     let mut big_vbo = Vec::new();
     let mut big_ebo = Vec::new();
-    let mut big_color = Vec::new();
+    let mut big_color: Vec<f32> = Vec::new();
     let mut colors = HashMap::new();
 
     for o in &mut obj {
@@ -28,17 +28,16 @@ pub unsafe fn load_obj_vao(
         big_vbo.extend_from_slice(&o.mesh.positions);
 
         let color = gen_color();
-        let mut color_vec = vec![0u8; o.mesh.positions.len()];
-        for i in 0..o.mesh.positions.len() / 3 {
-            color_vec[3 * i] = color[0];
-            color_vec[3 * i + 1] = color[1];
-            color_vec[3 * i + 2] = color[2];
+        for _ in 0..o.mesh.positions.len() / 3 {
+            big_color.push(color[0] as f32 / 255.0);
+            big_color.push(color[1] as f32 / 255.0);
+            big_color.push(color[2] as f32 / 255.0);
         }
-        big_color.extend_from_slice(&color_vec);
 
         let color = (color[0] >> 4, color[1] >> 4, color[2] >> 4);
         colors.insert(color, o.name.clone());
     }
+    //panic!();
 
     let mut vbo = 0;
     gl::GenBuffers(1, &mut vbo);
@@ -79,11 +78,11 @@ pub unsafe fn load_obj_vao(
     gl::BindBuffer(gl::ARRAY_BUFFER, color_vbo);
     gl::BufferData(
         gl::ARRAY_BUFFER,
-        (big_color.len() * std::mem::size_of::<u8>()) as isize,
+        (big_color.len() * std::mem::size_of::<f32>()) as isize,
         big_color.as_ptr() as *const _,
         gl::STATIC_DRAW,
     );
-    gl::VertexAttribPointer(1, 3, gl::UNSIGNED_BYTE, gl::FALSE, 0, std::ptr::null());
+    gl::VertexAttribPointer(1, 3, gl::FLOAT, gl::FALSE, 0, std::ptr::null());
 
     gl::EnableVertexAttribArray(1);
     gl::EnableVertexAttribArray(0);

@@ -43,27 +43,27 @@ def parse_args():
 
 
 def build_mingw(verbose):
-    build("Mingw", "mingw", "i386", verbose)
-    copy_files("build/mingw/i386/release", "build/all/mingw-32", ["libHateEngine.dll", "libHateEngine.dll.a", "libHateEngine-static.a"])
-    # Copy recompiled stdlib
-    copy_files("extern_resources", "build/all/mingw-32", ["libgcc_s_dw2-1.dll", "libstdc++-6.dll", "libwinpthread-1.dll"])
+    if build("Mingw", "mingw", "i386", verbose):
+        copy_files("build/mingw/i386/release", "build/all/mingw-32", ["libHateEngine.dll", "libHateEngine.dll.a", "libHateEngine-static.a"])
+        # Copy recompiled stdlib
+        copy_files("extern_resources", "build/all/mingw-32", ["libgcc_s_dw2-1.dll", "libstdc++-6.dll", "libwinpthread-1.dll"])
 
-    build("Mingw", "mingw", "x86_64", verbose)
-    copy_files("build/mingw/x86_64/release", "build/all/mingw-64", ["libHateEngine.dll", "libHateEngine.dll.a", "libHateEngine-static.a"])
+    if build("Mingw", "mingw", "x86_64", verbose):
+        copy_files("build/mingw/x86_64/release", "build/all/mingw-64", ["libHateEngine.dll", "libHateEngine.dll.a", "libHateEngine-static.a"])
     
 
 def build_linux(verbose):
-    build("Linux", "linux", "x86_64", verbose)
-    copy_files("build/linux/x86_64/release", "build/all/linux-64", ["libHateEngine.so", "libHateEngine-static.a"])
+    if build("Linux", "linux", "x86_64", verbose):
+        copy_files("build/linux/x86_64/release", "build/all/linux-64", ["libHateEngine.so", "libHateEngine-static.a"])
 
 def build_mac(verbose):
     # Check OS is MacOS
     if not sys.platform == "darwin":
         return
-    build("Mac", "macosx", "arm64", verbose, ["--target_minver=11.0"])
-    copy_files("build/macosx/arm64/release", "build/all/mac-arm64", ["libHateEngine.dylib", "libHateEngine-static.a"])
-    build("Mac", "macosx", "x86_64", verbose, ["--target_minver=10.7"])
-    copy_files("build/macosx/x86_64/release", "build/all/mac-64", ["libHateEngine.dylib", "libHateEngine-static.a"])
+    if build("Mac", "macosx", "arm64", verbose, ["--target_minver=11.0"]):
+        copy_files("build/macosx/arm64/release", "build/all/mac-arm64", ["libHateEngine.dylib", "libHateEngine-static.a"])
+    if build("Mac", "macosx", "x86_64", verbose, ["--target_minver=10.7"]):
+        copy_files("build/macosx/x86_64/release", "build/all/mac-64", ["libHateEngine.dylib", "libHateEngine-static.a"])
 
 
 def build(target_name: str, platform: str, arch: str, verbose: bool, additional_flags: list[str] = []) -> bool:
@@ -78,7 +78,10 @@ def build(target_name: str, platform: str, arch: str, verbose: bool, additional_
         print(f"{target_name} [{arch}] configure failed")
         return False
 
-    result = subprocess.call(["xmake"], stdout=out, stderr=out)
+    args = ["xmake"]
+    if verbose:
+        args.append("-v")
+    result = subprocess.call(args, stdout=out, stderr=out)
     if result != 0:
         print(f"{target_name} [{arch}] build failed")
         return False

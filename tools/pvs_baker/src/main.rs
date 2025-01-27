@@ -7,6 +7,10 @@ use cfor::cfor;
 use cgmath::{Point3, Vector3};
 use std::io::Write;
 
+use cgmath::{Matrix, Matrix4};
+use glad_gl::gl;
+use glfw::*;
+
 mod obj_loader;
 mod render;
 mod shader;
@@ -15,7 +19,7 @@ mod window;
 const WIDTH: u32 = 512;
 const HEIGHT: u32 = 512;
 
-const USAGE_EXAMPLE_ERROR: &str = "Usage: ./pvs_baker -m <.obj map> [-o <output>] [-g <grid size>] [-c <cell size>] [-s <cell step>] [--norender]";
+const USAGE_EXAMPLE_ERROR: &str = "Usage: ./pvs_baker -m <.obj map> [-o <output>] [-g <grid size>] [-c <cell size>] [-s <cell step>] [--norender] [-j <threads>] [-r <renderers>]";
 
 fn main() {
     let args: Vec<String> = std::env::args().collect();
@@ -31,6 +35,8 @@ fn main() {
     let mut cell_size = 16.0f32;
     let mut cell_step = 1.0f32;
     let mut no_render = false;
+    let mut threads: usize = 8;
+    let mut renderers: usize = 16;
     cfor!(let mut i = 1; i < args.len(); i += 1; {
         let arg = &args[i];
 
@@ -57,6 +63,14 @@ fn main() {
         else if arg == "--norender" {
             no_render = true;
         }
+        else if arg == "-j" && i+1 < args.len() {
+            threads = args[i+1].parse().unwrap();
+            i += 1;
+        }
+        else if arg == "-r" && i+1 < args.len() {
+            renderers = args[i+1].parse().unwrap();
+            i += 1;
+        }
         else {
             eprintln!("{}", USAGE_EXAMPLE_ERROR);
             return;
@@ -69,7 +83,7 @@ fn main() {
     }
 
     unsafe {
-        run(no_render, map, grid_size, cell_size, cell_step, output);
+        run(no_render, map, grid_size, cell_size, cell_step, threads, renderers, output);
     }
 }
 
@@ -79,9 +93,11 @@ unsafe fn run(
     grid_size: f32,
     cell_size: f32,
     cell_step: f32,
+    threads_count: usize,
+    renderers_count: usize,
     out: String,
 ) {
-    let (mut glfw, mut _window, view_loc) = window::create_window(WIDTH, HEIGHT);
+    let (mut glfw, mut window, view_loc) = window::create_window(WIDTH, HEIGHT);
     let (vao, indices_count, colors, obj) = obj_loader::load_obj_vao(path.clone(), grid_size);
 
     let colors_arc = Arc::new(colors);
@@ -96,8 +112,7 @@ unsafe fn run(
     let dirpath = format!(".hepvs/{}", filename);
     std::fs::create_dir_all(&dirpath).unwrap();
 
-    /*
-    let mut pos = Point3::new(34.0, 5.0, 17.0);
+    /*let mut pos = Point3::new(34.0, 5.0, 17.0);
     let mut prev_time = glfw.get_time();
     while !window.should_close() {
         let current_time = glfw.get_time();
@@ -174,6 +189,8 @@ unsafe fn run(
             view_loc,
             &dirpath,
             colors_arc,
+            threads_count,
+            renderers_count,
         );
     }
 
@@ -206,15 +223,16 @@ fn render_obj(
     view_loc: i32,
     dirpath: &String,
     colors_arc: Arc<HashMap<(u8, u8, u8), String>>,
+    threads_count: usize,
+    renderers_count: usize,
 ) {
-    let mut point_renderers = vec![
-        render::PointRenderer::new(WIDTH, HEIGHT, vao, indices_count as u32, view_loc),
-        render::PointRenderer::new(WIDTH, HEIGHT, vao, indices_count as u32, view_loc),
-        render::PointRenderer::new(WIDTH, HEIGHT, vao, indices_count as u32, view_loc),
-        render::PointRenderer::new(WIDTH, HEIGHT, vao, indices_count as u32, view_loc),
-        render::PointRenderer::new(WIDTH, HEIGHT, vao, indices_count as u32, view_loc),
-    ];
-    let pool = threadpool::ThreadPool::new(100);
+    let mut point_renderers = vec![];
+    for _ in 0..renderers_count {
+        point_renderers.push(
+            render::PointRenderer::new(WIDTH, HEIGHT, vao, indices_count as u32, view_loc),
+        );
+    }
+    let pool = threadpool::ThreadPool::new(threads_count);
 
     let mut prev_time = glfw.get_time();
     let mut progress_counter = 0;
@@ -244,7 +262,8 @@ fn render_obj(
                     })
                 });
 
-                let points_result = Arc::new(Mutex::new(vec![vec![vec![false; 16]; 16]; 16]));
+                //let points_result = Arc::new(Mutex::new(vec![vec![vec![false; 16]; 16]; 16]));
+                let points_result = Arc::new(Mutex::new([false; 16 * 16 * 16]));
                 for point in points {
                     'waiter: loop {
                         for renderer in &mut point_renderers {
@@ -257,29 +276,45 @@ fn render_obj(
                                 pool.execute(move || {
                                     let maps = maps.lock().unwrap();
                                     //let mut unique_colors = HashSet::new();
-                                    let mut uinque_colors: Vec<Vec<Vec<bool>>> = vec![vec![vec![false; 16]; 16]; 16];
+                                    //let mut uinque_colors: Vec<Vec<Vec<bool>>> = vec![vec![vec![false; 16]; 16]; 16];
+                                    let mut uinque_colors = [false; 16*16*16];
                                     for map in &*maps {
                                         let map_ptr = map.0 as *const (u8, u8, u8);
                                         let arr = unsafe { std::slice::from_raw_parts(map_ptr, (WIDTH * HEIGHT) as usize) };
                                         //println!("map: {}", arr.len());
+                                        //for a in arr {
+                                        //let mut a: *const (u8, u8, u8) = arr.as_ptr();
                                         for a in arr {
-                                            //let n: u32 = (a.0 as u32) << 16 | (a.1 as u32) << 8 | a.2 as u32;
-                                            let r = (a.0 >> 4) as usize;
-                                            let g = (a.1 >> 4) as usize;
-                                            let b = (a.2 >> 4) as usize;
-                                            uinque_colors[r][g][b] = true;
-                                            //unique_colors.insert(n);
+                                            unsafe {
+                                                let p = uinque_colors.get_unchecked_mut(((((*a).0 >> 4) as usize) << 8) | ((((*a).1) as usize)) | ((*a).2 >> 4) as usize);
+                                                *p = true;
+                                                //a = a.offset(1);
+                                            };
                                         }
                                     }
 
                                     let mut points_result = points_result.lock().unwrap();
-                                    cfor!(let mut x = 0; x < 16; x += 1; {
+                                    let mut p = points_result.as_mut_ptr();
+                                    let mut u = uinque_colors.as_mut_ptr();
+                                    cfor!(let mut i = 0; i < 16*16*16; i += 1; {
+                                        unsafe {
+                                            *p |= *u;
+                                            p = p.offset(1);
+                                            u = u.offset(1);
+                                        }
+                                    });
+                                    /*cfor!(let mut x = 0; x < 16; x += 1; {
                                         cfor!(let mut y = 0; y < 16; y += 1; {
                                             cfor!(let mut z = 0; z < 16; z += 1; {
-                                                points_result[x][y][z] = points_result[x][y][z] || uinque_colors[x][y][z];
+                                                //points_result[x][y][z] = points_result[x][y][z] || uinque_colors[x*16*16 + y*16 + z];
+                                                unsafe {
+                                                    //let p = points_result.get_unchecked_mut(x).get_unchecked_mut(y).get_unchecked_mut(z);
+                                                    //let p = (points_result.as_mut_ptr() as *mut bool)
+                                                    *p = *p || uinque_colors[x*16*16 + y*16 + z];
+                                                }
                                             })
                                         })
-                                    });
+                                    });*/
 
                                     /*let mut string_out = String::new();
                                     for color in unique_colors {
@@ -311,12 +346,14 @@ fn render_obj(
                     cfor!(let mut x = 0; x < 16; x += 1; {
                         cfor!(let mut y = 0; y < 16; y += 1; {
                             cfor!(let mut z = 0; z < 16; z += 1; {
-                                if points_result[x][y][z] {
+                                unsafe {
+                                if points_result.get_unchecked(x*16*16 + y*16 + z) == &true {
                                     //string_out.push_str(&format!("{} {} {}\n", x, y, z));
                                     if let Some(color) = colors_arc.get(&(x as u8, y as u8, z as u8)) {
                                         string_out.push_str(&format!("{}\n", color));
                                     }
                                 }
+                            }
                             })
                         })
                     });
