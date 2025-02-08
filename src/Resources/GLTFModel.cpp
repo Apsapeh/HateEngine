@@ -1,6 +1,7 @@
 #include <HateEngine/Log.hpp>
 #include <HateEngine/Resources/GLTFModel.hpp>
 #include <unordered_map>
+#include "HateEngine/Objects/LODMesh.hpp"
 
 #define TINYGLTF_IMPLEMENTATION
 #define STB_IMAGE_WRITE_IMPLEMENTATION
@@ -239,7 +240,7 @@ GLTFModel::GLTFModel(std::string file_name) {
         ret = loader.LoadBinaryFromFile(&model, &err, &warn, file_name);
     }
 
-    /*if (process_error(err, warn, ret))
+    if (process_error(err, warn, ret))
         return;
 
     // Load model
@@ -251,7 +252,14 @@ GLTFModel::GLTFModel(std::string file_name) {
     for (auto& m: meshes)
         bindObj((Object*) m);
 
-    addLOD(0, meshes);*/
+    for (auto& m: meshes) {
+        LODMesh lod;
+        lod.addLOD(0, m);
+        addMesh(lod);
+    }
+    // lod.
+    // addMesh(LODMesh(m));
+    // addLOD(0, meshes);
     is_loaded = true;
 }
 
@@ -273,7 +281,7 @@ GLTFModel::GLTFModel(const char* data, uint32_t size, std::string dir) {
     for (auto& m: meshes)
         bindObj((Object*) m);
 
-    //addLOD(0, meshes);
+    // addLOD(0, meshes);
     is_loaded = true;
 }
 
@@ -295,6 +303,6 @@ GLTFModel::GLTFModel(const uint8_t* data, uint32_t size, std::string dir) {
     for (auto& m: meshes)
         bindObj((Object*) m);
 
-    //addLOD(0, meshes);
+    // addLOD(0, meshes);
     is_loaded = true;
 }

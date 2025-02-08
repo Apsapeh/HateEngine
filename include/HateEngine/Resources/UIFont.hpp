@@ -5,10 +5,10 @@
 #include "Resource.hpp"
 
 namespace HateEngine {
-    class OpenGL15;
+    class OpenGL_1_3;
 
     class UIFont : public Resource {
-        friend OpenGL15;
+        friend OpenGL_1_3;
 
     private:
         std::string fileName;

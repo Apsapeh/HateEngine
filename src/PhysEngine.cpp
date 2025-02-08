@@ -61,10 +61,6 @@ PhysEngine::PhysEngine() {
 }
 
 PhysEngine::~PhysEngine() {
-    for (const auto& body_pair: physBodies) {
-        if (not body_pair.second.is_ref)
-            delete body_pair.second.obj;
-    }
     physicsCommon->destroyPhysicsWorld(physicsWorld);
     delete listener;
 }
@@ -75,7 +71,7 @@ void PhysEngine::IteratePhysics(float delta) {
 
     for (const auto& body_pair: physBodies) {
         // PhysicalBody* body = body_pair.second.obj;
-        body_pair.second.obj->Update();
+        body_pair.second->Update();
     }
 }
 
@@ -126,16 +122,7 @@ uint32_t PhysEngine::getNbIterationsVelocitySolver() {
     return this->physicsWorld->getNbIterationsVelocitySolver();
 }
 
-
-UUID PhysEngine::addObjectClone(const PhysicalBody& object) {
-    PhysicalBody* new_obj = nullptr;
-    // FIX ME: ADD obj copy
-    physBodies[new_obj->getUUID()] = {new_obj, false};
-    HATE_WARNING("addObjectClone is not implemented for PhysicalBody");
-    return new_obj->getUUID();
-}
-
-UUID PhysEngine::addObjectRef(PhysicalBody* object) {
+UUID PhysEngine::addObject(PhysicalBody* object) {
     if (object->reactRigidBody != nullptr) {
         HATE_ERROR(
                 "PhysicalBody [" + std::to_string(object->getUUID().getU64()) +
@@ -219,16 +206,16 @@ UUID PhysEngine::addObjectRef(PhysicalBody* object) {
         }
     }
 
-    physBodies[object->getUUID()] = {object, true};
+    physBodies[object->getUUID()] = object;
     return object->getUUID();
 }
 
 bool PhysEngine::removeObject(UUID uuid) {
     if (physBodies.count(uuid) == 1) {
-        physicsWorld->destroyRigidBody(physBodies[uuid].obj->reactRigidBody);
-        physBodies[uuid].obj->reactRigidBody = nullptr;
+        physicsWorld->destroyRigidBody(physBodies[uuid]->reactRigidBody);
+        physBodies[uuid]->reactRigidBody = nullptr;
 
-        for (const auto& shape_pair: physBodies[uuid].obj->shapes) {
+        for (const auto& shape_pair: physBodies[uuid]->shapes) {
             if (shape_pair.second.shape->reactShape != nullptr) {
                 CollisionShape::ShapeEnum shape_type = shape_pair.second.shape->shapeType;
 
@@ -261,10 +248,7 @@ bool PhysEngine::removeObject(UUID uuid) {
                 }
             }
         }
-
-
-        if (not physBodies[uuid].is_ref)
-            delete physBodies[uuid].obj;
+        
         physBodies.erase(uuid);
         return true;
     }

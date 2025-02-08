@@ -7,13 +7,14 @@
 #include "../Utilities/UUID.hpp"
 
 namespace HateEngine {
-    class OpenGL15;
+    class OpenGL_1_3;
     class PhysicalBody;
 
     class Object {
-        friend OpenGL15;
+        friend OpenGL_1_3;
         friend PhysicalBody;
         friend class Camera;
+        friend class Level;
 
     private:
         UUID uuid;
@@ -43,35 +44,52 @@ namespace HateEngine {
                 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0,
         };
 
+        glm::vec3 global_position = {0, 0, 0};
+        glm::mat4 global_rotation_matrix = glm::mat4(1);
+
         glm::vec3 direction = {0, 0, -1};
         std::string name = "";
 
         bool binded = false;
 
-        void updateDirection();
-
-        virtual void setParentPosition(glm::vec3 vec);
-        virtual void setParentScale(glm::vec3 vec);
+        virtual void setParentPosition(const glm::vec3& vec);
+        virtual void setParentScale(const glm::vec3& vec);
         virtual void setParentRotationMatrix(const glm::mat4& mat);
         virtual void setParentVisible(bool visible);
+
+        virtual void setPositionRaw(const glm::vec3& vec);
+        virtual void setScaleRaw(const glm::vec3& vec);
+        virtual void setRotationMatrixRaw(const glm::mat4& mat);
+
+        void updateChildrenPositions();
+        void updateChildrenScales();
+        void updateChildrenRotations();
+        void updateChildrenVisibilities();
+
+        void updateDirection();
+
+        virtual void enterLevel(class Level* level) {
+        }
+        virtual void exitLevel(class Level* level) {
+        }
 
     public:
         void setName(std::string name);
         const std::string getName();
 
-        void setPosition(glm::vec3 vec);
+        void setPosition(const glm::vec3& vec);
         void setPosition(float x, float y, float z);
         void setRotation(glm::vec3 vec);
         void setRotation(float x, float y, float z);
         virtual void setRotationMatrix(glm::mat4 mat);
-        void setScale(glm::vec3 vec);
+        void setScale(const glm::vec3& vec);
         void setScale(float x, float y, float z);
         void setVisible(bool);
 
-        void lookAt(glm::vec3 vec);
+        void lookAt(const glm::vec3& vec);
         void lookAt(float x, float y, float z);
 
-        void offset(glm::vec3 vec);
+        void offset(const glm::vec3& vec);
         void offset(float x, float y, float z);
         void rotate(glm::vec3 vec, bool global = true);
         void rotate(float x, float y, float z, bool global = true);

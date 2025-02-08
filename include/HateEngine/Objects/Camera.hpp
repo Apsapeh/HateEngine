@@ -1,6 +1,5 @@
 #pragma once
 
-#include "../Resources/Texture.hpp"
 #include "CubeMesh.hpp"
 #include "Object.hpp"
 
@@ -23,7 +22,7 @@ namespace HateEngine {
         Camera(float fov, float render_dist);
         void setFOV(float fov);
         void setRenderDist(float dist);
-        void setSkyBoxTexture(Texture* tex);
+        void setSkyBoxTexture(class Texture* tex);
         void setSkyBoxEnabled(bool enabled);
 
         float getFOV() const;

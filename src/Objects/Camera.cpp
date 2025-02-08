@@ -94,6 +94,7 @@ glm::mat4 Camera::getProjectionMatrix(float aspect_ratio) {
 }
 
 glm::mat4 Camera::getViewMatrix() const {
+    // return this->viewMatrix;
     glm::mat4 mat = this->getGlobalRotationMatrix();
     mat = glm::transpose(mat); // Invert rotation matrix
     mat = glm::translate(mat, -this->getGlobalPosition());

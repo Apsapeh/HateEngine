@@ -4,7 +4,10 @@
 #include <string>
 #include <sys/types.h>
 #include <unordered_map>
+#include "HateEngine/Objects/Interfaces/Renderable3DInterface.hpp"
 #include "HateEngine/Objects/LODMesh.hpp"
+#include "HateEngine/Objects/Object.hpp"
+#include "HateEngine/Objects/Physics/PhysicalBody.hpp"
 #include "Model.hpp"
 #include "../Objects/Physics/ConvexShape.hpp"
 #include "../Objects/Physics/StaticBody.hpp"
@@ -18,7 +21,9 @@
 
 namespace HateEngine {
     class ObjMapModel : public Model {
-        friend class Level;
+    protected:
+        void enterLevel(class Level* level) override;
+        void exitLevel(class Level* level) override;
 
     public:
         class Property {
@@ -73,8 +78,8 @@ namespace HateEngine {
         void parseHeluv(std::vector<uint8_t>& data, class HERFile* her = nullptr);
 
         void parseObj(
-                std::string data, float grid_size, float lod_dist, float lod_step,
-                class HERFile* her = nullptr
+                std::string data, float grid_size, bool generate_lod, float lod_dist,
+                float lod_step, class HERFile* her = nullptr
         );
         std::unordered_map<std::string, Material> parseMtlLib(
                 std::string data, class HERFile* her = nullptr
@@ -100,18 +105,15 @@ namespace HateEngine {
         float hepvs_cell_size = 0.0f;
         glm::vec3 hepvs_min_point = {0.0f, 0.0f, 0.0f};
         glm::ivec3 hepvs_cell_count = {0, 0, 0};
-        std::vector<std::vector<LODMesh>> hepvs_table;
+        std::vector<std::vector<LODMesh*>> hepvs_table;
         std::vector<Entity> entities;
         void* entities_data = nullptr;
         void (*entities_data_deleter)(void*) = nullptr;
 
-        std::vector<Mesh*> add_to_level_meshes;
-        std::vector<Model*> add_to_level_models;
-        std::vector<ObjMapModel*> add_to_level_objMapModels;
-        std::vector<BillboardMesh*> add_to_level_billboards;
-        std::vector<GLTFAnimationPlayer*> add_to_level_animationPlayers;
-        std::vector<Particles*> add_to_level_particles;
-        std::vector<Light*> add_to_level_lights;
+        std::vector<Light*> lights;
+        std::vector<Object*> objects;
+        std::vector<PhysicalBody*> phys_bodies;
+        // TODO: Add physical bodies
 
         bool generate_collision = true;
         std::vector<ConvexShape> convex_shapes;
@@ -125,8 +127,9 @@ namespace HateEngine {
          */
         ObjMapModel(
                 std::string obj_file_name, std::string map_file_name,
-                std::string lightmap_file_name, std::string hepvs_file_name, float grid_size = 16.0f,
-                bool generate_collision = true, float lod_dist = 15, float lod_step = 1.0
+                std::string lightmap_file_name, std::string hepvs_file_name,
+                float grid_size = 16.0f, bool generate_collision = true, bool generate_lod = true,
+                float lod_dist = 15, float lod_step = 1.0
         );
 
         /**
@@ -138,8 +141,9 @@ namespace HateEngine {
          */
         ObjMapModel(
                 class HERFile* her, std::string obj_file_data, std::string map_file_data,
-                std::vector<uint8_t> heluv_data, std::vector<uint8_t> hepvs_data, float grid_size = 16.0f,
-                bool generate_collision = true, float lod_dist = 15, float lod_step = 1.0
+                std::vector<uint8_t> heluv_data, std::vector<uint8_t> hepvs_data,
+                float grid_size = 16.0f, bool generate_collision = true, float lod_dist = 15,
+                float lod_step = 1.0
         );
 
         ~ObjMapModel();
@@ -150,15 +154,12 @@ namespace HateEngine {
         );
 
 
-        void addEntityObjectToLevel(Mesh* object);
-        void addEntityObjectToLevel(BillboardMesh* object);
         void addEntityObjectToLevel(Light* object);
-        void addEntityObjectToLevel(Model* object);
-        void addEntityObjectToLevel(ObjMapModel* object);
-        void addEntityObjectToLevel(GLTFAnimationPlayer* object);
-        void addEntityObjectToLevel(Particles* object);
+        void addEntityObjectToLevel(Object* object);
+        void addEntityPhysicalBodyToLevel(PhysicalBody* body);
 
         StaticBody* getStaticBody();
-        std::vector<LODMesh>* getLODMeshes(glm::vec3 pos);
+        // std::vector<LODMesh>* getLODMeshes(glm::vec3 pos);
+        void render(class RenderInterface* renderer) override;
     };
 } // namespace HateEngine

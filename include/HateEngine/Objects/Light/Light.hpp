@@ -5,7 +5,7 @@
 
 namespace HateEngine {
     class Light : public Object {
-        friend class OpenGL15;
+        friend class OpenGL_1_3;
 
     public:
         enum LightTypeEnum { DirectionalLight, OmniLight, SpotLight };

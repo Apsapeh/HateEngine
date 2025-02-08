@@ -31,12 +31,6 @@ BillboardMesh::BillboardMesh() {
     this->setUV(UV);
 }
 
-void BillboardMesh::Update() {
-    if (this->target != nullptr) {
-        this->lookAt(this->target->getGlobalPosition());
-    }
-}
-
 void BillboardMesh::setSize(float width, float height) {
     float x = 0.5f * width;
     float y = 0.5f * height;
@@ -57,4 +51,10 @@ void BillboardMesh::setTarget(Object* obj) {
 
 Object* BillboardMesh::getTarget() {
     return this->target;
+}
+
+void BillboardMesh::update(double delta) {
+    if (this->target != nullptr) {
+        this->lookAt(this->target->getGlobalPosition());
+    }
 }

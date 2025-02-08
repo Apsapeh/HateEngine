@@ -3,7 +3,7 @@
 
 namespace HateEngine {
     class SpotLight : public Light {
-        friend class OpenGL15;
+        friend class OpenGL_1_3;
 
     protected:
         float angleCutoff = 22.5f;

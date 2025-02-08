@@ -5,7 +5,7 @@
 #include <GLFW/glfw3.h>
 #include <glad/gl.h>
 
-#include <HateEngine/Render/OpenGL15.hpp>
+#include <HateEngine/Render/OpenGL_1_3.hpp>
 #include <HateEngine/UI/ButtonUI.hpp>
 #include <HateEngine/UI/LabelUI.hpp>
 #include <HateEngine/UI/WidgetUI.hpp>
@@ -20,6 +20,8 @@
 #include <HateEngine/Resources/UIFont.hpp>
 #include <glm/ext/matrix_clip_space.hpp>
 #include <glm/ext/vector_int2.hpp>
+#include "HateEngine/HateEngine.hpp"
+#include "HateEngine/Input.hpp"
 #include "HateEngine/Log.hpp"
 
 #define NK_INCLUDE_FIXED_TYPES
@@ -35,8 +37,8 @@
 using namespace HateEngine;
 
 static unsigned int device_upload_atlas(const void* image, int width, int height);
-static void draw(int width, int height);
-static void pump_input(struct nk_context* ctx, GLFWwindow* win);
+static long draw(int width, int height);
+static void pump_input(struct nk_context* ctx, Engine* win);
 
 #define MAX_MEMORY 512 * 1024
 // #define MAX_ELEMENT_MEMORY 128 * 1024
@@ -53,7 +55,11 @@ struct your_vertex {
 };
 
 
-void OpenGL15::initNuklearUI() {
+// TODO: Refactor this file
+// TODO: Optimize draw function
+
+
+void OpenGL_1_3::initNuklearUI() {
     const void* image;
     int w, h;
     struct nk_font* font;
@@ -108,7 +114,7 @@ struct UIFontRAPI_Data {
     nk_draw_null_texture null;
 };
 
-void OpenGL15::loadFont(UIFont* font) {
+void OpenGL_1_3::loadFont(UIFont* font) {
     struct nk_font_config config = nk_font_config(font->pixel_height);
     config.oversample_h = 1;
     config.oversample_v = 1;
@@ -139,18 +145,18 @@ void OpenGL15::loadFont(UIFont* font) {
     // nk_init_default(&ctx, &font->handle);
 }
 
-void OpenGL15::unloadFont(UIFont* font) {
+void OpenGL_1_3::unloadFont(UIFont* font) {
     nk_font_atlas_clear(&((UIFontRAPI_Data*) font->render_api_data)->atlas);
     glDeleteTextures(1, &font->textureGL_ID);
     delete (UIFontRAPI_Data*) font->render_api_data;
 }
 
-void OpenGL15::DrawNuklearUI(std::unordered_map<UUID, Level::SceneUIWidget>* widgets) {
+void OpenGL_1_3::DrawNuklearUI(std::unordered_map<UUID, WidgetUI*>* widgets) {
     Level* start_level = engine->getLevel();
-    pump_input(&ctx, engine->window);
+    pump_input(&ctx, engine);
 
     for (const auto& it: *widgets) {
-        const WidgetUI* widget = it.second.obj;
+        const WidgetUI* widget = it.second;
         glm::ivec2 res = engine->getResolution();
         CoordsUI::CoordsData position = widget->position.getCoords(res.x, res.y);
         CoordsUI::CoordsData size = widget->size.getTopLeftCoords(res.x, res.y);
@@ -383,16 +389,18 @@ void OpenGL15::DrawNuklearUI(std::unordered_map<UUID, Level::SceneUIWidget>* wid
         nk_end(&ctx);
     }
     glm::ivec2 resolution = this->engine->getResolution();
-    draw(resolution.x, resolution.y);
+    gpu_time += draw(resolution.x, resolution.y);
 }
 
-static void draw(int width, int height) {
-    glEnable(GL_TEXTURE_2D);
+static long draw(int width, int height) {
     glEnable(GL_BLEND);
 
     glEnableClientState(GL_COLOR_ARRAY);
-    glEnableClientState(GL_TEXTURE_COORD_ARRAY);
     glDisableClientState(GL_NORMAL_ARRAY);
+    glActiveTexture(GL_TEXTURE1);
+    glDisable(GL_TEXTURE_2D);
+    glActiveTexture(GL_TEXTURE0);
+    glClientActiveTexture(GL_TEXTURE0);
     glPushMatrix();
 
     glm::mat4 Mp = glm::ortho(
@@ -438,52 +446,63 @@ static void draw(int width, int height) {
     // draw
     const void* vertices = nk_buffer_memory_const(&verts);
 
+    auto time_start = std::chrono::high_resolution_clock::now();
+
     glVertexPointer(2, GL_FLOAT, vs, vertices);
     glTexCoordPointer(2, GL_FLOAT, vs, (nk_byte*) vertices + up);
     glColorPointer(4, GL_UNSIGNED_BYTE, vs, (nk_byte*) vertices + cp);
     const struct nk_draw_command* cmd;
     offset = (const nk_draw_index*) nk_buffer_memory_const(&idx);
 
+    // int n = 0;
     nk_draw_foreach(cmd, &ctx, &cmds) {
         if (!cmd->elem_count)
             continue;
         glBindTexture(GL_TEXTURE_2D, (GLuint) cmd->texture.id);
         glDrawElements(GL_TRIANGLES, (GLsizei) cmd->elem_count, GL_UNSIGNED_SHORT, offset);
         offset += cmd->elem_count;
+        // n++;
     }
+
+    auto time_end = std::chrono::high_resolution_clock::now();
+    long gpu_time =
+            std::chrono::duration_cast<std::chrono::nanoseconds>(time_end - time_start).count();
+
+    // HATE_INFO_F("Draw calls: %d", n);
+
 
     nk_buffer_free(&cmds);
     nk_buffer_free(&verts);
     nk_buffer_free(&idx);
     nk_clear(&ctx);
     glPopMatrix();
-    glDisable(GL_TEXTURE_2D);
     glDisable(GL_BLEND);
     glDisableClientState(GL_COLOR_ARRAY);
-    glDisableClientState(GL_TEXTURE_COORD_ARRAY);
     glEnableClientState(GL_NORMAL_ARRAY);
+    glActiveTexture(GL_TEXTURE1);
+    glEnable(GL_TEXTURE_2D);
+    return gpu_time;
 }
 
-static void pump_input(struct nk_context* ctx, GLFWwindow* win) {
-    double x, y;
+static void pump_input(struct nk_context* ctx, Engine* engine) {
     nk_input_begin(ctx);
     // glfwPollEvents();
 
-    nk_input_key(ctx, NK_KEY_DEL, glfwGetKey(win, GLFW_KEY_DELETE) == GLFW_PRESS);
-    nk_input_key(ctx, NK_KEY_ENTER, glfwGetKey(win, GLFW_KEY_ENTER) == GLFW_PRESS);
-    nk_input_key(ctx, NK_KEY_TAB, glfwGetKey(win, GLFW_KEY_TAB) == GLFW_PRESS);
-    nk_input_key(ctx, NK_KEY_BACKSPACE, glfwGetKey(win, GLFW_KEY_BACKSPACE) == GLFW_PRESS);
-    nk_input_key(ctx, NK_KEY_LEFT, glfwGetKey(win, GLFW_KEY_LEFT) == GLFW_PRESS);
-    nk_input_key(ctx, NK_KEY_RIGHT, glfwGetKey(win, GLFW_KEY_RIGHT) == GLFW_PRESS);
-    nk_input_key(ctx, NK_KEY_UP, glfwGetKey(win, GLFW_KEY_UP) == GLFW_PRESS);
-    nk_input_key(ctx, NK_KEY_DOWN, glfwGetKey(win, GLFW_KEY_DOWN) == GLFW_PRESS);
+    nk_input_key(ctx, NK_KEY_DEL, engine->Input.isKeyPressed(HateEngine::KeyDelete));
+    nk_input_key(ctx, NK_KEY_ENTER, engine->Input.isKeyPressed(HateEngine::KeyEnter));
+    nk_input_key(ctx, NK_KEY_TAB, engine->Input.isKeyPressed(HateEngine::KeyTab));
+    nk_input_key(ctx, NK_KEY_BACKSPACE, engine->Input.isKeyPressed(HateEngine::KeyBackspace));
+    nk_input_key(ctx, NK_KEY_LEFT, engine->Input.isKeyPressed(HateEngine::KeyLeft));
+    nk_input_key(ctx, NK_KEY_RIGHT, engine->Input.isKeyPressed(HateEngine::KeyRight));
+    nk_input_key(ctx, NK_KEY_UP, engine->Input.isKeyPressed(HateEngine::KeyUp));
+    nk_input_key(ctx, NK_KEY_DOWN, engine->Input.isKeyPressed(HateEngine::KeyDown));
 
-    if (glfwGetKey(win, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS ||
-        glfwGetKey(win, GLFW_KEY_RIGHT_CONTROL) == GLFW_PRESS) {
-        nk_input_key(ctx, NK_KEY_COPY, glfwGetKey(win, GLFW_KEY_C) == GLFW_PRESS);
-        nk_input_key(ctx, NK_KEY_PASTE, glfwGetKey(win, GLFW_KEY_P) == GLFW_PRESS);
-        nk_input_key(ctx, NK_KEY_CUT, glfwGetKey(win, GLFW_KEY_X) == GLFW_PRESS);
-        nk_input_key(ctx, NK_KEY_CUT, glfwGetKey(win, GLFW_KEY_E) == GLFW_PRESS);
+    if (engine->Input.isKeyPressed(HateEngine::KeyLeftControl) ||
+        engine->Input.isKeyPressed(HateEngine::KeyRightControl)) {
+        nk_input_key(ctx, NK_KEY_COPY, engine->Input.isKeyPressed(HateEngine::KeyC));
+        nk_input_key(ctx, NK_KEY_PASTE, engine->Input.isKeyPressed(HateEngine::KeyP));
+        nk_input_key(ctx, NK_KEY_CUT, engine->Input.isKeyPressed(HateEngine::KeyX));
+        nk_input_key(ctx, NK_KEY_CUT, engine->Input.isKeyPressed(HateEngine::KeyE));
         nk_input_key(ctx, NK_KEY_SHIFT, 1);
     } else {
         nk_input_key(ctx, NK_KEY_COPY, 0);
@@ -492,19 +511,19 @@ static void pump_input(struct nk_context* ctx, GLFWwindow* win) {
         nk_input_key(ctx, NK_KEY_SHIFT, 0);
     }
 
-    glfwGetCursorPos(win, &x, &y);
-    nk_input_motion(ctx, (int) x, (int) y);
+    glm::vec2 cursorPos = engine->Input.getCursorPosition();
+    nk_input_motion(ctx, (int) cursorPos.x, (int) cursorPos.y);
     nk_input_button(
-            ctx, NK_BUTTON_LEFT, (int) x, (int) y,
-            glfwGetMouseButton(win, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS
+            ctx, NK_BUTTON_LEFT, (int) cursorPos.x, (int) cursorPos.y,
+            engine->Input.isMouseButtonPressed(HateEngine::MouseButtonLeft)
     );
     nk_input_button(
-            ctx, NK_BUTTON_MIDDLE, (int) x, (int) y,
-            glfwGetMouseButton(win, GLFW_MOUSE_BUTTON_MIDDLE) == GLFW_PRESS
+            ctx, NK_BUTTON_MIDDLE, (int) cursorPos.x, (int) cursorPos.y,
+            engine->Input.isMouseButtonPressed(HateEngine::MouseButtonMiddle)
     );
     nk_input_button(
-            ctx, NK_BUTTON_RIGHT, (int) x, (int) y,
-            glfwGetMouseButton(win, GLFW_MOUSE_BUTTON_RIGHT) == GLFW_PRESS
+            ctx, NK_BUTTON_RIGHT, (int) cursorPos.x, (int) cursorPos.y,
+            engine->Input.isMouseButtonPressed(HateEngine::MouseButtonRight)
     );
     nk_input_end(ctx);
 }

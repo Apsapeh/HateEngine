@@ -2,7 +2,6 @@
 #include <cstdint>
 #include <reactphysics3d/reactphysics3d.h>
 #include <unordered_map>
-#include <vector>
 
 #include "Objects/Physics/PhysicalBody.hpp"
 #include "Utilities/UUID.hpp"
@@ -14,19 +13,13 @@ namespace HateEngine {
         friend class RayCast;
         friend class RayCastCallback;
 
-    public:
-        struct PhysBodyObject {
-            PhysicalBody* obj;
-            bool is_ref;
-        };
-
     private:
         static reactphysics3d::PhysicsCommon* physicsCommon;
         reactphysics3d::PhysicsWorld* physicsWorld;
         reactphysics3d::EventListener* listener;
         UUID uuid;
         // std::vector<PhysBodyObject> physBodies;
-        std::unordered_map<UUID, PhysBodyObject> physBodies;
+        std::unordered_map<UUID, PhysicalBody*> physBodies;
 
     protected:
         void getRayCastCollisions(
@@ -109,20 +102,12 @@ namespace HateEngine {
          */
         uint32_t getNbIterationsVelocitySolver();
 
-
-        /**
-         * Adds a physical body to the scene by copying it
-         * @param object PhysicalBody
-         * @return Object ID
-         */
-        UUID addObjectClone(const PhysicalBody& object);
-
         /**
          * Adds a physical body to the scene by pointer
          * @param PhysicalBody pointer
          * @return Object ID
          */
-        UUID addObjectRef(PhysicalBody* object);
+        UUID addObject(PhysicalBody* object);
 
         /**
          * Deletes the physical body from the scene (if pointer, only the

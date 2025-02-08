@@ -3,7 +3,7 @@
 #endif
 
 #define STB_IMAGE_IMPLEMENTATION
-#include <glad/gl.h>
+// #include <glad/gl.h>
 #include <stb_image.h>
 
 #include <HateEngine/Log.hpp>
@@ -12,7 +12,7 @@
 
 #include "../globalStaticParams.hpp"
 
-// Include OpenGL Utility header (glu.h)
+/*// Include OpenGL Utility header (glu.h)
 #ifdef __linux__
 #include <GL/glu.h>
 #elif __APPLE__
@@ -20,7 +20,7 @@
 #elif _WIN32
 #include <windows.h>
 #include <GL/glu.h>
-#endif
+#endif*/
 
 using namespace HateEngine;
 
@@ -32,6 +32,7 @@ Texture::Texture(const Texture& texture, bool copy_tex_data) {
     this->texWrap = texture.texWrap;
     this->texFiltering = texture.texFiltering;
     this->texMipMapFiltering = texture.texMipMapFiltering;
+    this->texMipMapEnabled = texture.texMipMapEnabled;
     this->MipMapLodBias = texture.MipMapLodBias;
     this->autoload = texture.autoload;
     this->fileName = texture.fileName;
@@ -39,10 +40,7 @@ Texture::Texture(const Texture& texture, bool copy_tex_data) {
     this->is_gpu_loaded = texture.is_gpu_loaded;
     this->API_unloader = texture.API_unloader;
 
-    if (copy_tex_data) {
-        /*if (texture.textureGL_ID == 0 and this->autoload)
-            Load();*/
-
+    /*if (copy_tex_data) {
         if (this->is_gpu_loaded) {
             glGenTextures(1, &this->textureGL_ID);
             glBindTexture(GL_TEXTURE_2D, this->textureGL_ID);
@@ -77,8 +75,8 @@ Texture::Texture(const Texture& texture, bool copy_tex_data) {
                 );
             glBindTexture(GL_TEXTURE_2D, 0);
         }
-    } else
-        this->textureGL_ID = texture.textureGL_ID;
+    } else*/
+    this->textureGL_ID = texture.textureGL_ID;
 }
 
 Texture::Texture(
@@ -89,8 +87,7 @@ Texture::Texture(
     this->texWrap = tex_wrap;
     this->texFiltering = tex_filtering;
     this->texMipMapFiltering = tex_filtering;
-    if (mipmap)
-        this->texMipMapFiltering += GL_NEAREST_MIPMAP_LINEAR - GL_NEAREST;
+    this->texMipMapEnabled = mipmap;
     this->MipMapLodBias = mipmap_bias;
     this->autoload = autoload;
 
@@ -112,14 +109,11 @@ Texture::Texture(
     this->texWrap = tex_wrap;
     this->texFiltering = tex_filtering;
     this->texMipMapFiltering = tex_filtering;
-    if (mipmap)
-        this->texMipMapFiltering += GL_NEAREST_MIPMAP_LINEAR - GL_NEAREST;
+    this->texMipMapEnabled = mipmap;
     this->MipMapLodBias = mipmap_bias;
 
     this->autoload = autoload;
     this->is_loaded = true;
-    /*if (autoload)
-        Load();*/
 }
 
 Texture::Texture(
@@ -145,9 +139,8 @@ Texture::Texture(
     this->texWrap = tex_wrap;
     this->texFiltering = tex_filtering;
     this->texMipMapFiltering = tex_filtering;
-    if (mipmap)
-        this->texMipMapFiltering += GL_NEAREST_MIPMAP_LINEAR - GL_NEAREST;
     this->MipMapLodBias = mipmap_bias;
+    this->texMipMapEnabled = mipmap;
     this->is_loaded = true;
 }
 
@@ -163,7 +156,7 @@ bool Texture::loadFromFile() {
         return false;
     }
     if (n == 4)
-        this->textureFormat = GL_RGBA;
+        this->textureFormat = RGBA;
     this->data = std::vector<uint8_t>(s_data, s_data + this->width * this->height * n);
     stbi_image_free(s_data);
     return true;

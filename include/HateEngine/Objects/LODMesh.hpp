@@ -3,7 +3,7 @@
 
 namespace HateEngine {
     // Object -> Mesh
-    class LODMesh : public Object {
+    class LODMesh : public Object, public Renderable3DInterface {
     private:
         struct LOD {
             float distance;
@@ -11,10 +11,12 @@ namespace HateEngine {
         };
 
         std::vector<LOD> LODs;
-    
+
     public:
         LODMesh();
         void addLOD(float distance, Mesh* mesh);
         Mesh* getMeshByPos(glm::vec3 pos);
+
+        void render(RenderInterface* renderer) override;
     };
 } // namespace HateEngine

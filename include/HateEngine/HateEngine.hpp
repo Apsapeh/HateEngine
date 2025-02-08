@@ -3,6 +3,7 @@
 #include <cstdint>
 #include <mutex>
 #include <string>
+#include "HateEngine/Render/RenderInterface.hpp"
 #include "Utilities/Signal.hpp"
 #include "Level.hpp"
 #include "Input.hpp"
@@ -13,7 +14,7 @@ namespace HateEngine {
         friend class InputClass;
 
     public:
-        enum RenderAPI { OpenGL_1_5 };
+        enum RenderAPI { OpenGL_1_3 };
 
         enum InputEventType {
             InputEventKey,
@@ -41,18 +42,22 @@ namespace HateEngine {
             glm::vec2 position = {0, 0};
         };
 
-        GLFWwindow* window = nullptr;
 
     private:
         void (*processLoop)(Engine*, double) = nullptr;
         void (*fixedProcessLoop)(Engine*, double) = nullptr;
         void (*inputEventFunc)(Engine*, InputEventInfo) = nullptr;
 
-        RenderAPI renderApi = RenderAPI::OpenGL_1_5;
+        RenderAPI renderApi = RenderAPI::OpenGL_1_3;
         uint16_t fixedLoopRefreshRate = 60;
         int64_t fixedProcessDelayMCS; // 1_000_000 / fixedLoopRefreshRate
         uint16_t physicsEngineIterateLoopRefreshRate = 120;
         int64_t physicsEngineIterateDelayMCS;
+        uint16_t audioEngineIterateLoopRefreshRate = 30;
+
+        GLFWwindow* window = nullptr;
+        RenderInterface* renderInterface = nullptr;
+        long lastCPUTime = 0;
 
         bool isRunned = false;
 
@@ -63,6 +68,7 @@ namespace HateEngine {
         glm::vec2 displayScale = {0.0f, 0.0f};
         float aspectRatio = 0;
         Level* level = nullptr;
+
 
         std::mutex levelMutex;
 
@@ -109,6 +115,26 @@ namespace HateEngine {
         void setVSync(bool mode);
         void setMouseCapture(bool capture);
         void setFullScreen(bool fullScreen);
+
+        RenderInterface* getRenderInterface();
+        RenderAPI getRenderAPI();
+
+        /**
+         * @brief Return the GPU time in milliseconds
+         * @warning Only for 32-bit systems. If GPU rendering takes more, then 2.147 seconds, the
+         * result will be incorrect (long overflow)
+         *
+         * @return double
+         */
+        double getGPUTimeMS();
+        /**
+         * @brief Return the CPU time in milliseconds
+         * @warning Only for 32-bit systems. If CPU takes more, then 2.147 seconds, the
+         * result will be incorrect (long overflow)
+         *
+         * @return double
+         */
+        double getCPUTimeMS();
 
         glm::ivec2 getResolution();
         glm::vec2 getDisplayScale();

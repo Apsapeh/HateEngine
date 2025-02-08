@@ -12,11 +12,18 @@ using namespace HateEngine;
     this->is_ref = true;
 }*/
 
-void AudioPlayer::setParentPosition(glm::vec3 vec) {
+void AudioPlayer::setParentPosition(const glm::vec3& vec) {
     Object::setParentPosition(vec);
     glm::vec3 pos = Object::getGlobalPosition();
     AudioServer::setAudio3DPosition(this->soloudHandle, pos.x, pos.y, pos.z);
 }
+
+void AudioPlayer::setPositionRaw(const glm::vec3& vec) {
+    Object::setPositionRaw(vec);
+    glm::vec3 pos = Object::getGlobalPosition();
+    AudioServer::setAudio3DPosition(this->soloudHandle, pos.x, pos.y, pos.z);
+}
+
 
 AudioPlayer::AudioPlayer(Audio* audio, AudioBus* bus, Type type, bool owns_audio) {
     this->audio = audio;
@@ -128,23 +135,4 @@ float AudioPlayer::getVolume() {
 
 float AudioPlayer::getPan() {
     return AudioServer::getAudioPan(this->soloudHandle);
-}
-
-
-void AudioPlayer::setPosition(glm::vec3 vec) {
-    Object::setPosition(vec);
-    glm::vec3 pos = Object::getGlobalPosition();
-    AudioServer::setAudio3DPosition(this->soloudHandle, pos.x, pos.y, pos.z);
-}
-void AudioPlayer::setPosition(float x, float y, float z) {
-    this->setPosition(glm::vec3(x, y, z));
-}
-
-void AudioPlayer::offset(glm::vec3 vec) {
-    Object::offset(vec);
-    glm::vec3 pos = Object::getGlobalPosition();
-    AudioServer::setAudio3DPosition(this->soloudHandle, pos.x, pos.y, pos.z);
-}
-void AudioPlayer::offset(float x, float y, float z) {
-    this->offset(glm::vec3(x, y, z));
 }

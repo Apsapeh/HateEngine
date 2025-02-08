@@ -62,18 +62,10 @@ namespace HateEngine {
 
         BodyType getBodyType() const;
 
-        void setParentPosition(glm::vec3 vec) override;
+        void setParentPosition(const glm::vec3& vec) override;
         void setParentRotationMatrix(const glm::mat4& mat) override;
-
-        void setPosition(glm::vec3 vec);
-        void setPosition(float x, float y, float z);
-        void setRotation(glm::vec3 vec);
-        void setRotation(float x, float y, float z);
-
-        void offset(float x, float y, float z);
-        void offset(glm::vec3 vec);
-        void rotate(float x, float y, float z);
-        void rotate(glm::vec3 vec);
+        void setPositionRaw(const glm::vec3& vec) override;
+        void setRotationMatrixRaw(const glm::mat4& mat) override;
 
         void setLinearVelocity(float x, float y, float z);
         void setLinearVelocity(glm::vec3 vec);
@@ -86,14 +78,6 @@ namespace HateEngine {
         glm::vec3 getAngularLockAxisFactor() const;
         float getMass() const;
         bool getIsActive() const;
-
-
-        /**
-         * Adds a collision shape to the body by copying the object
-         * @param shape CollisionShape
-         * @return Object ID
-         */
-        UUID addCollisionShapeClone(CollisionShape shape);
 
         /**
          * Adds a collision shape to the body by storing a pointer to the object

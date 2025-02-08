@@ -9,7 +9,7 @@
 
 namespace HateEngine {
     class ImageUI : public ObjectUI {
-        friend class OpenGL15;
+        friend class OpenGL_1_3;
 
     private:
         Texture* texture = nullptr;

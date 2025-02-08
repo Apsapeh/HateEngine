@@ -8,7 +8,7 @@
 namespace HateEngine {
     class Engine;
     class ButtonUI : public ObjectUI {
-        friend class OpenGL15;
+        friend class OpenGL_1_3;
 
     protected:
         Texture* normal_texture = nullptr;

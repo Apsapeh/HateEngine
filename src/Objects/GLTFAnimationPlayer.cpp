@@ -1,15 +1,15 @@
 #include <HateEngine/Objects/GLTFAnimationPlayer.hpp>
 #include "HateEngine/Log.hpp"
 #include "HateEngine/Resources/GLTFModel.hpp"
-#include <cstdint>
 
 using namespace HateEngine;
 
 GLTFAnimationPlayer::GLTFAnimationPlayer(GLTFModel* model) {
     this->m_model = model;
     this->bindObj(this->m_model);
-    /*for (auto& anim: this->m_model->LODs[0].meshes) {
-        std::string name = anim->getName();
+
+    for (auto& anim: *this->m_model->getLODMeshes()) {
+        std::string name = anim.getName();
         unsigned short pos = (unsigned short) name.find_first_of(']');
         std::string animName = name.substr(1, pos - 1);
         int frame = std::stoi(name.substr(pos + 2, name.find_first_of(']', pos + 1) - pos - 2)) - 1;
@@ -20,11 +20,11 @@ GLTFAnimationPlayer::GLTFAnimationPlayer(GLTFModel* model) {
         if (animations[animName].frames.size() <= frame)
             animations[animName].frames.resize(frame + 1);
 
-        animations[animName].frames[frame].push_back(anim);
+        animations[animName].frames[frame].push_back(&anim);
 
         animations[animName].frameCount =
                 std::max(animations[animName].frameCount, (uint32_t) (frame + 1));
-    }*/
+    }
 }
 
 void GLTFAnimationPlayer::Update(float delta) {
@@ -45,7 +45,7 @@ void GLTFAnimationPlayer::Update(float delta) {
     }
 }
 
-std::vector<Mesh*>* GLTFAnimationPlayer::getMeshes() {
+std::vector<LODMesh*>* GLTFAnimationPlayer::getMeshes() {
     return &currentAnimation->frames[currentFrame];
 }
 
@@ -91,4 +91,11 @@ bool GLTFAnimationPlayer::isLooping() {
 
 float GLTFAnimationPlayer::getFPS() {
     return 1.0f / frameTime;
+}
+
+
+void GLTFAnimationPlayer::render(RenderInterface* renderer) {
+    for (auto& mesh: this->currentAnimation->frames[currentFrame]) {
+        mesh->render(renderer);
+    }
 }

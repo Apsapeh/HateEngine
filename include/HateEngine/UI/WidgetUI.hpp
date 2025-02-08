@@ -14,7 +14,7 @@
 
 namespace HateEngine {
     class WidgetUI : public ObjectUI {
-        friend class OpenGL15;
+        friend class OpenGL_1_3;
         struct Element {
             ObjectUI* obj;
             bool is_ref;

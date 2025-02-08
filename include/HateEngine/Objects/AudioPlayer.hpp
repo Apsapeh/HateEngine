@@ -21,7 +21,8 @@ namespace HateEngine {
         SoLoud::handle soloudHandle = 0;
 
     protected:
-        void setParentPosition(glm::vec3 vec) override;
+        void setParentPosition(const glm::vec3& vec) override;
+        void setPositionRaw(const glm::vec3& vec) override;
 
     public:
         /**
@@ -61,10 +62,5 @@ namespace HateEngine {
         double getStreamTime();
         float getVolume();
         float getPan();
-
-        void setPosition(glm::vec3 vec);
-        void setPosition(float x, float y, float z);
-        void offset(glm::vec3 vec);
-        void offset(float x, float y, float z);
     };
 } // namespace HateEngine

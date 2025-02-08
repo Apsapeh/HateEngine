@@ -15,11 +15,16 @@
 #include "HateEngine/Objects/LODMesh.hpp"
 #include "HateEngine/Objects/Object.hpp"
 #include "HateEngine/Objects/Physics/ConvexShape.hpp"
+#include "HateEngine/Objects/Physics/PhysicalBody.hpp"
 #include "HateEngine/Objects/Physics/StaticBody.hpp"
 #include "glm/ext/vector_float2.hpp"
 #include "glm/ext/vector_float3.hpp"
 #include "glm/geometric.hpp"
 #include "glm/matrix.hpp"
+
+#include <HateEngine/Objects/Camera.hpp>
+#include <HateEngine/Level.hpp>
+
 
 using namespace HateEngine;
 
@@ -28,8 +33,9 @@ std::vector<std::string> split(const std::string& str, const std::string& delimi
 void trim(std::string& str);
 
 ObjMapModel::ObjMapModel(
-        std::string obj_filename, std::string map_file_name, std::string lightmap_file_name, std::string hepvs_file_name,
-        float grid_size, bool generate_collision, float lod_dist, float lod_step
+        std::string obj_filename, std::string map_file_name, std::string lightmap_file_name,
+        std::string hepvs_file_name, float grid_size, bool generate_collision, bool generate_lod,
+        float lod_dist, float lod_step
 ) {
     bindObj(&static_body);
     this->generate_collision = generate_collision;
@@ -66,7 +72,7 @@ ObjMapModel::ObjMapModel(
     }
 
     std::string data((std::istreambuf_iterator<char>(file)), (std::istreambuf_iterator<char>()));
-    parseObj(data, grid_size, lod_dist, lod_step);
+    parseObj(data, grid_size, generate_lod, lod_dist, lod_step);
 
 
     if (!map_file_name.empty()) {
@@ -105,18 +111,21 @@ ObjMapModel::ObjMapModel(
 
 ObjMapModel::ObjMapModel(
         HERFile* her, std::string obj_file_data, std::string map_file_data,
-        std::vector<uint8_t> heluv_data, std::vector<uint8_t> hepvs_data, float grid_size, bool generate_collision, float lod_dist,
-        float lod_step
+        std::vector<uint8_t> heluv_data, std::vector<uint8_t> hepvs_data, float grid_size,
+        bool generate_collision, float lod_dist, float lod_step
 
 ) {
     bindObj(&static_body);
     this->generate_collision = generate_collision;
     if (!heluv_data.empty())
         parseHeluv(heluv_data);
-    parseObj(obj_file_data, grid_size, lod_dist, lod_step, her);
+    // TODO: remove 'false' const from generate_lod
+    parseObj(obj_file_data, grid_size, false, lod_dist, lod_step, her);
     if (!map_file_data.empty())
         parseMap(map_file_data, grid_size);
     // TODO: Add hepvs
+    if (!hepvs_data.empty())
+        parseHepvs(hepvs_data);
     is_loaded = true;
 }
 
@@ -127,6 +136,40 @@ ObjMapModel::~ObjMapModel() {
     for (auto& l: heluv) {
         delete l.second.texture;
     }
+}
+
+void ObjMapModel::enterLevel(Level* level) {
+    for (auto& e: lights) {
+        level->addObject(e);
+    }
+
+    for (auto& e: objects) {
+        level->addObject(e);
+    }
+    
+    for (auto& e: phys_bodies) {
+        level->getPhysEngine()->addObject(e);
+    }
+    
+    level->getPhysEngine()->addObject(&static_body);
+}
+
+void ObjMapModel::exitLevel(Level* level) {
+    HATE_INFO("Exit level");
+
+    for (auto& e: lights) {
+        level->removeObject(e->getUUID());
+    }
+
+    for (auto& e: objects) {
+        level->removeObject(((Object*) e)->getUUID());
+    }
+    
+    for (auto& e: phys_bodies) {
+        level->getPhysEngine()->removeObject(e->getUUID());
+    }
+    
+    level->getPhysEngine()->removeObject(static_body.getUUID());
 }
 
 void ObjMapModel::deserializeEntities(
@@ -144,26 +187,16 @@ void ObjMapModel::deserializeEntities(
         this->entities_data_deleter = data_deleter;
 }
 
-void ObjMapModel::addEntityObjectToLevel(Mesh* object) {
-    add_to_level_meshes.push_back(object);
-}
-void ObjMapModel::addEntityObjectToLevel(BillboardMesh* object) {
-    add_to_level_billboards.push_back(object);
-}
 void ObjMapModel::addEntityObjectToLevel(Light* object) {
-    add_to_level_lights.push_back(object);
+    this->lights.push_back(object);
 }
-void ObjMapModel::addEntityObjectToLevel(Model* object) {
-    add_to_level_models.push_back(object);
+
+void ObjMapModel::addEntityObjectToLevel(Object* object) {
+    this->objects.push_back(object);
 }
-void ObjMapModel::addEntityObjectToLevel(ObjMapModel* object) {
-    add_to_level_objMapModels.push_back(object);
-}
-void ObjMapModel::addEntityObjectToLevel(GLTFAnimationPlayer* object) {
-    add_to_level_animationPlayers.push_back(object);
-}
-void ObjMapModel::addEntityObjectToLevel(Particles* object) {
-    add_to_level_particles.push_back(object);
+
+void ObjMapModel::addEntityPhysicalBodyToLevel(PhysicalBody* body) {
+    this->phys_bodies.push_back(body);
 }
 
 /*======================================> PARSERS <==============================================*/
@@ -219,12 +252,12 @@ void ObjMapModel::parseHeluv(std::vector<uint8_t>& data, HERFile* her) {
         Texture* tex = new HateEngine::Texture(tex_data, Texture::Repeat, Texture::Linear, false);
         heluv[name] = {faces, tex};
     }
-    int a = 5;
 }
 
 
 void ObjMapModel::parseObj(
-        std::string data, float grid_size, float lod_dist, float lod_step, HERFile* her
+        std::string data, float grid_size, bool generate_lod, float lod_dist, float lod_step,
+        HERFile* her
 ) {
     std::vector<glm::vec3> vertices;
     std::vector<glm::vec3> normals;
@@ -234,8 +267,12 @@ void ObjMapModel::parseObj(
     ObjObject* current_obj;
 
     std::string line;
+    // HATE_DEBUG_F("LINE: %s", data.c_str());
     std::istringstream tokenStream(data);
     while (std::getline(tokenStream, line, '\n')) {
+        if (line.empty())
+            continue;
+
         if (line[line.size() - 1] == 13) // CR
             line = line.substr(0, line.size() - 1);
         std::vector<std::string> words = split(line, " \v\t");
@@ -361,18 +398,25 @@ void ObjMapModel::parseObj(
         float distance;
     };
 
-    std::vector<tmp_lod> lods = {
-        {generateLod(vertices, tex_coords, objects, lod_step), 0},
-        {generateLod(vertices, tex_coords, objects, 1000000), lod_dist},
-    };
+    std::vector<tmp_lod> lods;
+    if (generate_lod) {
+        lods = {
+                {generateLod(vertices, tex_coords, objects, lod_step), 0},
+                {generateLod(vertices, tex_coords, objects, 1000000), lod_dist},
+        };
 
-    //std::vector<LODMesh> lod_meshes;
+    } else {
+        lods = {
+                {generateLod(vertices, tex_coords, objects, 1000000), 0},
+        };
+    }
+
+    // std::vector<LODMesh> lod_meshes;
     for (unsigned long i = 0; i < lods[0].meshes.size(); i++) {
         meshes.push_back(LODMesh());
         meshes.back().setName(objects[i].name);
         for (unsigned long j = 0; j < lods.size(); j++)
             meshes.back().addLOD(lods[j].distance, lods[j].meshes[i]);
-        
     }
 
     if (generate_collision)
@@ -390,6 +434,9 @@ std::unordered_map<std::string, ObjMapModel::Material> ObjMapModel::parseMtlLib(
     std::string line;
     std::istringstream tokenStream(data);
     while (std::getline(tokenStream, line, '\n')) {
+        if (line.empty())
+            continue;
+
         if (line[line.size() - 1] == 13) // CR
             line = line.substr(0, line.size() - 1);
         std::vector<std::string> words = split(line, " \v\t");
@@ -528,7 +575,9 @@ void ObjMapModel::parseMap(std::string data, float grid_size) {
     }
 }
 
-#define DATA_STREAM_LOAD(name, type, stride) type name = *(type*) ptr; ptr += stride;
+#define DATA_STREAM_LOAD(name, type, stride)                                                       \
+    type name = *(type*) ptr;                                                                      \
+    ptr += stride;
 void ObjMapModel::parseHepvs(std::vector<uint8_t>& data) {
     uint8_t* ptr = data.data();
     uint32_t version = *(uint32_t*) ptr;
@@ -539,28 +588,33 @@ void ObjMapModel::parseHepvs(std::vector<uint8_t>& data) {
         return;
     }
 
-    DATA_STREAM_LOAD(min_x, float, 4);    
-    DATA_STREAM_LOAD(min_y, float, 4);    
-    DATA_STREAM_LOAD(min_z, float, 4);    
-    DATA_STREAM_LOAD(cell_size, float, 4);    
+    DATA_STREAM_LOAD(min_x, float, 4);
+    DATA_STREAM_LOAD(min_y, float, 4);
+    DATA_STREAM_LOAD(min_z, float, 4);
+    DATA_STREAM_LOAD(cell_size, float, 4);
 
     this->hepvs_cell_size = cell_size;
     this->hepvs_min_point = {min_x, min_y, min_z};
 
-    DATA_STREAM_LOAD(x_count, uint16_t, 2);    
-    DATA_STREAM_LOAD(y_count, uint16_t, 2);    
-    DATA_STREAM_LOAD(z_count, uint16_t, 2);    
+    DATA_STREAM_LOAD(x_count, uint16_t, 2);
+    DATA_STREAM_LOAD(y_count, uint16_t, 2);
+    DATA_STREAM_LOAD(z_count, uint16_t, 2);
     DATA_STREAM_LOAD(objects_count, uint16_t, 2);
 
     this->hepvs_cell_count = {x_count, y_count, z_count};
 
-    std::vector<std::string> objects_names;    
+    std::vector<std::string> objects_names;
     objects_names.reserve(objects_count);
     for (uint16_t i = 0; i < objects_count; i++) {
-        DATA_STREAM_LOAD(name_len, uint16_t, 2);    
+        DATA_STREAM_LOAD(name_len, uint16_t, 2);
         std::string name((char*) ptr, name_len);
         ptr += name_len;
         objects_names.push_back(name);
+    }
+
+    std::unordered_map<std::string, LODMesh*> map_meshes;
+    for (auto& mesh: this->meshes) {
+        map_meshes.insert({mesh.getName(), &mesh});
     }
 
     hepvs_table.resize(x_count * y_count * z_count);
@@ -569,22 +623,17 @@ void ObjMapModel::parseHepvs(std::vector<uint8_t>& data) {
         uint16_t* cell_data = (uint16_t*) ptr;
         ptr += cell_size * 2;
 
-        std::vector<LODMesh> cell;
+        std::vector<LODMesh*> cell;
         for (uint16_t j = 0; j < cell_size; j++) {
-            auto f = std::find_if(this->meshes.begin(), this->meshes.end(), [&](LODMesh& m) {
-                return m.getName() == objects_names[*cell_data];
-            });
-
-            if (f != this->meshes.end()) {
-                cell.push_back((*f));
+            auto f = map_meshes.find(objects_names[*cell_data]);
+            if (f != map_meshes.end()) {
+                cell.push_back(f->second);
             }
-            //hepvs_table[i].push_back(this->objects[objects_names[*cell_data]]);
-            //if 
             cell_data++;
         }
         hepvs_table[i] = cell;
 
-        //hepvs_table[i].resize(objects_count);
+        // hepvs_table[i].resize(objects_count);
     }
 
 
@@ -1227,7 +1276,7 @@ StaticBody* ObjMapModel::getStaticBody() {
     return &static_body;
 }
 
-std::vector<LODMesh>* ObjMapModel::getLODMeshes(glm::vec3 pos) {
+/*std::vector<LODMesh>* ObjMapModel::getLODMeshes(glm::vec3 pos) {
     if (this->hepvs_table.size() > 0) {
         glm::vec3 new_min = hepvs_min_point + getGlobalPosition();
 
@@ -1236,14 +1285,45 @@ std::vector<LODMesh>* ObjMapModel::getLODMeshes(glm::vec3 pos) {
             uint32_t y = ((pos.y - new_min.y) / hepvs_cell_size);
             uint32_t z = ((pos.z - new_min.z) / hepvs_cell_size);
 
-            
+
             if (x < hepvs_cell_count.x and y < hepvs_cell_count.y and z < hepvs_cell_count.z) {
-                //HATE_INFO_F("x: %d y: %d z: %d -- %d", x, y, z, hepvs_table[x * hepvs_cell_count.y * hepvs_cell_count.z + y * hepvs_cell_count.z + z].size());
-                return &hepvs_table[x * hepvs_cell_count.y * hepvs_cell_count.z + y * hepvs_cell_count.z + z];
+                // HATE_INFO_F("x: %d y: %d z: %d -- %d", x, y, z, hepvs_table[x *
+                // hepvs_cell_count.y * hepvs_cell_count.z + y * hepvs_cell_count.z + z].size());
+                return &hepvs_table
+                        [x * hepvs_cell_count.y * hepvs_cell_count.z + y * hepvs_cell_count.z + z];
             }
         }
     }
     return &this->meshes;
+}*/
+
+void ObjMapModel::render(RenderInterface* renderer) {
+    glm::vec3 pos = renderer->getCamera()->getGlobalPosition();
+
+    if (this->hepvs_table.size() > 0) {
+        glm::vec3 new_min = hepvs_min_point + getGlobalPosition();
+
+        if (pos.x > new_min.x and pos.y > new_min.y and pos.z > new_min.z) {
+            uint32_t x = ((pos.x - new_min.x) / hepvs_cell_size);
+            uint32_t y = ((pos.y - new_min.y) / hepvs_cell_size);
+            uint32_t z = ((pos.z - new_min.z) / hepvs_cell_size);
+
+            if (x < hepvs_cell_count.x and y < hepvs_cell_count.y and z < hepvs_cell_count.z) {
+                for (auto& mesh: hepvs_table
+                             [x * hepvs_cell_count.y * hepvs_cell_count.z + y * hepvs_cell_count.z +
+                              z]) {
+                    mesh->render(renderer);
+                    // renderer->renderMesh(mesh);
+                }
+                return;
+            }
+        }
+    }
+
+    for (auto& mesh: this->meshes) {
+        mesh.render(renderer);
+    }
+    // return &this->meshes;
 }
 
 /*==================================> STRING FUNCS <=========================================*/

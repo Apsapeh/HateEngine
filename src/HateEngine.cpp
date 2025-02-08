@@ -1,11 +1,10 @@
-// #include <bits/types/struct_sched_param.h>
-// #include <pthread.h>
+#include <chrono>
 #include <cstdint>
 #include <glad/gl.h>
 
 #include <HateEngine/HateEngine.hpp>
 #include <HateEngine/Log.hpp>
-#include <HateEngine/Render/OpenGL15.hpp>
+#include <HateEngine/Render/OpenGL_1_3.hpp>
 #include <HateEngine/AudioServer.hpp>
 #include <thread>
 
@@ -13,6 +12,7 @@
 #include "HateEngine/AudioServer.hpp"
 #include "HateEngine/Input.hpp"
 #include "HateEngine/Level.hpp"
+#include "HateEngine/Render/RenderInterface.hpp"
 #include "glm/ext/vector_float2.hpp"
 #include "globalStaticParams.hpp"
 
@@ -32,9 +32,8 @@
     pthread_setschedparam(pthread_self(), SCHED_RR, &sch_params);
 #elif _WIN32
 #include <windows.h>
-#define SET_THREAD_HIGH_PRIORITY                                                                   \
-    SetPriorityClass(GetCurrentProcess(), HIGH_PRIORITY_CLASS);                                    \
-    SetThreadPriority(GetCurrentThread(), THREAD_PRIORITY_TIME_CRITICAL);
+#define SET_THREAD_HIGH_PRIORITY SetPriorityClass(GetCurrentProcess(), HIGH_PRIORITY_CLASS);
+// SetThreadPriority(GetCurrentThread(), THREAD_PRIORITY_TIME_CRITICAL);
 // #define SET_THREAD_HIGH_PRIORITY ;
 #endif
 
@@ -139,11 +138,12 @@ Engine::Engine(std::string window_lbl, int width, int height) : Input(this) {
 
     int64_t fixDelay = 1000000 / fixedLoopRefreshRate;
     int64_t physDelay = 1000000 / physicsEngineIterateLoopRefreshRate;
+    int64_t audioDelay = 1000000 / audioEngineIterateLoopRefreshRate;
 
-    std::chrono::high_resolution_clock::time_point t1 = std::chrono::high_resolution_clock::now();
+    auto t1 = std::chrono::high_resolution_clock::now();
     for (int o = 0; o < 10; ++o)
         std::this_thread::sleep_for(std::chrono::microseconds(fixDelay));
-    std::chrono::high_resolution_clock::time_point t2 = std::chrono::high_resolution_clock::now();
+    auto t2 = std::chrono::high_resolution_clock::now();
     int64_t d_fp =
             std::chrono::duration_cast<std::chrono::microseconds>(t2 - t1).count() / 10 - fixDelay;
     this->fixedProcessDelayMCS = fixDelay - d_fp;
@@ -160,8 +160,11 @@ Engine::Engine(std::string window_lbl, int width, int height) : Input(this) {
     int64_t d_pp =
             std::chrono::duration_cast<std::chrono::microseconds>(t2 - t1).count() / 10 - physDelay;
     this->physicsEngineIterateDelayMCS = physDelay - d_pp;
+
     AudioServer::Reinit();
     this->threadSafeRequestsQueue.reserve(16);
+
+    this->renderInterface = new class OpenGL_1_3(this);
 }
 
 void Engine::Run() {
@@ -176,16 +179,17 @@ void Engine::Run() {
         physicsEngineProcessThread = new std::thread(&Engine::threadPhysicsEngineIterateLoop, this);
     }
 
-    OpenGL15 ogl(this);
-
     glfwSwapBuffers(this->window);
     double oldTime = glfwGetTime();
     double fixed_process_loop_delta = 0;
     double physics_engine_iterate_loop_delta = 0;
+    double audio_engine_iterate_loop_delta = 0;
     double delta = 0.0;
     double fixed_process_loop_delay = 1.0 / this->fixedLoopRefreshRate;
     double physics_engine_iterate_loop_delay = 1.0 / this->physicsEngineIterateLoopRefreshRate;
+    double audio_engine_iterate_loop_delay = 1.0 / this->audioEngineIterateLoopRefreshRate;
     while (not glfwWindowShouldClose(this->window)) {
+        auto time_start = std::chrono::high_resolution_clock::now();
         delta = glfwGetTime() - oldTime;
         oldTime = glfwGetTime();
         glfwPollEvents();
@@ -212,7 +216,7 @@ void Engine::Run() {
         }
 
         // meshesMutex.lock();
-        std::lock_guard<std::mutex> lock(this->levelMutex);
+        // std::lock_guard<std::mutex> lock(this->levelMutex);
         if (this->processLoop != nullptr)
             this->processLoop(this, delta);
 
@@ -222,7 +226,6 @@ void Engine::Run() {
         if (this->isOneThread) {
             fixed_process_loop_delta += delta;
             physics_engine_iterate_loop_delta += delta;
-
 
             if (this->level != nullptr)
                 this->level->Update(delta);
@@ -244,8 +247,6 @@ void Engine::Run() {
                             d = physics_engine_iterate_loop_delta;
                         this->level->getPhysEngine()->IteratePhysics(d);
                         physics_engine_iterate_loop_delta -= d;
-                        // std::cout << "Physics Engine Iteration [" << i++ << "]: "
-                        // << d << std::endl;
                     }
                 }
                 physics_engine_iterate_loop_delta = 0.0;
@@ -253,20 +254,24 @@ void Engine::Run() {
         }
 
         if (this->level != nullptr) {
-            for (auto& obj: level->animationPlayers) {
-                obj->Update(delta);
-            }
+            audio_engine_iterate_loop_delta += delta;
 
-            if (this->level->camera != nullptr) {
-                AudioServer::setListener3DPosition(this->level->camera->getGlobalPosition());
-                AudioServer::setListener3DDirection(this->level->camera->getGlobalDirection());
+            if (audio_engine_iterate_loop_delta >= audio_engine_iterate_loop_delay) {
+                if (this->level != nullptr) {
+                    AudioServer::setListener3DPosition(this->level->camera->getGlobalPosition());
+                    AudioServer::setListener3DDirection(this->level->camera->getGlobalDirection());
+                    AudioServer::Update3D();
+                }
+                audio_engine_iterate_loop_delta = 0.0;
             }
-
-            ogl.Render();
+            this->renderInterface->Render();
         }
 
-        AudioServer::Update3D();
 
+        auto time_end = std::chrono::high_resolution_clock::now();
+        long time =
+                std::chrono::duration_cast<std::chrono::nanoseconds>(time_end - time_start).count();
+        lastCPUTime = time - this->renderInterface->last_gpu_time;
 
         glfwSwapBuffers(this->window);
     }
@@ -300,7 +305,6 @@ void Engine::__changeFullScreenMode(ThreadSafeRequest req) {
     if ((bool) (uintptr_t) req.data) {
         GLFWmonitor* monitor = glfwGetPrimaryMonitor();
         const GLFWvidmode* mode = glfwGetVideoMode(monitor);
-
         glfwWindowHint(GLFW_RED_BITS, mode->redBits);
         glfwWindowHint(GLFW_GREEN_BITS, mode->greenBits);
         glfwWindowHint(GLFW_BLUE_BITS, mode->blueBits);
@@ -353,6 +357,22 @@ void Engine::setFullScreen(bool fullScreen) {
     req.type = ThreadSafeRequestType::ChangeFullScreenMode;
     req.data = (void*) (uintptr_t) fullScreen;
     this->threadSafeRequestsQueue.push_back(req);
+}
+
+RenderInterface* Engine::getRenderInterface() {
+    return this->renderInterface;
+}
+
+Engine::RenderAPI Engine::getRenderAPI() {
+    return this->renderApi;
+}
+
+double Engine::getGPUTimeMS() {
+    return this->renderInterface->getGPUTimeMS();
+}
+
+double Engine::getCPUTimeMS() {
+    return double(this->lastCPUTime) / 10000000.0;
 }
 
 glm::ivec2 Engine::getResolution() {
@@ -430,7 +450,6 @@ void Engine::threadPhysicsEngineIterateLoop() {
 }
 
 void Engine::changeWindowTitle(std::string title) {
-    // glfwSetWindowTitle(this->window, title.c_str());
     ThreadSafeRequest req;
     req.type = ThreadSafeRequestType::ChangeWindowTitle;
     req.data = new std::string(title);
@@ -459,6 +478,7 @@ void Engine::setLevelRef(Level* lvl) {
     std::lock_guard<std::mutex> lock(this->levelMutex);
     Level* old = this->level;
     this->level = lvl;
+    this->renderInterface->setLightsRef(lvl->getLights());
     onLevelChanged.emit(this, this->level, old);
 }
 

@@ -2,13 +2,13 @@ add_repositories("apsapeh-repo https://github.com/Apsapeh/xmake-repo.git")
 add_requires(
     "glm 1.0.0", 
     "tinygltf 2.8.13", 
-    "reactphysics3d 0.9.0", 
     "recastnavigation 1.6.0",
     "glu",
     "termcolor 5635ae00856eeddffcbf7091d13e2987abde91a2"
 )
 add_requires("glfw 3.4", {configs = {wayland = is_plat("linux") and not is_arch("i386")}})
--- On my pc it doesn't compile for Linux i386 when Wayland enabled, because needed version of wayland
+add_requires("reactphysics3d 0.9.0", {debug = is_mode("debug")})
+-- On my pc it doesn't compile for Linux i386 when Wayland enabled
 
 
 if is_plat("mingw") and is_arch("i386") then
@@ -37,6 +37,7 @@ set_version("1.0.0")
 function set_mode_rules(merge)
     merge = merge or false
     if is_mode("debug") then
+        set_policy("build.merge_archive", merge)
         set_symbols("debug")
         set_optimize("none")
         add_defines("__HATE_ENGINE_DEBUG")
@@ -117,10 +118,10 @@ function set_Example_rules(custom_mode)
     add_packages("glfw", "glm", "reactphysics3d", "soloud", "recastnavigation", {links = {}})
 end
 
-target("Example_1")
+target("Dev")
     set_Example_rules()
     add_files(
-        "examples/engine_test_main.cpp"
+        "examples/dev.cpp"
     )
 
 

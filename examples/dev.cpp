@@ -6,6 +6,7 @@
 #include "HateEngine/Objects/Light/SpotLight.hpp"
 #include "HateEngine/Objects/Physics/CapsuleShape.hpp"
 #include "HateEngine/Objects/Physics/CollisionShape.hpp"
+#include "HateEngine/Objects/Physics/RigidBody.hpp"
 #include "HateEngine/Objects/Physics/StaticBody.hpp"
 #include "HateEngine/Objects/Physics/TriggerArea.hpp"
 #include "glm/ext/vector_float2.hpp"
@@ -75,6 +76,7 @@ HateEngine::Level lvl;
 HateEngine::Camera camera(60, 600);
 HateEngine::DirectionalLight sun;
 HateEngine::SpotLight light;
+HateEngine::CubeMesh floor_mesh;
 
 HateEngine::Particles* part;
 HateEngine::RayCast* ray;
@@ -111,8 +113,8 @@ HateEngine::CubeMesh nav_agent_cube;
 
 
 int main() {
-//int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
-//	LPSTR lpCmdLine, int nCmdShow) {
+    // int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
+    //	LPSTR lpCmdLine, int nCmdShow) {
     xAxMesh.setSize(1, 0.1, 0.1);
     xAxMesh.offset(0, 6, 0);
 
@@ -127,9 +129,8 @@ int main() {
 
     billboardMesh.offset(-4, 4, -4);
 
-    HateEngine::CubeMesh floor;
-    floor.setPosition(0, 0, 0);
-    floor.setSize(25, 1, 25);
+    floor_mesh.setPosition(0, 0, 0);
+    floor_mesh.setSize(25, 1, 25);
     HATE_INFO("Info message");
     HATE_WARNING("Warning message");
     HATE_ERROR("Error message");
@@ -155,7 +156,7 @@ int main() {
 
     // sun.setPosition({1.0, 1.0, 1.0});
     sun.rotate(-45, 45, 0);
-    sun.setVisible(false);
+    sun.setVisible(true);
 
     mesh2.setPosition(3, 3, 3);
 
@@ -173,10 +174,11 @@ int main() {
 
     game.setMouseCapture(true);
     // std::cout << "\n\n\n\n" << glfwGetInputMode(game.window, GLFW_CURSOR) << "\n\n\n\n";
-    game.setOneThreadMode(false);
+    game.setOneThreadMode(true);
     game.setVSync(false);
 
-    game.onLevelChanged.connect([](HateEngine::Engine* e, HateEngine::Level* lvl, HateEngine::Level* old) {
+    game.onLevelChanged.connect([](HateEngine::Engine* e, HateEngine::Level* lvl,
+                                   HateEngine::Level* old) {
         HATE_INFO("Level changed");
         HATE_INFO_F("Old: %p, New: %p", old, lvl);
     });
@@ -210,7 +212,7 @@ int main() {
     radioModel.setPosition(0, 2, 0);
     radioModel.setScale(0.003, 0.003, 0.003);
     // radioModel.setScale(0.1, 0.1, 0.1);
-    // lvl.addObjectRef(&radioModel);
+    // lvl.addObject(&radioModel);
 
 
     /*========================> Audio Test <=========================*/
@@ -229,63 +231,16 @@ int main() {
     audioPlayer1.setPosition(0, 2, 0);
     playerCapsuleMesh.bindObj(&audioPlayer2);
 
-    ambientPlayer.play();
+    //ambientPlayer.play();
     audioPlayer1.play();
     audioPlayer2.play();
 
     /*===============================================================*/
 
-
-
-    // playerCapsuleMesh.getLOD(0)[0]->setColor(glm::vec4(1, 0, 0, 1));
-
-    HateEngine::CubeMesh colorCube;
-    colorCube.offset(3, 3, 3);
-    // colorCube.setUV({0, 0,0.19731724, 0,0.19731724, 0.19731724,0.3946345, 0.19731724,0.19731724,
-    // 0.19731724,0.19731724, 0,0, 0.3946345,0, 0.19731724,0.19731724, 0.19731724,0.5919517,
-    // 0,0.5919517, 0.19731724,0.3946345, 0.19731724,0, 0.3946345,0.19731724, 0.3946345,0.19731724,
-    // 0.5919517,0.3946345, 0.3946345,0.19731724, 0.3946345,0.19731724, 0.19731724,0.5919517,
-    // 0,0.789269, 0,0.789269, 0.19731724,0.19731724, 0.789269,0, 0.789269,0, 0.5919517,0.5919517,
-    // 0.19731724,0.5919517, 0.3946345,0.3946345, 0.3946345,0.19731724, 0.5919517,0.19731724,
-    // 0.3946345,0.3946345, 0.3946345,0.789269, 0.19731724,0.789269, 0,0.9865862, 0,0.19731724,
-    // 0.789269,0.19731724, 0.9865862,0, 0.9865862,});
-    colorCube.setLightUV({
-            0,          0, 0.16666667, 0, 0.16666667, 1, 0.16666667, 1, 0,          1,
-            0,          0, 0.16666667, 0, 0.33333334, 0, 0.33333334, 1, 0.33333334, 1,
-            0.16666667, 1, 0.16666667, 0, 0.33333334, 0, 0.33333334, 1, 0.5,        1,
-            0.5,        1, 0.5,        0, 0.33333334, 0, 0.5,        0, 0.6666667,  0,
-            0.6666667,  1, 0.6666667,  1, 0.5,        1, 0.5,        0, 0.6666667,  0,
-            0.8333334,  0, 0.8333334,  1, 0.8333334,  1, 0.6666667,  1, 0.6666667,  0,
-            0.8333334,  1, 0.8333334,  0, 1,          0, 1,          0, 1,          1,
-            0.8333334,  1,
-    });
-
-
-    HateEngine::Texture cube_lightmap(
-            "examples/Assets/cube_lightmap.png", HateEngine::Texture::Repeat,
-            HateEngine::Texture::Nearest
-    );
-    colorCube.setLightTexture(&cube_lightmap);
-    // colorCube.disableLightShading();
-    colorCube.setSize(3, 3, 3);
-
-    HateEngine::Texture bri("examples/Assets/brick.png");
-    // HATE_FATAL_F("BRI loaded: %d", bri.isLoaded());
-    colorCube.setTexture(&bri);
-
-
-    // colorCube.setColor({0.4, 0.1, 0.1});
-    //  colorCube.disableLightShading();
-
-    // lvl.addObjectRef(&colorCube);
-
-    
-
-
     camera.bindObj(&decal);
     decal.setRayLength(10);
 
-    // lvl.addObjectRef(decal.getMesh());
+    // lvl.addObject(decal.getMesh());
     decal.setPhysEngine(lvl.getPhysEngine());
 
 
@@ -308,7 +263,7 @@ int main() {
     trigger.addCollisionShapeRef(&box);
 
 
-    lvl.getPhysEngine()->addObjectRef(&trigger);
+    lvl.getPhysEngine()->addObject(&trigger);
 
     /*HateEngine::Audio* audio = new HateEngine::Audio("examples/Assets/audio.ogg");
     // HateEngine::Audio audio = herfile["audio.ogg"].asAudio();
@@ -335,12 +290,12 @@ int main() {
     HateEngine::CubeMesh uv_test_cube;
     uv_test_cube.setTexture(&tex2);
     uv_test_cube.setPosition(0, 5, 0);
-    // lvl.addObjectRef(&uv_test_cube);
+    // lvl.addObject(&uv_test_cube);
 
     // HateEngine::GLTFModel glmodel2("examples/Assets/ignore/bolg.glb");
 
     game.setLevelRef(&lvl);
-    // lvl.addObjectRef(&test_glmodel);
+    // lvl.addObject(&test_glmodel);
     //  HateEngine::CubeMesh test_mesh;
     //  HateEngine::Level level2;
     //  level2.addObjectRef(&test2);
@@ -356,7 +311,8 @@ int main() {
     billboardMesh.setTexture(&campfire_tex);
     billboardMesh.setTarget(&camera);
     billboardMesh.setCorrectTransparency(true);
-    // lvl.addObjectRef(&billboardMesh);
+    HATE_INFO_F("BM: %p", &billboardMesh);
+    lvl.addObject(&billboardMesh);
 
     /*const auto desers = std::make_pair(
             std::unordered_map<std::string, HateEngine::ObjMapModel::EntityDeserialzer>(
@@ -372,7 +328,8 @@ int main() {
     );*/
     HateEngine::ObjMapModel objmodel(
             "examples/Assets/Ignore/E1M1.obj", "examples/Assets/Ignore/E1M1.MAP",
-            "examples/Assets/Ignore/light.heluv","examples/Assets/Ignore/E1M1.hepvs", 16.0, true, 15, 1
+            "examples/Assets/Ignore/light.heluv", "examples/Assets/Ignore/E1M1.hepvs", 16.0, true,
+            false, 15, 10000
     );
     objmodel.deserializeEntities(
             {{"light",
@@ -388,9 +345,20 @@ int main() {
 
                   HateEngine::CubeMesh* cube = new HateEngine::CubeMesh();
                   cube->setSize(0.1, 0.1, 0.1);
-                  cube->setPosition(entity.position);
-                  model->bindObj(cube);
-                  //model->addEntityObjectToLevel(cube);
+                  //cube->setPosition(entity.position);
+                  //model->bindObj(cube);
+                  model->addEntityObjectToLevel(cube);
+                  
+                  HateEngine::RigidBody* body = new HateEngine::RigidBody();
+                  HateEngine::BoxShape* box = new HateEngine::BoxShape({0.1, 0.1, 0.1});
+                  body->addCollisionShapeRef(box);
+                  box->setFriction(1);
+                  box->setBounciness(0.5);
+                  body->setPosition(entity.position);
+                  body->setMass(7.8);
+                  body->bindObj(cube);
+                  model->bindObj(body);
+                  model->addEntityPhysicalBodyToLevel(body);
               }}},
             new std::vector<HateEngine::OmniLight*>,
             [](void* data) {
@@ -401,8 +369,6 @@ int main() {
                 delete lights;
             }
     );
-
-
 
 
     // HateEngine::HENFile henfile("examples/Assets/Ignore/E1M1.hen");
@@ -430,61 +396,24 @@ int main() {
         // lvl.addObjectClone(cube);
     }*/
 
-    lvl.addObjectRef(&objmodel);
+    lvl.addObject(&objmodel);
+    //lvl.getPhysEngine()->addObjectRef(objmodel.getStaticBody());
 
-
-    std::unordered_set<std::string> enabled = {
-            "entity0_brush0",    "entity0_brush1",    "entity0_brush2",    "entity0_brush3",
-            "entity0_brush4",    "entity0_brush5",    "entity0_brush6",    "entity0_brush8",
-            "entity0_brush9",    "entity0_brush10",   "entity0_brush11",   "entity0_brush12",
-            "entity0_brush13",   "entity0_brush15",   "entity0_brush16",   "entity0_brush17",
-            "entity0_brush18",   "entity0_brush19",   "entity0_brush20",   "entity0_brush21",
-            "entity0_brush22",   "entity0_brush23",   "entity0_brush24",   "entity0_brush25",
-            "entity0_brush27",   "entity0_brush28",   "entity0_brush29",   "entity0_brush30",
-            "entity0_brush31",   "entity0_brush32",   "entity0_brush33",   "entity0_brush34",
-            "entity0_brush36",   "entity0_brush38",   "entity0_brush39",   "entity0_brush40",
-            "entity0_brush41",   "entity0_brush42",   "entity0_brush43",   "entity0_brush44",
-            "entity0_brush45",   "entity0_brush46",   "entity0_brush47",   "entity0_brush49",
-            "entity0_brush50",   "entity0_brush51",   "entity0_brush52",   "entity0_brush53",
-            "entity0_brush54",   "entity0_brush55",   "entity0_brush56",   "entity0_brush60",
-            "entity0_brush61",   "entity0_brush62",   "entity0_brush63",   "entity0_brush64",
-            "entity0_brush65",   "entity0_brush66",   "entity0_brush67",   "entity0_brush68",
-            "entity0_brush69",   "entity0_brush70",   "entity0_brush71",   "entity0_brush72",
-            "entity0_brush73",   "entity0_brush74",   "entity0_brush75",   "entity0_brush76",
-            "entity0_brush77",   "entity0_brush78",   "entity0_brush79",   "entity0_brush80",
-            "entity0_brush81",   "entity0_brush82",   "entity0_brush83",   "entity0_brush84",
-            "entity0_brush85",   "entity0_brush86",   "entity0_brush87",   "entity0_brush88",
-            "entity0_brush95",   "entity0_brush120",  "entity0_brush121",  "entity0_brush131",
-            "entity0_brush132",  "entity0_brush134",  "entity0_brush135",  "entity0_brush136",
-            "entity0_brush137",  "entity0_brush141",  "entity0_brush395",  "entity0_brush397",
-            "entity0_brush398",  "entity0_brush399",  "entity0_brush401",  "entity0_brush402",
-            "entity0_brush403",  "entity0_brush404",  "entity0_brush405",  "entity0_brush406",
-            "entity0_brush407",  "entity0_brush408",  "entity0_brush409",  "entity0_brush410",
-            "entity0_brush411",  "entity0_brush412",  "entity0_brush413",  "entity0_brush414",
-            "entity0_brush1062", "entity0_brush1073", "entity0_brush1075", "entity0_brush1084",
-            "entity0_brush1085", "entity0_brush1086", "entity0_brush1087", "entity0_brush1088",
-            "entity0_brush1089", "entity0_brush1107", "entity0_brush1109", "entity0_brush1112",
-            "entity14_brush0",   "entity14_brush1",   "entity14_brush2",   "entity15_brush0",
-            "entity15_brush1",   "entity15_brush2",   "entity310_brush0",  "entity338_brush0",
-            "entity339_brush0",  "entity352_brush0",  "entity353_brush0",
-
-
-    };
 
     /*for (int i = 0; i < objmodel.getLODCount(); i++) {
         HateEngine::Mesh* mesh = objmodel.getLOD(i)[0];
         if (mesh->getName() == "entity0_brush632") {
             HATE_WARNING_F("UV SIZE: %d", mesh->getUV()->size());
-            
+
             //HATE_FATAL_F("LIGHT UV SIZE: %d", mesh->getLightUV()->size());
         }
 
-        
 
 
-        
+
+
         for (auto& lod: objmodel.getLOD(i)) {
-            //lod->setLightTexture(nullptr);    
+            //lod->setLightTexture(nullptr);
             //lod->setTexture(mesh->getLightTexture());
             //lod->setUV(*mesh->getLightUV());
             lod->disableLightShading();
@@ -495,7 +424,7 @@ int main() {
         }
     }*/
 
-    floor.disableLightShading();
+    //floor_mesh.disableLightShading();
 
     lvl.setAmbientLightColor(255, 255, 255);
     lvl.setAmbientLightIntensity(1);
@@ -520,14 +449,14 @@ int main() {
 
     // std::cout << "Poly count: " << poly_count << std::endl;
 
-    // lvl.addObjectRef(&objmodel);
+    // lvl.addObject(&objmodel);
 
 
     /*std::cout << glmodel.getGlobalPosition().x << " " << glmodel.getGlobalPosition().y << " "
               << glmodel.getGlobalPosition().z << "\n";*/
 
-    floor.setTexture(&tex_floor);
-    floor.setUV({
+    floor_mesh.setTexture(&tex_floor);
+    floor_mesh.setUV({
             0, 0, 3, 0, 3, 3, 3, 3, 0, 3, 0, 0, 0, 0, 3, 0, 3, 3, 3, 3, 0, 3, 0, 0,
             0, 0, 3, 0, 3, 3, 3, 3, 0, 3, 0, 0, 0, 0, 3, 0, 3, 3, 3, 3, 0, 3, 0, 0,
             0, 0, 3, 0, 3, 3, 3, 3, 0, 3, 0, 0, 0, 0, 3, 0, 3, 3, 3, 3, 0, 3, 0, 0,
@@ -542,11 +471,11 @@ int main() {
     // glmodel.bindObj(&camera);
     //  mesh1.bindObj(&glmodel);
 
-    lvl.addObjectRef(&mesh1);
-    // lvl.addObjectRef(&mesh2);
-    // lvl.addObjectRef(&xAxMesh);
-    lvl.addObjectRef(&floor);
-    lvl.addObjectRef(&sun);
+    lvl.addObject(&mesh1);
+    // lvl.addObject(&mesh2);
+    // lvl.addObject(&xAxMesh);
+    lvl.addObject(&floor_mesh);
+    lvl.addObject(&sun);
 
     /*HateEngine::GLTFModel dance_animation("examples/Assets/ignore/dance.glb");
     HateEngine::GLTFAnimationPlayer anim_player(&dance_animation);
@@ -554,16 +483,16 @@ int main() {
     anim_player.setFPS(60);
     anim_player.setLoop(true);
     anim_player.play("dance_man");
-    lvl.addObjectRef(&anim_player);*/
+    lvl.addObject(&anim_player);*/
 
 
-    // lvl.addObjectRef(&dance_animation);
+    // lvl.addObject(&dance_animation);
     /* for (auto& mesh : dance_animation.getMeshes()) {
          mesh->disableLightShading();
          mesh->enableCustomMaxLightDist(2500);
      }*/
 
-    // lvl.addObjectRef(&glmodel);
+    // lvl.addObject(&glmodel);
 
     // print glmodel meshes id
 
@@ -574,8 +503,8 @@ int main() {
     // light.setPosition({0, 2, 0});
     // l
     light.setColor(light.getColor() * 10);
-    lvl.addObjectRef(&light);
-    // light.color = {10, 10, 10, 1};
+    lvl.addObject(&light);
+    //  light.color = {10, 10, 10, 1};
     light.setExponent(20);
 
     camera.bindObj(&light);
@@ -589,7 +518,7 @@ int main() {
     });
 
     // game.addObjectRef(&tomato2);
-    HateEngine::Particle::ParticleSettings pa_set = {6.0f, 6.0f, false, {0, 0, 0}, {4, 0, 4}};
+    HateEngine::Particles::ParticleSettings pa_set = {2.0f, 2.0f, false, {0, 0, 0}, {0.1, 0.1, 0.1}, true};
 
     HateEngine::Texture snow_tex(
             "examples/Assets/snow.png", HateEngine::Texture::Clamp, HateEngine::Texture::Linear
@@ -600,25 +529,94 @@ int main() {
     snow_mesh.setTexture(&snow_tex);
     // snow_mesh.setSize(0.8, 0.8, 0.8);
     // snow_mesh.setPosition(0, 5, 0);
-    // lvl.addObjectRef(&snow_mesh);
+    // lvl.addObject(&snow_mesh);
     //  tomato.setScale({0.05, 0.05, 0.05});
-    HateEngine::Particles cube_part((HateEngine::Mesh) snow_mesh, 100, pa_set);
+
+
+    /*
+        Ёлочка
+        float angle = 3.14159f / 2.0f + (3.14159f / 500.0f * p->index);
+            float xz_angle =  (360.0f / 500.0f * p->index);
+            glm::vec2 xz_pos = {p->getPosition().x, p->getPosition().z};
+            float dist_to_center = glm::length(xz_pos);
+            //p->data["vel"] = (void*) new glm::vec3(cos(angle) * 30 * xz_pos.x, 5 - 20 *
+       dist_to_center, sin(angle) * 30 * xz_pos.y); p->data["vel"] = (void*) new
+       glm::vec3(cos(xz_angle) * cos(angle), 5 * sin(angle), sin(xz_angle) * cos(angle));
+
+       Пол сферы
+       float theta = glm::linearRand(
+                    0.0f, glm::two_pi<float>()
+            ); // Угол вокруг Y (горизонтальная плоскость)
+            float phi = glm::linearRand(
+                    0.0f, glm::pi<float>() / 2.0f
+            ); // Угол наклона от вертикали (ограничим верхней половиной)
+
+            // Преобразование вектора из сферических координат в декартовы
+            glm::vec3 direction(
+                    cos(phi) * cos(theta), // X
+                    sin(phi), // Y
+                    cos(phi) * sin(theta) // Z
+            );
+            p->data["vel"] = (void*) new glm::vec3(direction * 5.0f);
+
+    */
+
+    HateEngine::BillboardMesh part_billboard;
+    part_billboard.setTexture(&campfire_tex);
+    //part_billboard.setTarget(&camera);
+    part_billboard.setCorrectTransparency(true);
+
+
+    HateEngine::Particles cube_part((HateEngine::Mesh) part_billboard, 500, pa_set, 0.001);
     cube_part.calculateFunc = [](HateEngine::Particle* p, double delta) {
-        if (p->data.count("vel") == 0)
-            p->data["vel"] = (void*) new glm::vec3(0, 0, 0);
-        //((glm::vec3*)(p->data["vel"]))->y += delta * -9.8;
-        ((glm::vec3*) (p->data["vel"]))->y -= delta * 9.8;
-        // if (p->index == 0)
-        // std::cout << ((glm::vec3*)(p->data["vel"]))->y << "\n";
-        // std::cout << float(delta * 9.8) << "\n";
-        // std::cout << ((glm::vec3*)(p->data["vel"]))->y << "\n";
-        glm::vec3 off = *((glm::vec3*) (p->data["vel"])) * glm::vec3(delta);
+        const int PARTICLE_COUNT = 500;
+        const float GRAVITY = -9.8f;
+        const float MAX_VERTICAL_SPEED = 5.0f; // Максимальная скорость вверх
+        const float MAX_HORIZONTAL_SPEED = 5.0f; // Максимальная скорость в стороны
+        const float MAX_RADIUS = 1.0f;
+        if (p->data.count("vel") == 0) {
+
+
+            float r = glm::sqrt(glm::linearRand(0.0f, 1.0f)) * 0.25 * 4;
+
+            /*p->rotate(
+                    glm::linearRand(0.0f, 360.0f), glm::linearRand(0.0f, 360.0f),
+                    glm::linearRand(0.0f, 360.0f)
+            );*/
+
+            // Генерируем случайный угол в радианах (от 0 до 2π)
+            float angle = glm::linearRand(0.0f, glm::two_pi<float>());
+
+            // Преобразуем из полярных координат в декартовы
+            float x = r * glm::cos(angle);
+            float z = r * glm::sin(angle);
+            glm::vec3 point = glm::vec3(5, x + 5, z);
+            glm::vec3 dir = point / glm::length(point);
+            p->data["vel"] = (void*) new glm::vec3(dir * 5.0f);
+        }
+
+        glm::vec3* vel = (glm::vec3*) (p->data["vel"]);
+
+
+        // p->data["vel"] = (void*) new glm::vec3(p->getPosition().x * 10, 5, p->getPosition().z *
+        // 10);
+        vel->y += delta * -9.8;
+
+        //((glm::vec3*) (p->data["vel"]))->y -= delta;
+
+        // p->
+        //  if (p->index == 0)
+        //  std::cout << ((glm::vec3*)(p->data["vel"]))->y << "\n";
+        //  std::cout << float(delta * 9.8) << "\n";
+        //  std::cout << ((glm::vec3*)(p->data["vel"]))->y << "\n";
+        glm::vec3 off = *vel * glm::vec3(delta);
+        p->offset(off);
         // std::cout << off << "\n";
         // p->offset(off);
-        p->offset({0, -0.1 * delta, 0});
-        glm::vec3 scale = p->getScale() * 0.99;
+        // p->offset({0, -0.1 * delta, 0});
+        // glm::vec3 scale = p->getScale() * 0.99 * delta;
 
-        p->setScale(scale);
+        // p->setScale(scale);
 
 
         // std::cout <<
@@ -630,10 +628,10 @@ int main() {
 
     cube_part.setPosition(4, 4, 4);
 
-    // cube_part.play();
+    //cube_part.play();
 
     cube_part_ptr = &cube_part;
-    // lvl.addObjectRef(&cube_part);
+    //lvl.addObject(&cube_part);
 
 
     /*for (auto& m: lightmap_model.getLOD(0)) {
@@ -661,7 +659,7 @@ int main() {
     HateEngine::BoxShape floorShape({25, 1, 25}, {0, 0, 0}, {0, 0, 0});
     floorBody.addCollisionShapeRef(&floorShape);
     // floorBody.rotate(20, 0, 0);
-    floorBody.bindObj(&floor);
+    floorBody.bindObj(&floor_mesh);
 
     rigidBody.setPosition(0, 5, 0);
     rigidBody.rotate(48, 22, 36);
@@ -682,17 +680,17 @@ int main() {
     playerBody.addCollisionShapeRef(&capsuleShape);
     playerBody.bindObj(&playerCapsuleMesh);
 
-    lvl.getPhysEngine()->addObjectRef(&rigidBody);
-    lvl.getPhysEngine()->addObjectRef(&playerBody);
-    lvl.getPhysEngine()->addObjectRef(&floorBody);
-    //playerBody.reactRigidBody->setAngularLockAxisFactor({0, 0, 0});
+    lvl.getPhysEngine()->addObject(&rigidBody);
+    lvl.getPhysEngine()->addObject(&playerBody);
+    lvl.getPhysEngine()->addObject(&floorBody);
+    // playerBody.reactRigidBody->setAngularLockAxisFactor({0, 0, 0});
     playerBody.setAngularLockAxisFactor(0, 0, 0);
     // playerBody.reactRigidBody->setLinearVelocity({2, 0.1, 2});
-    //capsuleShape.reactCollider->getMaterial().setFrictionCoefficient(0);
+    // capsuleShape.reactCollider->getMaterial().setFrictionCoefficient(0);
     capsuleShape.setFriction(0);
 
 
-    lvl.addObjectRef(&playerCapsuleMesh);
+    // lvl.addObject(&playerCapsuleMesh);
 
 
     // RayCast test
@@ -794,8 +792,8 @@ int main() {
     // fps_widget.addObjectRef(&button);
 
 
-    lvl.addObjectRef(&fps_widget);
-    // lvl.addObjectRef(&ui);
+    lvl.addObject(&fps_widget);
+    // lvl.addObject(&ui);
 
     // playerCapsuleMesh.bindObj(&camera);
     head.bindObj(&camera);
@@ -858,7 +856,7 @@ int main() {
     audio_widget.addObjectRef(&dec_music_bus_volume_button);
 
 
-    lvl.addObjectRef(&audio_widget);
+    lvl.addObject(&audio_widget);
 
 
     /* ==========================> Navigation Test <========================= */
@@ -866,7 +864,7 @@ int main() {
     /*HateEngine::ObjMapModel nav_obj_map(
             "examples/Assets/NavMeshTest/dungeon.obj", "", "", 1, false, 10000000, 100000000
     );
-    lvl.addObjectRef(&nav_obj_map);*/
+    lvl.addObject(&nav_obj_map);*/
 
     /*HateEngine::NavMesh nav_mesh("examples/Assets/NavMeshTest/solo_navmesh.bin");
 
@@ -875,7 +873,7 @@ int main() {
 
     nav_agent_ptr = &nav_mesh_agent;
     nav_agent_cube.setPosition(40, 10, 0);
-    lvl.addObjectRef(&nav_agent_cube);*/
+    lvl.addObject(&nav_agent_cube);*/
 
     /* ==========================> Navigation Test <========================= */
 
@@ -886,30 +884,37 @@ int main() {
     lvl.setCameraRef(&camera);
     float xscale, yscale;
     // glfwGetPrimaryMonitor();
-    //glfwGetMonitorContentScale(glfwGetPrimaryMonitor(), &xscale, &yscale);
+    // glfwGetMonitorContentScale(glfwGetPrimaryMonitor(), &xscale, &yscale);
     // std::cout << "Content scale: " << xscale << " " << yscale << "\n";
     //  while (true) {}
     game.Run();
-    //int p = glfwGetPlatform();
-    //std::cout << p << " | " << GLFW_PLATFORM_WAYLAND << "\n";
-    // HateEngine::AudioServer::Deinit();
+    // int p = glfwGetPlatform();
+    // std::cout << p << " | " << GLFW_PLATFORM_WAYLAND << "\n";
+    //  HateEngine::AudioServer::Deinit();
 }
 
 
 int frames_count = 0;
 float speed = 1;
 double fps_time = 0.0;
+double cpu_time = 0;
+double gpu_time = 0;
+
 void _process(HateEngine::Engine* engine, double delta) {
     if (fps_time < 0.5) {
         ++frames_count;
         fps_time += delta;
+        cpu_time += engine->getCPUTimeMS();
+        gpu_time += engine->getGPUTimeMS();
     } else {
         // std::cout << "FPS: " << (float)count / del << std::endl;
         fps_label.text = "FPS: " + std::to_string((float) frames_count / fps_time);
-        // HATE_INFO_F("FPS: %f", (float) frames_count / fps_time);
+        HATE_WARNING_F("FPS: %f, CPU: %fms, GPU: %fms", (float) frames_count / fps_time, cpu_time / frames_count, gpu_time / frames_count);
 
         frames_count = 0;
         fps_time = 0.0;
+        cpu_time = 0;
+        gpu_time = 0;
     }
 
     glm::vec3 cam_rot = camera.getRotationEuler();
@@ -951,7 +956,7 @@ void _physics_process(HateEngine::Engine* engine, double delta) {
 
     /*HATE_INFO_F("Camera position: %f | %f | %f", cam_global_pos.x, cam_global_pos.y,
     cam_global_pos.z);*/
-    HateEngine::RayCastInfo rayCastInfo;
+    /*HateEngine::RayCastInfo rayCastInfo;
     if (ray->isCollide(&rayCastInfo)) {
         // HATE_DEBUG("Is collide: true");
         // HATE_DEBUG_F("Body UUID: %llu", rayCastInfo.body->getUUID().getU64());
@@ -959,7 +964,7 @@ void _physics_process(HateEngine::Engine* engine, double delta) {
                 "x: %f, y: %f, z: %f", rayCastInfo.worldPoint.x, rayCastInfo.worldPoint.y,
                 rayCastInfo.worldPoint.z
         );
-    }
+    }*/
     // HATE_DEBUG_F("Y: %f", rigidBody.getPosition().y);
     //  ray->isCollide();
     //  std::cout << engine->getResolution().x << " | " << engine->getResolution().y << "\n";
@@ -1045,11 +1050,11 @@ void _physics_process(HateEngine::Engine* engine, double delta) {
                                 HateEngine::KeyDown
                         ) *
                         5;
-    //float pb_x = playerBody.reactRigidBody->getLinearVelocity().x;
-    //float pb_y = playerBody.reactRigidBody->getLinearVelocity().y;
-    //float pb_z = playerBody.reactRigidBody->getLinearVelocity().z;
-    //playerBody.reactRigidBody->setLinearVelocity({-raw_dir.y, pb_y, raw_dir.x});
-    //playerBody.setLinearVelocity({raw_dir.x, pb_y, raw_dir.y});
+    // float pb_x = playerBody.reactRigidBody->getLinearVelocity().x;
+    // float pb_y = playerBody.reactRigidBody->getLinearVelocity().y;
+    // float pb_z = playerBody.reactRigidBody->getLinearVelocity().z;
+    // playerBody.reactRigidBody->setLinearVelocity({-raw_dir.y, pb_y, raw_dir.x});
+    // playerBody.setLinearVelocity({raw_dir.x, pb_y, raw_dir.y});
 
     // glmodel.rotate(0, glmodel_rot.x, 0);
     //  glmodel.offset(0, glmodel_rot.y / 10, 0);
@@ -1153,7 +1158,7 @@ void _input_event(HateEngine::Engine* engine, HateEngine::Engine::InputEventInfo
                 HateEngine::CubeMesh cube;
                 // cube.setSize(0.1, 0.1, 0.1);
                 cube.setPosition(rayCastInfo.worldPoint);
-                lvl.addObjectClone(cube);
+                // lvl.addObjectClone(cube);
             }
         }
     }

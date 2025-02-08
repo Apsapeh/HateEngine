@@ -5,10 +5,11 @@
 #include "../Resources/Texture.hpp"
 #include "Object.hpp"
 #include "glm/fwd.hpp"
+#include "Interfaces/Renderable3DInterface.hpp"
 
 namespace HateEngine {
     // Object -> Mesh
-    class Mesh : public Object {
+    class Mesh : public Object, public Renderable3DInterface {
     private:
         std::vector<float> verticies;
         std::vector<uint32_t> indicies;
@@ -31,6 +32,8 @@ namespace HateEngine {
 
         void updateCenterMaxSize();
         void updateAABB();
+
+        void setRotationMatrixRaw(const glm::mat4& mat) override;
 
     public:
         ~Mesh();
@@ -83,6 +86,19 @@ namespace HateEngine {
         const std::vector<float>* getLightUV() const;
         const std::vector<float>* getColors() const;
         const uint8_t getColorChannels() const;
+
+        std::vector<float>* getVerticesMut();
+        std::vector<uint32_t>* getIndiciesMut();
+        std::vector<float>* getNormalsMut();
+        /*Texture* getTexture() const;
+        Texture* getLightTexture() const;
+        const std::vector<float>* getUV() const;
+        const std::vector<float>* getLightUV() const;
+        const std::vector<float>* getColors() const;
+        const uint8_t getColorChannels() const;*/
         // const std::vector<std::vector<float>>* getTexturesCoords();
+
+        void render(class RenderInterface* renderer) override;
+        // void isCorre
     };
 } // namespace HateEngine

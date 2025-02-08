@@ -59,8 +59,8 @@ void PhysicalBody::Update() {
     glm::vec3 fix_pos = glm::vec3(pos.z, pos.y, pos.x) - this->parent_position;
     glm::mat4 fix_mat = mat / this->parent_rotation_matrix;
 
-    Object::setPosition(fix_pos);
-    Object::setRotationMatrix(fix_mat);
+    Object::setPositionRaw(fix_pos);
+    Object::setRotationMatrixRaw(fix_mat);
 
     // std::cout << "[" << uuid.getU64() << "]: " << fix_pos.x << " " <<
     // fix_pos.y << " " << fix_pos.z << std::endl;
@@ -112,15 +112,6 @@ void PhysicalBody::updateRotation() {
     }
 }
 
-UUID PhysicalBody::addCollisionShapeClone(CollisionShape shape) {
-    // CollisionShape* new_shape = new CollisionShape(shape);
-    //*new_shape = shape;
-    //  shapes[id] = {new_shape, false};
-    //  TODO: Add body
-    HATE_WARNING("addCollisionShapeClone is not implemented");
-    return shape.getUUID();
-}
-
 UUID PhysicalBody::addCollisionShapeRef(CollisionShape* shape) {
     if (shape->reactShape != nullptr) {
         HATE_WARNING("CollisionShape is already binded to another body");
@@ -158,7 +149,7 @@ std::unordered_map<UUID, PhysicalBody::ShapeObject> const* PhysicalBody::getShap
 }
 
 
-void PhysicalBody::setParentPosition(glm::vec3 vec) {
+void PhysicalBody::setParentPosition(const glm::vec3& vec) {
     Object::setParentPosition(vec);
     updatePosition();
 }
@@ -168,36 +159,14 @@ void PhysicalBody::setParentRotationMatrix(const glm::mat4& mat) {
     updateRotation();
 }
 
-void PhysicalBody::setPosition(glm::vec3 vec) {
-    Object::setPosition(vec);
+void PhysicalBody::setPositionRaw(const glm::vec3& vec) {
+    Object::setPositionRaw(vec);
     updatePosition();
 }
-void PhysicalBody::setPosition(float x, float y, float z) {
-    setPosition({x, y, z});
-}
 
-void PhysicalBody::setRotation(glm::vec3 vec) {
-    Object::setRotation(vec);
+void PhysicalBody::setRotationMatrixRaw(const glm::mat4& mat) {
+    Object::setRotationMatrixRaw(mat);
     updateRotation();
-}
-void PhysicalBody::setRotation(float x, float y, float z) {
-    setRotation({x, y, z});
-}
-
-void PhysicalBody::offset(glm::vec3 vec) {
-    Object::offset(vec);
-    updatePosition();
-}
-void PhysicalBody::offset(float x, float y, float z) {
-    offset({x, y, z});
-}
-
-void PhysicalBody::rotate(float x, float y, float z) {
-    Object::rotate(x, y, z);
-    updateRotation();
-}
-void PhysicalBody::rotate(glm::vec3 vec) {
-    PhysicalBody::rotate(vec.x, vec.y, vec.z);
 }
 
 

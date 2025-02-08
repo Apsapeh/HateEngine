@@ -4,38 +4,99 @@
 
 using namespace HateEngine;
 
-void Object::updateDirection() {
-    this->direction = this->getGlobalRotationMatrix() * glm::vec4(0.0f, 0.0f, -1.0f, 0.0f);
-}
-
-void Object::setParentPosition(const glm::vec3 vec) {
+void Object::setParentPosition(const glm::vec3& vec) {
     this->parent_position = vec;
-    for (auto& obj: bindedObjects)
-        if (obj.second.bind_pos)
-            obj.second.obj->setParentPosition(getGlobalPosition());
+
+    if (not binded)
+        this->global_position = this->position;
+
+    glm::vec4 rotatedOffset = this->parent_rotation_matrix * glm::vec4(this->position, 1.0f);
+    this->global_position = this->parent_position + glm::vec3(rotatedOffset);
+
+    updateChildrenPositions();
 }
 
-void Object::setParentScale(const glm::vec3 vec) {
+void Object::setParentScale(const glm::vec3& vec) {
     this->parent_scale = vec;
-    for (auto& obj: bindedObjects)
-        if (obj.second.bind_scale)
-            obj.second.obj->setParentScale(getGlobalScale());
+    updateChildrenScales();
 }
 
 void Object::setParentRotationMatrix(const glm::mat4& mat) {
     this->parent_rotation_matrix = mat;
-    for (auto& obj: bindedObjects)
-        if (obj.second.bind_rot)
-            obj.second.obj->setParentRotationMatrix(getGlobalRotationMatrix());
+
+    if (not binded)
+        this->global_rotation_matrix = this->rotation_matrix;
+    this->global_rotation_matrix = this->parent_rotation_matrix * this->rotation_matrix;
+
+    updateChildrenRotations();
     updateDirection();
 }
 
 void Object::setParentVisible(bool value) {
     this->parent_visible = value;
+    updateChildrenVisibilities();
+}
+
+void Object::setPositionRaw(const glm::vec3& vec) {
+    this->position = vec;
+
+    if (not binded)
+        this->global_position = this->position;
+
+    glm::vec4 rotatedOffset = this->parent_rotation_matrix * glm::vec4(this->position, 1.0f);
+    this->global_position = this->parent_position + glm::vec3(rotatedOffset);
+
+    updateChildrenPositions();
+}
+
+void Object::setScaleRaw(const glm::vec3& vec) {
+    this->scale = vec;
+    updateChildrenScales();
+}
+
+void Object::setRotationMatrixRaw(const glm::mat4& mat) {
+    this->rotation_matrix = mat;
+
+    if (not binded)
+        this->global_rotation_matrix = this->rotation_matrix;
+    this->global_rotation_matrix = this->parent_rotation_matrix * this->rotation_matrix;
+
+    updateChildrenRotations();
+    updateDirection();
+}
+
+
+void Object::updateChildrenPositions() {
+    for (auto& obj: bindedObjects)
+        if (obj.second.bind_pos)
+            obj.second.obj->setParentPosition(getGlobalPosition());
+}
+
+void Object::updateChildrenScales() {
+    for (auto& obj: bindedObjects)
+        if (obj.second.bind_scale)
+            obj.second.obj->setParentScale(getGlobalScale());
+}
+
+void Object::updateChildrenRotations() {
+    for (auto& obj: bindedObjects) {
+        if (obj.second.bind_rot)
+            obj.second.obj->setParentRotationMatrix(getGlobalRotationMatrix());
+        if (obj.second.bind_pos)
+            obj.second.obj->setParentPosition(getGlobalPosition());
+    }
+}
+
+void Object::updateChildrenVisibilities() {
     for (auto& obj: bindedObjects)
         if (obj.second.bind_visible)
             obj.second.obj->setParentVisible(getGlobalVisible());
 }
+
+void Object::updateDirection() {
+    this->direction = this->getGlobalRotationMatrix() * glm::vec4(0.0f, 0.0f, -1.0f, 0.0f);
+}
+
 
 void Object::setName(std::string name) {
     this->name = name;
@@ -45,14 +106,11 @@ const std::string Object::getName() {
     return name;
 }
 
-void Object::setPosition(const glm::vec3 value) {
-    this->position = value;
-    for (auto& obj: bindedObjects)
-        if (obj.second.bind_pos)
-            obj.second.obj->setParentPosition(getGlobalPosition());
+void Object::setPosition(const glm::vec3& value) {
+    setPositionRaw(value);
 }
 void Object::setPosition(float x, float y, float z) {
-    setPosition({x, y, z});
+    setPositionRaw({x, y, z});
 }
 
 void Object::setRotation(glm::vec3 value) {
@@ -71,21 +129,14 @@ void Object::setRotation(float x, float y, float z) {
 }
 
 void Object::setRotationMatrix(glm::mat4 mat) {
-    rotation_matrix = mat;
-    for (auto& obj: bindedObjects)
-        if (obj.second.bind_rot)
-            obj.second.obj->setParentRotationMatrix(getGlobalRotationMatrix());
-    updateDirection();
+    setRotationMatrixRaw(mat);
 }
 
-void Object::setScale(glm::vec3 value) {
-    this->scale = value;
-    for (auto& obj: bindedObjects)
-        if (obj.second.bind_scale)
-            obj.second.obj->setParentScale(getGlobalScale());
+void Object::setScale(const glm::vec3& value) {
+    setScaleRaw(value);
 }
 void Object::setScale(float x, float y, float z) {
-    setScale({x, y, z});
+    setScaleRaw({x, y, z});
 }
 
 void Object::setVisible(bool vis) {
@@ -96,7 +147,9 @@ void Object::setVisible(bool vis) {
             obj.second.obj->setParentVisible(getGlobalVisible());
 }
 
-void Object::lookAt(glm::vec3 target) {
+void Object::lookAt(const glm::vec3& target) {
+    glm::vec3 t = target;
+    // target
     glm::vec3 direction = glm::normalize(target - getGlobalPosition());
     glm::vec3 right = glm::normalize(glm::cross({0, 1, 0}, direction));
     glm::vec3 new_up = glm::cross(direction, right);
@@ -106,15 +159,15 @@ void Object::lookAt(glm::vec3 target) {
     rotation[1] = glm::vec4(new_up, 0);
     rotation[2] = glm::vec4(direction, 0);
 
-    setRotationMatrix(rotation);
+    setRotationMatrixRaw(rotation);
 }
 
 void Object::lookAt(float x, float y, float z) {
     lookAt({x, y, z});
 }
 
-void Object::offset(glm::vec3 vec) {
-    setPosition(vec + this->position);
+void Object::offset(const glm::vec3& vec) {
+    setPositionRaw(vec + this->position);
 }
 void Object::offset(float x, float y, float z) {
     offset({x, y, z});
@@ -123,16 +176,17 @@ void Object::offset(float x, float y, float z) {
 void Object::rotate(glm::vec3 vec, bool global) {
     vec = glm::radians(vec);
     if (global) {
-        rotation_matrix = glm::rotate(rotation_matrix, vec.y, {0, 1, 0});
-        rotation_matrix = glm::rotate(rotation_matrix, vec.x, {1, 0, 0});
-        rotation_matrix = glm::rotate(rotation_matrix, vec.z, {0, 0, 1});
-        setRotationMatrix(rotation_matrix);
+        glm::mat4 m = this->rotation_matrix;
+        m = glm::rotate(m, vec.y, {0, 1, 0});
+        m = glm::rotate(m, vec.x, {1, 0, 0});
+        m = glm::rotate(m, vec.z, {0, 0, 1});
+        setRotationMatrixRaw(m);
     } else {
         glm::mat4 m(1);
         m = glm::rotate(m, vec.y, {0, 1, 0});
         m = glm::rotate(m, vec.x, {1, 0, 0});
         m = glm::rotate(m, vec.z, {0, 0, 1});
-        setRotationMatrix(m * rotation_matrix);
+        setRotationMatrixRaw(m * rotation_matrix);
     }
 
     for (auto& obj: bindedObjects) {
@@ -166,16 +220,6 @@ glm::vec3 Object::getRotationEuler() const {
 
 glm::vec3 Object::getDirection() const {
     return direction;
-    /*glm::vec3 rot = getRotationEuler();
-    glm::vec3 dir;
-    float yaw = glm::radians(-rot.y);
-    float pitch = glm::radians(rot.x);
-    dir.x = cos(pitch) * cos(yaw);
-    dir.y = sin(pitch);
-    dir.z = cos(pitch) * sin(yaw);
-
-    dir = glm::normalize(dir);
-    return dir;*/
 }
 
 
@@ -192,11 +236,7 @@ glm::vec3 Object::getScale() const {
 }
 
 glm::vec3 Object::getGlobalPosition() const {
-    if (not binded)
-        return this->position;
-
-    glm::vec4 rotatedOffset = this->parent_rotation_matrix * glm::vec4(this->position, 1.0f);
-    return this->parent_position + glm::vec3(rotatedOffset);
+    return this->global_position;
 }
 
 glm::vec3 Object::getGlobalRotationEuler() const {
@@ -213,9 +253,7 @@ glm::vec3 Object::getGlobalRotationEuler() const {
 }
 
 glm::mat4 Object::getGlobalRotationMatrix() const {
-    if (not binded)
-        return this->rotation_matrix;
-    return this->parent_rotation_matrix * this->rotation_matrix;
+    return this->global_rotation_matrix;
 }
 
 glm::vec3 Object::getGlobalScale() const {

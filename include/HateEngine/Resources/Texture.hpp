@@ -5,10 +5,10 @@
 #include "Resource.hpp"
 
 namespace HateEngine {
-    class OpenGL15;
+    class OpenGL_1_3;
 
     class Texture : public Resource {
-        friend OpenGL15;
+        friend OpenGL_1_3;
 
     private:
         std::vector<uint8_t> data = {};
@@ -20,6 +20,7 @@ namespace HateEngine {
         int texFiltering;
         int texMipMapFiltering;
         float MipMapLodBias = -1.0f;
+        bool texMipMapEnabled = true;
         bool autoload;
         uint32_t textureGL_ID = 0;
         bool is_gpu_loaded = false;
@@ -29,14 +30,9 @@ namespace HateEngine {
         bool loadFromFile();
 
     public:
-        enum TexType { RGB = 0x1907, RGBA = 0x1908 };
-        enum TexWrap {
-            Clamp = 0x2900,
-            Repeat = 0x2901,
-            ClampToEdge = 0x812F,
-            ClampToBorder = 0x812D
-        };
-        enum TexFiltering { Nearest = 0x2600, Linear = 0x2601 };
+        enum TexType { RGB, RGBA };
+        enum TexWrap { Clamp, Repeat, ClampToEdge, ClampToBorder };
+        enum TexFiltering { Nearest, Linear };
 
         Texture(const Texture& texture, bool copy_tex_data = false);
 

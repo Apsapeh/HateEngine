@@ -6,6 +6,8 @@
 #include "Mesh.hpp"
 #include "Object.hpp"
 #include <random>
+#include "Interfaces/UpdatableInterface.hpp"
+#include "Interfaces/Renderable3DInterface.hpp"
 
 namespace HateEngine {
     class Particles;
@@ -24,10 +26,22 @@ namespace HateEngine {
 
 
     public:
+        std::unordered_map<std::string, void*> data;
+
+        Particle(uint32_t index, const Mesh& mesh, float lifetime = 1.0, bool del_on_time = true);
+        // Particle(const Particle& particle);
+        Particle();
+    };
+
+
+    class Particles : public Object, public UpdatableInterface, public Renderable3DInterface {
+        friend Particle;
+
+    public:
         struct ParticleSettings {
             ParticleSettings(
                     float min_lifetime, float max_liftime, bool del_on_end, glm::vec3 min_offset,
-                    glm::vec3 max_offset
+                    glm::vec3 max_offset, bool is_billboard
             );
 
             ParticleSettings();
@@ -37,18 +51,8 @@ namespace HateEngine {
             bool delete_on_end_of_life = true;
             glm::vec3 min_offset = {0, 0, 0};
             glm::vec3 max_offset = {0, 0, 0};
+            bool is_billboard = false;
         };
-
-        std::unordered_map<std::string, void*> data;
-
-        Particle(uint32_t index, const Mesh& mesh, float lifetime = 1.0, bool del_on_time = true);
-        Particle(const Particle& particle);
-        Particle();
-    };
-
-
-    class Particles : public Object {
-        friend Particle;
 
         std::random_device rd;
         std::mt19937 gen;
@@ -59,13 +63,16 @@ namespace HateEngine {
 
         float elapsedTime = 0;
         const Mesh mesh;
+        Mesh all_particles_in_one;
         std::mutex particlesMutex;
         std::vector<Particle> particlesVector;
 
-        Particle::ParticleSettings set;
+        ParticleSettings set;
         bool is_pause = true;
         uint32_t maxParticles = 0;
         float spawnDelay = 0;
+
+        void Update(double delta);
 
     public:
         void (*calculateFunc)(Particle*, double) = [](Particle* p, double d) {
@@ -75,16 +82,18 @@ namespace HateEngine {
 
     public:
         Particles(
-                const Mesh& mesh, uint32_t particles_count, Particle::ParticleSettings settings,
+                const Mesh& mesh, uint32_t particles_count, ParticleSettings settings,
                 float spawn_delay = 0.1
         );
         ~Particles();
 
-        void Update(double delta);
         void play();
         void pause();
         void reset();
 
         std::vector<Particle>* getParticles();
+
+        void update(double delta) override;
+        void render(RenderInterface* renderer) override;
     };
 } // namespace HateEngine

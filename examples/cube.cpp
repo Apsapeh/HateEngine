@@ -30,7 +30,7 @@ int main() {
 
     HateEngine::CubeMesh mesh;
     mesh.setPosition(0, 0, -2);
-    lvl.addObjectRef(&mesh);
+    lvl.addObject(&mesh);
 
     HateEngine::Texture texture("examples/Assets/brick.png");
     mesh.setTexture(&texture);
@@ -44,13 +44,20 @@ int main() {
 }
 
 
-
+float timer = 0;
+int frame_count = 0;
 void _process(HateEngine::Engine* engine, double delta) {
+    timer += delta;
+    frame_count++;
 
+    if (timer >= 1.0) {
+        std::cout << frame_count << " frames per second" << std::endl;
+        frame_count = 0;
+        timer = 0;
+    }
 }
 
 void _physics_process(HateEngine::Engine* engine, double delta) {
-
 }
 
 
