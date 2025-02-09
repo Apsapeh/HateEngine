@@ -257,7 +257,7 @@ void Engine::Run() {
             audio_engine_iterate_loop_delta += delta;
 
             if (audio_engine_iterate_loop_delta >= audio_engine_iterate_loop_delay) {
-                if (this->level != nullptr) {
+                if (this->level != nullptr and this->level->camera != nullptr) {
                     AudioServer::setListener3DPosition(this->level->camera->getGlobalPosition());
                     AudioServer::setListener3DDirection(this->level->camera->getGlobalDirection());
                     AudioServer::Update3D();
