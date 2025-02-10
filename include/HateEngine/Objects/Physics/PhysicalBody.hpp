@@ -17,18 +17,18 @@ namespace HateEngine {
         enum BodyType { StaticBody, KinematicBody, DynamicBody, TriggerArea };
 
     private:
-        struct ShapeObject {
-            CollisionShape* shape;
-            bool is_ref;
-        };
-
         glm::vec3 prev_parent_position = {0, 0, 0};
         glm::mat4 prev_parent_rotation_matrix = glm::mat4(1.0f);
-        std::unordered_map<UUID, ShapeObject> shapes;
+        std::unordered_map<UUID, CollisionShape*> shapes;
         std::unordered_set<std::string> groups;
 
         glm::vec3 linearVelocity = {0.0f, 0.0f, 0.0f};
+        glm::vec3 angularVelocity = {0.0f, 0.0f, 0.0f};
         glm::vec3 angularLockAxisFactor = {1.0f, 1.0f, 1.0f};
+        glm::vec3 forceLocal = {0.0f, 0.0f, 0.0f};
+        glm::vec3 forceGlobal = {0.0f, 0.0f, 0.0f};
+        float linearDamping = 0.0f;
+        float angularDamping = 0.0f;
         float mass = 1.0f;
         bool isActive = true;
 
@@ -69,13 +69,29 @@ namespace HateEngine {
 
         void setLinearVelocity(float x, float y, float z);
         void setLinearVelocity(glm::vec3 vec);
+        void setAngularVelocity(float x, float y, float z);
+        void setAngularVelocity(glm::vec3 vec);
         void setAngularLockAxisFactor(float x, float y, float z);
         void setAngularLockAxisFactor(glm::vec3 vec);
+        void applyForceLocal(float x, float y, float z);
+        void applyForceLocal(const glm::vec3& vec);
+        void applyForceGlobal(float x, float y, float z);
+        void applyForceGlobal(const glm::vec3& vec);
+        void setLinearDamping(float damping);
+        void setAngularDamping(float damping);
         void setMass(float mass);
         void setIsActive(bool active);
 
+        void updateLocalCenterOfMassFromColliders();
+        void resetForce();
+
+        // glm::vec3 getForce() const;
+
         glm::vec3 getLinearVelocity() const;
+        glm::vec3 getAngularVelocity() const;
         glm::vec3 getAngularLockAxisFactor() const;
+        float getLinearDamping() const;
+        float getAngularDamping() const;
         float getMass() const;
         bool getIsActive() const;
 
@@ -84,7 +100,7 @@ namespace HateEngine {
          * @param shape Pointer to CollisionShape
          * @return Object ID
          */
-        UUID addCollisionShapeRef(CollisionShape* shape);
+        UUID addCollisionShape(CollisionShape* shape);
 
         /**
          * Deletes the collision shape, if the object was cloned, the object
@@ -100,7 +116,7 @@ namespace HateEngine {
          * Gets a pointer to the collision shapes
          * @return A pointer to the collision shapes
          */
-        std::unordered_map<UUID, ShapeObject> const* getShapes();
+        std::unordered_map<UUID, CollisionShape*> const* getShapes();
 
 
         /**

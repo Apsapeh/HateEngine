@@ -146,43 +146,42 @@ UUID PhysEngine::addObject(PhysicalBody* object) {
 
     for (const auto& shape_pair: object->shapes) {
         reactphysics3d::CollisionShape* react_shape;
-        CollisionShape::ShapeEnum shape_type = shape_pair.second.shape->shapeType;
+        CollisionShape::ShapeEnum shape_type = shape_pair.second->shapeType;
 
-        if (shape_pair.second.shape->isInitialized()) {
+        if (shape_pair.second->isInitialized()) {
             HATE_WARNING("CollisionShape is already binded to another body");
             continue;
         }
 
         if (shape_type == CollisionShape::Box) {
-            BoxShape* shape = (BoxShape*) shape_pair.second.shape;
+            BoxShape* shape = (BoxShape*) shape_pair.second;
             react_shape = physicsCommon->createBoxShape(
                     {shape->reactRightSize.x, shape->reactRightSize.y, shape->reactRightSize.z}
             );
             shape->reactShape = react_shape;
         } else if (shape_type == CollisionShape::Sphere) {
-            SphereShape* shape = (SphereShape*) shape_pair.second.shape;
+            SphereShape* shape = (SphereShape*) shape_pair.second;
             react_shape = physicsCommon->createSphereShape(shape->getRadius());
             shape->reactShape = react_shape;
         } else if (shape_type == CollisionShape::Capsule) {
-            CapsuleShape* shape = (CapsuleShape*) shape_pair.second.shape;
+            CapsuleShape* shape = (CapsuleShape*) shape_pair.second;
             react_shape = physicsCommon->createCapsuleShape(shape->getRadius(), shape->getHeight());
             shape->reactShape = react_shape;
         } else if (shape_type == CollisionShape::Convex) {
-            ConvexShape* shape = (ConvexShape*) shape_pair.second.shape;
+            ConvexShape* shape = (ConvexShape*) shape_pair.second;
             reactphysics3d::PolyhedronMesh* PolyhedronMesh =
                     physicsCommon->createPolyhedronMesh(&shape->vertexArray);
             react_shape = physicsCommon->createConvexMeshShape(PolyhedronMesh);
             shape->reactShape = react_shape;
         } else {
             HATE_WARNING(
-                    "CollisionShape [" +
-                    std::to_string(shape_pair.second.shape->getUUID().getU64()) +
+                    "CollisionShape [" + std::to_string(shape_pair.second->getUUID().getU64()) +
                     "] type is not implemented"
             );
             continue;
         }
 
-        CollisionShape* shape = shape_pair.second.shape;
+        CollisionShape* shape = shape_pair.second;
         glm::vec3 shape_pos = shape->getPosition();
         // glm::vec3 obj_rot = glm::radians(body->getRotationEuler());
         glm::quat shape_rot_mat = glm::quat_cast(shape->getRotationMatrix());
@@ -216,30 +215,30 @@ bool PhysEngine::removeObject(UUID uuid) {
         physBodies[uuid]->reactRigidBody = nullptr;
 
         for (const auto& shape_pair: physBodies[uuid]->shapes) {
-            if (shape_pair.second.shape->reactShape != nullptr) {
-                CollisionShape::ShapeEnum shape_type = shape_pair.second.shape->shapeType;
+            if (shape_pair.second->reactShape != nullptr) {
+                CollisionShape::ShapeEnum shape_type = shape_pair.second->shapeType;
 
                 if (shape_type == CollisionShape::Box) {
-                    BoxShape* shape = (BoxShape*) shape_pair.second.shape;
+                    BoxShape* shape = (BoxShape*) shape_pair.second;
                     physicsCommon->destroyBoxShape((reactphysics3d::BoxShape*) shape->reactShape);
                     shape->reactShape = nullptr;
                     shape->reactCollider = nullptr;
                 } else if (shape_type == CollisionShape::Sphere) {
-                    SphereShape* shape = (SphereShape*) shape_pair.second.shape;
+                    SphereShape* shape = (SphereShape*) shape_pair.second;
                     physicsCommon->destroySphereShape(
                             (reactphysics3d::SphereShape*) shape->reactShape
                     );
                     shape->reactShape = nullptr;
                     shape->reactCollider = nullptr;
                 } else if (shape_type == CollisionShape::Capsule) {
-                    CapsuleShape* shape = (CapsuleShape*) shape_pair.second.shape;
+                    CapsuleShape* shape = (CapsuleShape*) shape_pair.second;
                     physicsCommon->destroyCapsuleShape(
                             (reactphysics3d::CapsuleShape*) shape->reactShape
                     );
                     shape->reactShape = nullptr;
                     shape->reactCollider = nullptr;
                 } else if (shape_type == CollisionShape::Convex) {
-                    ConvexShape* shape = (ConvexShape*) shape_pair.second.shape;
+                    ConvexShape* shape = (ConvexShape*) shape_pair.second;
                     physicsCommon->destroyConvexMeshShape(
                             (reactphysics3d::ConvexMeshShape*) shape->reactShape
                     );

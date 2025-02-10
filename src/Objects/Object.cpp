@@ -114,15 +114,9 @@ void Object::setPosition(float x, float y, float z) {
 }
 
 void Object::setRotation(glm::vec3 value) {
+    value.y -= 90.0f;
     value = glm::radians(value);
-    rotation_matrix = glm::eulerAngleXYZ(value.x, value.y, value.z);
-    for (auto& obj: bindedObjects) {
-        if (obj.second.bind_rot)
-            obj.second.obj->setParentRotationMatrix(getGlobalRotationMatrix());
-        if (obj.second.bind_pos)
-            obj.second.obj->setParentPosition(getGlobalPosition());
-    }
-    updateDirection();
+    setRotationMatrixRaw(glm::eulerAngleXYZ(value.x, value.y, value.z));
 }
 void Object::setRotation(float x, float y, float z) {
     setRotation({x, y, z});
@@ -187,13 +181,6 @@ void Object::rotate(glm::vec3 vec, bool global) {
         m = glm::rotate(m, vec.x, {1, 0, 0});
         m = glm::rotate(m, vec.z, {0, 0, 1});
         setRotationMatrixRaw(m * rotation_matrix);
-    }
-
-    for (auto& obj: bindedObjects) {
-        if (obj.second.bind_rot)
-            obj.second.obj->setParentRotationMatrix(getGlobalRotationMatrix());
-        if (obj.second.bind_pos)
-            obj.second.obj->setParentPosition(getGlobalPosition());
     }
 }
 void Object::rotate(float x, float y, float z, bool global) {

@@ -1267,7 +1267,7 @@ void ObjMapModel::generateCollision(
     }
 
     for (auto& shape: convex_shapes) {
-        static_body.addCollisionShapeRef(&shape);
+        static_body.addCollisionShape(&shape);
     }
 }
 

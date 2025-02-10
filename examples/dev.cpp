@@ -121,10 +121,10 @@ int main() {
     camera.setPosition(0, 6, 3);
     // camera.offset(0, 6, 3);
     // camera.setPosition(0, 25, 0);
-    camera.setRotation(0, 0, 0);
+    // camera.setRotation(0, 0, 0);
     // camera.setSkyBoxTexture(new HateEngine::Texture("examples/Assets/skybox.jpg",
     // HateEngine::Texture::ClampToEdge)); camera.setSkyBoxEnabled(true);
-    mesh1.setRotation(0, 0, 0);
+    // mesh1.setRotation(0, 0, 0);
     mesh1.setSize(1, 1, 1);
 
     billboardMesh.offset(-4, 4, -4);
@@ -260,7 +260,7 @@ int main() {
             nullptr
     );
     HateEngine::BoxShape box({3, 3, 3});
-    trigger.addCollisionShapeRef(&box);
+    trigger.addCollisionShape(&box);
 
 
     lvl.getPhysEngine()->addObject(&trigger);
@@ -276,7 +276,7 @@ int main() {
 
     // test_glmodel->offset(0.5, -0.5, -2);
     test_glmodel.setScale(0.25, 0.25, 0.25);
-    test_glmodel.setRotation(0, 180, 0);
+    test_glmodel.setRotation(90, 180, 0);
 
 
     // HateEngine::Texture tex_floor("examples/Assets/ground.png");
@@ -351,7 +351,7 @@ int main() {
 
                   HateEngine::RigidBody* body = new HateEngine::RigidBody();
                   HateEngine::BoxShape* box = new HateEngine::BoxShape({0.1, 0.1, 0.1});
-                  body->addCollisionShapeRef(box);
+                  body->addCollisionShape(box);
                   box->setFriction(1);
                   box->setBounciness(0.5);
                   body->setPosition(entity.position);
@@ -658,14 +658,14 @@ int main() {
     // HateEngine::PhysicalBody floorBody(HateEngine::PhysicalBody::StaticBody);
     floorBody.setPosition(0, -0.5, 0);
     HateEngine::BoxShape floorShape({25, 1, 25}, {0, 0, 0}, {0, 0, 0});
-    floorBody.addCollisionShapeRef(&floorShape);
+    floorBody.addCollisionShape(&floorShape);
     // floorBody.rotate(20, 0, 0);
     floorBody.bindObj(&floor_mesh);
 
     rigidBody.setPosition(0, 5, 0);
     rigidBody.rotate(48, 22, 36);
     // rigidBody.setRotation(0, 0, 0);
-    rigidBody.addCollisionShapeRef(&rigidBodyBoxShape);
+    rigidBody.addCollisionShape(&rigidBodyBoxShape);
     HateEngine::SphereShape sphereShape(0.5);
     // rigidBody.addCollisionShapeRef(&sphereShape);
     rigidBody.bindObj(&mesh1);
@@ -678,7 +678,7 @@ int main() {
     playerBody.setPosition(0, 3, 0);
     playerBody.rotate(0, 0, 0);
     HateEngine::CapsuleShape capsuleShape(0.5, 2);
-    playerBody.addCollisionShapeRef(&capsuleShape);
+    playerBody.addCollisionShape(&capsuleShape);
     playerBody.bindObj(&playerCapsuleMesh);
 
     lvl.getPhysEngine()->addObject(&rigidBody);
@@ -1178,7 +1178,7 @@ void _input_event(HateEngine::Engine* engine, const HateEngine::InputClass::Inpu
             // floorBody.setIsActive(false);
             // rigidBody.setIsActive(!rigidBody.getIsActive());
             HateEngine::CollisionShape* shape =
-                    (HateEngine::CollisionShape*) rigidBody.getShapes()->begin()->second.shape;
+                    (HateEngine::CollisionShape*) rigidBody.getShapes()->begin()->second;
             // shape->setCollisionMask(0);
             // shape->setCollisionCategoryRaw(-1);
             rigidBodyBoxShape.setCollisionMask(0);

@@ -68,10 +68,13 @@ namespace HateEngine {
         std::mutex uiWidgetsMutex;
 
         std::unordered_map<UUID, Light*>* getLights();
-        
-        virtual void _process(class Engine* engine, double delta) {}
-        virtual void _fixedProcess(class Engine* engine, double delta) {}
-        virtual void _inputEvent(class Engine* engine, const InputClass::InputEventInfo& event) {}
+
+        virtual void _process(class Engine* engine, double delta) {
+        }
+        virtual void _fixedProcess(class Engine* engine, double delta) {
+        }
+        virtual void _inputEvent(class Engine* engine, const InputClass::InputEventInfo& event) {
+        }
         // 2D renderable objects
 
     protected:

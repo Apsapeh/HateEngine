@@ -4,6 +4,7 @@
 
 #include "HateEngine/Log.hpp"
 #include "HateEngine/Objects/Object.hpp"
+#include "HateEngine/Objects/Physics/CollisionShape.hpp"
 #include "reactphysics3d/components/RigidBodyComponents.h"
 
 using namespace HateEngine;
@@ -14,11 +15,7 @@ PhysicalBody::PhysicalBody(BodyType bodyType) {
 
 
 PhysicalBody::~PhysicalBody() {
-    for (auto& obj: shapes) {
-        if (not obj.second.is_ref)
-            delete obj.second.shape;
-    }
-    shapes.clear();
+    // TODO: Free shape's rigid body ref
 }
 
 void PhysicalBody::Init(reactphysics3d::RigidBody* body) {
@@ -38,15 +35,26 @@ void PhysicalBody::Init(reactphysics3d::RigidBody* body) {
         this->reactRigidBody->setIsAllowedToSleep(false);
     }
 
-    this->reactRigidBody->setMass(this->mass);
-    this->reactRigidBody->setIsActive(this->isActive);
     this->reactRigidBody->setLinearVelocity(reactphysics3d::Vector3(
             this->linearVelocity.z, this->linearVelocity.y, this->linearVelocity.x
+    ));
+    this->reactRigidBody->setAngularVelocity(reactphysics3d::Vector3(
+            this->angularVelocity.z, this->angularVelocity.y, this->angularVelocity.x
     ));
     this->reactRigidBody->setAngularLockAxisFactor(reactphysics3d::Vector3(
             this->angularLockAxisFactor.z, this->angularLockAxisFactor.y,
             this->angularLockAxisFactor.x
     ));
+    this->reactRigidBody->applyLocalForceAtCenterOfMass(
+            reactphysics3d::Vector3(this->forceLocal.z, this->forceLocal.y, this->forceLocal.x)
+    );
+    this->reactRigidBody->applyWorldForceAtCenterOfMass(
+            reactphysics3d::Vector3(this->forceGlobal.z, this->forceGlobal.y, this->forceGlobal.x)
+    );
+    this->reactRigidBody->setLinearDamping(this->linearDamping);
+    this->reactRigidBody->setAngularDamping(this->angularDamping);
+    this->reactRigidBody->setMass(this->mass);
+    this->reactRigidBody->setIsActive(this->isActive);
 }
 
 void PhysicalBody::Update() {
@@ -112,13 +120,13 @@ void PhysicalBody::updateRotation() {
     }
 }
 
-UUID PhysicalBody::addCollisionShapeRef(CollisionShape* shape) {
+UUID PhysicalBody::addCollisionShape(CollisionShape* shape) {
     if (shape->reactShape != nullptr) {
         HATE_WARNING("CollisionShape is already binded to another body");
         return UUID(0);
     }
 
-    shapes[shape->getUUID()] = {shape, true};
+    shapes[shape->getUUID()] = shape;
 
     if (this->reactRigidBody != nullptr) {
         HATE_WARNING_F(
@@ -136,15 +144,13 @@ UUID PhysicalBody::addCollisionShapeRef(CollisionShape* shape) {
 
 bool PhysicalBody::delCollisionShape(UUID uuid) {
     if (shapes.count(uuid) == 1) {
-        if (!shapes[uuid].is_ref)
-            delete shapes[uuid].shape;
         shapes.erase(uuid);
         return true;
     }
     return false;
 }
 
-std::unordered_map<UUID, PhysicalBody::ShapeObject> const* PhysicalBody::getShapes() {
+std::unordered_map<UUID, CollisionShape*> const* PhysicalBody::getShapes() {
     return &shapes;
 }
 
@@ -179,6 +185,15 @@ void PhysicalBody::setLinearVelocity(glm::vec3 vec) {
     setLinearVelocity(vec.x, vec.y, vec.z);
 }
 
+void PhysicalBody::setAngularVelocity(float x, float y, float z) {
+    this->angularVelocity = {x, y, z};
+    if (this->reactRigidBody != nullptr)
+        reactRigidBody->setAngularVelocity(reactphysics3d::Vector3(z, y, x));
+}
+void PhysicalBody::setAngularVelocity(glm::vec3 vec) {
+    setAngularVelocity(vec.x, vec.y, vec.z);
+}
+
 void PhysicalBody::setAngularLockAxisFactor(float x, float y, float z) {
     this->angularLockAxisFactor = {x, y, z};
     if (this->reactRigidBody != nullptr)
@@ -187,6 +202,38 @@ void PhysicalBody::setAngularLockAxisFactor(float x, float y, float z) {
 
 void PhysicalBody::setAngularLockAxisFactor(glm::vec3 vec) {
     setAngularLockAxisFactor(vec.x, vec.y, vec.z);
+}
+
+void PhysicalBody::applyForceLocal(float x, float y, float z) {
+    this->forceLocal = {x, y, z};
+    if (this->reactRigidBody != nullptr)
+        reactRigidBody->applyLocalForceAtCenterOfMass(reactphysics3d::Vector3(z, y, x));
+}
+
+void PhysicalBody::applyForceLocal(const glm::vec3& vec) {
+    applyForceLocal(vec.x, vec.y, vec.z);
+}
+
+void PhysicalBody::applyForceGlobal(float x, float y, float z) {
+    this->forceGlobal = {x, y, z};
+    if (this->reactRigidBody != nullptr)
+        reactRigidBody->applyWorldForceAtCenterOfMass(reactphysics3d::Vector3(z, y, x));
+}
+
+void PhysicalBody::applyForceGlobal(const glm::vec3& vec) {
+    applyForceGlobal(vec.x, vec.y, vec.z);
+}
+
+void PhysicalBody::setLinearDamping(float damping) {
+    this->linearDamping = damping;
+    if (this->reactRigidBody != nullptr)
+        reactRigidBody->setLinearDamping(damping);
+}
+
+void PhysicalBody::setAngularDamping(float damping) {
+    this->angularDamping = damping;
+    if (this->reactRigidBody != nullptr)
+        reactRigidBody->setAngularDamping(damping);
 }
 
 void PhysicalBody::setMass(float mass) {
@@ -201,6 +248,16 @@ void PhysicalBody::setIsActive(bool isActive) {
         reactRigidBody->setIsActive(isActive);
 }
 
+void PhysicalBody::updateLocalCenterOfMassFromColliders() {
+    if (this->reactRigidBody != nullptr)
+        reactRigidBody->updateLocalCenterOfMassFromColliders();
+}
+
+void PhysicalBody::resetForce() {
+    if (this->reactRigidBody != nullptr)
+        reactRigidBody->resetForce();
+}
+
 
 glm::vec3 PhysicalBody::getLinearVelocity() const {
     if (this->reactRigidBody != nullptr) {
@@ -210,6 +267,14 @@ glm::vec3 PhysicalBody::getLinearVelocity() const {
     return linearVelocity;
 }
 
+glm::vec3 PhysicalBody::getAngularVelocity() const {
+    if (this->reactRigidBody != nullptr) {
+        reactphysics3d::Vector3 vel = reactRigidBody->getAngularVelocity();
+        return {vel.z, vel.y, vel.x};
+    }
+    return angularVelocity;
+}
+
 
 glm::vec3 PhysicalBody::getAngularLockAxisFactor() const {
     if (this->reactRigidBody != nullptr) {
@@ -217,6 +282,18 @@ glm::vec3 PhysicalBody::getAngularLockAxisFactor() const {
         return {vel.z, vel.y, vel.x};
     }
     return this->angularLockAxisFactor;
+}
+
+float PhysicalBody::getLinearDamping() const {
+    if (this->reactRigidBody != nullptr)
+        return reactRigidBody->getLinearDamping();
+    return this->linearDamping;
+}
+
+float PhysicalBody::getAngularDamping() const {
+    if (this->reactRigidBody != nullptr)
+        return reactRigidBody->getAngularDamping();
+    return this->angularDamping;
 }
 
 float PhysicalBody::getMass() const {

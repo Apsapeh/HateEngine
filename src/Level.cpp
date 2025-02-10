@@ -60,7 +60,7 @@ void Level::Update(class Engine* engine, double delta) {
     if (this->processLoop != nullptr) {
         this->processLoop(engine, delta);
     }
-    
+
     _process(engine, delta);
 }
 
@@ -72,7 +72,7 @@ void Level::UpdateFixed(class Engine* engine, double delta) {
     if (this->fixedProcessLoop != nullptr) {
         this->fixedProcessLoop(engine, delta);
     }
-    
+
     _fixedProcess(engine, delta);
 }
 
@@ -84,7 +84,7 @@ void Level::UpdateInput(class Engine* engine, const InputClass::InputEventInfo& 
     if (this->inputEvent != nullptr) {
         this->inputEvent(engine, event);
     }
-    
+
     _inputEvent(engine, event);
 }
 
