@@ -1,10 +1,16 @@
 #pragma once
 
 // #include "OpenGL13.hpp"
+#include "../../Input.hpp"
 
 namespace HateEngine {
     class UpdatableInterface {
     public:
-        virtual void update(double delta) = 0;
+        virtual void _process(class Engine* engino, double delta) {
+        }
+        virtual void _fixedProcess(class Engine* engino, double delta) {
+        }
+        virtual void _inputEvent(class Engine* engino, const InputClass::InputEventInfo& event) {
+        }
     };
 } // namespace HateEngine

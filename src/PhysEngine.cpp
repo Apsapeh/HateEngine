@@ -248,7 +248,7 @@ bool PhysEngine::removeObject(UUID uuid) {
                 }
             }
         }
-        
+
         physBodies.erase(uuid);
         return true;
     }

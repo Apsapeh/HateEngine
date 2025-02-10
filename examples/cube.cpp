@@ -12,7 +12,7 @@
 
 void _process(HateEngine::Engine*, double);
 void _physics_process(HateEngine::Engine*, double);
-void _input_event(HateEngine::Engine*, HateEngine::Engine::InputEventInfo);
+void _input_event(HateEngine::Engine*, const HateEngine::InputClass::InputEventInfo&);
 
 const int WIDTH = 800;
 const int HEIGHT = 600;
@@ -65,8 +65,8 @@ float lastX = 0;
 float lastY = 0;
 float sensitivity = 0.05;
 bool is_first_iter = true;
-void _input_event(HateEngine::Engine* engine, HateEngine::Engine::InputEventInfo event) {
-    if (event.type == HateEngine::Engine::InputEventKey) {
+void _input_event(HateEngine::Engine* engine, const HateEngine::InputClass::InputEventInfo& event) {
+    if (event.type == HateEngine::InputClass::InputEventKey) {
         if (event.key == HateEngine::KeyEscape) {
             engine->Exit();
         }

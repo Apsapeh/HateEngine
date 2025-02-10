@@ -93,7 +93,7 @@ namespace HateEngine {
 
         std::vector<Particle>* getParticles();
 
-        void update(double delta) override;
+        void _process(class Engine* engine, double delta) override;
         void render(RenderInterface* renderer) override;
     };
 } // namespace HateEngine

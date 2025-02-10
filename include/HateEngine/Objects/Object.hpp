@@ -5,6 +5,7 @@
 #include <unordered_map>
 #include <string>
 #include "../Utilities/UUID.hpp"
+#include "../Input.hpp"
 
 namespace HateEngine {
     class OpenGL_1_3;
@@ -68,10 +69,16 @@ namespace HateEngine {
 
         void updateDirection();
 
-        virtual void enterLevel(class Level* level) {
+        virtual void _enterLevel(class Level* level) {
         }
-        virtual void exitLevel(class Level* level) {
+        virtual void _exitLevel(class Level* level) {
         }
+        /*virtual void _process(class Engine* engine, double delta) {
+        }
+        virtual void _fixedProcess(class Engine* engine, double delta) {
+        }
+        virtual void _inputEvent(class Engine* engine, InputClass::InputEventInfo event) {
+        }*/
 
     public:
         void setName(std::string name);

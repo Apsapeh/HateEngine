@@ -13,6 +13,6 @@ namespace HateEngine {
         void setTarget(Object* obj);
         Object* getTarget();
 
-        void update(double delta) override;
+        void _fixedProcess(class Engine* engine, double delta) override;
     };
 } // namespace HateEngine

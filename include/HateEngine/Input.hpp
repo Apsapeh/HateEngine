@@ -145,7 +145,6 @@ namespace HateEngine {
         MouseButtonMiddle = MouseButton3,
     };
 
-    class Engine;
     class InputClass {
     public:
         enum ActionKeyType { KEYBOARD, MOUSE };
@@ -161,12 +160,31 @@ namespace HateEngine {
             }
         };
 
+        enum InputEventType {
+            InputEventKey,
+            InputEventMouseButton,
+            InputEventMouseMove,
+            InputEventMouseScroll
+        };
+
+        struct InputEventInfo {
+            InputEventType type;
+            union {
+                Key key;
+                MouseButton button;
+            };
+            int raw_key, scancode, mods = 0;
+            bool isPressed;
+            glm::vec2 offset = {0, 0};
+            glm::vec2 position = {0, 0};
+        };
+
     private:
-        Engine* engine;
+        class Engine* engine;
         std::unordered_map<std::string, std::vector<ActionKey>> actions_map;
 
     public:
-        InputClass(Engine*);
+        InputClass(class Engine*);
         bool isKeyPressed(Key key);
         glm::vec2 getVector(Key left, Key right, Key up, Key down);
 

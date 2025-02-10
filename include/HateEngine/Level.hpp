@@ -1,6 +1,7 @@
 #pragma once
 
 #include <unordered_map>
+#include "HateEngine/Input.hpp"
 #include "Objects/Camera.hpp"
 #include "Objects/Light/Light.hpp"
 #include "Objects/Object.hpp"
@@ -47,31 +48,39 @@ namespace HateEngine {
         // Interfaces
         std::unordered_map<UUID, Renderable3DInterface*> renderable_objects;
         std::unordered_map<UUID, UpdatableInterface*> updatable_objects;
-        
+
 
         // Functions
         /**
          * @brief This function is called by the engine to process the level
          * @param engine HateEngine. The engine that is calling the function
          */
-        void (*processLoop)(void* engine, double delta) = nullptr;
+        void (*processLoop)(class Engine* engine, double delta) = nullptr;
         /**
          * @brief This function is called by the engine with a fixed time step
          * to process the level
          * @param engine HateEngine. The engine that is calling the function
          */
-        void (*fixedProcessLoop)(void* engine, double delta) = nullptr;
+        void (*fixedProcessLoop)(class Engine* engine, double delta) = nullptr;
+
+        void (*inputEvent)(class Engine* engine, const InputClass::InputEventInfo& event) = nullptr;
 
         std::mutex uiWidgetsMutex;
-        
+
         std::unordered_map<UUID, Light*>* getLights();
         // 2D renderable objects
+
+    protected:
+        /*void _Process(class Engine* engine, double delta);
+        void _FixedProcess(class Engine* engine, double delta);
+        void _InputEvent(class Engine* engine, InputClass::InputEventInfo event);*/
+        void Update(class Engine* engine, double delta);
+        void UpdateFixed(class Engine* engine, double delta);
+        void UpdateInput(class Engine* engine, const InputClass::InputEventInfo& event);
 
     public:
         Level();
         ~Level();
-
-        void Update(double delta);
 
         void setCameraRef(Camera* camera);
         Camera* getCameraRef();
@@ -81,13 +90,17 @@ namespace HateEngine {
          * @brief This function is called by the engine to process the level
          * @param engine HateEngine. The engine that is calling the function
          */
-        void setProcessLoop(void (*processLoop)(void* engine, double delta));
+        void setProcessLoop(void (*processLoop)(class Engine* engine, double delta));
         /**
          * @brief This function is called by the engine with a fixed time step
          * to process the level
          * @param engine HateEngine. The engine that is calling the function
          */
-        void setFixedProcessLoop(void (*fixedProcessLoop)(void* engine, double delta));
+        void setFixedProcessLoop(void (*fixedProcessLoop)(class Engine* engine, double delta));
+
+        void setInputEvent(
+                void (*inputEvent)(class Engine* engine, const InputClass::InputEventInfo& event)
+        );
 
         PhysEngine* getPhysEngine();
 

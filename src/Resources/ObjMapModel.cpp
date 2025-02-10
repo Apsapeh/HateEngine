@@ -138,7 +138,7 @@ ObjMapModel::~ObjMapModel() {
     }
 }
 
-void ObjMapModel::enterLevel(Level* level) {
+void ObjMapModel::_enterLevel(Level* level) {
     for (auto& e: lights) {
         level->addObject(e);
     }
@@ -146,15 +146,15 @@ void ObjMapModel::enterLevel(Level* level) {
     for (auto& e: objects) {
         level->addObject(e);
     }
-    
+
     for (auto& e: phys_bodies) {
         level->getPhysEngine()->addObject(e);
     }
-    
+
     level->getPhysEngine()->addObject(&static_body);
 }
 
-void ObjMapModel::exitLevel(Level* level) {
+void ObjMapModel::_exitLevel(Level* level) {
     HATE_INFO("Exit level");
 
     for (auto& e: lights) {
@@ -164,11 +164,11 @@ void ObjMapModel::exitLevel(Level* level) {
     for (auto& e: objects) {
         level->removeObject(((Object*) e)->getUUID());
     }
-    
+
     for (auto& e: phys_bodies) {
         level->getPhysEngine()->removeObject(e->getUUID());
     }
-    
+
     level->getPhysEngine()->removeObject(static_body.getUUID());
 }
 

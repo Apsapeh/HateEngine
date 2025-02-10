@@ -73,9 +73,7 @@ namespace HateEngine {
          * \param position  Position of the object
          * \return Vector of Lights* of the nearest lights
          */
-        inline std::vector<Light*> getNearestLights(
-                const Mesh* mesh, float max_light_render_dist
-        );
+        inline std::vector<Light*> getNearestLights(const Mesh* mesh, float max_light_render_dist);
 
         static void loadTexture(Texture* texture_ptr);
         static void unloadTexture(Texture* texture_ptr);

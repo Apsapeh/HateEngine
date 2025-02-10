@@ -53,7 +53,7 @@ Object* BillboardMesh::getTarget() {
     return this->target;
 }
 
-void BillboardMesh::update(double delta) {
+void BillboardMesh::_fixedProcess(class Engine* engine, double delta) {
     if (this->target != nullptr) {
         this->lookAt(this->target->getGlobalPosition());
     }

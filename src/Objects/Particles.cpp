@@ -235,7 +235,7 @@ std::vector<Particle>* Particles::getParticles() {
     return &particlesVector;
 }
 
-void Particles::update(double delta) {
+void Particles::_process(class Engine* engine, double delta) {
     Update(delta);
 }
 

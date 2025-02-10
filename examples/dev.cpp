@@ -55,7 +55,7 @@
 
 void _process(HateEngine::Engine*, double);
 void _physics_process(HateEngine::Engine*, double);
-void _input_event(HateEngine::Engine*, HateEngine::Engine::InputEventInfo);
+void _input_event(HateEngine::Engine*, const HateEngine::InputClass::InputEventInfo&);
 
 HateEngine::CubeMesh mesh1;
 HateEngine::CubeMesh mesh2;
@@ -231,7 +231,7 @@ int main() {
     audioPlayer1.setPosition(0, 2, 0);
     playerCapsuleMesh.bindObj(&audioPlayer2);
 
-    //ambientPlayer.play();
+    // ambientPlayer.play();
     audioPlayer1.play();
     audioPlayer2.play();
 
@@ -345,10 +345,10 @@ int main() {
 
                   HateEngine::CubeMesh* cube = new HateEngine::CubeMesh();
                   cube->setSize(0.1, 0.1, 0.1);
-                  //cube->setPosition(entity.position);
-                  //model->bindObj(cube);
+                  // cube->setPosition(entity.position);
+                  // model->bindObj(cube);
                   model->addEntityObjectToLevel(cube);
-                  
+
                   HateEngine::RigidBody* body = new HateEngine::RigidBody();
                   HateEngine::BoxShape* box = new HateEngine::BoxShape({0.1, 0.1, 0.1});
                   body->addCollisionShapeRef(box);
@@ -397,7 +397,7 @@ int main() {
     }*/
 
     lvl.addObject(&objmodel);
-    //lvl.getPhysEngine()->addObjectRef(objmodel.getStaticBody());
+    // lvl.getPhysEngine()->addObjectRef(objmodel.getStaticBody());
 
 
     /*for (int i = 0; i < objmodel.getLODCount(); i++) {
@@ -424,7 +424,7 @@ int main() {
         }
     }*/
 
-    //floor_mesh.disableLightShading();
+    // floor_mesh.disableLightShading();
 
     lvl.setAmbientLightColor(255, 255, 255);
     lvl.setAmbientLightIntensity(1);
@@ -509,16 +509,17 @@ int main() {
 
     camera.bindObj(&light);
 
-    lvl.setFixedProcessLoop([](void* engine, double delta) {
+    lvl.setFixedProcessLoop([](HateEngine::Engine* engine, double delta) {
         ////TODO: Change engine pointer to struct with Engine*, Level*
-        HateEngine::Engine* _engine = (HateEngine::Engine*) engine;
-        // _engine->getLevel()->ob
-        // std::cout << "Level fixed process loop dealay: " << delta << "\n";
+        // HateEngine::Engine* _engine = (HateEngine::Engine*) engine;
+        //  _engine->getLevel()->ob
+        //  std::cout << "Level fixed process loop dealay: " << delta << "\n";
         //_process(engine, delta);
     });
 
     // game.addObjectRef(&tomato2);
-    HateEngine::Particles::ParticleSettings pa_set = {2.0f, 2.0f, false, {0, 0, 0}, {0.1, 0.1, 0.1}, true};
+    HateEngine::Particles::ParticleSettings pa_set = {2.0f, 2.0f, false, {0, 0, 0}, {0.1, 0.1, 0.1},
+                                                      true};
 
     HateEngine::Texture snow_tex(
             "examples/Assets/snow.png", HateEngine::Texture::Clamp, HateEngine::Texture::Linear
@@ -563,7 +564,7 @@ int main() {
 
     HateEngine::BillboardMesh part_billboard;
     part_billboard.setTexture(&campfire_tex);
-    //part_billboard.setTarget(&camera);
+    // part_billboard.setTarget(&camera);
     part_billboard.setCorrectTransparency(true);
 
 
@@ -628,10 +629,10 @@ int main() {
 
     cube_part.setPosition(4, 4, 4);
 
-    //cube_part.play();
+    // cube_part.play();
 
     cube_part_ptr = &cube_part;
-    //lvl.addObject(&cube_part);
+    // lvl.addObject(&cube_part);
 
 
     /*for (auto& m: lightmap_model.getLOD(0)) {
@@ -909,7 +910,10 @@ void _process(HateEngine::Engine* engine, double delta) {
     } else {
         // std::cout << "FPS: " << (float)count / del << std::endl;
         fps_label.text = "FPS: " + std::to_string((float) frames_count / fps_time);
-        HATE_WARNING_F("FPS: %f, CPU: %fms, GPU: %fms", (float) frames_count / fps_time, cpu_time / frames_count, gpu_time / frames_count);
+        HATE_WARNING_F(
+                "FPS: %f, CPU: %fms, GPU: %fms", (float) frames_count / fps_time,
+                cpu_time / frames_count, gpu_time / frames_count
+        );
 
         frames_count = 0;
         fps_time = 0.0;
@@ -1095,8 +1099,8 @@ float lastX = 0;
 float lastY = 0;
 float sensitivity = 0.05;
 bool is_first_iter = true;
-void _input_event(HateEngine::Engine* engine, HateEngine::Engine::InputEventInfo event) {
-    if (event.type == HateEngine::Engine::InputEventType::InputEventMouseMove) {
+void _input_event(HateEngine::Engine* engine, const HateEngine::InputClass::InputEventInfo& event) {
+    if (event.type == HateEngine::InputClass::InputEventType::InputEventMouseMove) {
         float xoffset = event.position.x - lastX;
         float yoffset = event.position.y - lastY;
         lastX = event.position.x;
@@ -1119,7 +1123,7 @@ void _input_event(HateEngine::Engine* engine, HateEngine::Engine::InputEventInfo
         // event.position.y*0.01f,0.0f));
     }
 
-    if (event.type == HateEngine::Engine::InputEventMouseScroll) {
+    if (event.type == HateEngine::InputClass::InputEventMouseScroll) {
         if (event.position.y < 0)
             // fps_widget_ptr->zoom(-0.1);
             speed /= 1.1;
@@ -1128,7 +1132,7 @@ void _input_event(HateEngine::Engine* engine, HateEngine::Engine::InputEventInfo
         // fps_widget_ptr->zoom(0.1);
     }
 
-    if (event.type == HateEngine::Engine::InputEventMouseButton) {
+    if (event.type == HateEngine::InputClass::InputEventMouseButton) {
         if (event.button == HateEngine::MouseButtonLeft && event.isPressed) {
             // Координаты курсора
             glm::vec3 rayDirection =
@@ -1163,7 +1167,7 @@ void _input_event(HateEngine::Engine* engine, HateEngine::Engine::InputEventInfo
         }
     }
 
-    if (event.type == HateEngine::Engine::InputEventKey) {
+    if (event.type == HateEngine::InputClass::InputEventKey) {
         if (event.key == HateEngine::KeyP && event.isPressed) {
             engine->setFullScreen(!engine->getFullScreen());
             HATE_WARNING("Toggled fullscreen")

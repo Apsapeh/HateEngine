@@ -43,23 +43,50 @@ Level::Level() {
 
 Level::~Level() {
     for (auto& o: light) {
-        o.second->exitLevel(this);
+        o.second->_exitLevel(this);
     }
-    
-    for (auto& o : objects) {
-        o.second->exitLevel(this);
+
+    for (auto& o: objects) {
+        o.second->_exitLevel(this);
     }
 }
+
+
+void Level::Update(class Engine* engine, double delta) {
+    for (auto& updatable: this->updatable_objects) {
+        updatable.second->_process(engine, delta);
+    }
+
+    if (this->processLoop != nullptr) {
+        this->processLoop(engine, delta);
+    }
+}
+
+void Level::UpdateFixed(class Engine* engine, double delta) {
+    for (auto& updatable: this->updatable_objects) {
+        updatable.second->_fixedProcess(engine, delta);
+    }
+
+    if (this->fixedProcessLoop != nullptr) {
+        this->fixedProcessLoop(engine, delta);
+    }
+}
+
+void Level::UpdateInput(class Engine* engine, const InputClass::InputEventInfo& event) {
+    for (auto& updatable: this->updatable_objects) {
+        updatable.second->_inputEvent(engine, event);
+    }
+
+    if (this->inputEvent != nullptr) {
+        this->inputEvent(engine, event);
+    }
+}
+
 
 std::unordered_map<UUID, Light*>* Level::getLights() {
     return &light;
 }
 
-void Level::Update(double delta) {
-    for (auto& updatable: this->updatable_objects) {
-        updatable.second->update(delta);
-    }
-}
 
 void Level::setCameraRef(Camera* camera) {
     this->camera = camera;
@@ -73,12 +100,16 @@ void Level::removeCameraRef() {
     this->camera = nullptr;
 }
 
-void Level::setProcessLoop(void (*processLoop)(void*, double)) {
+void Level::setProcessLoop(void (*processLoop)(class Engine*, double)) {
     this->processLoop = processLoop;
 }
 
-void Level::setFixedProcessLoop(void (*fixedProcessLoop)(void*, double)) {
+void Level::setFixedProcessLoop(void (*fixedProcessLoop)(class Engine*, double)) {
     this->fixedProcessLoop = fixedProcessLoop;
+}
+
+void Level::setInputEvent(void (*inputEvent)(class Engine*, const InputClass::InputEventInfo&)) {
+    this->inputEvent = inputEvent;
 }
 
 PhysEngine* Level::getPhysEngine() {
@@ -180,7 +211,7 @@ UUID Level::addObject(WidgetUI* object) {
 }
 
 UUID Level::addObject(Light* obj) {
-    //HATE_WARNING("addObject(Light*) is not implemented");
+    // HATE_WARNING("addObject(Light*) is not implemented");
     this->light[obj->getUUID()] = obj;
     return obj->getUUID();
 }
@@ -189,15 +220,15 @@ UUID Level::addObject(Object* obj) {
     if (auto renderable = dynamic_cast<Renderable3DInterface*>(obj)) {
         renderable_objects[obj->getUUID()] = renderable;
     }
-    
+
     if (auto updatable = dynamic_cast<UpdatableInterface*>(obj)) {
         this->updatable_objects[obj->getUUID()] = updatable;
     }
-    
+
     this->objects[obj->getUUID()] = obj;
-    
-    obj->enterLevel(this);
-    
+
+    obj->_enterLevel(this);
+
     return obj->getUUID();
 }
 
@@ -208,7 +239,7 @@ UUID Level::addObject(Object* obj) {
         auto it = map.find(uuid);                                                                  \
         if (it != map.end()) {                                                                     \
             result = true;                                                                         \
-            /*((Object*) it->second)->exitLevel(this);*/                                               \
+            /*((Object*) it->second)->exitLevel(this);*/                                           \
             map.erase(it);                                                                         \
         }                                                                                          \
     }
@@ -224,7 +255,7 @@ UUID Level::addObject(Object* obj) {
             map.erase(it);                                                                         \
         }                                                                                          \
     }
-    
+
 #define DELETE_FROM_INTERFACE_MAP(map, uuid)                                                       \
     {                                                                                              \
         auto it = map.find(uuid);                                                                  \
@@ -237,18 +268,18 @@ bool Level::removeObject(const UUID& uuid) {
     bool result = false;
 
     DELETE_FROM_MAP(this->ui_widgets, uuid);
-    
+
     auto obj_it = this->objects.find(uuid);
     if (obj_it != this->objects.end()) {
-        obj_it->second->exitLevel(this);
+        obj_it->second->_exitLevel(this);
         this->objects.erase(obj_it);
-        
+
         DELETE_FROM_INTERFACE_MAP(this->renderable_objects, uuid);
         DELETE_FROM_INTERFACE_MAP(this->updatable_objects, uuid);
         result = true;
     }
-    
-    //DELETE_FROM_MAP_POLYMORPHIC(this->light, uuid);
+
+    // DELETE_FROM_MAP_POLYMORPHIC(this->light, uuid);
 
     return result;
 }

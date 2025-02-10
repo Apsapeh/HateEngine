@@ -22,8 +22,8 @@
 namespace HateEngine {
     class ObjMapModel : public Model {
     protected:
-        void enterLevel(class Level* level) override;
-        void exitLevel(class Level* level) override;
+        void _enterLevel(class Level* level) override;
+        void _exitLevel(class Level* level) override;
 
     public:
         class Property {

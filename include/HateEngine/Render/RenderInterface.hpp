@@ -19,7 +19,7 @@ namespace HateEngine {
         long gpu_time = 0.0;
         // Render time in nanoseconds
         long last_gpu_time = 0.0;
-        
+
         // Pointer to map of lights for render, use 'setLightsRef'
         std::unordered_map<UUID, Light*>* lights = nullptr;
 
@@ -28,7 +28,7 @@ namespace HateEngine {
         virtual void renderMesh(const class Mesh* mesh) = 0;
 
         virtual class Camera* getCamera() = 0;
-        
+
         /**
          * @brief Set the lights map for render
          * @param lights Map of lights

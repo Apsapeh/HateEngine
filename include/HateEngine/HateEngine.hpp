@@ -16,37 +16,11 @@ namespace HateEngine {
     public:
         enum RenderAPI { OpenGL_1_3 };
 
-        enum InputEventType {
-            InputEventKey,
-            InputEventMouseButton,
-            InputEventMouseMove,
-            InputEventMouseScroll
-        };
-
-
-        struct SceneObject {
-            Object* obj = nullptr;
-            // UUID_Generator::UUID id;
-            bool is_ref = false;
-        };
-
-        struct InputEventInfo {
-            InputEventType type;
-            union {
-                Key key;
-                MouseButton button;
-            };
-            int raw_key, scancode, mods = 0;
-            bool isPressed;
-            glm::vec2 offset = {0, 0};
-            glm::vec2 position = {0, 0};
-        };
-
 
     private:
         void (*processLoop)(Engine*, double) = nullptr;
         void (*fixedProcessLoop)(Engine*, double) = nullptr;
-        void (*inputEventFunc)(Engine*, InputEventInfo) = nullptr;
+        void (*inputEventFunc)(Engine*, const InputClass::InputEventInfo&) = nullptr;
 
         RenderAPI renderApi = RenderAPI::OpenGL_1_3;
         uint16_t fixedLoopRefreshRate = 60;
@@ -93,6 +67,8 @@ namespace HateEngine {
         void threadFixedProcessLoop();
         // void frameBufferSizeChange(GLFWwindow* win, int w, int h);
         void threadPhysicsEngineIterateLoop();
+
+        void _inputEvent(const InputClass::InputEventInfo& event);
 
         void __changeWindowTitle(ThreadSafeRequest req);
         void __changeMouseCaptureMode(ThreadSafeRequest req);
@@ -146,7 +122,7 @@ namespace HateEngine {
 
         void setProcessLoop(void (*func)(Engine*, double));
         void setFixedProcessLoop(void (*func)(Engine*, double));
-        void setInputEvent(void (*func)(Engine*, InputEventInfo));
+        void setInputEvent(void (*func)(Engine*, const InputClass::InputEventInfo&));
 
         /**
          * @brief Thread safe request to change the scene

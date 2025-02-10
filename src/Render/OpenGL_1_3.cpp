@@ -240,9 +240,9 @@ inline void OpenGL_1_3::rawRenderMesh(const Mesh* mesh, bool skip_transparency_c
         lights_vec = getNearestLights(mesh, max_light_render_dist);
         renderLight(&lights_vec);
     }
-    
+
     auto time_start = std::chrono::high_resolution_clock::now();
-    
+
 
     // I think, some if-branches doesn't have big GPU time impact
 
@@ -316,7 +316,7 @@ inline void OpenGL_1_3::rawRenderMesh(const Mesh* mesh, bool skip_transparency_c
         glEnable(GL_TEXTURE_2D);
         glEnableClientState(GL_TEXTURE_COORD_ARRAY);
     }
-    
+
     for (uint32_t i = 0; i < lights_vec.size(); ++i) {
         glDisable(GL_LIGHT0 + i);
     }
@@ -339,9 +339,7 @@ inline void OpenGL_1_3::renderCamera(Camera* camera) {
     glLoadMatrixf(glm::value_ptr(mat));
 }
 
-inline void OpenGL_1_3::renderLight(
-        std::vector<Light*>* lights_vec
-) {
+inline void OpenGL_1_3::renderLight(std::vector<Light*>* lights_vec) {
     // std::cout << "Lights: " << lights_vec->size() << "\n";
     for (int i = 0; i < lights_vec->size(); ++i) {
         int light_num = GL_LIGHT0 + i;
@@ -380,10 +378,10 @@ inline std::vector<Light*> OpenGL_1_3::getNearestLights(
 ) {
     std::vector<Light*> result;
     result.reserve(this->lights->size());
-    
+
     std::vector<LightDistSt> light_dist;
     light_dist.reserve(lights->size());
-    
+
     /*for (int i = 0; i < lights_vec->size() and result.size() <= maxLightCount; ++i) {
         Light* light = (*lights_vec)[i];
         if (!light->getGlobalVisible())
@@ -393,7 +391,7 @@ inline std::vector<Light*> OpenGL_1_3::getNearestLights(
         else
             light_dist.push_back({mesh->getAABBDistanceToPoint(light->getGlobalPosition()), i});
     }*/
-    
+
     /*if (this->lights->size() <= this->maxLightCount) {
         for (auto& light_pair : *lights) {
             Light* light = light_pair.second;
@@ -403,8 +401,8 @@ inline std::vector<Light*> OpenGL_1_3::getNearestLights(
         }
         return result;
     }*/
-    
-    for (auto& light_pair : *lights) {
+
+    for (auto& light_pair: *lights) {
         Light* light = light_pair.second;
         if (!light->getGlobalVisible())
             continue;

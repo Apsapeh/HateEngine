@@ -12,7 +12,7 @@ public:
     };
 
     FrustumCuller() = default;
-    
+
     explicit FrustumCuller(const glm::mat4& projectionView);
 
     void update(const glm::mat4& projectionView);

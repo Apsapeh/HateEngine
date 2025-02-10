@@ -78,51 +78,46 @@ Engine::Engine(std::string window_lbl, int width, int height) : Input(this) {
 
     glfwSetCursorPosCallback(window, [](GLFWwindow* win, double x, double y) {
         Engine* th = (Engine*) (glfwGetWindowUserPointer(win));
-        if (th->inputEventFunc != nullptr) {
-            InputEventInfo info;
-            info.type = InputEventType::InputEventMouseMove;
-            info.position = {x, y};
-            th->inputEventFunc(th, info);
-        }
+        InputClass::InputEventInfo info;
+        info.type = InputClass::InputEventType::InputEventMouseMove;
+        info.position = {x, y};
+        th->_inputEvent(info);
     });
 
     glfwSetKeyCallback(window, [](GLFWwindow* win, int key, int scancode, int action, int mods) {
         Engine* th = (Engine*) (glfwGetWindowUserPointer(win));
-        if (th->inputEventFunc != nullptr) {
-            InputEventInfo info;
-            info.type = InputEventType::InputEventKey;
-            info.raw_key = key;
-            info.key = static_cast<Key>(key);
-            info.scancode = scancode;
-            info.isPressed = action == GLFW_PRESS;
-            info.mods = mods;
-            th->inputEventFunc(th, info);
-        }
+
+        InputClass::InputEventInfo info;
+        info.type = InputClass::InputEventType::InputEventKey;
+        info.raw_key = key;
+        info.key = static_cast<Key>(key);
+        info.scancode = scancode;
+        info.isPressed = action == GLFW_PRESS;
+        info.mods = mods;
+        th->_inputEvent(info);
     });
 
     glfwSetMouseButtonCallback(window, [](GLFWwindow* win, int button, int action, int mods) {
         Engine* th = (Engine*) (glfwGetWindowUserPointer(win));
-        if (th->inputEventFunc != nullptr) {
-            InputEventInfo info;
-            info.type = InputEventType::InputEventMouseButton;
-            info.raw_key = button;
-            info.button = static_cast<MouseButton>(button);
-            info.scancode = button;
-            info.isPressed = action == GLFW_PRESS;
-            info.position = th->Input.getCursorPosition();
-            info.mods = mods;
-            th->inputEventFunc(th, info);
-        }
+
+        InputClass::InputEventInfo info;
+        info.type = InputClass::InputEventType::InputEventMouseButton;
+        info.raw_key = button;
+        info.button = static_cast<MouseButton>(button);
+        info.scancode = button;
+        info.isPressed = action == GLFW_PRESS;
+        info.position = th->Input.getCursorPosition();
+        info.mods = mods;
+        th->_inputEvent(info);
     });
 
     glfwSetScrollCallback(window, [](GLFWwindow* win, double xoffset, double yoffset) {
         Engine* th = (Engine*) (glfwGetWindowUserPointer(win));
-        if (th->inputEventFunc != nullptr) {
-            InputEventInfo info;
-            info.type = InputEventType::InputEventMouseScroll;
-            info.position = {xoffset, yoffset};
-            th->inputEventFunc(th, info);
-        }
+
+        InputClass::InputEventInfo info;
+        info.type = InputClass::InputEventType::InputEventMouseScroll;
+        info.position = {xoffset, yoffset};
+        th->_inputEvent(info);
     });
 
     // Load Glad
@@ -220,21 +215,18 @@ void Engine::Run() {
         if (this->processLoop != nullptr)
             this->processLoop(this, delta);
 
-        if (this->level != nullptr and this->level->processLoop != nullptr)
-            this->level->processLoop(this, delta);
+        if (this->level != nullptr)
+            this->level->Update(this, delta);
 
         if (this->isOneThread) {
             fixed_process_loop_delta += delta;
             physics_engine_iterate_loop_delta += delta;
 
-            if (this->level != nullptr)
-                this->level->Update(delta);
-
-            if (this->fixedProcessLoop != nullptr and
-                fixed_process_loop_delta >= fixed_process_loop_delay) {
-                this->fixedProcessLoop(this, fixed_process_loop_delta);
-                if (this->level != nullptr and this->level->fixedProcessLoop != nullptr)
-                    this->level->fixedProcessLoop(this, delta);
+            if (fixed_process_loop_delta >= fixed_process_loop_delay) {
+                if (this->fixedProcessLoop != nullptr)
+                    this->fixedProcessLoop(this, fixed_process_loop_delta);
+                if (this->level != nullptr)
+                    this->level->UpdateFixed(this, fixed_process_loop_delta);
                 fixed_process_loop_delta = 0.0;
             }
 
@@ -285,6 +277,15 @@ void Engine::Run() {
 
 void Engine::Exit() {
     glfwSetWindowShouldClose(this->window, true);
+}
+
+
+void Engine::_inputEvent(const InputClass::InputEventInfo& event) {
+    if (this->inputEventFunc != nullptr)
+        this->inputEventFunc(this, event);
+
+    if (this->level != nullptr)
+        this->level->UpdateInput(this, event);
 }
 
 
@@ -418,12 +419,10 @@ void Engine::threadFixedProcessLoop() {
         oldTime = glfwGetTime();
         std::lock_guard<std::mutex> lock(this->levelMutex);
         if (this->level != nullptr)
-            this->level->Update(delta);
+            this->level->UpdateFixed(this, delta);
 
         // meshesMutex.lock();
         fixedProcessLoop(this, delta);
-        if (this->level != nullptr and this->level->fixedProcessLoop != nullptr)
-            this->level->fixedProcessLoop(this, delta);
         // meshesMutex.unlock();
         func_delta = glfwGetTime() - oldTime;
     }
@@ -462,7 +461,7 @@ void Engine::setProcessLoop(void (*func)(Engine*, double)) {
 void Engine::setFixedProcessLoop(void (*func)(Engine*, double)) {
     this->fixedProcessLoop = func;
 }
-void Engine::setInputEvent(void (*func)(Engine*, InputEventInfo)) {
+void Engine::setInputEvent(void (*func)(Engine*, const InputClass::InputEventInfo&)) {
     this->inputEventFunc = func;
 }
 
