@@ -10,6 +10,8 @@
 #include "HateEngine/Objects/Physics/PhysicalBody.hpp"
 #include "HateEngine/Objects/Physics/SphereShape.hpp"
 #include "HateEngine/Objects/Physics/TriggerArea.hpp"
+#include "reactphysics3d/collision/CollisionCallback.h"
+#include "reactphysics3d/collision/ContactPair.h"
 #include "reactphysics3d/collision/OverlapCallback.h"
 #include "reactphysics3d/mathematics/Ray.h"
 
@@ -17,46 +19,85 @@ using namespace HateEngine;
 
 reactphysics3d::PhysicsCommon* PhysEngine::physicsCommon = nullptr;
 
-class TriggerCallback : public reactphysics3d::EventListener {
-public:
-    void onTrigger(const reactphysics3d::OverlapCallback::CallbackData& callbackData) override {
-        for (uint32_t i = 0; i < callbackData.getNbOverlappingPairs(); ++i) {
-            const reactphysics3d::OverlapCallback::OverlapPair& pair =
-                    callbackData.getOverlappingPair(i);
+namespace HateEngine {
 
-            if (pair.getEventType() ==
-                reactphysics3d::OverlapCallback::OverlapPair::EventType::OverlapStart) {
-                if (pair.getCollider1()->getIsTrigger()) {
-                    TriggerArea* area = (TriggerArea*) pair.getBody1()->getUserData();
-                    area->callOnEnter((PhysicalBody*) pair.getBody2()->getUserData());
-                }
-                if (pair.getCollider2()->getIsTrigger()) {
-                    TriggerArea* area = (TriggerArea*) pair.getBody2()->getUserData();
-                    area->callOnEnter((PhysicalBody*) pair.getBody1()->getUserData());
-                }
-            }
+    class EventCallback : public reactphysics3d::EventListener {
+    public:
+        void onTrigger(const reactphysics3d::OverlapCallback::CallbackData& callbackData) override {
+            for (uint32_t i = 0; i < callbackData.getNbOverlappingPairs(); ++i) {
+                const reactphysics3d::OverlapCallback::OverlapPair& pair =
+                        callbackData.getOverlappingPair(i);
 
-            if (pair.getEventType() ==
-                reactphysics3d::OverlapCallback::OverlapPair::EventType::OverlapExit) {
-                if (pair.getCollider1()->getIsTrigger()) {
-                    TriggerArea* area = (TriggerArea*) pair.getBody1()->getUserData();
-                    area->callOnExit((PhysicalBody*) pair.getBody2()->getUserData());
+                if (pair.getEventType() ==
+                    reactphysics3d::OverlapCallback::OverlapPair::EventType::OverlapStart) {
+                    if (pair.getCollider1()->getIsTrigger()) {
+                        TriggerArea* area = (TriggerArea*) pair.getBody1()->getUserData();
+                        area->callOnEnter((PhysicalBody*) pair.getBody2()->getUserData());
+                    }
+                    if (pair.getCollider2()->getIsTrigger()) {
+                        TriggerArea* area = (TriggerArea*) pair.getBody2()->getUserData();
+                        area->callOnEnter((PhysicalBody*) pair.getBody1()->getUserData());
+                    }
                 }
-                if (pair.getCollider2()->getIsTrigger()) {
-                    TriggerArea* area = (TriggerArea*) pair.getBody2()->getUserData();
-                    area->callOnExit((PhysicalBody*) pair.getBody1()->getUserData());
+
+                if (pair.getEventType() ==
+                    reactphysics3d::OverlapCallback::OverlapPair::EventType::OverlapExit) {
+                    if (pair.getCollider1()->getIsTrigger()) {
+                        TriggerArea* area = (TriggerArea*) pair.getBody1()->getUserData();
+                        area->callOnExit((PhysicalBody*) pair.getBody2()->getUserData());
+                    }
+                    if (pair.getCollider2()->getIsTrigger()) {
+                        TriggerArea* area = (TriggerArea*) pair.getBody2()->getUserData();
+                        area->callOnExit((PhysicalBody*) pair.getBody1()->getUserData());
+                    }
                 }
             }
         }
-    }
-};
+
+        void onContact(const rp3d::CollisionCallback::CallbackData& callbackData) override {
+            for (uint32_t i = 0; i < callbackData.getNbContactPairs(); ++i) {
+                const rp3d::CollisionCallback::ContactPair& pair = callbackData.getContactPair(i);
+
+                const auto type = pair.getEventType();
+                if (type == rp3d::CollisionCallback::ContactPair::EventType::ContactStart or
+                    type == rp3d::CollisionCallback::ContactPair::EventType::ContactStay) {
+                    PhysicalBody* body = (PhysicalBody*) pair.getBody1()->getUserData();
+                    PhysicalBody* other = (PhysicalBody*) pair.getBody2()->getUserData();
+                    // HATE_ERROR_F("Contact start: %u %u", body->getUUID().getU64(),
+                    // other->getUUID().getU64());
+                    if (body->getIsRequiredCollisionPoints()) {
+                        auto& points = body->collisionPoints[other] = {};
+                        // HATE_WARNING_F("Count: %u", pair.getNbContactPoints());
+                        for (uint32_t j = 0; j < pair.getNbContactPoints(); ++j) {
+                            const rp3d::CollisionCallback::ContactPoint& contactPoint =
+                                    pair.getContactPoint(j);
+
+                            const auto& normal = contactPoint.getWorldNormal();
+                            const auto& point = contactPoint.getLocalPointOnCollider1();
+                            points.push_back(
+                                    {{point.z, point.y, point.x}, {-normal.z, -normal.y, -normal.x}}
+                            );
+                        }
+                    }
+
+                } else if (type == rp3d::CollisionCallback::ContactPair::EventType::ContactExit) {
+                    PhysicalBody* body = (PhysicalBody*) pair.getBody1()->getUserData();
+                    PhysicalBody* other = (PhysicalBody*) pair.getBody2()->getUserData();
+                    if (body->getIsRequiredCollisionPoints()) {
+                        body->collisionPoints.erase(other);
+                    }
+                }
+            }
+        }
+    };
+} // namespace HateEngine
 
 PhysEngine::PhysEngine() {
     if (physicsCommon == nullptr) {
         physicsCommon = new reactphysics3d::PhysicsCommon();
     }
     this->physicsWorld = physicsCommon->createPhysicsWorld();
-    this->listener = new TriggerCallback();
+    this->listener = new EventCallback();
     this->physicsWorld->setEventListener(listener);
 }
 

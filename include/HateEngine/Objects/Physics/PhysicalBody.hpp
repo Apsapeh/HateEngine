@@ -12,11 +12,17 @@
 namespace HateEngine {
     class PhysicalBody : public Object {
         friend class PhysEngine;
+        friend class EventCallback;
 
     public:
         enum BodyType { StaticBody, KinematicBody, DynamicBody, TriggerArea };
 
-    private:
+        struct CollisionPoint {
+            glm::vec3 point; // Global
+            glm::vec3 normal;
+        };
+
+    protected:
         glm::vec3 prev_parent_position = {0, 0, 0};
         glm::mat4 prev_parent_rotation_matrix = glm::mat4(1.0f);
         std::unordered_map<UUID, CollisionShape*> shapes;
@@ -31,6 +37,10 @@ namespace HateEngine {
         float angularDamping = 0.0f;
         float mass = 1.0f;
         bool isActive = true;
+        bool isGravityEnabled = true;
+
+        bool isRequiredCollisionPoints = false;
+        std::unordered_map<PhysicalBody*, std::vector<CollisionPoint>> collisionPoints;
 
     public:
         reactphysics3d::RigidBody* reactRigidBody = nullptr;
@@ -81,9 +91,12 @@ namespace HateEngine {
         void setAngularDamping(float damping);
         void setMass(float mass);
         void setIsActive(bool active);
+        void setIsGravityEnabled(bool enabled);
 
         void updateLocalCenterOfMassFromColliders();
         void resetForce();
+
+        void setIsRequiredCollisionPoints(bool required);
 
         // glm::vec3 getForce() const;
 
@@ -94,6 +107,9 @@ namespace HateEngine {
         float getAngularDamping() const;
         float getMass() const;
         bool getIsActive() const;
+        bool getIsGravityEnabled() const;
+
+        bool getIsRequiredCollisionPoints() const;
 
         /**
          * Adds a collision shape to the body by storing a pointer to the object
@@ -117,6 +133,13 @@ namespace HateEngine {
          * @return A pointer to the collision shapes
          */
         std::unordered_map<UUID, CollisionShape*> const* getShapes();
+
+        /**
+         * Gets a pointer to the collision points
+         * @return A pointer to the collision points
+         */
+        std::unordered_map<PhysicalBody*, std::vector<CollisionPoint>> const* const
+        getCollisionPoints() const;
 
 
         /**

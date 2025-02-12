@@ -15,7 +15,6 @@ PhysicalBody::PhysicalBody(BodyType bodyType) {
 
 
 PhysicalBody::~PhysicalBody() {
-    // TODO: Free shape's rigid body ref
 }
 
 void PhysicalBody::Init(reactphysics3d::RigidBody* body) {
@@ -55,6 +54,7 @@ void PhysicalBody::Init(reactphysics3d::RigidBody* body) {
     this->reactRigidBody->setAngularDamping(this->angularDamping);
     this->reactRigidBody->setMass(this->mass);
     this->reactRigidBody->setIsActive(this->isActive);
+    this->reactRigidBody->enableGravity(this->isGravityEnabled);
 }
 
 void PhysicalBody::Update() {
@@ -154,6 +154,11 @@ std::unordered_map<UUID, CollisionShape*> const* PhysicalBody::getShapes() {
     return &shapes;
 }
 
+std::unordered_map<PhysicalBody*, std::vector<PhysicalBody::CollisionPoint>> const* const
+PhysicalBody::getCollisionPoints() const {
+    return &collisionPoints;
+}
+
 
 void PhysicalBody::setParentPosition(const glm::vec3& vec) {
     Object::setParentPosition(vec);
@@ -248,6 +253,12 @@ void PhysicalBody::setIsActive(bool isActive) {
         reactRigidBody->setIsActive(isActive);
 }
 
+void PhysicalBody::setIsGravityEnabled(bool isGravityEnabled) {
+    this->isGravityEnabled = isGravityEnabled;
+    if (this->reactRigidBody != nullptr)
+        reactRigidBody->enableGravity(isGravityEnabled);
+}
+
 void PhysicalBody::updateLocalCenterOfMassFromColliders() {
     if (this->reactRigidBody != nullptr)
         reactRigidBody->updateLocalCenterOfMassFromColliders();
@@ -256,6 +267,11 @@ void PhysicalBody::updateLocalCenterOfMassFromColliders() {
 void PhysicalBody::resetForce() {
     if (this->reactRigidBody != nullptr)
         reactRigidBody->resetForce();
+}
+
+
+void PhysicalBody::setIsRequiredCollisionPoints(bool required) {
+    isRequiredCollisionPoints = required;
 }
 
 
@@ -306,6 +322,14 @@ bool PhysicalBody::getIsActive() const {
     if (this->reactRigidBody != nullptr)
         return reactRigidBody->isActive();
     return this->isActive;
+}
+
+bool PhysicalBody::getIsGravityEnabled() const {
+    return isGravityEnabled;
+}
+
+bool PhysicalBody::getIsRequiredCollisionPoints() const {
+    return isRequiredCollisionPoints;
 }
 
 

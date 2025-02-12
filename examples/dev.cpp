@@ -115,6 +115,7 @@ HateEngine::CubeMesh nav_agent_cube;
 int main() {
     // int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
     //	LPSTR lpCmdLine, int nCmdShow) {
+    rigidBody.setIsRequiredCollisionPoints(true);
     xAxMesh.setSize(1, 0.1, 0.1);
     xAxMesh.offset(0, 6, 0);
 
@@ -313,6 +314,7 @@ int main() {
     billboardMesh.setCorrectTransparency(true);
     HATE_INFO_F("BM: %p", &billboardMesh);
     lvl.addObject(&billboardMesh);
+
 
     /*const auto desers = std::make_pair(
             std::unordered_map<std::string, HateEngine::ObjMapModel::EntityDeserialzer>(
@@ -952,6 +954,26 @@ void _process(HateEngine::Engine* engine, double delta) {
 glm::vec3 cam_dir;
 
 void _physics_process(HateEngine::Engine* engine, double delta) {
+
+
+    auto rb_points = rigidBody.getCollisionPoints();
+    int rb_points_count = 0;
+    bool is_floor = false;
+    for (auto& point_body: *rb_points) {
+        for (auto& point: point_body.second) {
+            const glm::vec3 UP = {0, 1, 0};
+            const glm::vec3& normal = point.normal;
+            HATE_WARNING_F("Normal: %f | %f | %f", normal.x, normal.y, normal.z);
+            float angle = glm::orientedAngle(UP, normal, UP);
+            // float angle = glm::angle(UP, normal);
+            if (angle < 0.1) {
+                is_floor = true;
+            }
+        }
+    }
+    // HATE_INFO_F("Collision points: %d", rb_points_count);
+    HATE_INFO_F("Is floor: %d", is_floor);
+
     /*HATE_ERROR_F(
             "W: %d H: %d X: %f Y: %f", engine->getResolution().x, engine->getResolution().y,
             engine->getDisplayScale().x, engine->getDisplayScale().y
@@ -1183,6 +1205,10 @@ void _input_event(HateEngine::Engine* engine, const HateEngine::InputClass::Inpu
             // shape->setCollisionCategoryRaw(-1);
             rigidBodyBoxShape.setCollisionMask(0);
             rigidBodyBoxShape.setCollisionCategoryRaw(0);
+        }
+
+        if (event.key == HateEngine::KeyK and event.isPressed) {
+            rigidBody.setLinearVelocity({0, 4, 0});
         }
 
         if (event.key == HateEngine::KeyNumPadAdd && event.isPressed) {
