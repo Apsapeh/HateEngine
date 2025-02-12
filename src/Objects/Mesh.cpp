@@ -93,7 +93,7 @@ void Mesh::updateAABB() {
 
 void Mesh::setRotationMatrixRaw(const glm::mat4& mat) {
     Object::setRotationMatrixRaw(mat);
-    // updateAABB();
+    updateAABB();
 }
 
 

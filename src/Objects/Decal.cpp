@@ -1,4 +1,6 @@
 #include <HateEngine/Objects/Decal.hpp>
+#include "HateEngine/Log.hpp"
+#include "glm/ext/matrix_transform.hpp"
 
 using namespace HateEngine;
 
@@ -45,7 +47,7 @@ void Decal::bake() {
                     hits[0].worldPoint - this->getGlobalPosition() +
                     glm::vec3(0.01f, 0.01f, 0.01f) * hits[0].worldNormal
             );
-            this->mesh.lookAt(mesh.getGlobalPosition() + hits[0].worldNormal);
+            mesh.setRotationMatrix(glm::lookAt({0, 0, 0}, -hits[0].worldNormal, glm::vec3(0, 0, 1)));
             mesh.setVisible(true);
         } else {
             mesh.setVisible(false);

@@ -239,10 +239,13 @@ int main() {
     /*===============================================================*/
 
     camera.bindObj(&decal);
+    HateEngine::Texture shadow_circle_texture("examples/Assets/shadow_circle.png");
+    decal.setTexture(&shadow_circle_texture);
+    decal.getMesh()->setCorrectTransparency(true);
     decal.setRayLength(10);
     decal.setRayDirection({0, -1, 0});
 
-    // lvl.addObject(decal.getMesh());
+    lvl.addObject(decal.getMesh());
     decal.setPhysEngine(lvl.getPhysEngine());
 
 
@@ -924,6 +927,13 @@ void _process(HateEngine::Engine* engine, double delta) {
         gpu_time = 0;
     }
 
+    decal.bake();
+    glm::vec3 decal_mesh_pos = decal.getMesh()->getGlobalPosition();
+    glm::vec3 camera_pos = camera.getGlobalPosition();
+
+    decal.getMesh()->setScale(glm::vec3{1, 1, 1} / glm::distance(decal_mesh_pos, camera_pos) * 3);
+
+
     glm::vec3 cam_rot = camera.getRotationEuler();
     // HATE_INFO_F("Camera rotation: %f | %f | %f", cam_rot.x, cam_rot.y, cam_rot.z);
 
@@ -955,8 +965,8 @@ void _process(HateEngine::Engine* engine, double delta) {
 glm::vec3 cam_dir;
 
 void _physics_process(HateEngine::Engine* engine, double delta) {
-    decal.bake();
 
+    /*
     auto rb_points = rigidBody.getCollisionPoints();
     int rb_points_count = 0;
     bool is_floor = false;
@@ -974,6 +984,7 @@ void _physics_process(HateEngine::Engine* engine, double delta) {
     }
     // HATE_INFO_F("Collision points: %d", rb_points_count);
     HATE_INFO_F("Is floor: %d", is_floor);
+    */
 
     /*HATE_ERROR_F(
             "W: %d H: %d X: %f Y: %f", engine->getResolution().x, engine->getResolution().y,
