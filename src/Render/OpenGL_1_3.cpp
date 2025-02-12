@@ -214,11 +214,11 @@ void OpenGL_1_3::Draw3D(
 
 
 inline void OpenGL_1_3::rawRenderMesh(const Mesh* mesh, bool skip_transparency_check) {
-    /*if (!frustrum.isBoxVisible(
+    if (!frustrum.isBoxVisible(
                 mesh->getAABBMin() + mesh->getGlobalPosition(),
                 mesh->getAABBMax() + mesh->getGlobalPosition()
         ))
-        return;*/
+        return;
 
     // next_attrib = attribs;
 

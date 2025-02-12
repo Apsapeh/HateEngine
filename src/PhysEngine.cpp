@@ -1,6 +1,7 @@
 #include <HateEngine/PhysEngine.hpp>
 #include <glm/ext.hpp>
 #include <string>
+#include <unordered_map>
 
 #include "HateEngine/Log.hpp"
 #include "HateEngine/Objects/Physics/BoxShape.hpp"
@@ -54,7 +55,24 @@ namespace HateEngine {
             }
         }
 
+        /*
+            I can't use pointer to PhysicalBody here, because object can be deleted during callback
+            Solution: use smart pointer with ref counting
+        */
+        //std::vector<PhysicalBody*> bodies_on_update;
+        std::vector<UUID> bodies_on_update = {};
+
+        std::unordered_map<UUID, PhysicalBody*>* bodies_ptr = nullptr;
+
         void onContact(const rp3d::CollisionCallback::CallbackData& callbackData) override {
+            for (auto& body: bodies_on_update) {
+                auto it = bodies_ptr->find(body);
+                if (it != bodies_ptr->end()) {
+                    it->second->collisionPoints.clear();
+                }
+            }
+            bodies_on_update.clear();
+
             for (uint32_t i = 0; i < callbackData.getNbContactPairs(); ++i) {
                 const rp3d::CollisionCallback::ContactPair& pair = callbackData.getContactPair(i);
 
@@ -66,6 +84,7 @@ namespace HateEngine {
                     // HATE_ERROR_F("Contact start: %u %u", body->getUUID().getU64(),
                     // other->getUUID().getU64());
                     if (body->getIsRequiredCollisionPoints()) {
+                        bodies_on_update.push_back(body->getUUID());
                         auto& points = body->collisionPoints[other] = {};
                         // HATE_WARNING_F("Count: %u", pair.getNbContactPoints());
                         for (uint32_t j = 0; j < pair.getNbContactPoints(); ++j) {
@@ -98,12 +117,13 @@ PhysEngine::PhysEngine() {
     }
     this->physicsWorld = physicsCommon->createPhysicsWorld();
     this->listener = new EventCallback();
+    ((EventCallback*)this->listener)->bodies_ptr = &this->physBodies;
     this->physicsWorld->setEventListener(listener);
 }
 
 PhysEngine::~PhysEngine() {
     physicsCommon->destroyPhysicsWorld(physicsWorld);
-    delete listener;
+    delete (EventCallback*)listener;
 }
 
 
