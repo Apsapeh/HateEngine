@@ -240,6 +240,7 @@ int main() {
 
     camera.bindObj(&decal);
     decal.setRayLength(10);
+    decal.setRayDirection({0, -1, 0});
 
     // lvl.addObject(decal.getMesh());
     decal.setPhysEngine(lvl.getPhysEngine());
@@ -954,7 +955,7 @@ void _process(HateEngine::Engine* engine, double delta) {
 glm::vec3 cam_dir;
 
 void _physics_process(HateEngine::Engine* engine, double delta) {
-
+    decal.bake();
 
     auto rb_points = rigidBody.getCollisionPoints();
     int rb_points_count = 0;
