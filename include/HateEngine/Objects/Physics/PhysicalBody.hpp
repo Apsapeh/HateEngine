@@ -37,6 +37,7 @@ namespace HateEngine {
         float angularDamping = 0.0f;
         float mass = 1.0f;
         bool isActive = true;
+        bool isAllowedToSleep = true;
         bool isGravityEnabled = true;
 
         bool isRequiredCollisionPoints = false;
@@ -92,6 +93,7 @@ namespace HateEngine {
         void setMass(float mass);
         void setIsActive(bool active);
         void setIsGravityEnabled(bool enabled);
+        void setIsAllowedToSleep(bool allowed);
 
         void updateLocalCenterOfMassFromColliders();
         void resetForce();
@@ -108,6 +110,7 @@ namespace HateEngine {
         float getMass() const;
         bool getIsActive() const;
         bool getIsGravityEnabled() const;
+        bool getIsAllowedToSleep() const;
 
         bool getIsRequiredCollisionPoints() const;
 

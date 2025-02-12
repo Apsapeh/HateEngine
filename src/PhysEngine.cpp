@@ -59,19 +59,19 @@ namespace HateEngine {
             I can't use pointer to PhysicalBody here, because object can be deleted during callback
             Solution: use smart pointer with ref counting
         */
-        //std::vector<PhysicalBody*> bodies_on_update;
+        // std::vector<PhysicalBody*> bodies_on_update;
         std::vector<UUID> bodies_on_update = {};
 
         std::unordered_map<UUID, PhysicalBody*>* bodies_ptr = nullptr;
 
         void onContact(const rp3d::CollisionCallback::CallbackData& callbackData) override {
-            for (auto& body: bodies_on_update) {
+            /*for (auto& body: bodies_on_update) {
                 auto it = bodies_ptr->find(body);
                 if (it != bodies_ptr->end()) {
                     it->second->collisionPoints.clear();
                 }
             }
-            bodies_on_update.clear();
+            bodies_on_update.clear();*/
 
             for (uint32_t i = 0; i < callbackData.getNbContactPairs(); ++i) {
                 const rp3d::CollisionCallback::ContactPair& pair = callbackData.getContactPair(i);
@@ -83,9 +83,16 @@ namespace HateEngine {
                     PhysicalBody* other = (PhysicalBody*) pair.getBody2()->getUserData();
                     // HATE_ERROR_F("Contact start: %u %u", body->getUUID().getU64(),
                     // other->getUUID().getU64());
-                    if (body->getIsRequiredCollisionPoints()) {
-                        bodies_on_update.push_back(body->getUUID());
-                        auto& points = body->collisionPoints[other] = {};
+                    if (body->getIsRequiredCollisionPoints() ||
+                        other->getIsRequiredCollisionPoints()) {
+                        // bodies_on_update.push_back(body->getUUID());
+                        std::vector<PhysicalBody::CollisionPoint>* body_points = nullptr;
+                        std::vector<PhysicalBody::CollisionPoint>* other_points = nullptr;
+                        if (body->getIsRequiredCollisionPoints())
+                            body_points = &(body->collisionPoints[other] = {});
+                        if (other->getIsRequiredCollisionPoints())
+                            other_points = &(other->collisionPoints[body] = {});
+
                         // HATE_WARNING_F("Count: %u", pair.getNbContactPoints());
                         for (uint32_t j = 0; j < pair.getNbContactPoints(); ++j) {
                             const rp3d::CollisionCallback::ContactPoint& contactPoint =
@@ -93,9 +100,16 @@ namespace HateEngine {
 
                             const auto& normal = contactPoint.getWorldNormal();
                             const auto& point = contactPoint.getLocalPointOnCollider1();
-                            points.push_back(
-                                    {{point.z, point.y, point.x}, {-normal.z, -normal.y, -normal.x}}
-                            );
+                            if (body_points)
+                                body_points->push_back(
+                                        {{point.z, point.y, point.x},
+                                         {-normal.z, -normal.y, -normal.x}}
+                                );
+                            if (other_points)
+                                other_points->push_back(
+                                        {{point.z, point.y, point.x},
+                                         {-normal.z, -normal.y, -normal.x}}
+                                );
                         }
                     }
 
@@ -104,6 +118,9 @@ namespace HateEngine {
                     PhysicalBody* other = (PhysicalBody*) pair.getBody2()->getUserData();
                     if (body->getIsRequiredCollisionPoints()) {
                         body->collisionPoints.erase(other);
+                    }
+                    if (other->getIsRequiredCollisionPoints()) {
+                        other->collisionPoints.erase(body);
                     }
                 }
             }
@@ -117,13 +134,13 @@ PhysEngine::PhysEngine() {
     }
     this->physicsWorld = physicsCommon->createPhysicsWorld();
     this->listener = new EventCallback();
-    ((EventCallback*)this->listener)->bodies_ptr = &this->physBodies;
+    ((EventCallback*) this->listener)->bodies_ptr = &this->physBodies;
     this->physicsWorld->setEventListener(listener);
 }
 
 PhysEngine::~PhysEngine() {
     physicsCommon->destroyPhysicsWorld(physicsWorld);
-    delete (EventCallback*)listener;
+    delete (EventCallback*) listener;
 }
 
 

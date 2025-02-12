@@ -670,6 +670,7 @@ int main() {
 
     rigidBody.setPosition(0, 5, 0);
     rigidBody.rotate(48, 22, 36);
+    rigidBody.setIsAllowedToSleep(false);
     // rigidBody.setRotation(0, 0, 0);
     rigidBody.addCollisionShape(&rigidBodyBoxShape);
     HateEngine::SphereShape sphereShape(0.5);
@@ -966,7 +967,7 @@ glm::vec3 cam_dir;
 
 void _physics_process(HateEngine::Engine* engine, double delta) {
 
-    
+
     auto rb_points = rigidBody.getCollisionPoints();
     int rb_points_count = 0;
     bool is_floor = false;
@@ -984,7 +985,7 @@ void _physics_process(HateEngine::Engine* engine, double delta) {
     }
     // HATE_INFO_F("Collision points: %d", rb_points_count);
     HATE_INFO_F("Is floor: %d", is_floor);
-    
+
 
     /*HATE_ERROR_F(
             "W: %d H: %d X: %f Y: %f", engine->getResolution().x, engine->getResolution().y,

@@ -55,6 +55,7 @@ void PhysicalBody::Init(reactphysics3d::RigidBody* body) {
     this->reactRigidBody->setMass(this->mass);
     this->reactRigidBody->setIsActive(this->isActive);
     this->reactRigidBody->enableGravity(this->isGravityEnabled);
+    this->reactRigidBody->setIsAllowedToSleep(this->isAllowedToSleep);
 }
 
 void PhysicalBody::Update() {
@@ -259,6 +260,12 @@ void PhysicalBody::setIsGravityEnabled(bool isGravityEnabled) {
         reactRigidBody->enableGravity(isGravityEnabled);
 }
 
+void PhysicalBody::setIsAllowedToSleep(bool isAllowedToSleep) {
+    this->isAllowedToSleep = isAllowedToSleep;
+    if (this->reactRigidBody != nullptr)
+        reactRigidBody->setIsAllowedToSleep(isAllowedToSleep);
+}
+
 void PhysicalBody::updateLocalCenterOfMassFromColliders() {
     if (this->reactRigidBody != nullptr)
         reactRigidBody->updateLocalCenterOfMassFromColliders();
@@ -325,7 +332,15 @@ bool PhysicalBody::getIsActive() const {
 }
 
 bool PhysicalBody::getIsGravityEnabled() const {
-    return isGravityEnabled;
+    if (this->reactRigidBody != nullptr)
+        return reactRigidBody->isGravityEnabled();
+    return this->isGravityEnabled;
+}
+
+bool PhysicalBody::getIsAllowedToSleep() const {
+    if (this->reactRigidBody != nullptr)
+        return reactRigidBody->isAllowedToSleep();
+    return this->isAllowedToSleep;
 }
 
 bool PhysicalBody::getIsRequiredCollisionPoints() const {
