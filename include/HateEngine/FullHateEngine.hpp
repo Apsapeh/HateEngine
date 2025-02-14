@@ -30,6 +30,7 @@
 #include "Objects/Physics/StaticBody.hpp"
 #include "Objects/Physics/TriggerArea.hpp"
 #include "Objects/Physics/PhysicalBody.hpp"
+#include "Objects/Physics/CharacterBody.hpp"
 #include "Objects/Interfaces/Renderable3DInterface.hpp"
 #include "Objects/Interfaces/UpdatableInterface.hpp"
 #include "Render/FrustumCuller.hpp"

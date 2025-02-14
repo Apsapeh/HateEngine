@@ -85,7 +85,7 @@ HateEngine::LabelUI fps_label;
 HateEngine::WidgetUI* fps_widget_ptr = nullptr;
 HateEngine::CubeMesh test2;
 HateEngine::PhysicalBody playerBody(HateEngine::PhysicalBody::DynamicBody);
-HateEngine::PhysicalBody rigidBody(HateEngine::PhysicalBody::DynamicBody);
+HateEngine::PhysicalBody rigidBody(HateEngine::PhysicalBody::CharacterBody);
 HateEngine::StaticBody floorBody;
 HateEngine::BoxShape rigidBodyBoxShape({1, 1, 1});
 
@@ -672,12 +672,14 @@ int main() {
     rigidBody.rotate(48, 22, 36);
     rigidBody.setIsAllowedToSleep(false);
     // rigidBody.setRotation(0, 0, 0);
+    rigidBodyBoxShape.setFriction(0);
     rigidBody.addCollisionShape(&rigidBodyBoxShape);
     HateEngine::SphereShape sphereShape(0.5);
     // rigidBody.addCollisionShapeRef(&sphereShape);
     rigidBody.bindObj(&mesh1);
-    // rigidBody.bindObj(&camera);
-    // rigidBody.bindObj(&glmodel);
+    // rigidBody.setLinearVelocity(0, -9.8, 0);
+    //  rigidBody.bindObj(&camera);
+    //  rigidBody.bindObj(&glmodel);
 
     // HateEngine::CubeMesh playerCubeMesh;
     playerCapsuleMesh.rotate(0, 0, 0);
@@ -885,16 +887,27 @@ int main() {
 
     /* ==========================> Navigation Test <========================= */
 
+    rigidBody.setIsGravityEnabled(false);
+    // rigidBody
 
     game.setProcessLoop(_process);
     game.setFixedProcessLoop(_physics_process);
     game.setInputEvent(_input_event);
     lvl.setCameraRef(&camera);
     float xscale, yscale;
+
+    HateEngine::BoxShape wall({1, 10, 10});
+    HateEngine::StaticBody wall_body;
+    wall_body.addCollisionShape(&wall);
+    wall_body.setPosition(10, 3, 0);
+
+    lvl.getPhysEngine()->addObject(&wall_body);
     // glfwGetPrimaryMonitor();
     // glfwGetMonitorContentScale(glfwGetPrimaryMonitor(), &xscale, &yscale);
     // std::cout << "Content scale: " << xscale << " " << yscale << "\n";
     //  while (true) {}
+    rigidBody.setLinearVelocity(0, -1, 0);
+
     game.Run();
     // int p = glfwGetPlatform();
     // std::cout << p << " | " << GLFW_PLATFORM_WAYLAND << "\n";
@@ -908,6 +921,7 @@ double fps_time = 0.0;
 double cpu_time = 0;
 double gpu_time = 0;
 
+float g = 0;
 void _process(HateEngine::Engine* engine, double delta) {
     if (fps_time < 0.5) {
         ++frames_count;
@@ -927,6 +941,11 @@ void _process(HateEngine::Engine* engine, double delta) {
         cpu_time = 0;
         gpu_time = 0;
     }
+
+    g += delta * 9.8;
+    auto rb_v = rigidBody.getLinearVelocity();
+    HATE_INFO_F("Velocity: %f | %f | %f", rb_v.x, rb_v.y, rb_v.z);
+    // rigidBody.setLinearVelocity(3, -g, 0);
 
     decal.bake();
     glm::vec3 decal_mesh_pos = decal.getMesh()->getGlobalPosition();
@@ -978,8 +997,9 @@ void _physics_process(HateEngine::Engine* engine, double delta) {
             HATE_WARNING_F("Normal: %f | %f | %f", normal.x, normal.y, normal.z);
             float angle = glm::orientedAngle(UP, normal, UP);
             // float angle = glm::angle(UP, normal);
-            if (angle < 0.1) {
+            if (angle < 0.7) {
                 is_floor = true;
+                // rigidBody.setLinearVelocity(0, 0, 2);
             }
         }
     }
@@ -1206,6 +1226,12 @@ void _input_event(HateEngine::Engine* engine, const HateEngine::InputClass::Inpu
         if (event.key == HateEngine::KeyP && event.isPressed) {
             engine->setFullScreen(!engine->getFullScreen());
             HATE_WARNING("Toggled fullscreen")
+        }
+
+        if (event.key == HateEngine::KeyM and event.isPressed) {
+            glm::vec3 velocity = rigidBody.getLinearVelocity();
+            velocity.x = 1;
+            rigidBody.setLinearVelocity(velocity);
         }
 
         if (event.key == HateEngine::KeyJ and event.isPressed) {

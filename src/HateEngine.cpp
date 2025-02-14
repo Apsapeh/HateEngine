@@ -233,7 +233,7 @@ void Engine::Run() {
             if (physics_engine_iterate_loop_delta >= physics_engine_iterate_loop_delay) {
 
                 if (this->level != nullptr) {
-                    while (physics_engine_iterate_loop_delta - 0.0001 > 0.0f) {
+                    while (physics_engine_iterate_loop_delta - 0.001 > 0.0f) {
                         float d = physics_engine_iterate_loop_delay;
                         if (physics_engine_iterate_loop_delta < d)
                             d = physics_engine_iterate_loop_delta;

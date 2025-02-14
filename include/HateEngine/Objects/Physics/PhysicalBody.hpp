@@ -1,5 +1,4 @@
 #pragma once
-#include <cstdint>
 #include <unordered_map>
 #include <unordered_set>
 #include <vector>
@@ -15,7 +14,7 @@ namespace HateEngine {
         friend class EventCallback;
 
     public:
-        enum BodyType { StaticBody, KinematicBody, DynamicBody, TriggerArea };
+        enum BodyType { StaticBody, KinematicBody, DynamicBody, CharacterBody, TriggerArea };
 
         struct CollisionPoint {
             glm::vec3 point; // Global

@@ -49,6 +49,7 @@ function set_mode_rules(merge)
         set_optimize("aggressive")
     end
 
+    --add_defines("IS_RP3D_PROFILING_ENABLED")
     if is_plat("windows") then
         add_defines("and=&&", "or=||", "not=!", "_WIN32_WINNT=0x0501")
     elseif is_plat("linux") then
