@@ -56,7 +56,7 @@ Engine::Engine(std::string window_lbl, int width, int height) : Input(this) {
 
     // float xscale, yscale;
 
-    this->setResolution(width, height);
+    __updateResolution(width, height);
     // this->setResolution(, )
     this->resolution = {(float) width, (float) height};
 
@@ -71,8 +71,9 @@ Engine::Engine(std::string window_lbl, int width, int height) : Input(this) {
     glfwSetFramebufferSizeCallback(this->window, [](GLFWwindow* win, int w, int h) {
         Engine* th = static_cast<Engine*>(glfwGetWindowUserPointer(win));
 
-        th->setResolution(w, h);
-        // std::cout << "Framebuffer size: " << w << "x" << h << std::endl;
+        // th->setResolution(w, h);
+        //  std::cout << "Framebuffer size: " << w << "x" << h << std::endl;
+        th->__updateResolution(w, h);
         HATE_DEBUG_F("Framebuffer size: %dx%d", w, h);
     });
 
@@ -322,15 +323,26 @@ void Engine::__changeLevelRef(ThreadSafeRequest req) {
 }
 
 
+void Engine::__updateResolution(int width, int height) {
+    float xscale, yscale;
+    glfwGetWindowContentScale(this->window, &xscale, &yscale);
+    const auto old_scale = this->getDisplayScale();
+    const auto old_res = this->getResolution();
+    const auto old_aspect_ratio = this->getAspectRatio();
+    this->displayScale = glm::vec2(xscale, yscale);
+    this->resolution = glm::ivec2((float) width / xscale, (float) height / yscale);
+    this->aspectRatio = (float) width / (float) height;
+
+    this->onResolutionChanged.emit(this, getResolution(), old_res);
+    this->onDisplayScaleChanged.emit(this, getDisplayScale(), old_scale);
+    this->onAspectRatioChanged.emit(this, getAspectRatio(), old_aspect_ratio);
+}
+
+
 void Engine::setResolution(int width, int height) {
     HATE_WARNING("Engine::setResolution not implemented");
 
     // FIXME: Implement setResolution
-    float xscale, yscale;
-    glfwGetWindowContentScale(this->window, &xscale, &yscale);
-    this->displayScale = glm::vec2(xscale, yscale);
-    this->resolution = glm::ivec2((float) width / xscale, (float) height / yscale);
-    this->aspectRatio = (float) width / (float) height;
 }
 
 void Engine::setOneThreadMode(bool mode) {

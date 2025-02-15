@@ -75,10 +75,19 @@ namespace HateEngine {
         void __changeFullScreenMode(ThreadSafeRequest req);
         void __changeLevelRef(ThreadSafeRequest req);
 
+        void __updateResolution(int width, int height);
+
     public:
         InputClass Input;
 
+        // New Level, Old Level
         Signal<Engine*, Level*, Level*> onLevelChanged;
+        // New resolution, Old resolution
+        Signal<Engine*, const glm::ivec2, const glm::ivec2> onResolutionChanged;
+        // New scale, Old scale
+        Signal<Engine*, const glm::vec2, const glm::vec2> onDisplayScaleChanged;
+        // New aspect ratio, Old aspect ratio
+        Signal<Engine*, const float, const float> onAspectRatioChanged;
 
         Engine(std::string window_lbl, int width, int height);
         void Run();
