@@ -136,6 +136,10 @@ void PhysEngine::IteratePhysics(float delta) {
     ++this->iterationsCounter;
 }
 
+unsigned long PhysEngine::getIterationsCounter() const {
+    return this->iterationsCounter;
+}
+
 void PhysEngine::getRayCastCollisions(
         glm::vec3 startPos, glm::vec3 endPos, reactphysics3d::RaycastCallback* callback,
         uint16_t mask
