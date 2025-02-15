@@ -123,7 +123,6 @@ ObjMapModel::ObjMapModel(
     parseObj(obj_file_data, grid_size, false, lod_dist, lod_step, her);
     if (!map_file_data.empty())
         parseMap(map_file_data, grid_size);
-    // TODO: Add hepvs
     if (!hepvs_data.empty())
         parseHepvs(hepvs_data);
     is_loaded = true;
@@ -155,8 +154,6 @@ void ObjMapModel::_enterLevel(Level* level) {
 }
 
 void ObjMapModel::_exitLevel(Level* level) {
-    HATE_INFO("Exit level");
-
     for (auto& e: lights) {
         level->removeObject(e->getUUID());
     }
@@ -359,6 +356,9 @@ void ObjMapModel::parseObj(
                     glm::vec3(std::stof(words[1]), std::stof(words[2]), std::stof(words[3]))
             );
         } else if (words[0] == "usemtl") {
+            /// TODO: Add object separation by material
+            ///       If some faces in one object have different materials, render like separate
+            ///       objects
             if (words.size() < 2 || current_obj == nullptr)
                 continue;
             if (current_obj->material == "")
@@ -447,7 +447,7 @@ std::unordered_map<std::string, ObjMapModel::Material> ObjMapModel::parseMtlLib(
         if (words[0] == "newmtl") {
             if (words.size() < 2)
                 continue;
-            materials[words[1]] = Material();
+            current_material = &(materials[words[1]] = Material());
         }
 
         if (words[0] == "map_Kd") {
@@ -459,7 +459,7 @@ std::unordered_map<std::string, ObjMapModel::Material> ObjMapModel::parseMtlLib(
             } else {
                 this->textures.push_back(Texture(obj_file_path + words[1]));
             }
-            materials[words[0]].texture_id = this->textures.size() - 1;
+            current_material->texture_id = this->textures.size() - 1;
         }
     }
 

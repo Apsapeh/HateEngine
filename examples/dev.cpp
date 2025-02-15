@@ -332,10 +332,14 @@ int main() {
             "examples/Assets/Ignore/_E1M1.obj", "examples/Assets/Ignore/E1M1.MAP",
             "examples/Assets/Ignore/light.heluv", 16.0, true, 15, 100000000
     );*/
-    HateEngine::ObjMapModel objmodel(
+    /*HateEngine::ObjMapModel objmodel(
             "examples/Assets/Ignore/E1M1.obj", "examples/Assets/Ignore/E1M1.MAP",
             "examples/Assets/Ignore/light.heluv", "examples/Assets/Ignore/E1M1.hepvs", 16.0, true,
             false, 15, 10000
+    );*/
+    HateEngine::ObjMapModel objmodel(
+            "examples/Assets/dev.obj", "examples/Assets/dev.map", "", "", 16.0, true, false, 15,
+            10000
     );
     objmodel.deserializeEntities(
             {{"light",
@@ -944,7 +948,7 @@ void _process(HateEngine::Engine* engine, double delta) {
 
     g += delta * 9.8;
     auto rb_v = rigidBody.getLinearVelocity();
-    HATE_INFO_F("Velocity: %f | %f | %f", rb_v.x, rb_v.y, rb_v.z);
+    //    HATE_INFO_F("Velocity: %f | %f | %f", rb_v.x, rb_v.y, rb_v.z);
     // rigidBody.setLinearVelocity(3, -g, 0);
 
     decal.bake();
@@ -994,7 +998,7 @@ void _physics_process(HateEngine::Engine* engine, double delta) {
         for (auto& point: point_body.second) {
             const glm::vec3 UP = {0, 1, 0};
             const glm::vec3& normal = point.normal;
-            HATE_WARNING_F("Normal: %f | %f | %f", normal.x, normal.y, normal.z);
+            // HATE_WARNING_F("Normal: %f | %f | %f", normal.x, normal.y, normal.z);
             float angle = glm::orientedAngle(UP, normal, UP);
             // float angle = glm::angle(UP, normal);
             if (angle < 0.7) {
@@ -1004,7 +1008,7 @@ void _physics_process(HateEngine::Engine* engine, double delta) {
         }
     }
     // HATE_INFO_F("Collision points: %d", rb_points_count);
-    HATE_INFO_F("Is floor: %d", is_floor);
+    // HATE_INFO_F("Is floor: %d", is_floor);
 
 
     /*HATE_ERROR_F(
