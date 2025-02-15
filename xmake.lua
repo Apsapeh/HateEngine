@@ -6,9 +6,9 @@ add_requires(
     "glu",
     "termcolor 5635ae00856eeddffcbf7091d13e2987abde91a2"
 )
-add_requires("glfw 3.4", {configs = {wayland = is_plat("linux") and not is_arch("i386")}})
-add_requires("reactphysics3d 866546111e44d1919b8e240f6376d539aa5e77d7", {debug = is_mode("debug")})
 -- On my pc it doesn't compile for Linux i386 when Wayland enabled
+add_requires("glfw 3.4", {configs = {wayland = is_plat("linux") and not is_arch("i386")}})
+add_requires("reactphysics3d 7060cb0fabdcc81ec5929897d3228efe70fae9da", {debug = is_mode("debug")})
 
 
 if is_plat("mingw") and is_arch("i386") then

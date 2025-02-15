@@ -110,6 +110,7 @@ namespace HateEngine {
         bool getIsActive() const;
         bool getIsGravityEnabled() const;
         bool getIsAllowedToSleep() const;
+        bool getIsSleeping() const;
 
         bool getIsRequiredCollisionPoints() const;
 

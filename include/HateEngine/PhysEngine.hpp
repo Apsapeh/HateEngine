@@ -20,6 +20,7 @@ namespace HateEngine {
         UUID uuid;
         // std::vector<PhysBodyObject> physBodies;
         std::unordered_map<UUID, PhysicalBody*> physBodies;
+        unsigned long iterationsCounter = 0;
 
     protected:
         void getRayCastCollisions(
@@ -37,6 +38,12 @@ namespace HateEngine {
          * @param delta Time elapsed since last update (sec)
          */
         void IteratePhysics(float delta);
+
+        /**
+         * @brief Returns the number of PhysEngine iterations
+         * @return The number of iterations
+         */
+        unsigned long getIterationsCounter() const;
 
         //!======================> React WorldSettings <======================
         /**

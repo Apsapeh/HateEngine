@@ -36,7 +36,7 @@ int main() {
     mesh.setTexture(&texture);
 
 
-    game.setLevelRef(&lvl);
+    game.setLevel(&lvl);
     game.setProcessLoop(_process);
     game.setFixedProcessLoop(_physics_process);
     game.setInputEvent(_input_event);

@@ -61,6 +61,9 @@ void PhysicalBody::Init(reactphysics3d::RigidBody* body) {
 }
 
 void PhysicalBody::Update() {
+    if (getIsSleeping())
+        return;
+
     reactphysics3d::Quaternion qu = this->reactRigidBody->getTransform().getOrientation();
     // Rotation matrix
     glm::mat4 mat = glm::toMat4(glm::quat(qu.w, -qu.z, -qu.y, -qu.x));
@@ -343,6 +346,12 @@ bool PhysicalBody::getIsAllowedToSleep() const {
     if (this->reactRigidBody != nullptr)
         return reactRigidBody->isAllowedToSleep();
     return this->isAllowedToSleep;
+}
+
+bool PhysicalBody::getIsSleeping() const {
+    if (this->reactRigidBody != nullptr)
+        return reactRigidBody->isSleeping();
+    return false;
 }
 
 bool PhysicalBody::getIsRequiredCollisionPoints() const {

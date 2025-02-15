@@ -55,24 +55,7 @@ namespace HateEngine {
             }
         }
 
-        /*
-            I can't use pointer to PhysicalBody here, because object can be deleted during callback
-            Solution: use smart pointer with ref counting
-        */
-        // std::vector<PhysicalBody*> bodies_on_update;
-        std::vector<UUID> bodies_on_update = {};
-
-        std::unordered_map<UUID, PhysicalBody*>* bodies_ptr = nullptr;
-
         void onContact(const rp3d::CollisionCallback::CallbackData& callbackData) override {
-            /*for (auto& body: bodies_on_update) {
-                auto it = bodies_ptr->find(body);
-                if (it != bodies_ptr->end()) {
-                    it->second->collisionPoints.clear();
-                }
-            }
-            bodies_on_update.clear();*/
-
             for (uint32_t i = 0; i < callbackData.getNbContactPairs(); ++i) {
                 const rp3d::CollisionCallback::ContactPair& pair = callbackData.getContactPair(i);
 
@@ -134,7 +117,6 @@ PhysEngine::PhysEngine() {
     }
     this->physicsWorld = physicsCommon->createPhysicsWorld();
     this->listener = new EventCallback();
-    ((EventCallback*) this->listener)->bodies_ptr = &this->physBodies;
     this->physicsWorld->setEventListener(listener);
 }
 
@@ -151,6 +133,7 @@ void PhysEngine::IteratePhysics(float delta) {
         // PhysicalBody* body = body_pair.second.obj;
         body_pair.second->Update();
     }
+    ++this->iterationsCounter;
 }
 
 void PhysEngine::getRayCastCollisions(

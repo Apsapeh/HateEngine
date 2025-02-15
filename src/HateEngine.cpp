@@ -318,7 +318,7 @@ void Engine::__changeFullScreenMode(ThreadSafeRequest req) {
 }
 
 void Engine::__changeLevelRef(ThreadSafeRequest req) {
-    this->setLevelRef((Level*) req.data);
+    this->setLevel((Level*) req.data);
 }
 
 
@@ -466,14 +466,14 @@ void Engine::setInputEvent(void (*func)(Engine*, const InputClass::InputEventInf
 }
 
 
-void Engine::changeLevelRef(Level* lvl) {
+void Engine::requestChangeLevel(Level* lvl) {
     ThreadSafeRequest req;
     req.type = ThreadSafeRequestType::ChangeLevelRef;
     req.data = lvl;
     this->threadSafeRequestsQueue.push_back(req);
 }
 
-void Engine::setLevelRef(Level* lvl) {
+void Engine::setLevel(Level* lvl) {
     std::lock_guard<std::mutex> lock(this->levelMutex);
     Level* old = this->level;
     this->level = lvl;

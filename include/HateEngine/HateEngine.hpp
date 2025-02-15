@@ -130,17 +130,14 @@ namespace HateEngine {
          * @note It's not change scene immediately, only before the next frame
          * @param lvl
          */
-        void changeLevelRef(Level* lvl);
+        void requestChangeLevel(Level* lvl);
         /**
          * @brief Set the scene. NOT THREAD SAFE
          *
          * @warning It's set scene immediately, but not thread safe
          * @param lvl The level to set
          */
-        void setLevelRef(Level* lvl);
+        void setLevel(Level* lvl);
         Level* getLevel();
-        // UUID_Generator::UUID addObjectClone(Object object);
-
-        GLFWwindow* getWindow();
     };
 } // namespace HateEngine

@@ -299,7 +299,7 @@ int main() {
 
     // HateEngine::GLTFModel glmodel2("examples/Assets/ignore/bolg.glb");
 
-    game.setLevelRef(&lvl);
+    game.setLevel(&lvl);
     // lvl.addObject(&test_glmodel);
     //  HateEngine::CubeMesh test_mesh;
     //  HateEngine::Level level2;
