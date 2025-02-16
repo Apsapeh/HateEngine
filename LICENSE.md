@@ -19,11 +19,3 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
-
-It is prohibited to modify any code between the comments:
-
-/*===========> THIS CODE SECTION CANNOT BE MODIFIED <===========*/
-and
-/*=====> END OF CODE SECTION PROHIBITED FROM MODIFICATION <=====*/
-
-Any attempts to modify this code will result in automatic license termination.

@@ -12,7 +12,7 @@ add_requires("reactphysics3d 0.10.2", {debug = is_mode("debug")})
 --add_requires("reactphysics3d 7060cb0fabdcc81ec5929897d3228efe70fae9da", {debug = is_mode("debug")})
 
 
-if is_plat("mingw") and is_arch("i386") then
+if is_arch("i386") then
     add_requires("hateengine-soloud", {configs = {cxflags = {"-DDISABLE_SSE", "-DDISABLE_SIMD"}}})
 else 
     add_requires("hateengine-soloud")
@@ -127,7 +127,7 @@ target("Dev")
     )
 
 
-target("Example_Cube")
+target("Cube")
     set_Example_rules("static")
     add_files(
         "examples/cube.cpp"
