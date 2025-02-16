@@ -31,7 +31,7 @@
 - Windows 10, 11 (MinGW*)
 
 
-\* - MinGW <=7.0.0 (standalone) or newer, but with additional libwinpthread-1.dll
+\* - MinGW <=7.0.0 (standalone) or newer, but with additional libwinpthread-1.dll \
 \*\* - MSVC is long untested, I don't know, it still works or not
 
 
