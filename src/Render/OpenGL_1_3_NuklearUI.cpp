@@ -2,7 +2,6 @@
 // Created by Тимофей Кириченко on 12.05.2024.
 //
 
-#include <GLFW/glfw3.h>
 #include <glad/gl.h>
 
 #include <HateEngine/Render/OpenGL_1_3.hpp>

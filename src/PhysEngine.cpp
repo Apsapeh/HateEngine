@@ -247,11 +247,12 @@ UUID PhysEngine::addObject(PhysicalBody* object) {
             react_shape = physicsCommon->createCapsuleShape(shape->getRadius(), shape->getHeight());
             shape->reactShape = react_shape;
         } else if (shape_type == CollisionShape::Convex) {
-            ConvexShape* shape = (ConvexShape*) shape_pair.second;
+            // TODO: Temporary disabled
+            /*ConvexShape* shape = (ConvexShape*) shape_pair.second;
             reactphysics3d::PolyhedronMesh* PolyhedronMesh =
                     physicsCommon->createPolyhedronMesh(&shape->vertexArray);
             react_shape = physicsCommon->createConvexMeshShape(PolyhedronMesh);
-            shape->reactShape = react_shape;
+            shape->reactShape = react_shape;*/
         } else {
             HATE_WARNING(
                     "CollisionShape [" + std::to_string(shape_pair.second->getUUID().getU64()) +

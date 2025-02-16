@@ -7,14 +7,15 @@ add_requires(
     "termcolor 5635ae00856eeddffcbf7091d13e2987abde91a2"
 )
 -- On my pc it doesn't compile for Linux i386 when Wayland enabled
-add_requires("glfw 3.4", {configs = {wayland = is_plat("linux") and not is_arch("i386")}})
-add_requires("reactphysics3d 7060cb0fabdcc81ec5929897d3228efe70fae9da", {debug = is_mode("debug")})
+add_requires("glfw 3.4", {configs = {wayland = is_plat("linux") and is_arch("x86_64")}})
+add_requires("reactphysics3d 0.10.2", {debug = is_mode("debug")})
+--add_requires("reactphysics3d 7060cb0fabdcc81ec5929897d3228efe70fae9da", {debug = is_mode("debug")})
 
 
 if is_plat("mingw") and is_arch("i386") then
-    add_requires("soloud", {configs = {cxflags = {"-DDISABLE_SSE", "-DDISABLE_SIMD"}}})
+    add_requires("hateengine-soloud", {configs = {cxflags = {"-DDISABLE_SSE", "-DDISABLE_SIMD"}}})
 else 
-    add_requires("soloud")
+    add_requires("hateengine-soloud")
 end
 
 
@@ -63,7 +64,7 @@ end
 
 
 function set_HateEngineLib_rules()
-    add_packages("glfw", "glm", "tinygltf", "reactphysics3d", "glu", "termcolor", "soloud", "recastnavigation")
+    add_packages("glfw", "glm", "tinygltf", "reactphysics3d", "glu", "termcolor", "hateengine-soloud", "recastnavigation")
     add_defines("GLM_ENABLE_EXPERIMENTAL", {public = true})
 
     set_languages("cxx11")
@@ -116,7 +117,7 @@ function set_Example_rules(custom_mode)
         add_deps("HateEngine-static")
     end
 
-    add_packages("glfw", "glm", "reactphysics3d", "soloud", "recastnavigation", {links = {}})
+    add_packages("glfw", "glm", "reactphysics3d", "hateengine-soloud", "recastnavigation", {links = {}})
 end
 
 target("Dev")

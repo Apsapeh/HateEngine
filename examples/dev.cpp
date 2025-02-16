@@ -338,7 +338,7 @@ int main() {
             false, 15, 10000
     );*/
     HateEngine::ObjMapModel objmodel(
-            "examples/Assets/dev.obj", "examples/Assets/dev.map", "", "", 16.0, true, false, 15,
+            "examples/Assets/dev.obj", "examples/Assets/dev.map", "", "", 16.0, false, false, 15,
             10000
     );
     objmodel.deserializeEntities(
