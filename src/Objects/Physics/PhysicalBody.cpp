@@ -27,7 +27,7 @@ void PhysicalBody::Init(reactphysics3d::RigidBody* body) {
     else if (this->bodyType == BodyType::KinematicBody)
         r_bodyType = reactphysics3d::BodyType::KINEMATIC;
     else if (this->bodyType == BodyType::CharacterBody)
-    // TODO: Temporary BodyType changed from CHARACTER to KINEMATIC
+        // TODO: Temporary BodyType changed from CHARACTER to KINEMATIC
         r_bodyType = reactphysics3d::BodyType::KINEMATIC;
 
     this->reactRigidBody->setType(r_bodyType);

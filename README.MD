@@ -20,11 +20,11 @@
 - MacOS (Apple Silicon and Intel 64-bit, MacOS 10.7 and above)
 - Windows (XP and above, MinGW\*, MSVC\*\*)
 
-## Developed on:
+### Developed on:
 - MacOS (M1 chip)
 - Linux (x86_64)
 
-## Tested on (works without or with some small bugs):
+### Tested on (works without or with some small bugs):
 - MacOS (M1 chip, i5-2th gen)
 - Linux (x86_64, armv6 (RPI4))
 - Windows XP (MinGW*, AMD Athlon XP 2500+ (without SSE2))
