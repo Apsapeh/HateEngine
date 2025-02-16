@@ -2,6 +2,7 @@
 #include <glm/ext.hpp>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 
 #include "HateEngine/Log.hpp"
 #include "HateEngine/Objects/Physics/BoxShape.hpp"
@@ -11,6 +12,7 @@
 #include "HateEngine/Objects/Physics/PhysicalBody.hpp"
 #include "HateEngine/Objects/Physics/SphereShape.hpp"
 #include "HateEngine/Objects/Physics/TriggerArea.hpp"
+#include "HateEngine/Utilities/UUID.hpp"
 #include "reactphysics3d/collision/CollisionCallback.h"
 #include "reactphysics3d/collision/ContactPair.h"
 #include "reactphysics3d/collision/OverlapCallback.h"
@@ -56,6 +58,7 @@ namespace HateEngine {
         }
 
         void onContact(const rp3d::CollisionCallback::CallbackData& callbackData) override {
+            std::unordered_set<UUID> already_cleared_bodies;
             for (uint32_t i = 0; i < callbackData.getNbContactPairs(); ++i) {
                 const rp3d::CollisionCallback::ContactPair& pair = callbackData.getContactPair(i);
 
@@ -64,19 +67,30 @@ namespace HateEngine {
                     type == rp3d::CollisionCallback::ContactPair::EventType::ContactStay) {
                     PhysicalBody* body = (PhysicalBody*) pair.getBody1()->getUserData();
                     PhysicalBody* other = (PhysicalBody*) pair.getBody2()->getUserData();
-                    // HATE_ERROR_F("Contact start: %u %u", body->getUUID().getU64(),
-                    // other->getUUID().getU64());
                     if (body->getIsRequiredCollisionPoints() ||
                         other->getIsRequiredCollisionPoints()) {
                         // bodies_on_update.push_back(body->getUUID());
                         std::vector<PhysicalBody::CollisionPoint>* body_points = nullptr;
                         std::vector<PhysicalBody::CollisionPoint>* other_points = nullptr;
-                        if (body->getIsRequiredCollisionPoints())
-                            body_points = &(body->collisionPoints[other] = {});
-                        if (other->getIsRequiredCollisionPoints())
-                            other_points = &(other->collisionPoints[body] = {});
+                        if (body->getIsRequiredCollisionPoints()) {
+                            if (!already_cleared_bodies.count(body->getUUID())) {
+                                already_cleared_bodies.insert(body->getUUID());
+                                body_points = &(body->collisionPoints[other]);
+                                body_points->clear();
+                            } else {
+                                body_points = &(body->collisionPoints[other]);
+                            }
+                        }
+                        if (other->getIsRequiredCollisionPoints()) {
+                            if (!already_cleared_bodies.count(other->getUUID())) {
+                                already_cleared_bodies.insert(other->getUUID());
+                                other_points = &(other->collisionPoints[body]);
+                                other_points->clear();
+                            } else {
+                                other_points = &(other->collisionPoints[body]);
+                            }
+                        }
 
-                        // HATE_WARNING_F("Count: %u", pair.getNbContactPoints());
                         for (uint32_t j = 0; j < pair.getNbContactPoints(); ++j) {
                             const rp3d::CollisionCallback::ContactPoint& contactPoint =
                                     pair.getContactPoint(j);
