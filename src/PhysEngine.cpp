@@ -17,6 +17,7 @@
 #include "reactphysics3d/collision/ContactPair.h"
 #include "reactphysics3d/collision/OverlapCallback.h"
 #include "reactphysics3d/mathematics/Ray.h"
+#include "reactphysics3d/utils/Message.h"
 
 using namespace HateEngine;
 
@@ -248,11 +249,28 @@ UUID PhysEngine::addObject(PhysicalBody* object) {
             shape->reactShape = react_shape;
         } else if (shape_type == CollisionShape::Convex) {
             // TODO: Temporary disabled
-            /*ConvexShape* shape = (ConvexShape*) shape_pair.second;
-            reactphysics3d::PolyhedronMesh* PolyhedronMesh =
-                    physicsCommon->createPolyhedronMesh(&shape->vertexArray);
-            react_shape = physicsCommon->createConvexMeshShape(PolyhedronMesh);
-            shape->reactShape = react_shape;*/
+            ConvexShape* shape = (ConvexShape*) shape_pair.second;
+            std::vector<rp3d::Message> messages;
+            auto convex_mesh = physicsCommon->createConvexMesh(shape->vertexArray, messages);
+            
+            if (messages.size() > 0) {
+                for (const rp3d::Message& message: messages) {
+                    switch(message.type) {
+                        case rp3d::Message::Type::Information:
+                            HATE_INFO_F("ConvexShape [%llu]: %s", shape->getUUID().getU64(), message.text.c_str());
+                            break;
+                        case rp3d::Message::Type::Warning:
+                            HATE_WARNING_F("ConvexShape [%llu]: %s", shape->getUUID().getU64(), message.text.c_str());
+                            break;
+                        case rp3d::Message::Type::Error:
+                            HATE_ERROR_F("ConvexShape [%llu]: %s", shape->getUUID().getU64(), message.text.c_str());
+                            break;
+                    }
+                }
+            }
+
+            react_shape = physicsCommon->createConvexMeshShape(convex_mesh);
+            shape->reactShape = react_shape;
         } else {
             HATE_WARNING(
                     "CollisionShape [" + std::to_string(shape_pair.second->getUUID().getU64()) +
