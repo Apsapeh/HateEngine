@@ -39,6 +39,8 @@ namespace HateEngine {
         bool isOneThread = false;
         bool isVSync = true;
 
+        double frameDelta = 0.0;
+
         glm::ivec2 resolution = {0, 0};
         glm::vec2 displayScale = {0.0f, 0.0f};
         float aspectRatio = 0;
@@ -115,6 +117,7 @@ namespace HateEngine {
          * @return double
          */
         double getGPUTimeMS();
+
         /**
          * @brief Return the CPU time in milliseconds
          * @warning Only for 32-bit systems. If CPU takes more, then 2.147 seconds, the
@@ -123,6 +126,13 @@ namespace HateEngine {
          * @return double
          */
         double getCPUTimeMS();
+
+        /**
+         * @brief Return the delta time in seconds between frames
+         *
+         * @return double
+         */
+        double getFrameDelta();
 
         glm::ivec2 getResolution();
         glm::vec2 getDisplayScale();

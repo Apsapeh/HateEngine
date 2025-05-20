@@ -31,6 +31,14 @@ namespace HateEngine {
         uint8_t maxLightCount = 8;
         float UIScale = 1.0f;
 
+        double UIUpdateDelay = 1.0;
+
+        ////// Nuklear //////
+        void* UINuklearBuffer_cmds;
+        void* UINuklearBuffer_verts;
+        void* UINuklearBuffer_idx;
+        /////////////////////
+
         FrustumCuller frustrum;
         std::vector<const Mesh*> corrent_transparent_buffer_meshes = {};
 

@@ -180,13 +180,12 @@ void Engine::Run() {
     double fixed_process_loop_delta = 0;
     double physics_engine_iterate_loop_delta = 0;
     double audio_engine_iterate_loop_delta = 0;
-    double delta = 0.0;
     double fixed_process_loop_delay = 1.0 / this->fixedLoopRefreshRate;
     double physics_engine_iterate_loop_delay = 1.0 / this->physicsEngineIterateLoopRefreshRate;
     double audio_engine_iterate_loop_delay = 1.0 / this->audioEngineIterateLoopRefreshRate;
     while (not glfwWindowShouldClose(this->window)) {
         auto time_start = std::chrono::high_resolution_clock::now();
-        delta = glfwGetTime() - oldTime;
+        this->frameDelta = glfwGetTime() - oldTime;
         oldTime = glfwGetTime();
         glfwPollEvents();
 
@@ -221,14 +220,14 @@ void Engine::Run() {
         // meshesMutex.lock();
         // std::lock_guard<std::mutex> lock(this->levelMutex);
         if (this->processLoop != nullptr)
-            this->processLoop(this, delta);
+            this->processLoop(this, frameDelta);
 
         if (this->level != nullptr)
-            this->level->Update(this, delta);
+            this->level->Update(this, frameDelta);
 
         if (this->isOneThread) {
-            fixed_process_loop_delta += delta;
-            physics_engine_iterate_loop_delta += delta;
+            fixed_process_loop_delta += frameDelta;
+            physics_engine_iterate_loop_delta += frameDelta;
 
             if (fixed_process_loop_delta >= fixed_process_loop_delay) {
                 if (this->fixedProcessLoop != nullptr)
@@ -254,7 +253,7 @@ void Engine::Run() {
         }
 
         if (this->level != nullptr) {
-            audio_engine_iterate_loop_delta += delta;
+            audio_engine_iterate_loop_delta += frameDelta;
 
             if (audio_engine_iterate_loop_delta >= audio_engine_iterate_loop_delay) {
                 if (this->level != nullptr and this->level->camera != nullptr) {
@@ -392,6 +391,10 @@ double Engine::getCPUTimeMS() {
     return double(this->lastCPUTime) / 10000000.0;
 }
 
+double Engine::getFrameDelta() {
+    return this->frameDelta;
+}
+
 glm::ivec2 Engine::getResolution() {
     return this->resolution;
 }
@@ -501,9 +504,8 @@ void Engine::setLevel(Level* lvl) {
     }
 
     this->level = lvl;
-    this->level_callback_added_uuid = this->level->onLightAdded.connect([this](Light* l) {
-        this->renderInterface->addLight(l);
-    });
+    this->level_callback_added_uuid =
+            this->level->onLightAdded.connect([this](Light* l) { this->renderInterface->addLight(l); });
     this->level_callback_removed_uuid = this->level->onLightRemoved.connect([this](Light* l) {
         this->renderInterface->removeLight(l);
     });

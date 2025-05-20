@@ -36,7 +36,9 @@
 using namespace HateEngine;
 
 static unsigned int device_upload_atlas(const void* image, int width, int height);
-static long draw(int width, int height);
+static long draw(
+        int width, int height, const void* vertices, const nk_draw_index* offset, struct nk_buffer* cmds
+);
 static void pump_input(struct nk_context* ctx, Engine* win);
 
 #define MAX_MEMORY 512 * 1024
@@ -55,7 +57,6 @@ struct your_vertex {
 
 
 // TODO: Refactor this file
-// TODO: Optimize draw function
 
 
 void OpenGL_1_3::initNuklearUI() {
@@ -71,13 +72,6 @@ void OpenGL_1_3::initNuklearUI() {
     nk_font_atlas_init_default(&atlas);
     nk_font_atlas_begin(&atlas);
     font = nk_font_atlas_add_default(&atlas, 18, &config);
-    // font = nk_font_atlas_add_from_file(&atlas, "/Users/ghost/Desktop/C++
-    // Projects/Projects/Nuklear_GLFW3_GL1_Driver/OpenSans-Regular.ttf", 18,
-    // &config);
-
-    /*font = nk_font_atlas_add_from_file(
-            &atlas, "examples/Assets/Comfortaa-Regular.ttf", 18, &config
-    );*/
     image = nk_font_atlas_bake(&atlas, &w, &h, NK_FONT_ATLAS_RGBA32);
     unsigned int font_tex = device_upload_atlas(image, w, h);
     nk_font_atlas_end(&atlas, nk_handle_id((int) font_tex), &tex_null);
@@ -90,6 +84,13 @@ void OpenGL_1_3::initNuklearUI() {
     ctx.style.button.padding = nk_vec2(0, 0);
 
     ctx.style.text.padding = nk_vec2(0, 0);
+
+    this->UINuklearBuffer_cmds = new struct nk_buffer;
+    this->UINuklearBuffer_verts = new struct nk_buffer;
+    this->UINuklearBuffer_idx = new struct nk_buffer;
+    nk_buffer_init_default((struct nk_buffer*) this->UINuklearBuffer_cmds);
+    nk_buffer_init_default((struct nk_buffer*) this->UINuklearBuffer_verts);
+    nk_buffer_init_default((struct nk_buffer*) this->UINuklearBuffer_idx);
 }
 
 static unsigned int device_upload_atlas(const void* image, int width, int height) {
@@ -152,198 +153,201 @@ void OpenGL_1_3::unloadFont(UIFont* font) {
 
 void OpenGL_1_3::DrawNuklearUI(std::unordered_map<UUID, WidgetUI*>* widgets) {
     Level* start_level = engine->getLevel();
-    pump_input(&ctx, engine);
 
-    for (const auto& it: *widgets) {
-        const WidgetUI* widget = it.second;
-        glm::ivec2 res = engine->getResolution();
-        CoordsUI::CoordsData position = widget->position.getCoords(res.x, res.y);
-        CoordsUI::CoordsData size = widget->size.getTopLeftCoords(res.x, res.y);
-        nk_flags widget_flags = (widget->has_border ? NK_WINDOW_BORDER : 0) |
-                                (widget->is_movable ? NK_WINDOW_MOVABLE : 0) |
-                                (widget->is_scalable ? NK_WINDOW_SCALABLE : 0) |
-                                (widget->is_closable ? NK_WINDOW_CLOSABLE : 0) |
-                                (widget->is_minimizable ? NK_WINDOW_MINIMIZABLE : 0) |
-                                (!widget->has_scrollbar ? NK_WINDOW_NO_SCROLLBAR : 0) |
-                                (widget->has_title ? NK_WINDOW_TITLE : 0) |
-                                (widget->is_scroll_autohide ? NK_WINDOW_SCROLL_AUTO_HIDE : 0) |
-                                (widget->has_background ? NK_WINDOW_BACKGROUND : 0) |
-                                (widget->is_scalable_left ? NK_WINDOW_SCALE_LEFT : 0) |
-                                (!widget->has_input ? NK_WINDOW_NO_INPUT : 0) |
-                                (!widget->is_interactive ? NK_WINDOW_NOT_INTERACTIVE : 0);
+    UIUpdateDelay += engine->getFrameDelta();
 
-        ctx.style.window.fixed_background = nk_style_item_color(
-                nk_rgba(widget->color.x, widget->color.y, widget->color.z, widget->color.w)
-        );
-        if (nk_begin(
-                    &ctx, widget->title.c_str(), nk_rect(position.x, position.y, size.x, size.y),
-                    widget_flags
-            )) {
-            nk_layout_space_begin(&ctx, NK_STATIC, (int) size.y, INT_MAX);
+    if (UIUpdateDelay >= 1.0 / 60.0) {
+        // UpdateUI
+        UIUpdateDelay = 0;
+
+        nk_buffer_clear((struct nk_buffer*) this->UINuklearBuffer_cmds);
+        nk_buffer_clear((struct nk_buffer*) this->UINuklearBuffer_verts);
+        nk_buffer_clear((struct nk_buffer*) this->UINuklearBuffer_idx);
+        nk_clear(&ctx);
+        
+        pump_input(&ctx, engine);
+
+        for (const auto& it: *widgets) {
+            const WidgetUI* widget = it.second;
+            glm::ivec2 res = engine->getResolution();
+            CoordsUI::CoordsData position = widget->position.getCoords(res.x, res.y);
+            CoordsUI::CoordsData size = widget->size.getTopLeftCoords(res.x, res.y);
+            nk_flags widget_flags = (widget->has_border ? NK_WINDOW_BORDER : 0) |
+                                    (widget->is_movable ? NK_WINDOW_MOVABLE : 0) |
+                                    (widget->is_scalable ? NK_WINDOW_SCALABLE : 0) |
+                                    (widget->is_closable ? NK_WINDOW_CLOSABLE : 0) |
+                                    (widget->is_minimizable ? NK_WINDOW_MINIMIZABLE : 0) |
+                                    (!widget->has_scrollbar ? NK_WINDOW_NO_SCROLLBAR : 0) |
+                                    (widget->has_title ? NK_WINDOW_TITLE : 0) |
+                                    (widget->is_scroll_autohide ? NK_WINDOW_SCROLL_AUTO_HIDE : 0) |
+                                    (widget->has_background ? NK_WINDOW_BACKGROUND : 0) |
+                                    (widget->is_scalable_left ? NK_WINDOW_SCALE_LEFT : 0) |
+                                    (!widget->has_input ? NK_WINDOW_NO_INPUT : 0) |
+                                    (!widget->is_interactive ? NK_WINDOW_NOT_INTERACTIVE : 0);
+
+            ctx.style.window.fixed_background = nk_style_item_color(
+                    nk_rgba(widget->color.x, widget->color.y, widget->color.z, widget->color.w)
+            );
+            if (nk_begin(
+                        &ctx, widget->title.c_str(), nk_rect(position.x, position.y, size.x, size.y),
+                        widget_flags
+                )) {
+                nk_layout_space_begin(&ctx, NK_STATIC, (int) size.y, INT_MAX);
 
 
-            for (const auto& child: widget->elements) {
-                const ObjectUI* obj = child.obj;
-                const CoordsUI::CoordsData obj_size = obj->size.getTopLeftCoords(size.x, size.y);
-                const CoordsUI::CoordsData obj_position = obj->position.getCoords(size.x, size.y);
+                for (const auto& child: widget->elements) {
+                    const ObjectUI* obj = child.obj;
+                    const CoordsUI::CoordsData obj_size = obj->size.getTopLeftCoords(size.x, size.y);
+                    const CoordsUI::CoordsData obj_position = obj->position.getCoords(size.x, size.y);
 
-                if (!obj->visible)
-                    continue;
-
-                nk_layout_space_push(
-                        &ctx, nk_rect(obj_position.x, obj_position.y, obj_size.x, obj_size.y)
-                );
-
-                nk_style_push_font(&ctx, ctx.style.font);
-
-                ctx.style.text.color =
-                        nk_rgba(obj->text_color.x, obj->text_color.y, obj->text_color.z,
-                                obj->text_color.w);
-
-                // const nk_user_font* prev_font = ctx.style.font;
-                if (obj->font != nullptr and obj->font->is_loaded) {
-                    if (not obj->font->is_gpu_loaded) {
-                        obj->font->Load(loadFont, unloadFont);
-                    }
-
-                    ctx.style.font = &((UIFontRAPI_Data*) obj->font->render_api_data)->font->handle;
-                }
-
-                if (obj->type == ObjectUI::Type::Label) {
-                    const LabelUI* label = (LabelUI*) obj;
-
-                    if (label->text_align == LabelUI::TextAlign::Wrap) {
-                        nk_label_wrap(&ctx, label->text.c_str());
+                    if (!obj->visible)
                         continue;
-                    }
 
-                    nk_flags text_flags = 0;
-                    if (label->text_align == LabelUI::TextAlign::Left)
-                        text_flags = NK_TEXT_LEFT;
-                    else if (label->text_align == LabelUI::TextAlign::Center)
-                        text_flags = NK_TEXT_CENTERED;
-                    else if (label->text_align == LabelUI::TextAlign::Right)
-                        text_flags = NK_TEXT_RIGHT;
-                    nk_label(&ctx, label->text.c_str(), text_flags);
-                    // ctx.style.font = prev_font;
+                    nk_layout_space_push(
+                            &ctx, nk_rect(obj_position.x, obj_position.y, obj_size.x, obj_size.y)
+                    );
 
+                    nk_style_push_font(&ctx, ctx.style.font);
 
-                } else if (obj->type == ObjectUI::Type::Button) {
-                    ButtonUI* button = (ButtonUI*) obj;
+                    ctx.style.text.color =
+                            nk_rgba(obj->text_color.x, obj->text_color.y, obj->text_color.z,
+                                    obj->text_color.w);
 
-                    struct nk_rect widget_bounds = nk_window_get_bounds(&ctx);
-                    struct nk_rect bounds = {
-                            obj_position.x + widget_bounds.x, obj_position.y + widget_bounds.y,
-                            obj_size.x, obj_size.y
-                    };
-
-                    if (widget->has_border) {
-                        bounds.x += ctx.style.window.border;
-                        bounds.y += ctx.style.window.border;
-                    }
-
-                    if (widget->has_title || widget->is_closable || widget->is_minimizable) {
-                        float padding_y = ctx.style.window.header.padding.y;
-                        float spacing_y = ctx.style.window.spacing.y;
-                        const struct nk_user_font* font = ctx.style.font;
-                        float font_height = font->height;
-                        bounds.y += font_height + 2 * padding_y + spacing_y * 2;
-                    }
-
-                    // clang-format off
-                    #define BUTTON_BODY                                                                                \
-                        button->call_on_click(this->engine);                                                           \
-                        // Because the level can be changed in the callback
-                        if (start_level != engine->getLevel()) {
-                            nk_layout_space_end(&ctx);
-                            nk_end(&ctx);
-                            return;
-                        }
-                    // clang-format on
-
-                    struct nk_image* button_image = nullptr;
-                    if (button->pressed_texture != nullptr and
-                        nk_input_is_mouse_hovering_rect(&ctx.input, bounds) and
-                        nk_input_is_mouse_down(&ctx.input, NK_BUTTON_LEFT) and
-                        button->pressed_texture->is_loaded) {
-
-                        if (not button->getPressedTexture()->is_gpu_loaded)
-                            button->getPressedTexture()->Load(loadTexture, unloadTexture);
-
-                        if (button->nk_img_pressed == nullptr) {
-                            struct nk_image img =
-                                    nk_image_id(button->getPressedTexture()->getTextureID());
-                            button->nk_img_pressed = new struct nk_image(img);
+                    // const nk_user_font* prev_font = ctx.style.font;
+                    if (obj->font != nullptr and obj->font->is_loaded) {
+                        if (not obj->font->is_gpu_loaded) {
+                            obj->font->Load(loadFont, unloadFont);
                         }
 
-                        button_image = (struct nk_image*) button->nk_img_pressed;
-                    } else if (button->hover_texture != nullptr and
-                               nk_input_is_mouse_hovering_rect(&ctx.input, bounds) and
-                               button->hover_texture->is_loaded) {
-                        if (not button->getHoverTexture()->is_gpu_loaded)
-                            if (!button->getHoverTexture()->Load(loadTexture, unloadTexture))
-                                continue;
-
-                        if (button->nk_img_hover == nullptr) {
-                            struct nk_image img = nk_image_id(button->getHoverTexture()->getTextureID());
-                            button->nk_img_hover = new struct nk_image(img);
-                        }
-
-                        button_image = (struct nk_image*) button->nk_img_hover;
-                    } else if (button->normal_texture != nullptr and button->normal_texture->is_loaded) {
-                        if (not button->getNormalTexture()->is_gpu_loaded)
-                            button->getNormalTexture()->Load(loadTexture, unloadTexture);
-
-                        if (button->nk_img_normal == nullptr) {
-                            struct nk_image img =
-                                    nk_image_id(button->getNormalTexture()->getTextureID());
-                            button->nk_img_normal = new struct nk_image(img);
-                        }
-
-                        button_image = (struct nk_image*) button->nk_img_normal;
+                        ctx.style.font = &((UIFontRAPI_Data*) obj->font->render_api_data)->font->handle;
                     }
 
+                    if (obj->type == ObjectUI::Type::Label) {
+                        const LabelUI* label = (LabelUI*) obj;
 
-                    if (button_image != nullptr and button->ignore_color_with_image) {
-                        ctx.style.button.normal = nk_style_item_color(nk_rgba(0, 0, 0, 0));
-                        ctx.style.button.hover = nk_style_item_color(nk_rgba(0, 0, 0, 0));
-                        ctx.style.button.active = nk_style_item_color(nk_rgba(0, 0, 0, 0));
-                    } else {
-                        ctx.style.button.normal = nk_style_item_color(nk_rgba(
-                                button->color.x, button->color.y, button->color.z, button->color.w
-                        ));
+                        if (label->text_align == LabelUI::TextAlign::Wrap) {
+                            nk_label_wrap(&ctx, label->text.c_str());
+                            continue;
+                        }
 
-                        ctx.style.button.hover = nk_style_item_color(
-                                nk_rgba(button->hover_color.x, button->hover_color.y,
-                                        button->hover_color.z, button->hover_color.w)
-                        );
-
-                        ctx.style.button.active = nk_style_item_color(
-                                nk_rgba(button->pressed_color.x, button->pressed_color.y,
-                                        button->pressed_color.z, button->pressed_color.w)
-                        );
-                    }
-
-                    // ctx.style.button.text_normal = nk_rgba(0, 0, 255, 255);
-
-                    ctx.style.button.rounding = button->roundness;
-
-                    if (button_image != nullptr) {
                         nk_flags text_flags = 0;
-                        if (nk_button_image_label(
-                                    &ctx, *button_image, button->text.c_str(), NK_TEXT_ALIGN_CENTERED
-                            )) {
-                            button->call_on_click(this->engine);
+                        if (label->text_align == LabelUI::TextAlign::Left)
+                            text_flags = NK_TEXT_LEFT;
+                        else if (label->text_align == LabelUI::TextAlign::Center)
+                            text_flags = NK_TEXT_CENTERED;
+                        else if (label->text_align == LabelUI::TextAlign::Right)
+                            text_flags = NK_TEXT_RIGHT;
+                        nk_label(&ctx, label->text.c_str(), text_flags);
+                        // ctx.style.font = prev_font;
+
+
+                    } else if (obj->type == ObjectUI::Type::Button) {
+                        ButtonUI* button = (ButtonUI*) obj;
+
+                        struct nk_rect widget_bounds = nk_window_get_bounds(&ctx);
+                        struct nk_rect bounds = {
+                                obj_position.x + widget_bounds.x, obj_position.y + widget_bounds.y,
+                                obj_size.x, obj_size.y
+                        };
+
+                        if (widget->has_border) {
+                            bounds.x += ctx.style.window.border;
+                            bounds.y += ctx.style.window.border;
+                        }
+
+                        if (widget->has_title || widget->is_closable || widget->is_minimizable) {
+                            float padding_y = ctx.style.window.header.padding.y;
+                            float spacing_y = ctx.style.window.spacing.y;
+                            const struct nk_user_font* font = ctx.style.font;
+                            float font_height = font->height;
+                            bounds.y += font_height + 2 * padding_y + spacing_y * 2;
+                        }
+
+                        // clang-format off
+                        #define BUTTON_BODY                                                                                \
+                            button->call_on_click(this->engine);                                                           \
                             // Because the level can be changed in the callback
                             if (start_level != engine->getLevel()) {
                                 nk_layout_space_end(&ctx);
                                 nk_end(&ctx);
                                 return;
                             }
+                        // clang-format on
+
+                        struct nk_image* button_image = nullptr;
+                        if (button->pressed_texture != nullptr and
+                            nk_input_is_mouse_hovering_rect(&ctx.input, bounds) and
+                            nk_input_is_mouse_down(&ctx.input, NK_BUTTON_LEFT) and
+                            button->pressed_texture->is_loaded) {
+
+                            if (not button->getPressedTexture()->is_gpu_loaded)
+                                button->getPressedTexture()->Load(loadTexture, unloadTexture);
+
+                            if (button->nk_img_pressed == nullptr) {
+                                struct nk_image img =
+                                        nk_image_id(button->getPressedTexture()->getTextureID());
+                                button->nk_img_pressed = new struct nk_image(img);
+                            }
+
+                            button_image = (struct nk_image*) button->nk_img_pressed;
+                        } else if (button->hover_texture != nullptr and
+                                   nk_input_is_mouse_hovering_rect(&ctx.input, bounds) and
+                                   button->hover_texture->is_loaded) {
+                            if (not button->getHoverTexture()->is_gpu_loaded)
+                                if (!button->getHoverTexture()->Load(loadTexture, unloadTexture))
+                                    continue;
+
+                            if (button->nk_img_hover == nullptr) {
+                                struct nk_image img =
+                                        nk_image_id(button->getHoverTexture()->getTextureID());
+                                button->nk_img_hover = new struct nk_image(img);
+                            }
+
+                            button_image = (struct nk_image*) button->nk_img_hover;
+                        } else if (button->normal_texture != nullptr and
+                                   button->normal_texture->is_loaded) {
+                            if (not button->getNormalTexture()->is_gpu_loaded)
+                                button->getNormalTexture()->Load(loadTexture, unloadTexture);
+
+                            if (button->nk_img_normal == nullptr) {
+                                struct nk_image img =
+                                        nk_image_id(button->getNormalTexture()->getTextureID());
+                                button->nk_img_normal = new struct nk_image(img);
+                            }
+
+                            button_image = (struct nk_image*) button->nk_img_normal;
                         }
-                    } else {
-                        if (nk_button_label(&ctx, button->text.c_str())) {
-                            if (button->on_click != nullptr) {
+
+
+                        if (button_image != nullptr and button->ignore_color_with_image) {
+                            ctx.style.button.normal = nk_style_item_color(nk_rgba(0, 0, 0, 0));
+                            ctx.style.button.hover = nk_style_item_color(nk_rgba(0, 0, 0, 0));
+                            ctx.style.button.active = nk_style_item_color(nk_rgba(0, 0, 0, 0));
+                        } else {
+                            ctx.style.button.normal = nk_style_item_color(nk_rgba(
+                                    button->color.x, button->color.y, button->color.z, button->color.w
+                            ));
+
+                            ctx.style.button.hover = nk_style_item_color(
+                                    nk_rgba(button->hover_color.x, button->hover_color.y,
+                                            button->hover_color.z, button->hover_color.w)
+                            );
+
+                            ctx.style.button.active = nk_style_item_color(
+                                    nk_rgba(button->pressed_color.x, button->pressed_color.y,
+                                            button->pressed_color.z, button->pressed_color.w)
+                            );
+                        }
+
+                        // ctx.style.button.text_normal = nk_rgba(0, 0, 255, 255);
+
+                        ctx.style.button.rounding = button->roundness;
+
+                        if (button_image != nullptr) {
+                            nk_flags text_flags = 0;
+                            if (nk_button_image_label(
+                                        &ctx, *button_image, button->text.c_str(), NK_TEXT_ALIGN_CENTERED
+                                )) {
                                 button->call_on_click(this->engine);
                                 // Because the level can be changed in the callback
                                 if (start_level != engine->getLevel()) {
@@ -352,43 +356,90 @@ void OpenGL_1_3::DrawNuklearUI(std::unordered_map<UUID, WidgetUI*>* widgets) {
                                     return;
                                 }
                             }
-                        }
-                    }
-
-
-                } else if (obj->type == ObjectUI::Type::Checkbox) {
-                    CheckboxUI* checkbox = (CheckboxUI*) obj;
-
-                    nk_bool checked = checkbox->get_checked();
-                    nk_checkbox_label(&ctx, checkbox->text.c_str(), &checked);
-                    checkbox->set_checked(checked);
-                } else if (obj->type == ObjectUI::Type::Image) {
-                    ImageUI* image = (ImageUI*) obj;
-                    Texture* texture = image->texture;
-
-                    if (texture->is_loaded) {
-                        if (not texture->is_gpu_loaded)
-                            texture->Load(loadTexture, unloadTexture);
-
-                        if (image->nk_image == nullptr) {
-                            struct nk_image img = nk_image_id(texture->getTextureID());
-                            image->nk_image = new struct nk_image(img);
+                        } else {
+                            if (nk_button_label(&ctx, button->text.c_str())) {
+                                if (button->on_click != nullptr) {
+                                    button->call_on_click(this->engine);
+                                    // Because the level can be changed in the callback
+                                    if (start_level != engine->getLevel()) {
+                                        nk_layout_space_end(&ctx);
+                                        nk_end(&ctx);
+                                        return;
+                                    }
+                                }
+                            }
                         }
 
-                        nk_image(&ctx, *((struct nk_image*) image->nk_image));
+
+                    } else if (obj->type == ObjectUI::Type::Checkbox) {
+                        CheckboxUI* checkbox = (CheckboxUI*) obj;
+
+                        nk_bool checked = checkbox->get_checked();
+                        nk_checkbox_label(&ctx, checkbox->text.c_str(), &checked);
+                        checkbox->set_checked(checked);
+                    } else if (obj->type == ObjectUI::Type::Image) {
+                        ImageUI* image = (ImageUI*) obj;
+                        Texture* texture = image->texture;
+
+                        if (texture->is_loaded) {
+                            if (not texture->is_gpu_loaded)
+                                texture->Load(loadTexture, unloadTexture);
+
+                            if (image->nk_image == nullptr) {
+                                struct nk_image img = nk_image_id(texture->getTextureID());
+                                image->nk_image = new struct nk_image(img);
+                            }
+
+                            nk_image(&ctx, *((struct nk_image*) image->nk_image));
+                        }
                     }
+                    nk_style_pop_font(&ctx);
                 }
-                nk_style_pop_font(&ctx);
+                nk_layout_space_end(&ctx);
             }
-            nk_layout_space_end(&ctx);
+            nk_end(&ctx);
         }
-        nk_end(&ctx);
+
+
+        struct nk_convert_config cfg = {};
+        static const struct nk_draw_vertex_layout_element vertex_layout[] = {
+                {NK_VERTEX_POSITION, NK_FORMAT_FLOAT, NK_OFFSETOF(struct your_vertex, pos)},
+                {NK_VERTEX_TEXCOORD, NK_FORMAT_FLOAT, NK_OFFSETOF(struct your_vertex, uv)},
+                {NK_VERTEX_COLOR, NK_FORMAT_R8G8B8A8, NK_OFFSETOF(struct your_vertex, col)},
+                {NK_VERTEX_LAYOUT_END}
+        };
+        cfg.shape_AA = NK_ANTI_ALIASING_ON;
+        cfg.line_AA = NK_ANTI_ALIASING_ON;
+        cfg.vertex_layout = vertex_layout;
+        cfg.vertex_size = sizeof(struct your_vertex);
+        cfg.vertex_alignment = NK_ALIGNOF(struct your_vertex);
+        cfg.circle_segment_count = 22;
+        cfg.curve_segment_count = 22;
+        cfg.arc_segment_count = 22;
+        cfg.global_alpha = 1.0f;
+        cfg.tex_null = tex_null;
+        //
+        // setup buffers and convert
+        nk_convert(
+                &ctx, (struct nk_buffer*) this->UINuklearBuffer_cmds,
+                (struct nk_buffer*) this->UINuklearBuffer_verts,
+                (struct nk_buffer*) this->UINuklearBuffer_idx, &cfg
+        );
     }
+    
+
     glm::ivec2 resolution = this->engine->getResolution();
-    gpu_time += draw(resolution.x, resolution.y);
+    const void* vertices = nk_buffer_memory_const((struct nk_buffer*) this->UINuklearBuffer_verts);
+    const nk_draw_index* offset =
+            (const nk_draw_index*) nk_buffer_memory_const((struct nk_buffer*) this->UINuklearBuffer_idx);
+    gpu_time +=
+            draw(resolution.x, resolution.y, vertices, offset,
+                 (struct nk_buffer*) this->UINuklearBuffer_cmds);
 }
 
-static long draw(int width, int height) {
+static long draw(
+        int width, int height, const void* vertices, const nk_draw_index* offset, struct nk_buffer* cmds
+) {
     glEnable(GL_BLEND);
 
     glEnableClientState(GL_COLOR_ARRAY);
@@ -402,56 +453,20 @@ static long draw(int width, int height) {
     glm::mat4 Mp = glm::ortho(
             0.0f, (float) width, (float) height,
             0.0f
-    ); //(glm::radians(60), 0.5, 0.1f, 30);
-    // glm::mat4 Mp = glm::perspective(glm::radians(60.0f), (float)(WIDTH /
-    // HEIGHT), 0.1f, 30000.0f);
+    );
     glMatrixMode(GL_PROJECTION);
     glLoadMatrixf(glm::value_ptr(Mp));
 
-    struct nk_convert_config cfg = {};
-    static const struct nk_draw_vertex_layout_element vertex_layout[] = {
-            {NK_VERTEX_POSITION, NK_FORMAT_FLOAT, NK_OFFSETOF(struct your_vertex, pos)},
-            {NK_VERTEX_TEXCOORD, NK_FORMAT_FLOAT, NK_OFFSETOF(struct your_vertex, uv)},
-            {NK_VERTEX_COLOR, NK_FORMAT_R8G8B8A8, NK_OFFSETOF(struct your_vertex, col)},
-            {NK_VERTEX_LAYOUT_END}
-    };
-    cfg.shape_AA = NK_ANTI_ALIASING_ON;
-    cfg.line_AA = NK_ANTI_ALIASING_ON;
-    cfg.vertex_layout = vertex_layout;
-    cfg.vertex_size = sizeof(struct your_vertex);
-    cfg.vertex_alignment = NK_ALIGNOF(struct your_vertex);
-    cfg.circle_segment_count = 22;
-    cfg.curve_segment_count = 22;
-    cfg.arc_segment_count = 22;
-    cfg.global_alpha = 1.0f;
-    cfg.tex_null = tex_null;
-    //
-    // setup buffers and convert
-    struct nk_buffer cmds, verts, idx;
-    nk_buffer_init_default(&cmds);
-    nk_buffer_init_default(&verts);
-    nk_buffer_init_default(&idx);
-    nk_convert(&ctx, &cmds, &verts, &idx, &cfg);
-
-    GLsizei vs = sizeof(struct your_vertex);
-    size_t vp = offsetof(struct your_vertex, pos);
-    size_t up = offsetof(struct your_vertex, uv);
-    size_t cp = offsetof(struct your_vertex, col);
-    const nk_draw_index* offset = NULL;
-    //
-    // draw
-    const void* vertices = nk_buffer_memory_const(&verts);
-
     auto time_start = std::chrono::high_resolution_clock::now();
 
-    glVertexPointer(2, GL_FLOAT, vs, vertices);
-    glTexCoordPointer(2, GL_FLOAT, vs, (nk_byte*) vertices + up);
-    glColorPointer(4, GL_UNSIGNED_BYTE, vs, (nk_byte*) vertices + cp);
-    const struct nk_draw_command* cmd;
-    offset = (const nk_draw_index*) nk_buffer_memory_const(&idx);
+    glVertexPointer(2, GL_FLOAT, sizeof(your_vertex), vertices);
+    glTexCoordPointer(2, GL_FLOAT, sizeof(your_vertex), (nk_byte*) vertices + offsetof(your_vertex, uv));
+    glColorPointer(
+            4, GL_UNSIGNED_BYTE, sizeof(your_vertex), (nk_byte*) vertices + offsetof(your_vertex, col)
+    );
 
-    // int n = 0;
-    nk_draw_foreach(cmd, &ctx, &cmds) {
+    const struct nk_draw_command* cmd;
+    nk_draw_foreach(cmd, &ctx, cmds) {
         if (!cmd->elem_count)
             continue;
         glBindTexture(GL_TEXTURE_2D, (GLuint) cmd->texture.id);
@@ -463,13 +478,6 @@ static long draw(int width, int height) {
     auto time_end = std::chrono::high_resolution_clock::now();
     long gpu_time = std::chrono::duration_cast<std::chrono::nanoseconds>(time_end - time_start).count();
 
-    // HATE_INFO_F("Draw calls: %d", n);
-
-
-    nk_buffer_free(&cmds);
-    nk_buffer_free(&verts);
-    nk_buffer_free(&idx);
-    nk_clear(&ctx);
     glPopMatrix();
     glDisable(GL_BLEND);
     glDisableClientState(GL_COLOR_ARRAY);
