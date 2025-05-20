@@ -99,8 +99,8 @@ Texture::Texture(
 
 Texture::Texture(
         std::vector<uint8_t> data, int width, int height, Texture::TexType tex_type,
-        Texture::TexWrap tex_wrap, Texture::TexFiltering tex_filtering, bool mipmap,
-        float mipmap_bias, bool autoload
+        Texture::TexWrap tex_wrap, Texture::TexFiltering tex_filtering, bool mipmap, float mipmap_bias,
+        bool autoload
 ) {
     this->data = std::move(data);
     this->width = width;

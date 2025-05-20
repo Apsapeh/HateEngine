@@ -111,10 +111,10 @@ static void Load(tgModel& model, std::vector<Mesh*>* meshes, std::vector<Texture
             int ind_type = indices_accessor.componentType;
 
             // I don't know other way
-#define addIndiciesToVec(type)                                                                     \
-    mesh->setIndicies(std::vector<uint32_t>(                                                       \
-            (const type*) indices_data, (const type*) indices_data + data_size                     \
-    ))
+#define addIndiciesToVec(type)                                                                          \
+    mesh->setIndicies(                                                                                  \
+            std::vector<uint32_t>((const type*) indices_data, (const type*) indices_data + data_size)   \
+    )
             if (ind_type == 5120)
                 addIndiciesToVec(int8_t);
             else if (ind_type == 5121)
@@ -142,14 +142,12 @@ static void Load(tgModel& model, std::vector<Mesh*>* meshes, std::vector<Texture
 
             // =====> Get UV's <=====
             if (attributes.find("TEXCOORD_0") != attributes.end()) {
-                const auto& texcoord_accessor =
-                        model.accessors[attributes.find("TEXCOORD_0")->second];
+                const auto& texcoord_accessor = model.accessors[attributes.find("TEXCOORD_0")->second];
                 const auto& texcoord_view = model.bufferViews[texcoord_accessor.bufferView];
                 const auto& texcoord_buffer = model.buffers[texcoord_view.buffer];
                 // Get UV's pointer
                 const float* texcoords_data = (const float*) &(
-                        texcoord_buffer
-                                .data[texcoord_view.byteOffset + texcoord_accessor.byteOffset]
+                        texcoord_buffer.data[texcoord_view.byteOffset + texcoord_accessor.byteOffset]
                 );
                 data_size = texcoord_accessor.count;
                 mesh->setUV(std::vector<float>(texcoords_data, texcoords_data + data_size * 2));
@@ -161,8 +159,7 @@ static void Load(tgModel& model, std::vector<Mesh*>* meshes, std::vector<Texture
             if (material_index != -1) {
                 const auto& material = model.materials[material_index];
                 if (material.values.find("baseColorTexture") != material.values.end()) {
-                    const auto& texture_index =
-                            material.values.at("baseColorTexture").TextureIndex();
+                    const auto& texture_index = material.values.at("baseColorTexture").TextureIndex();
                     if (t_id.count(texture_index) != 0)
                         mesh->setTexture(&(*textures)[t_id[texture_index]]);
                 }
@@ -181,9 +178,7 @@ static void Load(tgModel& model, std::vector<Mesh*>* meshes, std::vector<Texture
                 if (node.scale.size() == 3)
                     mesh->setScale({node.scale[0], node.scale[1], node.scale[2]});
                 if (node.translation.size() == 3)
-                    mesh->setPosition(
-                            {node.translation[0], node.translation[1], node.translation[2]}
-                    );
+                    mesh->setPosition({node.translation[0], node.translation[1], node.translation[2]});
 
                 // HATE_DEBUG_F("Rotation size: %d", (int)node.rotation.size())
                 if (node.rotation.size() == 4) {

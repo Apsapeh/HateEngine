@@ -48,9 +48,7 @@ bool NavMeshAgent::computePath(glm::vec3 start, glm::vec3 end) {
     );
 
     if (start_status != DT_SUCCESS) {
-        HATE_ERROR_F(
-                "NavMeshAgent: Could not find nearest poly to start, status: %u", start_status
-        );
+        HATE_ERROR_F("NavMeshAgent: Could not find nearest poly to start, status: %u", start_status);
         return false;
     }
 

@@ -119,7 +119,7 @@ int main() {
     xAxMesh.setSize(1, 0.1, 0.1);
     xAxMesh.offset(0, 6, 0);
 
-    camera.setPosition(0, 6, 3);
+    camera.setPosition(0, 0, 0);
     // camera.offset(0, 6, 3);
     // camera.setPosition(0, 25, 0);
     // camera.setRotation(0, 0, 0);
@@ -145,7 +145,7 @@ int main() {
     // dirLight.rotate(45, 0, 0);
     glm::vec3 dir = dirLight.getDirection();
 
-    light.setVisible(true);
+    light.setVisible(false);
     light.setColor({1.0, 0, 0, 1.0});
 
     // HATE_FATAL_F("Direction x: %f, y: %f, z: %f", dir.x, dir.y, dir.z);
@@ -159,7 +159,14 @@ int main() {
     sun.rotate(-45, 45, 0);
     sun.setVisible(true);
 
+    sun.setMaskBit(0, false);
+    sun.setMaskBit(1, true);
+
     mesh2.setPosition(3, 3, 3);
+
+    floor_mesh.render_layers.set(0, false);
+    floor_mesh.render_layers.set(1, false);
+    // floor_mesh.disableLightShading();
 
 
     // test_glmodel.setVisible(false);
@@ -335,11 +342,10 @@ int main() {
     /*HateEngine::ObjMapModel objmodel(
             "examples/Assets/Ignore/E1M1.obj", "examples/Assets/Ignore/E1M1.MAP",
             "examples/Assets/Ignore/light.heluv", "examples/Assets/Ignore/E1M1.hepvs", 16.0, true,
-            false, 15, 10000
+            true, 15, 1
     );*/
     HateEngine::ObjMapModel objmodel(
-            "examples/Assets/dev.obj", "examples/Assets/dev.map", "", "", 16.0, true, false, 15,
-            10000
+            "examples/Assets/dev.obj", "examples/Assets/dev.map", "", "", 16.0, true, false, 15, 1
     );
     objmodel.deserializeEntities(
             {{"light",
@@ -379,6 +385,8 @@ int main() {
                 delete lights;
             }
     );
+
+    objmodel.offset(0, -5, 0);
 
 
     // HateEngine::HENFile henfile("examples/Assets/Ignore/E1M1.hen");
@@ -437,7 +445,7 @@ int main() {
     // floor_mesh.disableLightShading();
 
     lvl.setAmbientLightColor(255, 255, 255);
-    lvl.setAmbientLightIntensity(1);
+    lvl.setAmbientLightIntensity(0);
 
 
     /*for (auto& m: objmodel.getMeshes()) {
@@ -512,12 +520,14 @@ int main() {
 
     // light.setPosition({0, 2, 0});
     // l
+    light.setVisible(true);
     light.setColor(light.getColor() * 10);
-    lvl.addObject(&light);
     //  light.color = {10, 10, 10, 1};
     light.setExponent(20);
+    light.setRadius(20);
 
     camera.bindObj(&light);
+    lvl.addObject(&light);
 
     lvl.setFixedProcessLoop([](HateEngine::Engine* engine, double delta) {
         ////TODO: Change engine pointer to struct with Engine*, Level*
@@ -633,9 +643,7 @@ int main() {
         // std::cout <<
     };
 
-    cube_part.onParticleDelete = [](HateEngine::Particle* p) {
-        delete (glm::vec3*) p->data["vel"];
-    };
+    cube_part.onParticleDelete = [](HateEngine::Particle* p) { delete (glm::vec3*) p->data["vel"]; };
 
     cube_part.setPosition(4, 4, 4);
 
@@ -765,8 +773,7 @@ int main() {
             "examples/Assets/brick.png", HateEngine::Texture::Repeat, HateEngine::Texture::Nearest
     );
     HateEngine::Texture image_hover_btn(
-            "examples/Assets/campfire.png", HateEngine::Texture::Repeat,
-            HateEngine::Texture::Nearest
+            "examples/Assets/campfire.png", HateEngine::Texture::Repeat, HateEngine::Texture::Nearest
     );
     HateEngine::Texture image_press_btn(
             "examples/Assets/UV_test.png", HateEngine::Texture::Repeat, HateEngine::Texture::Nearest
@@ -780,9 +787,7 @@ int main() {
     button.setPressedTexture(&image_press_btn);
 
     HateEngine::CheckboxUI checkbox;
-    checkbox.position = {
-            -40, -20, 1, HateEngine::CoordsUI::CenterRight, HateEngine::CoordsUI::Pixels
-    };
+    checkbox.position = {-40, -20, 1, HateEngine::CoordsUI::CenterRight, HateEngine::CoordsUI::Pixels};
     checkbox.size = {200, 40, 1, HateEngine::CoordsUI::TopLeft, HateEngine::CoordsUI::Pixels};
     checkbox.text = "Test/Тест";
 
@@ -816,9 +821,7 @@ int main() {
 
     // Audio UI
     HateEngine::WidgetUI audio_widget;
-    audio_widget.position = {
-            255, 5, 1, HateEngine::CoordsUI::TopRight, HateEngine::CoordsUI::Pixels
-    };
+    audio_widget.position = {255, 5, 1, HateEngine::CoordsUI::TopRight, HateEngine::CoordsUI::Pixels};
     audio_widget.size = {250, 55};
     audio_widget.color.w = 0;
     // fps_widget.has_background = true;
@@ -897,7 +900,7 @@ int main() {
     game.setProcessLoop(_process);
     game.setFixedProcessLoop(_physics_process);
     game.setInputEvent(_input_event);
-    lvl.setCameraRef(&camera);
+    lvl.setCamera(&camera);
     float xscale, yscale;
 
     HateEngine::BoxShape wall({1, 10, 10});
@@ -950,6 +953,7 @@ void _process(HateEngine::Engine* engine, double delta) {
     auto rb_v = rigidBody.getLinearVelocity();
     //    HATE_INFO_F("Velocity: %f | %f | %f", rb_v.x, rb_v.y, rb_v.z);
     // rigidBody.setLinearVelocity(3, -g, 0);
+    // HATE_INFO_F("Draw calls: %d", engine->getRenderInterface()->getDrawCalls());
 
     decal.bake();
     glm::vec3 decal_mesh_pos = decal.getMesh()->getGlobalPosition();
@@ -1108,11 +1112,11 @@ void _physics_process(HateEngine::Engine* engine, double delta) {
     /*if (engine->Input.isKeyPressed(GLFW_KEY_P))
         engine->setFullScreen(!engine->getFullScreen());*/
 
-    glm::vec2 raw_dir = engine->Input.getVector(
-                                HateEngine::KeyLeft, HateEngine::KeyRight, HateEngine::KeyUp,
-                                HateEngine::KeyDown
-                        ) *
-                        5;
+    glm::vec2 raw_dir =
+            engine->Input.getVector(
+                    HateEngine::KeyLeft, HateEngine::KeyRight, HateEngine::KeyUp, HateEngine::KeyDown
+            ) *
+            5;
     // float pb_x = playerBody.reactRigidBody->getLinearVelocity().x;
     // float pb_y = playerBody.reactRigidBody->getLinearVelocity().y;
     // float pb_z = playerBody.reactRigidBody->getLinearVelocity().z;
@@ -1132,8 +1136,7 @@ void _physics_process(HateEngine::Engine* engine, double delta) {
 // Функция для генерации луча
 glm::vec3 computeRayDirection(
         double cursorX, double cursorY, int screenWidth, int screenHeight,
-        const glm::mat4& projectionMatrix, const glm::mat4& viewMatrix,
-        const glm::vec3& cameraPosition
+        const glm::mat4& projectionMatrix, const glm::mat4& viewMatrix, const glm::vec3& cameraPosition
 ) {
     // 1. Преобразуем координаты курсора в NDC
     float x = (2.0f * cursorX) / screenWidth - 1.0f;

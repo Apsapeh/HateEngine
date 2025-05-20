@@ -1,4 +1,5 @@
 #include <HateEngine/Objects/Object.hpp>
+#include "glm/geometric.hpp"
 // #include <cmath>
 
 
@@ -94,7 +95,8 @@ void Object::updateChildrenVisibilities() {
 }
 
 void Object::updateDirection() {
-    this->direction = this->getGlobalRotationMatrix() * glm::vec4(0.0f, 0.0f, -1.0f, 0.0f);
+    this->direction =
+            glm::normalize(this->getGlobalRotationMatrix() * glm::vec4(0.0f, 0.0f, -1.0f, 0.0f));
 }
 
 
@@ -275,9 +277,7 @@ UUID Object::getUUID() const {
     return this->uuid;
 }
 
-UUID Object::bindObj(
-        Object* obj, bool bind_pos, bool bind_rot, bool bind_scale, bool bind_visible
-) {
+UUID Object::bindObj(Object* obj, bool bind_pos, bool bind_rot, bool bind_scale, bool bind_visible) {
     bindedObjects[obj->getUUID()] = {obj, bind_pos, bind_rot, bind_scale, bind_visible};
     obj->binded = true;
     if (bind_pos)

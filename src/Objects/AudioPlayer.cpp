@@ -110,9 +110,7 @@ void AudioPlayer::fadePan(float pan, double duration) {
 }
 
 
-void HateEngine::AudioPlayer::set3DAttenuation(
-        AudioServer::SoundAttenuation attenuation, float factor
-) {
+void HateEngine::AudioPlayer::set3DAttenuation(AudioServer::SoundAttenuation attenuation, float factor) {
     AudioServer::setAudio3DAttenuation(this->soloudHandle, attenuation, factor);
 }
 

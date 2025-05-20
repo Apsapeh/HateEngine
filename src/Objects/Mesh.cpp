@@ -158,16 +158,6 @@ void Mesh::setColor(glm::vec3 color) {
     this->is_color_enabled = true;
 }
 
-void Mesh::enableCustomMaxLightDist(float dist) {
-    this->max_light_dist = dist;
-}
-const float Mesh::getCustomMaxLightDist() const {
-    return this->max_light_dist;
-}
-void Mesh::disableCustomMaxLightDist() {
-    this->max_light_dist = 0;
-}
-
 void Mesh::setCorrectTransparency(bool correct) {
     this->correct_transparency = correct;
 }

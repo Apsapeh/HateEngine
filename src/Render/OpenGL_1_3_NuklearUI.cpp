@@ -99,8 +99,8 @@ static unsigned int device_upload_atlas(const void* image, int width, int height
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     glTexImage2D(
-            GL_TEXTURE_2D, 0, GL_RGBA, (GLsizei) width, (GLsizei) height, 0, GL_RGBA,
-            GL_UNSIGNED_BYTE, image
+            GL_TEXTURE_2D, 0, GL_RGBA, (GLsizei) width, (GLsizei) height, 0, GL_RGBA, GL_UNSIGNED_BYTE,
+            image
     );
     return font_id;
 }
@@ -285,14 +285,12 @@ void OpenGL_1_3::DrawNuklearUI(std::unordered_map<UUID, WidgetUI*>* widgets) {
                                 continue;
 
                         if (button->nk_img_hover == nullptr) {
-                            struct nk_image img =
-                                    nk_image_id(button->getHoverTexture()->getTextureID());
+                            struct nk_image img = nk_image_id(button->getHoverTexture()->getTextureID());
                             button->nk_img_hover = new struct nk_image(img);
                         }
 
                         button_image = (struct nk_image*) button->nk_img_hover;
-                    } else if (button->normal_texture != nullptr and
-                               button->normal_texture->is_loaded) {
+                    } else if (button->normal_texture != nullptr and button->normal_texture->is_loaded) {
                         if (not button->getNormalTexture()->is_gpu_loaded)
                             button->getNormalTexture()->Load(loadTexture, unloadTexture);
 
@@ -333,8 +331,7 @@ void OpenGL_1_3::DrawNuklearUI(std::unordered_map<UUID, WidgetUI*>* widgets) {
                     if (button_image != nullptr) {
                         nk_flags text_flags = 0;
                         if (nk_button_image_label(
-                                    &ctx, *button_image, button->text.c_str(),
-                                    NK_TEXT_ALIGN_CENTERED
+                                    &ctx, *button_image, button->text.c_str(), NK_TEXT_ALIGN_CENTERED
                             )) {
                             button->call_on_click(this->engine);
                             // Because the level can be changed in the callback
@@ -464,8 +461,7 @@ static long draw(int width, int height) {
     }
 
     auto time_end = std::chrono::high_resolution_clock::now();
-    long gpu_time =
-            std::chrono::duration_cast<std::chrono::nanoseconds>(time_end - time_start).count();
+    long gpu_time = std::chrono::duration_cast<std::chrono::nanoseconds>(time_end - time_start).count();
 
     // HATE_INFO_F("Draw calls: %d", n);
 

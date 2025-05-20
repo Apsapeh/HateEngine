@@ -29,9 +29,7 @@ namespace HateEngine {
 
         // UIFont(std::vector<uint8_t> data);
         ~UIFont();
-        bool Load(
-                void (*API_loader)(UIFont* texture_ptr), void (*API_unloader)(UIFont* texture_ptr)
-        );
+        bool Load(void (*API_loader)(UIFont* texture_ptr), void (*API_unloader)(UIFont* texture_ptr));
         void Unload();
 
         uint32_t getTextureID();

@@ -192,9 +192,7 @@ namespace HateEngine {
         bool isMouseButtonPressed(MouseButton button);
 
         bool isActionPressed(std::string action);
-        glm::vec2 getVectorAction(
-                std::string left, std::string right, std::string up, std::string down
-        );
+        glm::vec2 getVectorAction(std::string left, std::string right, std::string up, std::string down);
 
         void addKeyToAction(std::string action, Key key);
         void addKeyToAction(std::string action, MouseButton button);

@@ -6,8 +6,7 @@
 
 using namespace HateEngine;
 
-SphereShape::SphereShape(float radius, glm::vec3 pos, glm::vec3 rot) :
-    CollisionShape(Sphere, pos, rot) {
+SphereShape::SphereShape(float radius, glm::vec3 pos, glm::vec3 rot) : CollisionShape(Sphere, pos, rot) {
     changeRadius(radius);
 }
 

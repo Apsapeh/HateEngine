@@ -6,8 +6,7 @@
 
 using namespace HateEngine;
 
-BoxShape::BoxShape(glm::vec3 extents, glm::vec3 pos, glm::vec3 rot) :
-    CollisionShape(Box, pos, rot) {
+BoxShape::BoxShape(glm::vec3 extents, glm::vec3 pos, glm::vec3 rot) : CollisionShape(Box, pos, rot) {
     changeSize(extents.x, extents.y, extents.z);
 }
 

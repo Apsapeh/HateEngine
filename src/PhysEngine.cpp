@@ -68,8 +68,7 @@ namespace HateEngine {
                     type == rp3d::CollisionCallback::ContactPair::EventType::ContactStay) {
                     PhysicalBody* body = (PhysicalBody*) pair.getBody1()->getUserData();
                     PhysicalBody* other = (PhysicalBody*) pair.getBody2()->getUserData();
-                    if (body->getIsRequiredCollisionPoints() ||
-                        other->getIsRequiredCollisionPoints()) {
+                    if (body->getIsRequiredCollisionPoints() || other->getIsRequiredCollisionPoints()) {
                         // bodies_on_update.push_back(body->getUUID());
                         std::vector<PhysicalBody::CollisionPoint>* body_points = nullptr;
                         std::vector<PhysicalBody::CollisionPoint>* other_points = nullptr;
@@ -100,13 +99,11 @@ namespace HateEngine {
                             const auto& point = contactPoint.getLocalPointOnCollider1();
                             if (body_points)
                                 body_points->push_back(
-                                        {{point.z, point.y, point.x},
-                                         {-normal.z, -normal.y, -normal.x}}
+                                        {{point.z, point.y, point.x}, {-normal.z, -normal.y, -normal.x}}
                                 );
                             if (other_points)
                                 other_points->push_back(
-                                        {{point.z, point.y, point.x},
-                                         {-normal.z, -normal.y, -normal.x}}
+                                        {{point.z, point.y, point.x}, {-normal.z, -normal.y, -normal.x}}
                                 );
                         }
                     }
@@ -156,8 +153,7 @@ unsigned long PhysEngine::getIterationsCounter() const {
 }
 
 void PhysEngine::getRayCastCollisions(
-        glm::vec3 startPos, glm::vec3 endPos, reactphysics3d::RaycastCallback* callback,
-        uint16_t mask
+        glm::vec3 startPos, glm::vec3 endPos, reactphysics3d::RaycastCallback* callback, uint16_t mask
 ) {
     reactphysics3d::Ray ray({startPos.z, startPos.y, startPos.x}, {endPos.z, endPos.y, endPos.x});
     physicsWorld->raycast(ray, callback, mask);
@@ -252,21 +248,35 @@ UUID PhysEngine::addObject(PhysicalBody* object) {
             ConvexShape* shape = (ConvexShape*) shape_pair.second;
             std::vector<rp3d::Message> messages;
             auto convex_mesh = physicsCommon->createConvexMesh(shape->vertexArray, messages);
-            
+
             if (messages.size() > 0) {
+                bool is_error = false;
                 for (const rp3d::Message& message: messages) {
-                    switch(message.type) {
+                    switch (message.type) {
                         case rp3d::Message::Type::Information:
-                            HATE_INFO_F("ConvexShape [%llu]: %s", shape->getUUID().getU64(), message.text.c_str());
+                            HATE_INFO_F(
+                                    "ConvexShape [%llu]: %s", shape->getUUID().getU64(),
+                                    message.text.c_str()
+                            );
                             break;
                         case rp3d::Message::Type::Warning:
-                            HATE_WARNING_F("ConvexShape [%llu]: %s", shape->getUUID().getU64(), message.text.c_str());
+                            HATE_WARNING_F(
+                                    "ConvexShape [%llu]: %s", shape->getUUID().getU64(),
+                                    message.text.c_str()
+                            );
                             break;
                         case rp3d::Message::Type::Error:
-                            HATE_ERROR_F("ConvexShape [%llu]: %s", shape->getUUID().getU64(), message.text.c_str());
+                            HATE_ERROR_F(
+                                    "ConvexShape [%llu]: %s", shape->getUUID().getU64(),
+                                    message.text.c_str()
+                            );
+                            is_error = true;
                             break;
                     }
                 }
+
+                if (is_error)
+                    continue;
             }
 
             react_shape = physicsCommon->createConvexMeshShape(convex_mesh);
@@ -323,15 +333,12 @@ bool PhysEngine::removeObject(UUID uuid) {
                     shape->reactCollider = nullptr;
                 } else if (shape_type == CollisionShape::Sphere) {
                     SphereShape* shape = (SphereShape*) shape_pair.second;
-                    physicsCommon->destroySphereShape(
-                            (reactphysics3d::SphereShape*) shape->reactShape
-                    );
+                    physicsCommon->destroySphereShape((reactphysics3d::SphereShape*) shape->reactShape);
                     shape->reactShape = nullptr;
                     shape->reactCollider = nullptr;
                 } else if (shape_type == CollisionShape::Capsule) {
                     CapsuleShape* shape = (CapsuleShape*) shape_pair.second;
-                    physicsCommon->destroyCapsuleShape(
-                            (reactphysics3d::CapsuleShape*) shape->reactShape
+                    physicsCommon->destroyCapsuleShape((reactphysics3d::CapsuleShape*) shape->reactShape
                     );
                     shape->reactShape = nullptr;
                     shape->reactCollider = nullptr;

@@ -109,8 +109,7 @@ std::vector<RayCastInfo> RayCast::getSortedByDistanceAllCollisions(glm::vec3 poi
     std::sort(
             this->rayCastCallback.hits.begin(), this->rayCastCallback.hits.end(),
             [point_to](const RayCastInfo& a, const RayCastInfo& b) {
-                return glm::distance(a.worldPoint, point_to) <
-                       glm::distance(b.worldPoint, point_to);
+                return glm::distance(a.worldPoint, point_to) < glm::distance(b.worldPoint, point_to);
             }
     );
     return this->rayCastCallback.hits;
@@ -136,9 +135,7 @@ bool RayCast::isCustomDirectionEnabled() const {
 
 void RayCast::setCollisionMaskBit(uint8_t mask, bool state) {
     if (mask > 15) {
-        HATE_WARNING_F(
-                "CollisonShape [%llu]: mask cannot be greater than 15", this->getUUID().getU64()
-        );
+        HATE_WARNING_F("CollisonShape [%llu]: mask cannot be greater than 15", this->getUUID().getU64());
         return;
     }
 

@@ -19,16 +19,16 @@
 #ifdef __linux__
 #include <pthread.h>
 #include <sched.h>
-#define SET_THREAD_HIGH_PRIORITY                                                                   \
-    sched_param sch_params;                                                                        \
-    sch_params.sched_priority = 99;                                                                \
+#define SET_THREAD_HIGH_PRIORITY                                                                        \
+    sched_param sch_params;                                                                             \
+    sch_params.sched_priority = 99;                                                                     \
     pthread_setschedparam(pthread_self(), SCHED_RR, &sch_params);
 #elif __APPLE__
 #include <pthread.h>
 #include <sched.h>
-#define SET_THREAD_HIGH_PRIORITY                                                                   \
-    sched_param sch_params;                                                                        \
-    sch_params.sched_priority = 99;                                                                \
+#define SET_THREAD_HIGH_PRIORITY                                                                        \
+    sched_param sch_params;                                                                             \
+    sch_params.sched_priority = 99;                                                                     \
     pthread_setschedparam(pthread_self(), SCHED_RR, &sch_params);
 #elif _WIN32
 #include <windows.h>
@@ -190,6 +190,13 @@ void Engine::Run() {
         oldTime = glfwGetTime();
         glfwPollEvents();
 
+#ifdef __HATE_ENGINE_PROFILER
+        if (this->Input.isKeyPressed(KeyF8)) {
+            this->Exit();
+            continue;
+        }
+#endif
+
         /// Thread safety GLFW calls
         if (!this->threadSafeRequestsQueue.empty()) {
             for (auto& req: this->threadSafeRequestsQueue) {
@@ -262,8 +269,7 @@ void Engine::Run() {
 
 
         auto time_end = std::chrono::high_resolution_clock::now();
-        long time =
-                std::chrono::duration_cast<std::chrono::nanoseconds>(time_end - time_start).count();
+        long time = std::chrono::duration_cast<std::chrono::nanoseconds>(time_end - time_start).count();
         lastCPUTime = time - this->renderInterface->last_gpu_time;
 
         glfwSwapBuffers(this->window);
@@ -311,9 +317,7 @@ void Engine::__changeFullScreenMode(ThreadSafeRequest req) {
         glfwWindowHint(GLFW_GREEN_BITS, mode->greenBits);
         glfwWindowHint(GLFW_BLUE_BITS, mode->blueBits);
         glfwWindowHint(GLFW_REFRESH_RATE, mode->refreshRate);
-        glfwSetWindowMonitor(
-                this->window, monitor, 0, 0, mode->width, mode->height, mode->refreshRate
-        );
+        glfwSetWindowMonitor(this->window, monitor, 0, 0, mode->width, mode->height, mode->refreshRate);
     } else
         glfwSetWindowMonitor(this->window, nullptr, 0, 0, 800, 600, GLFW_DONT_CARE);
 }
@@ -488,8 +492,25 @@ void Engine::requestChangeLevel(Level* lvl) {
 void Engine::setLevel(Level* lvl) {
     std::lock_guard<std::mutex> lock(this->levelMutex);
     Level* old = this->level;
+    if (this->level != nullptr) {
+        this->level->onLightAdded.disconnect(level_callback_added_uuid);
+        this->level->onLightRemoved.disconnect(level_callback_removed_uuid);
+        for (auto& l: *this->level->getLights()) {
+            this->renderInterface->removeLight(l.second);
+        }
+    }
+
     this->level = lvl;
-    this->renderInterface->setLightsRef(lvl->getLights());
+    this->level_callback_added_uuid = this->level->onLightAdded.connect([this](Light* l) {
+        this->renderInterface->addLight(l);
+    });
+    this->level_callback_removed_uuid = this->level->onLightRemoved.connect([this](Light* l) {
+        this->renderInterface->removeLight(l);
+    });
+    for (auto& l: *lvl->getLights()) {
+        this->renderInterface->addLight(l.second);
+    }
+
     onLevelChanged.emit(this, this->level, old);
 }
 

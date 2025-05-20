@@ -2,6 +2,7 @@
 
 #include <unordered_map>
 #include "HateEngine/Input.hpp"
+#include "HateEngine/Utilities/Signal.hpp"
 #include "Objects/Camera.hpp"
 #include "Objects/Light/Light.hpp"
 #include "Objects/Object.hpp"
@@ -11,6 +12,7 @@
 #include "glm/ext/vector_float4.hpp"
 #include "Objects/Interfaces/Renderable3DInterface.hpp"
 #include "Objects/Interfaces/UpdatableInterface.hpp"
+// #include "Render/RenderInterface.hpp"
 
 namespace HateEngine {
     class Level {
@@ -86,12 +88,15 @@ namespace HateEngine {
         void UpdateInput(class Engine* engine, const InputClass::InputEventInfo& event);
 
     public:
+        Signal<Light*> onLightAdded;
+        Signal<Light*> onLightRemoved;
+
         Level();
         ~Level();
 
-        void setCameraRef(Camera* camera);
-        Camera* getCameraRef();
-        void removeCameraRef();
+        void setCamera(Camera* camera);
+        Camera* getCamera();
+        void removeCamera();
 
         /**
          * @brief This function is called by the engine to process the level

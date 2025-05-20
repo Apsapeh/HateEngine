@@ -13,8 +13,7 @@
 using namespace HateEngine;
 
 // ===============> Particle <===============
-Particle::Particle(uint32_t index, const Mesh& mesh, float lifetime, bool del_on_time) :
-    Mesh(mesh) {
+Particle::Particle(uint32_t index, const Mesh& mesh, float lifetime, bool del_on_time) : Mesh(mesh) {
     // std::cout << pos.x << " | " << pos.y << " | " << pos.z << "\n";
     this->index = index;
     this->lifetime = lifetime;
@@ -94,22 +93,18 @@ void Particles::Update(double delta) {
             for (uint32_t i = 0; i < this->maxParticles - particlesVector.size(); ++i) {
                 Particle particle(i, mesh, life_dist(gen), this->set.delete_on_end_of_life);
                 particle.setPosition(
-                        glm::vec3{posX_dist(gen), posY_dist(gen), posZ_dist(gen)} -
-                        set.max_offset / 2.0f
+                        glm::vec3{posX_dist(gen), posY_dist(gen), posZ_dist(gen)} - set.max_offset / 2.0f
                 );
                 particlesVector.push_back(std::move(particle));
                 bindObj(&particlesVector[particlesVector.size() - 1]);
             }
         } else {
-            while (particlesVector.size() < this->maxParticles and elapsedTime >= this->spawnDelay
-            ) {
+            while (particlesVector.size() < this->maxParticles and elapsedTime >= this->spawnDelay) {
                 Particle particle(
-                        particlesVector.size(), mesh, life_dist(gen),
-                        this->set.delete_on_end_of_life
+                        particlesVector.size(), mesh, life_dist(gen), this->set.delete_on_end_of_life
                 );
                 particle.setPosition(
-                        glm::vec3{posX_dist(gen), posY_dist(gen), posZ_dist(gen)} -
-                        set.max_offset / 2.0f
+                        glm::vec3{posX_dist(gen), posY_dist(gen), posZ_dist(gen)} - set.max_offset / 2.0f
                 );
                 particlesVector.push_back(std::move(particle));
                 bindObj(&particlesVector[particlesVector.size() - 1]);

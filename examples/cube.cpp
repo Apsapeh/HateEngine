@@ -26,7 +26,7 @@ int main() {
 
     HateEngine::Level lvl;
     HateEngine::Camera camera(60, 600);
-    lvl.setCameraRef(&camera);
+    lvl.setCamera(&camera);
 
     HateEngine::CubeMesh mesh;
     mesh.setPosition(0, 0, -2);
@@ -46,13 +46,20 @@ int main() {
 
 float timer = 0;
 int frame_count = 0;
+double cpu_time = 0;
+double gpu_time = 0;
 void _process(HateEngine::Engine* engine, double delta) {
     timer += delta;
     frame_count++;
+    cpu_time += engine->getCPUTimeMS();
+    gpu_time += engine->getGPUTimeMS();
 
     if (timer >= 1.0) {
-        std::cout << frame_count << " frames per second" << std::endl;
+        std::cout << frame_count << " frames per second (CPU: " << cpu_time / frame_count
+                  << "ms, GPU: " << gpu_time / frame_count << "ms)" << std::endl;
         frame_count = 0;
+        cpu_time = 0;
+        gpu_time = 0;
         timer = 0;
     }
 }

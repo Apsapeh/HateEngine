@@ -28,8 +28,7 @@ void SpotLight::setAngleCutoff(float angleCutoff) {
 void SpotLight::setExponent(float exponent) {
     if (exponent < 0.0f) {
         HATE_WARNING_F(
-                "SpotLight [%llu]: exponent cannot be negative. Setting to 0.",
-                this->getUUID().getU64()
+                "SpotLight [%llu]: exponent cannot be negative. Setting to 0.", this->getUUID().getU64()
         );
         exponent = 0.0f;
     }

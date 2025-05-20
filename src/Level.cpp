@@ -16,11 +16,11 @@
 #include "HateEngine/Objects/Object.hpp"
 #include <HateEngine/Log.hpp>
 
-#define DESTRUCTOR_DELETE_POINTERS(ptr_obj, type)                                                  \
-    for (const auto& obj: ptr_obj) {                                                               \
-        if (not obj.second.is_ref)                                                                 \
-            delete (type*) obj.second.obj;                                                         \
-    }                                                                                              \
+#define DESTRUCTOR_DELETE_POINTERS(ptr_obj, type)                                                       \
+    for (const auto& obj: ptr_obj) {                                                                    \
+        if (not obj.second.is_ref)                                                                      \
+            delete (type*) obj.second.obj;                                                              \
+    }                                                                                                   \
     ptr_obj.clear();
 
 using namespace HateEngine;
@@ -29,16 +29,16 @@ Level::Level() {
 }
 
 
-#define NORMAL_EXIT_FROM_MAP(map)                                                                  \
-    for (auto& obj: map) {                                                                         \
-        ((Object*) obj->second)->exitLevel(this);                                                  \
+#define NORMAL_EXIT_FROM_MAP(map)                                                                       \
+    for (auto& obj: map) {                                                                              \
+        ((Object*) obj->second)->exitLevel(this);                                                       \
     }
 
-#define NORMAL_EXIT_FROM_MAP_POLYMORPHIC(map)                                                      \
-    for (auto& obj: map) {                                                                         \
-        if (auto obj = dynamic_cast<Object*>(obj.second)) {                                        \
-            obj->exitLevel(this);                                                                  \
-        }                                                                                          \
+#define NORMAL_EXIT_FROM_MAP_POLYMORPHIC(map)                                                           \
+    for (auto& obj: map) {                                                                              \
+        if (auto obj = dynamic_cast<Object*>(obj.second)) {                                             \
+            obj->exitLevel(this);                                                                       \
+        }                                                                                               \
     }
 
 Level::~Level() {
@@ -94,15 +94,15 @@ std::unordered_map<UUID, Light*>* Level::getLights() {
 }
 
 
-void Level::setCameraRef(Camera* camera) {
+void Level::setCamera(Camera* camera) {
     this->camera = camera;
 }
 
-Camera* Level::getCameraRef() {
+Camera* Level::getCamera() {
     return this->camera;
 }
 
-void Level::removeCameraRef() {
+void Level::removeCamera() {
     this->camera = nullptr;
 }
 
@@ -219,6 +219,8 @@ UUID Level::addObject(WidgetUI* object) {
 UUID Level::addObject(Light* obj) {
     // HATE_WARNING("addObject(Light*) is not implemented");
     this->light[obj->getUUID()] = obj;
+    // this->re
+    this->onLightAdded.emit(obj);
     return obj->getUUID();
 }
 
@@ -240,34 +242,34 @@ UUID Level::addObject(Object* obj) {
 
 
 // I gues it will be removed in the future
-#define DELETE_FROM_MAP(map, uuid)                                                                 \
-    {                                                                                              \
-        auto it = map.find(uuid);                                                                  \
-        if (it != map.end()) {                                                                     \
-            result = true;                                                                         \
-            /*((Object*) it->second)->exitLevel(this);*/                                           \
-            map.erase(it);                                                                         \
-        }                                                                                          \
+#define DELETE_FROM_MAP(map, uuid)                                                                      \
+    {                                                                                                   \
+        auto it = map.find(uuid);                                                                       \
+        if (it != map.end()) {                                                                          \
+            result = true;                                                                              \
+            /*((Object*) it->second)->exitLevel(this);*/                                                \
+            map.erase(it);                                                                              \
+        }                                                                                               \
     }
 
-#define DELETE_FROM_MAP_POLYMORPHIC(map, uuid)                                                     \
-    {                                                                                              \
-        auto it = map.find(uuid);                                                                  \
-        if (it != map.end()) {                                                                     \
-            result = true;                                                                         \
-            if (auto obj = dynamic_cast<Object*>(it->second)) {                                    \
-                obj->exitLevel(this);                                                              \
-            }                                                                                      \
-            map.erase(it);                                                                         \
-        }                                                                                          \
+#define DELETE_FROM_MAP_POLYMORPHIC(map, uuid)                                                          \
+    {                                                                                                   \
+        auto it = map.find(uuid);                                                                       \
+        if (it != map.end()) {                                                                          \
+            result = true;                                                                              \
+            if (auto obj = dynamic_cast<Object*>(it->second)) {                                         \
+                obj->exitLevel(this);                                                                   \
+            }                                                                                           \
+            map.erase(it);                                                                              \
+        }                                                                                               \
     }
 
-#define DELETE_FROM_INTERFACE_MAP(map, uuid)                                                       \
-    {                                                                                              \
-        auto it = map.find(uuid);                                                                  \
-        if (it != map.end()) {                                                                     \
-            map.erase(it);                                                                         \
-        }                                                                                          \
+#define DELETE_FROM_INTERFACE_MAP(map, uuid)                                                            \
+    {                                                                                                   \
+        auto it = map.find(uuid);                                                                       \
+        if (it != map.end()) {                                                                          \
+            map.erase(it);                                                                              \
+        }                                                                                               \
     }
 
 bool Level::removeObject(const UUID& uuid) {

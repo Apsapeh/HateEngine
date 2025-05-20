@@ -13,6 +13,7 @@
 #include <HateEngine/Objects/Light/SpotLight.hpp>
 #include <HateEngine/Objects/Mesh.hpp>
 #include <HateEngine/Resources/Model.hpp>
+#include "HateEngine/Input.hpp"
 #include "HateEngine/Objects/Interfaces/Renderable3DInterface.hpp"
 #include "HateEngine/Objects/Object.hpp"
 #include "glm/ext.hpp"
@@ -139,6 +140,7 @@ void OpenGL_1_3::Render() {
     this->DrawNuklearUI(&level->ui_widgets);
 
     last_gpu_time = gpu_time;
+    last_draw_calls = draw_calls;
     gpu_time = 0;
 }
 
@@ -177,7 +179,22 @@ void OpenGL_1_3::Draw3D(
     glm::mat4 view = camera->getGlobalRotationMatrix();
     glm::vec3 cam_pos = camera->getGlobalPosition();
     view = camera->getViewMatrix();
-    frustrum.update(camera->getProjectionMatrix(this->engine->getAspectRatio()) * view);
+    glm::mat4 frustrum_mat_view = camera->getGlobalRotationMatrix();
+    frustrum_mat_view = glm::inverse(frustrum_mat_view);
+    frustrum_mat_view = glm::translate(frustrum_mat_view, -cam_pos);
+    glm::mat4 frustrum_projection = camera->getProjectionMatrix(this->engine->getAspectRatio());
+    // frustrum_projection = glm::inverse(frustrum_projection);
+    // frustrum_mat_view = glm::inverse(frustrum_mat_view);
+    glm::mat4 frustrum_mat = frustrum_projection * frustrum_mat_view;
+
+    // frustrum_mat = glm::inverse(frustrum_mat);
+
+#ifdef __HATE_ENGINE_PROFILER
+    if (!this->engine->Input.isKeyPressed(HateEngine::KeyLeftShift))
+        frustrum.update(frustrum_mat);
+#else
+    frustrum.update(frustrum_mat);
+#endif
 
     auto t0 = std::chrono::high_resolution_clock::now();
     for (const auto& r: *renderable) {
@@ -217,9 +234,21 @@ inline void OpenGL_1_3::rawRenderMesh(const Mesh* mesh, bool skip_transparency_c
     if (!frustrum.isBoxVisible(
                 mesh->getAABBMin() + mesh->getGlobalPosition(),
                 mesh->getAABBMax() + mesh->getGlobalPosition()
-        ))
-        return;
+        )) {
 
+        return;
+    }
+
+    /*HATE_WARNING_F(
+            "AABB min: %f, %f, %f", mesh->getAABBMin().x, mesh->getAABBMin().y, mesh->getAABBMin().z
+    );
+    HATE_WARNING_F(
+            "AABB max: %f, %f, %f", mesh->getAABBMax().x, mesh->getAABBMax().y, mesh->getAABBMax().z
+    );
+    HATE_WARNING_F(
+            "Global position: %f, %f, %f", mesh->getGlobalPosition().x, mesh->getGlobalPosition().y,
+            mesh->getGlobalPosition().z
+    );*/
     // next_attrib = attribs;
 
     ++this->draw_calls;
@@ -234,10 +263,7 @@ inline void OpenGL_1_3::rawRenderMesh(const Mesh* mesh, bool skip_transparency_c
 
     std::vector<Light*> lights_vec;
     if (mesh->isLightShading()) {
-        float max_light_render_dist = mesh->getCustomMaxLightDist();
-        if (max_light_render_dist == 0)
-            max_light_render_dist = this->maxLightRenderDist;
-        lights_vec = getNearestLights(mesh, max_light_render_dist);
+        lights_vec = getNearestLights(mesh);
         renderLight(&lights_vec);
     }
 
@@ -318,7 +344,18 @@ inline void OpenGL_1_3::rawRenderMesh(const Mesh* mesh, bool skip_transparency_c
     }
 
     for (uint32_t i = 0; i < lights_vec.size(); ++i) {
-        glDisable(GL_LIGHT0 + i);
+        int light_num = GL_LIGHT0 + i;
+        Light* light = lights_vec[i];
+
+        // Reset to initial values
+        if (light->getLightType() == Light::SpotLight) {
+            SpotLight* spot_light = (SpotLight*) light;
+            // glLightfv(light_num, GL_SPOT_DIRECTION, glm::value_ptr(dir));
+            glLightf(light_num, GL_SPOT_CUTOFF, 180);
+            glLightf(light_num, GL_SPOT_EXPONENT, 0);
+        }
+
+        glDisable(light_num);
     }
 
     glPopMatrix();
@@ -340,7 +377,8 @@ inline void OpenGL_1_3::renderCamera(Camera* camera) {
 }
 
 inline void OpenGL_1_3::renderLight(std::vector<Light*>* lights_vec) {
-    // std::cout << "Lights: " << lights_vec->size() << "\n";
+    if (lights_vec->size() == 0)
+        return;
     for (int i = 0; i < lights_vec->size(); ++i) {
         int light_num = GL_LIGHT0 + i;
         Light* light = (*lights_vec)[i];
@@ -373,44 +411,31 @@ struct LightDistSt {
     Light* light;
 };
 
-inline std::vector<Light*> OpenGL_1_3::getNearestLights(
-        const Mesh* mesh, float max_light_render_dist
-) {
+inline std::vector<Light*> OpenGL_1_3::getNearestLights(const Mesh* mesh) {
+    // TODO: Optimize
     std::vector<Light*> result;
-    result.reserve(this->lights->size());
+    // result.reserve(this->lights->size());
 
     std::vector<LightDistSt> light_dist;
-    light_dist.reserve(lights->size());
+    // light_dist.reserve(lights->size());
 
-    /*for (int i = 0; i < lights_vec->size() and result.size() <= maxLightCount; ++i) {
-        Light* light = (*lights_vec)[i];
-        if (!light->getGlobalVisible())
-            continue;
-        if (light->getLightType() == Light::LightTypeEnum::DirectionalLight)
-            result.push_back(i);
-        else
-            light_dist.push_back({mesh->getAABBDistanceToPoint(light->getGlobalPosition()), i});
-    }*/
-
-    /*if (this->lights->size() <= this->maxLightCount) {
-        for (auto& light_pair : *lights) {
-            Light* light = light_pair.second;
-            if (!light->getGlobalVisible())
-                continue;
-            result.push_back(light);
+    for (uint8_t i = 0; i < 8; ++i) {
+        if (mesh->render_layers.get(i)) {
+            for (auto& light_pair: lights[i]) {
+                Light* light = light_pair.second;
+                if (!light->getGlobalVisible())
+                    continue;
+                if (light->getLightType() == Light::LightTypeEnum::DirectionalLight)
+                    result.push_back(light);
+                else
+                    light_dist.push_back(
+                            {mesh->getAABBDistanceToPoint(light->getGlobalPosition()), light}
+                    );
+            }
         }
-        return result;
-    }*/
-
-    for (auto& light_pair: *lights) {
-        Light* light = light_pair.second;
-        if (!light->getGlobalVisible())
-            continue;
-        if (light->getLightType() == Light::LightTypeEnum::DirectionalLight)
-            result.push_back(light);
-        else
-            light_dist.push_back({mesh->getAABBDistanceToPoint(light->getGlobalPosition()), light});
     }
+
+    // HATE_INFO_F("Light count: %d", light_dist.size());
 
     // if
     // TODO: Optimize
@@ -419,16 +444,16 @@ inline std::vector<Light*> OpenGL_1_3::getNearestLights(
         return a.length < b.length;
     });
     for (int i = 0; i < light_dist.size() and result.size() <= maxLightCount; ++i) {
-        if (light_dist[i].length <= max_light_render_dist)
+        if (light_dist[i].length <= light_dist[i].light->getRadius())
             result.push_back(light_dist[i].light);
     }
     return result;
 }
 
 
-#define CASE(cond, body)                                                                           \
-    case cond:                                                                                     \
-        body;                                                                                      \
+#define CASE(cond, body)                                                                                \
+    case cond:                                                                                          \
+        body;                                                                                           \
         break
 void OpenGL_1_3::loadTexture(Texture* texture_ptr) {
     int texWrap;
@@ -482,8 +507,8 @@ void OpenGL_1_3::loadTexture(Texture* texture_ptr) {
     // #define in GL_RGB
     if (texture_ptr->texMipMapEnabled) // MipMap enabled
         gluBuild2DMipmaps(
-                GL_TEXTURE_2D, textureFormat, texture_ptr->width, texture_ptr->height,
-                textureFormat, GL_UNSIGNED_BYTE, texture_ptr->data.data()
+                GL_TEXTURE_2D, textureFormat, texture_ptr->width, texture_ptr->height, textureFormat,
+                GL_UNSIGNED_BYTE, texture_ptr->data.data()
         );
     else // MipMad disabled
         glTexImage2D(
@@ -497,10 +522,5 @@ void OpenGL_1_3::loadTexture(Texture* texture_ptr) {
 void OpenGL_1_3::unloadTexture(Texture* texture_ptr) {
     glDeleteTextures(1, &texture_ptr->textureGL_ID);
     texture_ptr->textureGL_ID = 0;
-}
-
-
-void OpenGL_1_3::setMaxLightRenderDist(float dist) {
-    this->maxLightRenderDist = dist;
 }
 //============================ End 3D ============================

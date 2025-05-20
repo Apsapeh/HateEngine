@@ -1,6 +1,7 @@
 #pragma once
 
 #include <unordered_map>
+#include <array>
 #include "../Utilities/UUID.hpp"
 #include "../Objects/Light/Light.hpp"
 
@@ -16,12 +17,18 @@ namespace HateEngine {
     protected:
         // Render time in nanoseconds. While render you increase this value, after swap with
         // last_gpu_time, after set to 0
-        long gpu_time = 0.0;
+        long gpu_time = 0;
         // Render time in nanoseconds
-        long last_gpu_time = 0.0;
+        long last_gpu_time = 0;
 
-        // Pointer to map of lights for render, use 'setLightsRef'
-        std::unordered_map<UUID, Light*>* lights = nullptr;
+        unsigned long draw_calls = 0;
+        unsigned long last_draw_calls = 0;
+
+        // Sorted array of lights by mask
+        std::array<std::unordered_map<UUID, Light*>, 8> lights = {};
+        std::unordered_map<Light*, UUID> light_mask_changed_callbacks_uuids = {};
+
+        void lightMaskChanged(Light* light);
 
     public:
         virtual void Render() = 0;
@@ -30,10 +37,18 @@ namespace HateEngine {
         virtual class Camera* getCamera() = 0;
 
         /**
-         * @brief Set the lights map for render
-         * @param lights Map of lights
+         * @brief Add light to rendering server
+         *
+         * @param light
          */
-        void setLightsRef(std::unordered_map<UUID, Light*>* lights);
+        void addLight(Light* light);
+
+        /**
+         * @brief Remove light from rendering server
+         *
+         * @param light
+         */
+        void removeLight(Light* light);
 
         /**
          * @brief Return the GPU time in milliseconds
@@ -43,5 +58,12 @@ namespace HateEngine {
          * @return double
          */
         double getGPUTimeMS();
+
+        /**
+         * @brief Get the draw calls
+         *
+         * @return unsigned long
+         */
+        unsigned long getDrawCalls() const;
     };
 } // namespace HateEngine

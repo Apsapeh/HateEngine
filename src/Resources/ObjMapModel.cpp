@@ -323,8 +323,7 @@ void ObjMapModel::parseObj(
 
                     if (face_index < this->heluv[current_obj->name].uv.size() and
                         uv_index < this->heluv[current_obj->name].uv[face_index].size()) {
-                        light_tex.push_back(this->heluv[current_obj->name].uv[face_index][uv_index]
-                        );
+                        light_tex.push_back(this->heluv[current_obj->name].uv[face_index][uv_index]);
                     } else {
                         light_tex.push_back(glm::vec2(0, 0));
                     }
@@ -352,9 +351,7 @@ void ObjMapModel::parseObj(
         } else if (words[0] == "vn") {
             if (words.size() < 4)
                 continue;
-            normals.push_back(
-                    glm::vec3(std::stof(words[1]), std::stof(words[2]), std::stof(words[3]))
-            );
+            normals.push_back(glm::vec3(std::stof(words[1]), std::stof(words[2]), std::stof(words[3])));
         } else if (words[0] == "usemtl") {
             /// TODO: Add object separation by material
             ///       If some faces in one object have different materials, render like separate
@@ -553,8 +550,8 @@ void ObjMapModel::parseMap(std::string data, float grid_size) {
 
             if (words.size() < 2) {
                 HATE_WARNING_F(
-                        "ObjMapModel [%s]: Unexpected parametre at line %d, skip",
-                        map_file_name.c_str(), line_num
+                        "ObjMapModel [%s]: Unexpected parametre at line %d, skip", map_file_name.c_str(),
+                        line_num
                 );
                 continue;
             }
@@ -575,8 +572,8 @@ void ObjMapModel::parseMap(std::string data, float grid_size) {
     }
 }
 
-#define DATA_STREAM_LOAD(name, type, stride)                                                       \
-    type name = *(type*) ptr;                                                                      \
+#define DATA_STREAM_LOAD(name, type, stride)                                                            \
+    type name = *(type*) ptr;                                                                           \
     ptr += stride;
 void ObjMapModel::parseHepvs(std::vector<uint8_t>& data) {
     uint8_t* ptr = data.data();
@@ -632,54 +629,7 @@ void ObjMapModel::parseHepvs(std::vector<uint8_t>& data) {
             cell_data++;
         }
         hepvs_table[i] = cell;
-
-        // hepvs_table[i].resize(objects_count);
     }
-
-
-    /*uint32_t obj_count = *(uint32_t*) ptr;
-    ptr += 4;
-
-    uint8_t image_format = *ptr; // 0 = RAW, 1 = PNG
-    ptr += 1;
-
-    for (uint32_t i = 0; i < obj_count; i++) {
-        uint16_t name_len = *(uint16_t*) ptr;
-        ptr += 2;
-        uint32_t faces_count = *(uint32_t*) ptr;
-        ptr += 4;
-        uint32_t data_size = *(uint32_t*) ptr;
-        ptr += 4;
-
-        std::string name((char*) ptr, name_len);
-        ptr += name_len;
-
-        std::vector<std::vector<glm::vec2>> faces;
-        for (uint32_t j = 0; j < faces_count; j++) {
-            uint8_t uvs_count = *ptr;
-            ptr += 1;
-
-            std::vector<glm::vec2> uv;
-            for (uint8_t k = 0; k < uvs_count; k++) {
-                float u = *(float*) ptr;
-                ptr += 4;
-                float v = *(float*) ptr;
-                ptr += 4;
-                uv.push_back(glm::vec2(u, v));
-            }
-
-            faces.push_back(uv);
-        }
-
-        std::vector<uint8_t> tex_data;
-        tex_data.resize(data_size);
-        memcpy(tex_data.data(), ptr, data_size);
-        ptr += data_size;
-
-        Texture* tex = new HateEngine::Texture(tex_data, Texture::Repeat, Texture::Linear, false);
-        heluv[name] = {faces, tex};
-    }
-    int a = 5;*/
 }
 
 
@@ -713,9 +663,7 @@ inline static bool isPointInPolygon(const glm::vec2& point, const std::vector<gl
 }
 
 // Основная функция для проверки, находится ли точка внутри треугольника
-inline static bool isPointInTriangle(
-        const glm::vec2 point, const std::vector<glm::vec2>& triangle
-) {
+inline static bool isPointInTriangle(const glm::vec2 point, const std::vector<glm::vec2>& triangle) {
     const glm::vec2& v1 = triangle[0];
     const glm::vec2& v2 = triangle[1];
     const glm::vec2& v3 = triangle[2];
@@ -790,8 +738,7 @@ glm::vec3 ComputeBarycentricCoordinates(
 
     // Проверка на малые отклонения для числовых погрешностей (погрешности вычислений с плавающей
     // точкой)
-    if (u < -1e-6 || v < -1e-6 || w < -1e-6 || u > 1.0f + 1e-6 || v > 1.0f + 1e-6 ||
-        w > 1.0f + 1e-6) {
+    if (u < -1e-6 || v < -1e-6 || w < -1e-6 || u > 1.0f + 1e-6 || v > 1.0f + 1e-6 || w > 1.0f + 1e-6) {
         return glm::vec3(-1.0f, -1.0f, -1.0f); // Возвращаем ошибочные координаты
     }
 
@@ -832,12 +779,9 @@ void add_vertex_and_uvs(
             break;
         }
 
-        bool on_p0 =
-                std::abs(p.x - t.points[0].x) < 0.01f and std::abs(p.y - t.points[0].y) < 0.01f;
-        bool on_p1 =
-                std::abs(p.x - t.points[1].x) < 0.01f and std::abs(p.y - t.points[1].y) < 0.01f;
-        bool on_p2 =
-                std::abs(p.x - t.points[2].x) < 0.01f and std::abs(p.y - t.points[2].y) < 0.01f;
+        bool on_p0 = std::abs(p.x - t.points[0].x) < 0.01f and std::abs(p.y - t.points[0].y) < 0.01f;
+        bool on_p1 = std::abs(p.x - t.points[1].x) < 0.01f and std::abs(p.y - t.points[1].y) < 0.01f;
+        bool on_p2 = std::abs(p.x - t.points[2].x) < 0.01f and std::abs(p.y - t.points[2].y) < 0.01f;
 
         if (on_p0 or on_p1 or on_p2) {
             if (on_p0) {
@@ -971,8 +915,7 @@ std::vector<Mesh*> ObjMapModel::generateLod(
 
             std::vector<glm::vec2> grid;
             grid.reserve(
-                    (poly_max.x - poly_min.x) * (poly_max.y - poly_min.y) / (step * step) +
-                    poly.size()
+                    (poly_max.x - poly_min.x) * (poly_max.y - poly_min.y) / (step * step) + poly.size()
             );
             // Add to grid points inside the polygon
             for (float x = poly_min.x - step; x < poly_max.x;) {
@@ -1053,8 +996,7 @@ std::vector<Mesh*> ObjMapModel::generateLod(
                     for (uint32_t y = start_y; y <= end_y; y++) {
                         glm::vec2 a = {poly_min.x + x * step - 0.01, poly_min.y + y * step - 0.01};
                         glm::vec2 b = {
-                                poly_min.x + (x + 1) * step + 0.01,
-                                poly_min.y + (y + 1) * step + 0.01
+                                poly_min.x + (x + 1) * step + 0.01, poly_min.y + (y + 1) * step + 0.01
                         };
                         glm::vec2 p = grid[i];
 
@@ -1111,24 +1053,21 @@ std::vector<Mesh*> ObjMapModel::generateLod(
                         glm::vec3 a = {grid[cell[0]].x, grid[cell[0]].y, KEY};
                         glm::vec3 new_a = T_inv * a;
                         add_vertex_and_uvs(
-                                new_a, {a.x, a.y}, triangles, mesh_vertices, mesh_UVs,
-                                mesh_lightmap_UVs
+                                new_a, {a.x, a.y}, triangles, mesh_vertices, mesh_UVs, mesh_lightmap_UVs
                         );
 
                         mesh_indicies.push_back(mesh_vertices.size() / 3);
                         a = {grid[cell[i - 1]].x, grid[cell[i - 1]].y, KEY};
                         new_a = T_inv * a;
                         add_vertex_and_uvs(
-                                new_a, {a.x, a.y}, triangles, mesh_vertices, mesh_UVs,
-                                mesh_lightmap_UVs
+                                new_a, {a.x, a.y}, triangles, mesh_vertices, mesh_UVs, mesh_lightmap_UVs
                         );
 
                         mesh_indicies.push_back(mesh_vertices.size() / 3);
                         a = {grid[cell[i]].x, grid[cell[i]].y, KEY};
                         new_a = T_inv * a;
                         add_vertex_and_uvs(
-                                new_a, {a.x, a.y}, triangles, mesh_vertices, mesh_UVs,
-                                mesh_lightmap_UVs
+                                new_a, {a.x, a.y}, triangles, mesh_vertices, mesh_UVs, mesh_lightmap_UVs
                         );
 
                         for (uint32_t i = 0; i < 3; i++) {
@@ -1218,9 +1157,8 @@ inline static void sortVerticesCCW(std::vector<glm::vec3>* vertices, const glm::
     });
 }
 
-void ObjMapModel::generateCollision(
-        std::vector<glm::vec3>& vertices, std::vector<ObjObject>& objects
-) {
+void ObjMapModel::generateCollision(std::vector<glm::vec3>& vertices, std::vector<ObjObject>& objects) {
+    // TODO: Optimize. If mesh is cube - use CubeShape instead ConvexShape
     // Collision generation
     for (auto& obj: objects) {
         std::vector<float> obj_vertices;

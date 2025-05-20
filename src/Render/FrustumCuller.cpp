@@ -1,4 +1,5 @@
 #include <HateEngine/Render/FrustumCuller.hpp>
+#include <HateEngine/Log.hpp>
 
 FrustumCuller::FrustumCuller(const glm::mat4& projectionView) {
     update(projectionView);
@@ -8,34 +9,22 @@ void FrustumCuller::update(const glm::mat4& projectionView) {
     std::array<Plane, static_cast<size_t>(Planes::Count)> planes;
 
     // Левая плоскость
-    planes[static_cast<size_t>(Planes::Left)].normal.x =
-            projectionView[0][3] + projectionView[0][0];
-    planes[static_cast<size_t>(Planes::Left)].normal.y =
-            projectionView[1][3] + projectionView[1][0];
-    planes[static_cast<size_t>(Planes::Left)].normal.z =
-            projectionView[2][3] + projectionView[2][0];
-    planes[static_cast<size_t>(Planes::Left)].distance =
-            projectionView[3][3] + projectionView[3][0];
+    planes[static_cast<size_t>(Planes::Left)].normal.x = projectionView[0][3] + projectionView[0][0];
+    planes[static_cast<size_t>(Planes::Left)].normal.y = projectionView[1][3] + projectionView[1][0];
+    planes[static_cast<size_t>(Planes::Left)].normal.z = projectionView[2][3] + projectionView[2][0];
+    planes[static_cast<size_t>(Planes::Left)].distance = projectionView[3][3] + projectionView[3][0];
 
     // Правая плоскость
-    planes[static_cast<size_t>(Planes::Right)].normal.x =
-            projectionView[0][3] - projectionView[0][0];
-    planes[static_cast<size_t>(Planes::Right)].normal.y =
-            projectionView[1][3] - projectionView[1][0];
-    planes[static_cast<size_t>(Planes::Right)].normal.z =
-            projectionView[2][3] - projectionView[2][0];
-    planes[static_cast<size_t>(Planes::Right)].distance =
-            projectionView[3][3] - projectionView[3][0];
+    planes[static_cast<size_t>(Planes::Right)].normal.x = projectionView[0][3] - projectionView[0][0];
+    planes[static_cast<size_t>(Planes::Right)].normal.y = projectionView[1][3] - projectionView[1][0];
+    planes[static_cast<size_t>(Planes::Right)].normal.z = projectionView[2][3] - projectionView[2][0];
+    planes[static_cast<size_t>(Planes::Right)].distance = projectionView[3][3] - projectionView[3][0];
 
     // Нижняя плоскость
-    planes[static_cast<size_t>(Planes::Bottom)].normal.x =
-            projectionView[0][3] + projectionView[0][1];
-    planes[static_cast<size_t>(Planes::Bottom)].normal.y =
-            projectionView[1][3] + projectionView[1][1];
-    planes[static_cast<size_t>(Planes::Bottom)].normal.z =
-            projectionView[2][3] + projectionView[2][1];
-    planes[static_cast<size_t>(Planes::Bottom)].distance =
-            projectionView[3][3] + projectionView[3][1];
+    planes[static_cast<size_t>(Planes::Bottom)].normal.x = projectionView[0][3] + projectionView[0][1];
+    planes[static_cast<size_t>(Planes::Bottom)].normal.y = projectionView[1][3] + projectionView[1][1];
+    planes[static_cast<size_t>(Planes::Bottom)].normal.z = projectionView[2][3] + projectionView[2][1];
+    planes[static_cast<size_t>(Planes::Bottom)].distance = projectionView[3][3] + projectionView[3][1];
 
     // Верхняя плоскость
     planes[static_cast<size_t>(Planes::Top)].normal.x = projectionView[0][3] - projectionView[0][1];
@@ -44,14 +33,10 @@ void FrustumCuller::update(const glm::mat4& projectionView) {
     planes[static_cast<size_t>(Planes::Top)].distance = projectionView[3][3] - projectionView[3][1];
 
     // Ближняя плоскость
-    planes[static_cast<size_t>(Planes::Near)].normal.x =
-            projectionView[0][3] + projectionView[0][2];
-    planes[static_cast<size_t>(Planes::Near)].normal.y =
-            projectionView[1][3] + projectionView[1][2];
-    planes[static_cast<size_t>(Planes::Near)].normal.z =
-            projectionView[2][3] + projectionView[2][2];
-    planes[static_cast<size_t>(Planes::Near)].distance =
-            projectionView[3][3] + projectionView[3][2];
+    planes[static_cast<size_t>(Planes::Near)].normal.x = projectionView[0][3] + projectionView[0][2];
+    planes[static_cast<size_t>(Planes::Near)].normal.y = projectionView[1][3] + projectionView[1][2];
+    planes[static_cast<size_t>(Planes::Near)].normal.z = projectionView[2][3] + projectionView[2][2];
+    planes[static_cast<size_t>(Planes::Near)].distance = projectionView[3][3] + projectionView[3][2];
 
     // Дальняя плоскость
     planes[static_cast<size_t>(Planes::Far)].normal.x = projectionView[0][3] - projectionView[0][2];
@@ -64,7 +49,12 @@ void FrustumCuller::update(const glm::mat4& projectionView) {
         float length = glm::length(plane.normal);
         plane.normal /= length;
         plane.distance /= length;
+
+        /*HATE_INFO_F(
+                "Plane: %f %f %f %f", plane.normal.x, plane.normal.y, plane.normal.z, plane.distance
+        );*/
     }
+    // HATE_INFO("END\n\n\n")
 
     m_planes = planes;
 }

@@ -4,6 +4,7 @@
 #include <mutex>
 #include <string>
 #include "HateEngine/Render/RenderInterface.hpp"
+#include "HateEngine/Utilities/UUID.hpp"
 #include "Utilities/Signal.hpp"
 #include "Level.hpp"
 #include "Input.hpp"
@@ -42,6 +43,8 @@ namespace HateEngine {
         glm::vec2 displayScale = {0.0f, 0.0f};
         float aspectRatio = 0;
         Level* level = nullptr;
+        UUID level_callback_added_uuid = 0;
+        UUID level_callback_removed_uuid = 0;
 
 
         std::mutex levelMutex;

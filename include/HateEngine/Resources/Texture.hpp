@@ -36,9 +36,8 @@ namespace HateEngine {
 
         Texture(const Texture& texture, bool copy_tex_data = false);
 
-        Texture(std::string file_name, TexWrap tex_wrap = Repeat,
-                TexFiltering tex_filtering = Linear, bool mipmap = true, float mipmap_bias = -1.0f,
-                bool autoload = true);
+        Texture(std::string file_name, TexWrap tex_wrap = Repeat, TexFiltering tex_filtering = Linear,
+                bool mipmap = true, float mipmap_bias = -1.0f, bool autoload = true);
 
         Texture(std::vector<uint8_t> data, int width, int height, TexType tex_type,
                 TexWrap tex_wrap = Repeat, TexFiltering tex_filtering = Linear, bool mipmap = true,
@@ -48,9 +47,7 @@ namespace HateEngine {
         Texture(std::vector<uint8_t> data, TexWrap tex_wrap = Repeat,
                 TexFiltering tex_filtering = Linear, bool mipmap = true, float mipmap_bias = -1.0f);
         ~Texture();
-        bool Load(
-                void (*API_loader)(Texture* texture_ptr), void (*API_unloader)(Texture* texture_ptr)
-        );
+        bool Load(void (*API_loader)(Texture* texture_ptr), void (*API_unloader)(Texture* texture_ptr));
         void Unload();
         uint32_t getTextureID() const;
 

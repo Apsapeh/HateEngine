@@ -46,8 +46,7 @@ std::string LogFn::__log_message_template(
 void Log::Debug(std::string msg, std::string file, unsigned int line) {
     // #ifdef __HATE_ENGINE_DEBUG
     std::cout << termcolor::reset << termcolor::green
-              << LogFn::__log_message_template("DEBUG", msg, file, line) << termcolor::reset
-              << "\n";
+              << LogFn::__log_message_template("DEBUG", msg, file, line) << termcolor::reset << "\n";
     // #endif
 }
 
@@ -58,14 +57,12 @@ void Log::Info(std::string msg, std::string file, unsigned int line) {
 
 void Log::Warning(std::string msg, std::string file, unsigned int line) {
     std::cerr << termcolor::reset << termcolor::yellow
-              << LogFn::__log_message_template("WARNING", msg, file, line) << termcolor::reset
-              << "\n";
+              << LogFn::__log_message_template("WARNING", msg, file, line) << termcolor::reset << "\n";
 }
 
 void Log::Error(std::string msg, std::string file, unsigned int line) {
     std::cerr << termcolor::reset << termcolor::red
-              << LogFn::__log_message_template("ERROR", msg, file, line) << termcolor::reset
-              << "\n";
+              << LogFn::__log_message_template("ERROR", msg, file, line) << termcolor::reset << "\n";
 }
 
 void Log::Fatal(std::string msg, std::string file, unsigned int line) {

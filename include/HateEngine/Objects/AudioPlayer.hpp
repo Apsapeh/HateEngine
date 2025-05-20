@@ -29,9 +29,7 @@ namespace HateEngine {
 
         */
         // AudioPlayer(Audio& audio);
-        AudioPlayer(
-                Audio* audio, AudioBus* bus = nullptr, Type type = Audio2D, bool owns_audio = false
-        );
+        AudioPlayer(Audio* audio, AudioBus* bus = nullptr, Type type = Audio2D, bool owns_audio = false);
         AudioPlayer(
                 AudioStream* audioStream, AudioBus* bus = nullptr, Type type = Audio2D,
                 bool owns_audio = false
@@ -53,8 +51,7 @@ namespace HateEngine {
         void fadePan(float pan, double duration);
 
         void set3DAttenuation(
-                AudioServer::SoundAttenuation attenuation = AudioServer::Inverse,
-                float factor = 0.3f
+                AudioServer::SoundAttenuation attenuation = AudioServer::Inverse, float factor = 0.3f
         );
         void set3DDopplerFactor(float factor = 1.0f);
 

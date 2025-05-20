@@ -34,9 +34,7 @@ namespace HateEngine {
         float y = 0.0f;
 
         CoordsUI();
-        CoordsUI(
-                float x, float y, float scale = 1.0f, Anchor anchor = TopLeft, Units units = Pixels
-        );
+        CoordsUI(float x, float y, float scale = 1.0f, Anchor anchor = TopLeft, Units units = Pixels);
 
         CoordsData getCoords(int screenWidth, int screenHeight) const;
         CoordsData getTopLeftCoords(int screenWidth, int screenHeight) const;

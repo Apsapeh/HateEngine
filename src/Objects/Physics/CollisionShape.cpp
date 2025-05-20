@@ -60,9 +60,7 @@ void CollisionShape::rotate(glm::vec3 vec) {
 
 void CollisionShape::setFriction(float friction) {
     if (friction < 0.0f) {
-        HATE_WARNING_F(
-                "CollisonShape [%llu]: friction cannot be negative", this->getUUID().getU64()
-        );
+        HATE_WARNING_F("CollisonShape [%llu]: friction cannot be negative", this->getUUID().getU64());
         return;
     }
 
@@ -122,9 +120,7 @@ void CollisionShape::setCollisionCategoryRaw(uint16_t category) {
 
 void CollisionShape::setCollisionMaskBit(uint8_t mask, bool state) {
     if (mask > 15) {
-        HATE_WARNING_F(
-                "CollisonShape [%llu]: mask cannot be greater than 15", this->getUUID().getU64()
-        );
+        HATE_WARNING_F("CollisonShape [%llu]: mask cannot be greater than 15", this->getUUID().getU64());
         return;
     }
 

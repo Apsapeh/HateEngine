@@ -26,6 +26,11 @@ option("build_examples")
     set_default(false)
 option_end()
 
+option("profiler_mode")
+    set_description("Enable profiler shortcuts")
+    set_default(false)
+option_end()
+
 option("__package_mode")
     set_description("Don't use it, it's 'system' option for normaly support a xmake package system")
     set_default(false)
@@ -48,6 +53,10 @@ function set_mode_rules(merge)
         set_strip("all")
         set_fpmodels("fast")
         set_optimize("aggressive")
+    end
+
+    if has_config("profiler_mode") then 
+        add_defines("__HATE_ENGINE_PROFILER")
     end
 
     --add_defines("IS_RP3D_PROFILING_ENABLED")

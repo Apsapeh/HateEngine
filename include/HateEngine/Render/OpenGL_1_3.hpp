@@ -26,18 +26,13 @@ namespace HateEngine {
 
         Camera* getCamera() override;
 
-        void setMaxLightRenderDist(float dist);
-
     private:
         Engine* engine = nullptr;
         uint8_t maxLightCount = 8;
-        float maxLightRenderDist = 25;
         float UIScale = 1.0f;
 
         FrustumCuller frustrum;
         std::vector<const Mesh*> corrent_transparent_buffer_meshes = {};
-        uint32_t draw_calls = 0;
-
 
         void initNuklearUI();
 
@@ -73,7 +68,7 @@ namespace HateEngine {
          * \param position  Position of the object
          * \return Vector of Lights* of the nearest lights
          */
-        inline std::vector<Light*> getNearestLights(const Mesh* mesh, float max_light_render_dist);
+        inline std::vector<Light*> getNearestLights(const Mesh* mesh);
 
         static void loadTexture(Texture* texture_ptr);
         static void unloadTexture(Texture* texture_ptr);

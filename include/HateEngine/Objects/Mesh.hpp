@@ -6,6 +6,7 @@
 #include "Object.hpp"
 #include "glm/fwd.hpp"
 #include "Interfaces/Renderable3DInterface.hpp"
+#include "../Types/Bitset.hpp"
 
 namespace HateEngine {
     // Object -> Mesh
@@ -20,7 +21,6 @@ namespace HateEngine {
         std::vector<float> UV = {};
         std::vector<float> light_UV = {};
         uint8_t color_channels = 4;
-        float max_light_dist = 0;
         float center_max_size = 0;
         glm::vec3 AABB_min;
         glm::vec3 AABB_max;
@@ -30,12 +30,15 @@ namespace HateEngine {
         bool face_culling = true;
         bool is_color_enabled = false;
 
+
         void updateCenterMaxSize();
         void updateAABB();
 
         void setRotationMatrixRaw(const glm::mat4& mat) override;
 
     public:
+        Bitset<uint8_t> render_layers = 0xFF;
+
         ~Mesh();
         Mesh();
         Mesh(std::vector<float> vert, std::vector<uint32_t> ind, std::vector<float> norm);
@@ -51,10 +54,6 @@ namespace HateEngine {
         void setColors(std::vector<float> colors, uint8_t channels = 4);
         void setColor(glm::vec4 color);
         void setColor(glm::vec3 color);
-
-        void enableCustomMaxLightDist(float dist);
-        const float getCustomMaxLightDist() const;
-        void disableCustomMaxLightDist();
 
         /**
          * @brief Enable or disable transparency correction by distance to camera.

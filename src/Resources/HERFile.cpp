@@ -22,8 +22,8 @@ std::string HERResource::asString() {
 }
 
 Texture HERResource::asTexture(
-        Texture::TexWrap tex_wrap, Texture::TexFiltering tex_filtering, bool mipmap,
-        float mipmap_bias, bool autoload
+        Texture::TexWrap tex_wrap, Texture::TexFiltering tex_filtering, bool mipmap, float mipmap_bias,
+        bool autoload
 ) {
     return Texture(this->data, tex_wrap, tex_filtering, mipmap, mipmap_bias);
 }
@@ -115,9 +115,7 @@ ObjMapModel HERFile::loadObjMap(
     std::string map = (*this)[map_file_name].asString();
     std::vector<uint8_t> heluv = (*this)[heluv_file_name].data;
     std::vector<uint8_t> hepvs = (*this)[hepvs_file_name].data;
-    return ObjMapModel(
-            this, obj, map, heluv, hepvs, grid_size, generate_collision, lod_dist, lod_step
-    );
+    return ObjMapModel(this, obj, map, heluv, hepvs, grid_size, generate_collision, lod_dist, lod_step);
 }
 
 HERResource HERFile::operator[](std::string key) {

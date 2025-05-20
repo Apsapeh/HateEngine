@@ -17,9 +17,7 @@ SoLoud::handle HateEngine::AudioBus::AudioPlayer_play(SoLoud::AudioSource& audio
     return bus.play(audio);
 }
 
-SoLoud::handle HateEngine::AudioBus::AudioPlayer_play3D(
-        SoLoud::AudioSource& audio, glm::vec3 position
-) {
+SoLoud::handle HateEngine::AudioBus::AudioPlayer_play3D(SoLoud::AudioSource& audio, glm::vec3 position) {
     return bus.play3d(audio, position.x, position.y, position.z);
 }
 

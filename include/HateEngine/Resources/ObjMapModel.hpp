@@ -46,7 +46,7 @@ namespace HateEngine {
             std::unordered_map<std::string, Property> properties;
         };
 
-#define HE_ENTITY_DE_PARAMS                                                                        \
+#define HE_ENTITY_DE_PARAMS                                                                             \
     HateEngine::ObjMapModel *model, const HateEngine::ObjMapModel::Entity &entity, void *data
 
         typedef void (*EntityDeserialzer)(HE_ENTITY_DE_PARAMS);
@@ -78,8 +78,8 @@ namespace HateEngine {
         void parseHeluv(std::vector<uint8_t>& data, class HERFile* her = nullptr);
 
         void parseObj(
-                std::string data, float grid_size, bool generate_lod, float lod_dist,
-                float lod_step, class HERFile* her = nullptr
+                std::string data, float grid_size, bool generate_lod, float lod_dist, float lod_step,
+                class HERFile* her = nullptr
         );
         std::unordered_map<std::string, Material> parseMtlLib(
                 std::string data, class HERFile* her = nullptr
@@ -126,10 +126,9 @@ namespace HateEngine {
          * @param str File name
          */
         ObjMapModel(
-                std::string obj_file_name, std::string map_file_name,
-                std::string lightmap_file_name, std::string hepvs_file_name,
-                float grid_size = 16.0f, bool generate_collision = true, bool generate_lod = true,
-                float lod_dist = 15, float lod_step = 1.0
+                std::string obj_file_name, std::string map_file_name, std::string lightmap_file_name,
+                std::string hepvs_file_name, float grid_size = 16.0f, bool generate_collision = true,
+                bool generate_lod = true, float lod_dist = 15, float lod_step = 1.0
         );
 
         /**

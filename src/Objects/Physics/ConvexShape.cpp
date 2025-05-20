@@ -11,8 +11,8 @@
 using namespace HateEngine;
 
 ConvexShape::ConvexShape(
-        std::vector<float> _vertices, std::vector<std::vector<uint32_t>> faces_indices,
-        glm::vec3 pos, glm::vec3 rot
+        std::vector<float> _vertices, std::vector<std::vector<uint32_t>> faces_indices, glm::vec3 pos,
+        glm::vec3 rot
 ) :
     CollisionShape(Convex, pos, rot),
     vertexArray(

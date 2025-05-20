@@ -1,6 +1,7 @@
 #include <HateEngine/Objects/Camera.hpp>
 #include <glm/ext.hpp>
 #include <glm/glm.hpp>
+#include "glm/fwd.hpp"
 
 using namespace HateEngine;
 
@@ -9,9 +10,8 @@ Camera::Camera(float fov, float render_dist) {
     this->setRenderDist(render_dist);
 
     this->skybox.disableLightShading();
-    this->skybox.setIndicies({35, 34, 33, 32, 31, 30, 29, 28, 27, 26, 25, 24,
-                              23, 22, 21, 20, 19, 18, 17, 16, 15, 14, 13, 12,
-                              11, 10, 9,  8,  7,  6,  5,  4,  3,  2,  1,  0});
+    this->skybox.setIndicies({35, 34, 33, 32, 31, 30, 29, 28, 27, 26, 25, 24, 23, 22, 21, 20, 19, 18,
+                              17, 16, 15, 14, 13, 12, 11, 10, 9,  8,  7,  6,  5,  4,  3,  2,  1,  0});
 
     struct CubeMapUVSide {
         float x0, y0, x1, y1;
@@ -97,6 +97,7 @@ glm::mat4 Camera::getViewMatrix() const {
     // return this->viewMatrix;
     glm::mat4 mat = this->getGlobalRotationMatrix();
     mat = glm::transpose(mat); // Invert rotation matrix
+    // mat = glm::mat4(1.0f);
     mat = glm::translate(mat, -this->getGlobalPosition());
     return mat;
 }
