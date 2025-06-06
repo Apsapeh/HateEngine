@@ -164,7 +164,7 @@ void OpenGL_1_3::DrawNuklearUI(std::unordered_map<UUID, WidgetUI*>* widgets) {
         nk_buffer_clear((struct nk_buffer*) this->UINuklearBuffer_verts);
         nk_buffer_clear((struct nk_buffer*) this->UINuklearBuffer_idx);
         nk_clear(&ctx);
-        
+
         pump_input(&ctx, engine);
 
         for (const auto& it: *widgets) {
@@ -426,7 +426,7 @@ void OpenGL_1_3::DrawNuklearUI(std::unordered_map<UUID, WidgetUI*>* widgets) {
                 (struct nk_buffer*) this->UINuklearBuffer_idx, &cfg
         );
     }
-    
+
 
     glm::ivec2 resolution = this->engine->getResolution();
     const void* vertices = nk_buffer_memory_const((struct nk_buffer*) this->UINuklearBuffer_verts);
@@ -450,10 +450,7 @@ static long draw(
     glClientActiveTexture(GL_TEXTURE0);
     glPushMatrix();
 
-    glm::mat4 Mp = glm::ortho(
-            0.0f, (float) width, (float) height,
-            0.0f
-    );
+    glm::mat4 Mp = glm::ortho(0.0f, (float) width, (float) height, 0.0f);
     glMatrixMode(GL_PROJECTION);
     glLoadMatrixf(glm::value_ptr(Mp));
 

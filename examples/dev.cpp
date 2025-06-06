@@ -183,7 +183,7 @@ int main() {
     game.setMouseCapture(true);
     // std::cout << "\n\n\n\n" << glfwGetInputMode(game.window, GLFW_CURSOR) << "\n\n\n\n";
     game.setOneThreadMode(true);
-    game.setVSync(false);
+    game.setVSync(true);
 
     game.onLevelChanged.connect([](HateEngine::Engine* e, HateEngine::Level* lvl,
                                    HateEngine::Level* old) {
@@ -344,6 +344,15 @@ int main() {
             "examples/Assets/Ignore/light.heluv", "examples/Assets/Ignore/E1M1.hepvs", 16.0, true,
             true, 15, 1
     );*/
+
+    HateEngine::ObjMapModel objmodel_few_materials(
+            "examples/Assets/few_material_test.obj", "examples/Assets/few_material_test.map", "", "",
+            16.0, false, false
+    );
+    objmodel_few_materials.setPosition(5, 5, 5);
+    lvl.addObject(&objmodel_few_materials);
+
+
     HateEngine::ObjMapModel objmodel(
             "examples/Assets/dev.obj", "examples/Assets/dev.map", "", "", 16.0, true, false, 15, 1
     );
@@ -444,8 +453,8 @@ int main() {
 
     // floor_mesh.disableLightShading();
 
-    lvl.setAmbientLightColor(255, 255, 255);
-    lvl.setAmbientLightIntensity(0);
+    lvl.setAmbientLightColor(1, 1, 1);
+    lvl.setAmbientLightIntensity(0.5);
 
 
     /*for (auto& m: objmodel.getMeshes()) {
@@ -953,7 +962,7 @@ void _process(HateEngine::Engine* engine, double delta) {
     auto rb_v = rigidBody.getLinearVelocity();
     //    HATE_INFO_F("Velocity: %f | %f | %f", rb_v.x, rb_v.y, rb_v.z);
     // rigidBody.setLinearVelocity(3, -g, 0);
-    // HATE_INFO_F("Draw calls: %d", engine->getRenderInterface()->getDrawCalls());
+    //HATE_INFO_F("Draw calls: %d", engine->getRenderInterface()->getDrawCalls());
 
     decal.bake();
     glm::vec3 decal_mesh_pos = decal.getMesh()->getGlobalPosition();

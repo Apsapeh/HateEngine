@@ -62,11 +62,11 @@ namespace HateEngine {
             glm::vec3 normal = {0.0f, 0.0f, 0.0f};
             std::vector<int32_t> tex_indices;
             std::vector<glm::vec2> light_tex;
+            std::string material = "";
         };
 
         struct ObjObject {
-            std::string name;
-            std::string material = "";
+            std::string name = "";
             std::vector<ObjFace> faces;
         };
 
@@ -81,6 +81,9 @@ namespace HateEngine {
                 std::string data, float grid_size, bool generate_lod, float lod_dist, float lod_step,
                 class HERFile* her = nullptr
         );
+
+        std::unordered_map<std::string, std::vector<ObjFace*>> splitObjectByMaterial(ObjObject*);
+
         std::unordered_map<std::string, Material> parseMtlLib(
                 std::string data, class HERFile* her = nullptr
         );

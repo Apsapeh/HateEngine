@@ -265,6 +265,7 @@ void ObjMapModel::parseObj(
 
     std::string line;
     // HATE_DEBUG_F("LINE: %s", data.c_str());
+    std::string current_material = "";
     std::istringstream tokenStream(data);
     while (std::getline(tokenStream, line, '\n')) {
         if (line.empty())
@@ -336,6 +337,7 @@ void ObjMapModel::parseObj(
             face.indices = v_indices;
             face.tex_indices = t_indices;
             face.light_tex = light_tex;
+            face.material = current_material;
             if (n_indices.size() > 0) {
                 face.normal[0] = normals[n_indices[0]].x;
                 face.normal[1] = normals[n_indices[0]].y;
@@ -358,8 +360,7 @@ void ObjMapModel::parseObj(
             ///       objects
             if (words.size() < 2 || current_obj == nullptr)
                 continue;
-            if (current_obj->material == "")
-                current_obj->material = words[1];
+            current_material = words[1];
         } else if (words[0] == "mtllib") {
             if (words.size() < 2)
                 continue;
@@ -411,7 +412,7 @@ void ObjMapModel::parseObj(
     // std::vector<LODMesh> lod_meshes;
     for (unsigned long i = 0; i < lods[0].meshes.size(); i++) {
         meshes.push_back(LODMesh());
-        meshes.back().setName(objects[i].name);
+        meshes.back().setName(lods[0].meshes[i]->getName());
         for (unsigned long j = 0; j < lods.size(); j++)
             meshes.back().addLOD(lods[j].distance, lods[j].meshes[i]);
     }
@@ -805,6 +806,18 @@ void add_vertex_and_uvs(
     }
 }
 
+std::unordered_map<std::string, std::vector<ObjMapModel::ObjFace*>> ObjMapModel::splitObjectByMaterial(
+        ObjObject* obj
+) {
+    std::unordered_map<std::string, std::vector<ObjMapModel::ObjFace*>> result;
+
+    for (auto& face: obj->faces) {
+        if (face.material == "skip" or face.material == "skip_draw")
+            continue;
+        result[face.material].push_back(&face);
+    }
+    return result;
+}
 
 std::vector<Mesh*> ObjMapModel::generateLod(
         std::vector<glm::vec3> vertices, std::vector<glm::vec2> tex_coords,
@@ -813,317 +826,330 @@ std::vector<Mesh*> ObjMapModel::generateLod(
     std::vector<Mesh*> meshes;
     uint64_t c = 0;
     for (auto obj: objects) {
-        std::vector<int32_t> all_indices;
-        std::vector<float> mesh_vertices;
-        std::vector<uint32_t> mesh_indicies;
-        std::vector<float> mesh_normals;
-        std::vector<float> mesh_UVs;
-        std::vector<float> mesh_lightmap_UVs;
-        // Mesh mesh;
+        auto splitted_obj = splitObjectByMaterial(&obj);
+        for (auto& faces: splitted_obj) {
+            std::vector<int32_t> all_indices;
+            std::vector<float> mesh_vertices;
+            std::vector<uint32_t> mesh_indicies;
+            std::vector<float> mesh_normals;
+            std::vector<float> mesh_UVs;
+            std::vector<float> mesh_lightmap_UVs;
+            // Mesh mesh;
+            
+            
+            std::vector<ObjFace*> of = {faces.second[0]};
+            for (const auto& face: faces.second) {
+                // for (const auto& face: of) {
+                if (face->indices.size() < 3) {
+                    continue;
+                }
 
-        std::vector<ObjFace> of = {obj.faces[0]};
-        for (const auto& face: obj.faces) {
-            // for (const auto& face: of) {
-            if (face.indices.size() < 3) {
-                continue;
-            }
+                glm::vec3 v0 = vertices[face->indices[0]];
+                glm::vec3 v1 = vertices[face->indices[1]];
+                glm::vec3 v2 = vertices[face->indices[2]];
+                // glm::vec3 v3 = vertices[face.indices[3]];
 
-            glm::vec3 v0 = vertices[face.indices[0]];
-            glm::vec3 v1 = vertices[face.indices[1]];
-            glm::vec3 v2 = vertices[face.indices[2]];
-            // glm::vec3 v3 = vertices[face.indices[3]];
+                glm::vec3 AB = v1 - v0;
+                glm::vec3 AC = v2 - v0;
 
-            glm::vec3 AB = v1 - v0;
-            glm::vec3 AC = v2 - v0;
+                glm::vec3 N = glm::cross(AB, AC);
 
-            glm::vec3 N = glm::cross(AB, AC);
+                glm::vec3 U = glm::normalize(AB);
+                glm::vec3 uN = glm::normalize(N);
+                glm::vec3 V = glm::cross(U, uN);
 
-            glm::vec3 U = glm::normalize(AB);
-            glm::vec3 uN = glm::normalize(N);
-            glm::vec3 V = glm::cross(U, uN);
+                // Матрица афинного преобразования
+                glm::mat3 T = glm::mat3(U.x, V.x, N.x, U.y, V.y, N.y, U.z, V.z, N.z);
+                glm::mat3 T_inv = glm::inverse(T);
 
-            // Матрица афинного преобразования
-            glm::mat3 T = glm::mat3(U.x, V.x, N.x, U.y, V.y, N.y, U.z, V.z, N.z);
-            glm::mat3 T_inv = glm::inverse(T);
+                std::vector<glm::vec2> poly;
+                for (const auto& index: face->indices) {
+                    glm::vec3 v = vertices[index];
+                    glm::vec3 v_z_null = T * v;
+                    poly.push_back(glm::vec2(v_z_null.x, v_z_null.y));
+                }
 
-            std::vector<glm::vec2> poly;
-            for (const auto& index: face.indices) {
-                glm::vec3 v = vertices[index];
-                glm::vec3 v_z_null = T * v;
-                poly.push_back(glm::vec2(v_z_null.x, v_z_null.y));
-            }
+                glm::vec3 v0_z_null = T * v0;
+                const float KEY = v0_z_null.z;
 
-            glm::vec3 v0_z_null = T * v0;
-            const float KEY = v0_z_null.z;
+                glm::vec2 poly_min = poly[0];
+                glm::vec2 poly_max = poly[0];
+                for (uint32_t i = 1; i < poly.size(); i++) {
+                    glm::vec2 p = poly[i];
+                    poly_min.x = std::min(p.x, poly_min.x);
+                    poly_min.y = std::min(p.y, poly_min.y);
+                    poly_max.x = std::max(p.x, poly_max.x);
+                    poly_max.y = std::max(p.y, poly_max.y);
+                }
 
-            glm::vec2 poly_min = poly[0];
-            glm::vec2 poly_max = poly[0];
-            for (uint32_t i = 1; i < poly.size(); i++) {
-                glm::vec2 p = poly[i];
-                poly_min.x = std::min(p.x, poly_min.x);
-                poly_min.y = std::min(p.y, poly_min.y);
-                poly_max.x = std::max(p.x, poly_max.x);
-                poly_max.y = std::max(p.y, poly_max.y);
-            }
-
-            // Triangulate the polygon
+                // Triangulate the polygon
 
 
-            std::vector<Triangle> triangles;
-            std::vector<uint32_t> poly_ccw_idx;
-            glm::vec2 poly_center = {0, 0};
-            poly_center.x = (poly_min.x + poly_max.x) / 2;
-            poly_center.y = (poly_min.y + poly_max.y) / 2;
+                std::vector<Triangle> triangles;
+                std::vector<uint32_t> poly_ccw_idx;
+                glm::vec2 poly_center = {0, 0};
+                poly_center.x = (poly_min.x + poly_max.x) / 2;
+                poly_center.y = (poly_min.y + poly_max.y) / 2;
 
-            for (uint32_t i = 0; i < poly.size(); i++) {
-                poly_ccw_idx.push_back(i);
-            }
+                for (uint32_t i = 0; i < poly.size(); i++) {
+                    poly_ccw_idx.push_back(i);
+                }
 
-            // sort in counter clockwise order
+                // sort in counter clockwise order
 
-            std::sort(
-                    poly_ccw_idx.begin(), poly_ccw_idx.end(),
-                    [&poly_center, &poly](uint32_t& a, uint32_t& b) -> bool {
-                        glm::vec2 a_v = poly[a];
-                        glm::vec2 b_v = poly[b];
-                        float a_angle = std::atan2(a_v.y - poly_center.y, a_v.x - poly_center.x);
-                        float b_angle = std::atan2(b_v.y - poly_center.y, b_v.x - poly_center.x);
-                        return (a_angle > b_angle);
+                std::sort(
+                        poly_ccw_idx.begin(), poly_ccw_idx.end(),
+                        [&poly_center, &poly](uint32_t& a, uint32_t& b) -> bool {
+                            glm::vec2 a_v = poly[a];
+                            glm::vec2 b_v = poly[b];
+                            float a_angle = std::atan2(a_v.y - poly_center.y, a_v.x - poly_center.x);
+                            float b_angle = std::atan2(b_v.y - poly_center.y, b_v.x - poly_center.x);
+                            return (a_angle > b_angle);
+                        }
+                );
+
+                for (uint32_t i = 2; i < poly_ccw_idx.size(); i++) {
+                    Triangle t;
+                    t.points.push_back(poly[poly_ccw_idx[0]]);
+                    t.points.push_back(poly[poly_ccw_idx[i - 1]]);
+                    t.points.push_back(poly[poly_ccw_idx[i]]);
+
+                    if (!face->tex_indices.empty()) {
+                        t.tex[0] = tex_coords[face->tex_indices[poly_ccw_idx[0]]];
+                        t.tex[1] = tex_coords[face->tex_indices[poly_ccw_idx[i - 1]]];
+                        t.tex[2] = tex_coords[face->tex_indices[poly_ccw_idx[i]]];
                     }
-            );
 
-            for (uint32_t i = 2; i < poly_ccw_idx.size(); i++) {
-                Triangle t;
-                t.points.push_back(poly[poly_ccw_idx[0]]);
-                t.points.push_back(poly[poly_ccw_idx[i - 1]]);
-                t.points.push_back(poly[poly_ccw_idx[i]]);
+                    if (!face->light_tex.empty()) {
+                        t.light_tex[0] = face->light_tex[poly_ccw_idx[0]];
+                        t.light_tex[1] = face->light_tex[poly_ccw_idx[i - 1]];
+                        t.light_tex[2] = face->light_tex[poly_ccw_idx[i]];
+                    }
 
-                if (!face.tex_indices.empty()) {
-                    t.tex[0] = tex_coords[face.tex_indices[poly_ccw_idx[0]]];
-                    t.tex[1] = tex_coords[face.tex_indices[poly_ccw_idx[i - 1]]];
-                    t.tex[2] = tex_coords[face.tex_indices[poly_ccw_idx[i]]];
+                    triangles.push_back(t);
                 }
 
-                if (!face.light_tex.empty()) {
-                    t.light_tex[0] = face.light_tex[poly_ccw_idx[0]];
-                    t.light_tex[1] = face.light_tex[poly_ccw_idx[i - 1]];
-                    t.light_tex[2] = face.light_tex[poly_ccw_idx[i]];
-                }
-
-                triangles.push_back(t);
-            }
-
-            std::vector<glm::vec2> grid;
-            grid.reserve(
-                    (poly_max.x - poly_min.x) * (poly_max.y - poly_min.y) / (step * step) + poly.size()
-            );
-            // Add to grid points inside the polygon
-            for (float x = poly_min.x - step; x < poly_max.x;) {
-                if (std::abs(poly_max.x - x) < step)
-                    x = poly_max.x;
-                else
-                    x += step;
-
-                for (float y = poly_min.y - step; y < poly_max.y;) {
-                    if (std::abs(poly_max.y - y) < step)
-                        y = poly_max.y;
+                std::vector<glm::vec2> grid;
+                grid.reserve(
+                        (poly_max.x - poly_min.x) * (poly_max.y - poly_min.y) / (step * step) +
+                        poly.size()
+                );
+                // Add to grid points inside the polygon
+                for (float x = poly_min.x - step; x < poly_max.x;) {
+                    if (std::abs(poly_max.x - x) < step)
+                        x = poly_max.x;
                     else
-                        y += step;
+                        x += step;
 
-                    if (isPointInPolygon({x, y}, poly)) {
-                        grid.push_back({x, y});
-                    }
-                }
-            }
+                    for (float y = poly_min.y - step; y < poly_max.y;) {
+                        if (std::abs(poly_max.y - y) < step)
+                            y = poly_max.y;
+                        else
+                            y += step;
 
-            // Add to grid points on the edges of the polygon
-            for (uint32_t i = 0; i < poly.size(); i++) {
-                glm::vec2 a = poly[i];
-                glm::vec2 b;
-                if (i == poly.size() - 1)
-                    b = poly[0];
-                else
-                    b = poly[i + 1];
-
-                float min_y = std::min(a.y, b.y);
-                float max_y = std::max(a.y, b.y);
-                float min_x = std::min(a.x, b.x);
-                float max_x = std::max(a.x, b.x);
-                for (float x = poly_min.x + step; x < max_x; x += step) {
-                    if (x <= min_x)
-                        continue;
-                    float yByX = a.y + (b.y - a.y) * (x - a.x) / (b.x - a.x);
-                    grid.push_back({x, yByX});
-                }
-
-                for (float y = poly_min.y + step; y < max_y; y += step) {
-                    if (y <= min_y)
-                        continue;
-                    float xByY = a.x + (b.x - a.x) * (y - a.y) / (b.y - a.y);
-                    grid.push_back({xByY, y});
-                }
-            }
-
-            // Add to grid polygon vertices
-            for (const auto p: poly) {
-                grid.push_back(p);
-            }
-
-
-            uint32_t g_x = std::ceil((poly_max.x - poly_min.x) / step);
-            uint32_t g_y = std::ceil((poly_max.y - poly_min.y) / step);
-
-            std::vector<std::vector<std::vector<uint32_t>>> cell_grid;
-            cell_grid.reserve(g_x);
-            for (uint32_t i = 0; i < g_x; i++) {
-                cell_grid.push_back(std::vector<std::vector<uint32_t>>());
-                cell_grid[i].reserve(g_y);
-                for (uint32_t j = 0; j < g_y; j++) {
-                    cell_grid[i].push_back(std::vector<uint32_t>());
-                }
-            }
-
-            for (uint32_t i = 0; i < grid.size(); ++i) {
-                uint32_t x = (uint32_t) std::floor((grid[i].x - poly_min.x) / step);
-                uint32_t y = (uint32_t) std::floor((grid[i].y - poly_min.y) / step);
-
-                uint32_t start_x = x > 0 ? x - 1 : 0;
-                uint32_t start_y = y > 0 ? y - 1 : 0;
-                uint32_t end_x = x < g_x - 1 ? x + 1 : g_x - 1;
-                uint32_t end_y = y < g_y - 1 ? y + 1 : g_y - 1;
-
-                for (uint32_t x = start_x; x <= end_x; x++) {
-                    for (uint32_t y = start_y; y <= end_y; y++) {
-                        glm::vec2 a = {poly_min.x + x * step - 0.01, poly_min.y + y * step - 0.01};
-                        glm::vec2 b = {
-                                poly_min.x + (x + 1) * step + 0.01, poly_min.y + (y + 1) * step + 0.01
-                        };
-                        glm::vec2 p = grid[i];
-
-                        if (((a.x < p.x && p.x < b.x)) && ((a.y < p.y && p.y < b.y))) {
-                            cell_grid[x][y].push_back(i);
+                        if (isPointInPolygon({x, y}, poly)) {
+                            grid.push_back({x, y});
                         }
                     }
                 }
-            }
 
-            for (uint32_t i = 0; i < cell_grid.size(); i++) {
-                for (uint32_t j = 0; j < cell_grid[i].size(); j++) {
-                    std::vector<uint32_t> cell = cell_grid[i][j];
+                // Add to grid points on the edges of the polygon
+                for (uint32_t i = 0; i < poly.size(); i++) {
+                    glm::vec2 a = poly[i];
+                    glm::vec2 b;
+                    if (i == poly.size() - 1)
+                        b = poly[0];
+                    else
+                        b = poly[i + 1];
 
-                    if (cell.size() < 3) {
-                        continue;
+                    float min_y = std::min(a.y, b.y);
+                    float max_y = std::max(a.y, b.y);
+                    float min_x = std::min(a.x, b.x);
+                    float max_x = std::max(a.x, b.x);
+                    for (float x = poly_min.x + step; x < max_x; x += step) {
+                        if (x <= min_x)
+                            continue;
+                        float yByX = a.y + (b.y - a.y) * (x - a.x) / (b.x - a.x);
+                        grid.push_back({x, yByX});
                     }
 
-                    float min_x = 0;
-                    float max_x = 0;
-                    float min_y = 0;
-                    float max_y = 0;
-                    for (uint32_t i = 0; i < cell.size(); i++) {
-                        if (i == 0) {
-                            min_x = grid[cell[i]].x;
-                            max_x = grid[cell[i]].x;
-                            min_y = grid[cell[i]].y;
-                            max_y = grid[cell[i]].y;
-                        } else {
-                            min_x = std::min(min_x, grid[cell[i]].x);
-                            max_x = std::max(max_x, grid[cell[i]].x);
-                            min_y = std::min(min_y, grid[cell[i]].y);
-                            max_y = std::max(max_y, grid[cell[i]].y);
-                        }
+                    for (float y = poly_min.y + step; y < max_y; y += step) {
+                        if (y <= min_y)
+                            continue;
+                        float xByY = a.x + (b.x - a.x) * (y - a.y) / (b.y - a.y);
+                        grid.push_back({xByY, y});
                     }
+                }
 
-                    float center_x = (min_x + max_x) / 2;
-                    float center_y = (min_y + max_y) / 2;
+                // Add to grid polygon vertices
+                for (const auto p: poly) {
+                    grid.push_back(p);
+                }
 
-                    // sort in counter clockwise order
-                    std::sort(
-                            cell.begin(), cell.end(),
-                            [&center_x, &center_y, &grid](uint32_t a, uint32_t b) -> bool {
-                                glm::vec2 a_v = grid[a];
-                                glm::vec2 b_v = grid[b];
-                                float a_angle = std::atan2(a_v.y - center_y, a_v.x - center_x);
-                                float b_angle = std::atan2(b_v.y - center_y, b_v.x - center_x);
-                                return (a_angle > b_angle);
+
+                uint32_t g_x = std::ceil((poly_max.x - poly_min.x) / step);
+                uint32_t g_y = std::ceil((poly_max.y - poly_min.y) / step);
+
+                std::vector<std::vector<std::vector<uint32_t>>> cell_grid;
+                cell_grid.reserve(g_x);
+                for (uint32_t i = 0; i < g_x; i++) {
+                    cell_grid.push_back(std::vector<std::vector<uint32_t>>());
+                    cell_grid[i].reserve(g_y);
+                    for (uint32_t j = 0; j < g_y; j++) {
+                        cell_grid[i].push_back(std::vector<uint32_t>());
+                    }
+                }
+
+                for (uint32_t i = 0; i < grid.size(); ++i) {
+                    uint32_t x = (uint32_t) std::floor((grid[i].x - poly_min.x) / step);
+                    uint32_t y = (uint32_t) std::floor((grid[i].y - poly_min.y) / step);
+
+                    uint32_t start_x = x > 0 ? x - 1 : 0;
+                    uint32_t start_y = y > 0 ? y - 1 : 0;
+                    uint32_t end_x = x < g_x - 1 ? x + 1 : g_x - 1;
+                    uint32_t end_y = y < g_y - 1 ? y + 1 : g_y - 1;
+
+                    for (uint32_t x = start_x; x <= end_x; x++) {
+                        for (uint32_t y = start_y; y <= end_y; y++) {
+                            glm::vec2 a = {poly_min.x + x * step - 0.01, poly_min.y + y * step - 0.01};
+                            glm::vec2 b = {
+                                    poly_min.x + (x + 1) * step + 0.01,
+                                    poly_min.y + (y + 1) * step + 0.01
+                            };
+                            glm::vec2 p = grid[i];
+
+                            if (((a.x < p.x && p.x < b.x)) && ((a.y < p.y && p.y < b.y))) {
+                                cell_grid[x][y].push_back(i);
                             }
-                    );
+                        }
+                    }
+                }
 
-                    for (uint32_t i = 2; i < cell.size(); ++i) {
-                        mesh_indicies.push_back(mesh_vertices.size() / 3);
-                        glm::vec3 a = {grid[cell[0]].x, grid[cell[0]].y, KEY};
-                        glm::vec3 new_a = T_inv * a;
-                        add_vertex_and_uvs(
-                                new_a, {a.x, a.y}, triangles, mesh_vertices, mesh_UVs, mesh_lightmap_UVs
+                for (uint32_t i = 0; i < cell_grid.size(); i++) {
+                    for (uint32_t j = 0; j < cell_grid[i].size(); j++) {
+                        std::vector<uint32_t> cell = cell_grid[i][j];
+
+                        if (cell.size() < 3) {
+                            continue;
+                        }
+
+                        float min_x = 0;
+                        float max_x = 0;
+                        float min_y = 0;
+                        float max_y = 0;
+                        for (uint32_t i = 0; i < cell.size(); i++) {
+                            if (i == 0) {
+                                min_x = grid[cell[i]].x;
+                                max_x = grid[cell[i]].x;
+                                min_y = grid[cell[i]].y;
+                                max_y = grid[cell[i]].y;
+                            } else {
+                                min_x = std::min(min_x, grid[cell[i]].x);
+                                max_x = std::max(max_x, grid[cell[i]].x);
+                                min_y = std::min(min_y, grid[cell[i]].y);
+                                max_y = std::max(max_y, grid[cell[i]].y);
+                            }
+                        }
+
+                        float center_x = (min_x + max_x) / 2;
+                        float center_y = (min_y + max_y) / 2;
+
+                        // sort in counter clockwise order
+                        std::sort(
+                                cell.begin(), cell.end(),
+                                [&center_x, &center_y, &grid](uint32_t a, uint32_t b) -> bool {
+                                    glm::vec2 a_v = grid[a];
+                                    glm::vec2 b_v = grid[b];
+                                    float a_angle = std::atan2(a_v.y - center_y, a_v.x - center_x);
+                                    float b_angle = std::atan2(b_v.y - center_y, b_v.x - center_x);
+                                    return (a_angle > b_angle);
+                                }
                         );
 
-                        mesh_indicies.push_back(mesh_vertices.size() / 3);
-                        a = {grid[cell[i - 1]].x, grid[cell[i - 1]].y, KEY};
-                        new_a = T_inv * a;
-                        add_vertex_and_uvs(
-                                new_a, {a.x, a.y}, triangles, mesh_vertices, mesh_UVs, mesh_lightmap_UVs
-                        );
+                        for (uint32_t i = 2; i < cell.size(); ++i) {
+                            mesh_indicies.push_back(mesh_vertices.size() / 3);
+                            glm::vec3 a = {grid[cell[0]].x, grid[cell[0]].y, KEY};
+                            glm::vec3 new_a = T_inv * a;
+                            add_vertex_and_uvs(
+                                    new_a, {a.x, a.y}, triangles, mesh_vertices, mesh_UVs,
+                                    mesh_lightmap_UVs
+                            );
 
-                        mesh_indicies.push_back(mesh_vertices.size() / 3);
-                        a = {grid[cell[i]].x, grid[cell[i]].y, KEY};
-                        new_a = T_inv * a;
-                        add_vertex_and_uvs(
-                                new_a, {a.x, a.y}, triangles, mesh_vertices, mesh_UVs, mesh_lightmap_UVs
-                        );
+                            mesh_indicies.push_back(mesh_vertices.size() / 3);
+                            a = {grid[cell[i - 1]].x, grid[cell[i - 1]].y, KEY};
+                            new_a = T_inv * a;
+                            add_vertex_and_uvs(
+                                    new_a, {a.x, a.y}, triangles, mesh_vertices, mesh_UVs,
+                                    mesh_lightmap_UVs
+                            );
 
-                        for (uint32_t i = 0; i < 3; i++) {
-                            mesh_normals.push_back(face.normal[0]);
-                            mesh_normals.push_back(face.normal[1]);
-                            mesh_normals.push_back(face.normal[2]);
+                            mesh_indicies.push_back(mesh_vertices.size() / 3);
+                            a = {grid[cell[i]].x, grid[cell[i]].y, KEY};
+                            new_a = T_inv * a;
+                            add_vertex_and_uvs(
+                                    new_a, {a.x, a.y}, triangles, mesh_vertices, mesh_UVs,
+                                    mesh_lightmap_UVs
+                            );
+
+                            for (uint32_t i = 0; i < 3; i++) {
+                                mesh_normals.push_back(face->normal[0]);
+                                mesh_normals.push_back(face->normal[1]);
+                                mesh_normals.push_back(face->normal[2]);
+                            }
                         }
                     }
                 }
             }
+
+            // Calculate mesh offset
+            glm::vec3 min_coords = {
+                    std::numeric_limits<float>::max(), std::numeric_limits<float>::max(),
+                    std::numeric_limits<float>::max()
+            };
+            glm::vec3 max_coords = {
+                    std::numeric_limits<float>::min(), std::numeric_limits<float>::min(),
+                    std::numeric_limits<float>::min()
+            };
+            for (uint32_t i = 0; i < mesh_vertices.size(); i += 3) {
+                min_coords.x = std::min(min_coords.x, mesh_vertices[i]);
+                min_coords.y = std::min(min_coords.y, mesh_vertices[i + 1]);
+                min_coords.z = std::min(min_coords.z, mesh_vertices[i + 2]);
+
+                max_coords.x = std::max(max_coords.x, mesh_vertices[i]);
+                max_coords.y = std::max(max_coords.y, mesh_vertices[i + 1]);
+                max_coords.z = std::max(max_coords.z, mesh_vertices[i + 2]);
+            }
+
+            glm::vec3 center = (min_coords + max_coords) / 2.0f;
+            for (uint32_t i = 0; i < mesh_vertices.size(); i += 3) {
+                mesh_vertices[i] -= center.x;
+                mesh_vertices[i + 1] -= center.y;
+                mesh_vertices[i + 2] -= center.z;
+            }
+
+
+            Mesh* mesh = new Mesh(mesh_vertices, mesh_indicies, mesh_normals);
+            if (splitted_obj.size() == 1)
+                mesh->setName(obj.name);
+            else
+                mesh->setName(obj.name + "@" + faces.first);
+                
+            mesh->setPosition(center);
+            mesh->setUV(mesh_UVs);
+            mesh->setLightUV(mesh_lightmap_UVs);
+            bindObj(mesh);
+
+            if (faces.first != "" and this->materials.count(faces.first) > 0) {
+                mesh->setTexture(&this->textures[this->materials[faces.first].texture_id]);
+            }
+
+            if (heluv.count(obj.name)) {
+                mesh->setLightTexture(heluv[obj.name].texture);
+            }
+            //  mesh->disableLightShading();
+
+            meshes.push_back(mesh);
         }
-
-        // Calculate mesh offset
-        glm::vec3 min_coords = {
-                std::numeric_limits<float>::max(), std::numeric_limits<float>::max(),
-                std::numeric_limits<float>::max()
-        };
-        glm::vec3 max_coords = {
-                std::numeric_limits<float>::min(), std::numeric_limits<float>::min(),
-                std::numeric_limits<float>::min()
-        };
-        for (uint32_t i = 0; i < mesh_vertices.size(); i += 3) {
-            min_coords.x = std::min(min_coords.x, mesh_vertices[i]);
-            min_coords.y = std::min(min_coords.y, mesh_vertices[i + 1]);
-            min_coords.z = std::min(min_coords.z, mesh_vertices[i + 2]);
-
-            max_coords.x = std::max(max_coords.x, mesh_vertices[i]);
-            max_coords.y = std::max(max_coords.y, mesh_vertices[i + 1]);
-            max_coords.z = std::max(max_coords.z, mesh_vertices[i + 2]);
-        }
-
-        glm::vec3 center = (min_coords + max_coords) / 2.0f;
-        for (uint32_t i = 0; i < mesh_vertices.size(); i += 3) {
-            mesh_vertices[i] -= center.x;
-            mesh_vertices[i + 1] -= center.y;
-            mesh_vertices[i + 2] -= center.z;
-        }
-
-
-        Mesh* mesh = new Mesh(mesh_vertices, mesh_indicies, mesh_normals);
-        mesh->setName(obj.name);
-        mesh->setPosition(center);
-        mesh->setUV(mesh_UVs);
-        mesh->setLightUV(mesh_lightmap_UVs);
-        bindObj(mesh);
-
-        if (obj.material != "" and this->materials.count(obj.material) > 0) {
-            mesh->setTexture(&this->textures[this->materials[obj.material].texture_id]);
-        }
-
-        if (heluv.count(obj.name)) {
-            mesh->setLightTexture(heluv[obj.name].texture);
-        }
-        //  mesh->disableLightShading();
-
-        meshes.push_back(mesh);
     }
     return meshes;
 }
