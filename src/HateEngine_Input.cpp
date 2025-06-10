@@ -1,36 +1,34 @@
 #include <HateEngine/HateEngine.hpp>
 #include "HateEngine/Input.hpp"
 #include "HateEngine/Log.hpp"
+#include "HateEngine/OSDriverInterface.hpp"
 
 #define WINVER 0x0501
 #define _WIN32_WINNT 0x0501
 
 using namespace HateEngine;
 
-InputClass::InputClass(Engine* eng) {
-    engine = eng;
+InputClass::InputClass(OSDriverInterface::OSWindow* win) {
+    window = win;
 }
 
 bool InputClass::isKeyPressed(Key key) {
-    return glfwGetKey(engine->window, key);
+    return window->isKeyPressed(key);
 }
 
 glm::vec2 InputClass::getVector(Key left, Key right, Key up, Key down) {
     glm::vec2 vec;
     vec.x = isKeyPressed(right) - isKeyPressed(left);
-    // vec.x += isKeyPressed(right);
     vec.y = isKeyPressed(up) - isKeyPressed(down);
     return vec;
 }
 
 glm::vec2 InputClass::getCursorPosition() {
-    double x, y;
-    glfwGetCursorPos(engine->window, &x, &y);
-    return glm::vec2(x, y);
+    return window->getCursorPosition();
 }
 
 bool InputClass::isMouseButtonPressed(MouseButton button) {
-    return glfwGetMouseButton(engine->window, button);
+    return window->isMouseButtonPressed(button);
 }
 
 bool InputClass::isActionPressed(std::string action) {
@@ -140,4 +138,8 @@ bool InputClass::isKeyInAction(std::string action, MouseButton button) {
             return true;
     }
     return false;
+}
+
+void InputClass::changeInputWindow(OSDriverInterface::OSWindow* win) {
+    this->window = win;
 }

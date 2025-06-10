@@ -65,7 +65,7 @@ namespace HateEngine {
          */
         void (*fixedProcessLoop)(class Engine* engine, double delta) = nullptr;
 
-        void (*inputEvent)(class Engine* engine, const InputClass::InputEventInfo& event) = nullptr;
+        void (*inputEvent)(class Engine* engine, const InputEventInfo& event) = nullptr;
 
         std::mutex uiWidgetsMutex;
 
@@ -75,7 +75,7 @@ namespace HateEngine {
         }
         virtual void _fixedProcess(class Engine* engine, double delta) {
         }
-        virtual void _inputEvent(class Engine* engine, const InputClass::InputEventInfo& event) {
+        virtual void _inputEvent(class Engine* engine, const InputEventInfo& event) {
         }
         // 2D renderable objects
 
@@ -85,7 +85,7 @@ namespace HateEngine {
         void _InputEvent(class Engine* engine, InputClass::InputEventInfo event);*/
         void Update(class Engine* engine, double delta);
         void UpdateFixed(class Engine* engine, double delta);
-        void UpdateInput(class Engine* engine, const InputClass::InputEventInfo& event);
+        void UpdateInput(class Engine* engine, const InputEventInfo& event);
 
     public:
         Signal<Light*> onLightAdded;
@@ -110,9 +110,7 @@ namespace HateEngine {
          */
         void setFixedProcessLoop(void (*fixedProcessLoop)(class Engine* engine, double delta));
 
-        void setInputEvent(
-                void (*inputEvent)(class Engine* engine, const InputClass::InputEventInfo& event)
-        );
+        void setInputEvent(void (*inputEvent)(class Engine* engine, const InputEventInfo& event));
 
         PhysEngine* getPhysEngine();
 

@@ -76,7 +76,7 @@ void Level::UpdateFixed(class Engine* engine, double delta) {
     _fixedProcess(engine, delta);
 }
 
-void Level::UpdateInput(class Engine* engine, const InputClass::InputEventInfo& event) {
+void Level::UpdateInput(class Engine* engine, const InputEventInfo& event) {
     for (auto& updatable: this->updatable_objects) {
         updatable.second->_inputEvent(engine, event);
     }
@@ -114,7 +114,7 @@ void Level::setFixedProcessLoop(void (*fixedProcessLoop)(class Engine*, double))
     this->fixedProcessLoop = fixedProcessLoop;
 }
 
-void Level::setInputEvent(void (*inputEvent)(class Engine*, const InputClass::InputEventInfo&)) {
+void Level::setInputEvent(void (*inputEvent)(class Engine*, const InputEventInfo&)) {
     this->inputEvent = inputEvent;
 }
 

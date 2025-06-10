@@ -1,7 +1,7 @@
 #pragma once
 
 // #include "OpenGL13.hpp"
-#include "../../Input.hpp"
+#include "../../InputEvent.hpp"
 
 namespace HateEngine {
     class UpdatableInterface {
@@ -10,7 +10,7 @@ namespace HateEngine {
         }
         virtual void _fixedProcess(class Engine* engino, double delta) {
         }
-        virtual void _inputEvent(class Engine* engino, const InputClass::InputEventInfo& event) {
+        virtual void _inputEvent(class Engine* engino, const InputEventInfo& event) {
         }
     };
 } // namespace HateEngine

@@ -1,13 +1,14 @@
 #pragma once
-#include <GLFW/glfw3.h>
 #include <cstdint>
 #include <mutex>
 #include <string>
+#include "HateEngine/InputEvent.hpp"
 #include "HateEngine/Render/RenderInterface.hpp"
 #include "HateEngine/Utilities/UUID.hpp"
 #include "Utilities/Signal.hpp"
 #include "Level.hpp"
 #include "Input.hpp"
+#include "OSDriverInterface.hpp"
 
 namespace HateEngine {
     class Engine {
@@ -21,7 +22,7 @@ namespace HateEngine {
     private:
         void (*processLoop)(Engine*, double) = nullptr;
         void (*fixedProcessLoop)(Engine*, double) = nullptr;
-        void (*inputEventFunc)(Engine*, const InputClass::InputEventInfo&) = nullptr;
+        void (*inputEventFunc)(Engine*, const InputEventInfo&) = nullptr;
 
         RenderAPI renderApi = RenderAPI::OpenGL_1_3;
         uint16_t fixedLoopRefreshRate = 60;
@@ -30,7 +31,6 @@ namespace HateEngine {
         int64_t physicsEngineIterateDelayMCS;
         uint16_t audioEngineIterateLoopRefreshRate = 30;
 
-        GLFWwindow* window = nullptr;
         RenderInterface* renderInterface = nullptr;
         long lastCPUTime = 0;
 
@@ -73,7 +73,7 @@ namespace HateEngine {
         // void frameBufferSizeChange(GLFWwindow* win, int w, int h);
         void threadPhysicsEngineIterateLoop();
 
-        void _inputEvent(const InputClass::InputEventInfo& event);
+        void _inputEvent(const InputEventInfo& event);
 
         void __changeWindowTitle(ThreadSafeRequest req);
         void __changeMouseCaptureMode(ThreadSafeRequest req);
@@ -83,6 +83,8 @@ namespace HateEngine {
         void __updateResolution(int width, int height);
 
     public:
+        OSDriverInterface OSDriver;
+        OSDriverInterface::OSWindow mainWindow;
         InputClass Input;
 
         // New Level, Old Level
@@ -144,7 +146,7 @@ namespace HateEngine {
 
         void setProcessLoop(void (*func)(Engine*, double));
         void setFixedProcessLoop(void (*func)(Engine*, double));
-        void setInputEvent(void (*func)(Engine*, const InputClass::InputEventInfo&));
+        void setInputEvent(void (*func)(Engine*, const InputEventInfo&));
 
         /**
          * @brief Thread safe request to change the scene

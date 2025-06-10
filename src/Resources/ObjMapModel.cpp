@@ -835,8 +835,8 @@ std::vector<Mesh*> ObjMapModel::generateLod(
             std::vector<float> mesh_UVs;
             std::vector<float> mesh_lightmap_UVs;
             // Mesh mesh;
-            
-            
+
+
             std::vector<ObjFace*> of = {faces.second[0]};
             for (const auto& face: faces.second) {
                 // for (const auto& face: of) {
@@ -1133,7 +1133,7 @@ std::vector<Mesh*> ObjMapModel::generateLod(
                 mesh->setName(obj.name);
             else
                 mesh->setName(obj.name + "@" + faces.first);
-                
+
             mesh->setPosition(center);
             mesh->setUV(mesh_UVs);
             mesh->setLightUV(mesh_lightmap_UVs);

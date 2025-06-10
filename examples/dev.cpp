@@ -55,7 +55,7 @@
 
 void _process(HateEngine::Engine*, double);
 void _physics_process(HateEngine::Engine*, double);
-void _input_event(HateEngine::Engine*, const HateEngine::InputClass::InputEventInfo&);
+void _input_event(HateEngine::Engine*, const HateEngine::InputEventInfo&);
 
 HateEngine::CubeMesh mesh1;
 HateEngine::CubeMesh mesh2;
@@ -962,7 +962,7 @@ void _process(HateEngine::Engine* engine, double delta) {
     auto rb_v = rigidBody.getLinearVelocity();
     //    HATE_INFO_F("Velocity: %f | %f | %f", rb_v.x, rb_v.y, rb_v.z);
     // rigidBody.setLinearVelocity(3, -g, 0);
-    //HATE_INFO_F("Draw calls: %d", engine->getRenderInterface()->getDrawCalls());
+    // HATE_INFO_F("Draw calls: %d", engine->getRenderInterface()->getDrawCalls());
 
     decal.bake();
     glm::vec3 decal_mesh_pos = decal.getMesh()->getGlobalPosition();
@@ -1170,8 +1170,8 @@ float lastX = 0;
 float lastY = 0;
 float sensitivity = 0.05;
 bool is_first_iter = true;
-void _input_event(HateEngine::Engine* engine, const HateEngine::InputClass::InputEventInfo& event) {
-    if (event.type == HateEngine::InputClass::InputEventType::InputEventMouseMove) {
+void _input_event(HateEngine::Engine* engine, const HateEngine::InputEventInfo& event) {
+    if (event.type == HateEngine::InputEventType::InputEventMouseMove) {
         float xoffset = event.position.x - lastX;
         float yoffset = event.position.y - lastY;
         lastX = event.position.x;
@@ -1194,7 +1194,7 @@ void _input_event(HateEngine::Engine* engine, const HateEngine::InputClass::Inpu
         // event.position.y*0.01f,0.0f));
     }
 
-    if (event.type == HateEngine::InputClass::InputEventMouseScroll) {
+    if (event.type == HateEngine::InputEventMouseScroll) {
         if (event.position.y < 0)
             // fps_widget_ptr->zoom(-0.1);
             speed /= 1.1;
@@ -1203,7 +1203,7 @@ void _input_event(HateEngine::Engine* engine, const HateEngine::InputClass::Inpu
         // fps_widget_ptr->zoom(0.1);
     }
 
-    if (event.type == HateEngine::InputClass::InputEventMouseButton) {
+    if (event.type == HateEngine::InputEventMouseButton) {
         if (event.button == HateEngine::MouseButtonLeft && event.isPressed) {
             // Координаты курсора
             glm::vec3 rayDirection =
@@ -1238,7 +1238,7 @@ void _input_event(HateEngine::Engine* engine, const HateEngine::InputClass::Inpu
         }
     }
 
-    if (event.type == HateEngine::InputClass::InputEventKey) {
+    if (event.type == HateEngine::InputEventKey) {
         if (event.key == HateEngine::KeyP && event.isPressed) {
             engine->setFullScreen(!engine->getFullScreen());
             HATE_WARNING("Toggled fullscreen")
