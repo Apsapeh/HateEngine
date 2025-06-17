@@ -15,8 +15,6 @@ using namespace HateEngine;
 
 static Key getEngineKeyFromGLFWKey(int key);
 static MouseButton getEngineMouseButtonFromGLFWMouseButton(int btn);
-static int getGLFWKeyFromEngineKey(Key key);
-static int getGLFWMouseButtonFromEngineMouseButton(MouseButton btn);
 static int getGLFWGamepadAxisFromEngineJoystickAxis(GamepadAxis axis);
 
 ////////////////////    OS Driver     //////////////////////////////
@@ -99,7 +97,7 @@ Result<std::shared_ptr<OSDriverInterface::OSWindow>, bool> OSDriverInterface::cr
                     // Caching keys because glfwGetKey not thread safe
                     window->cachedKeys[info.key - 1] = info.isPressed;
 
-                    th->onKeyPressed.emit(window, info);
+                    th->onKeyChanged.emit(window, info);
                 }
         );
 
@@ -124,7 +122,7 @@ Result<std::shared_ptr<OSDriverInterface::OSWindow>, bool> OSDriverInterface::cr
             glfwGetCursorPos(win, &xpos, &ypos);
             info.position = glm::vec2(xpos, ypos);
 
-            th->onMouseButtonPressed.emit(window, info);
+            th->onMouseButtonChanged.emit(window, info);
         });
 
         glfwSetScrollCallback(glfw_window, [](GLFWwindow* win, double xoffset, double yoffset) {
@@ -141,6 +139,7 @@ Result<std::shared_ptr<OSDriverInterface::OSWindow>, bool> OSDriverInterface::cr
 
             th->onMouseWheelScrolled.emit(window, info);
         });
+
         return Result<std::shared_ptr<OSWindow>, bool>::Ok(window);
     } else {
         return Result<std::shared_ptr<OSWindow>, bool>::Err(false);
@@ -159,20 +158,59 @@ void OSDriverInterface::poll() {
     GLFWgamepadstate GState;
     for (int i = GLFW_JOYSTICK_1; i <= GLFW_JOYSTICK_LAST; ++i) {
         auto& jdata = this->joysticksData[i];
+        bool last_is_present = jdata.isPresent;
         if (not glfwJoystickPresent(i)) {
+            if (jdata.isPresent) {
+                if (jdata.isGamepad)
+                    onGamepadNewState.emit(i, Disconnected);
+                else
+                    onJoystickNewState.emit(i, Disconnected);
+            }
             jdata.isPresent = false;
+            jdata.isGamepad = false;
             continue;
         }
 
         jdata.isPresent = true;
 
         if (glfwJoystickIsGamepad(i)) {
+            if (not last_is_present) {
+                onGamepadNewState.emit(i, Connected);
+            }
+
             jdata.isGamepad = true;
             glfwGetGamepadState(i, &GState);
+
+            for (int b = 0; b <= sizeof(GState.buttons) / sizeof(GState.buttons[0]); ++b) {
+                if (b < jdata.buttons.size() and jdata.buttons[b] != GState.buttons[b]) {
+                    InputEventInfo info;
+                    info.type = InputEventGamepadButton;
+                    info.gamepadButton = static_cast<GamepadButtons>(b);
+                    info.isPressed = GState.buttons[b];
+                    onGamepadButtonChanged.emit(i, info);
+                }
+            }
+
+            static_assert(
+                    GamepadAxisRightTrigger == 13,
+                    "Enum GamepadAxis was changed, need to update this function"
+            );
+            for (int a = 0; a <= sizeof(GState.axes) / sizeof(GState.axes[0]); ++a) {
+                if (a < jdata.axes.size() and jdata.axes[a] != GState.axes[a]) {
+                    InputEventInfo info;
+                    info.type = InputEventGamepadAxis;
+                    info.gamepadAxis = static_cast<GamepadAxis>(a + GamepadAxisLeftX);
+                    info.value = GState.axes[a];
+                    onGamepadButtonChanged.emit(i, info);
+                }
+            }
 
             jdata.buttons.assign(GState.buttons, GState.buttons + 15);
             jdata.axes.assign(GState.axes, GState.axes + 6);
         } else {
+            if (not last_is_present) {
+                onJoystickNewState.emit(i, Connected);
+            }
             jdata.isGamepad = false;
 
             int count;
@@ -292,16 +330,20 @@ Result<float, OSDriverInterface::JoysticErr> OSDriverInterface::getGamepadAxis(
     if (not jdata.isGamepad)
         return Err<float, JoysticErr>(IsNotGamepad);
     float value = jdata.axes[getGLFWGamepadAxisFromEngineJoystickAxis(axis)];
-    if (axis == GamepadAxisLeftXLeft or axis == GamepadAxisRightXLeft and value < 0.0f) {
-        return Ok<float, JoysticErr>(value);
-    } else if (axis == GamepadAxisLeftXRight or axis == GamepadAxisRightXRight and value > 0.0f) {
-        return Ok<float, JoysticErr>(value);
-    } else if (axis == GamepadAxisLeftYUp or axis == GamepadAxisRightYUp and value < 0.0f) {
+    if ((axis == GamepadAxisLeftXLeft or axis == GamepadAxisRightXLeft) and value < 0.0f) {
         return Ok<float, JoysticErr>(-value);
-    } else if (axis == GamepadAxisLeftYDown or axis == GamepadAxisRightYDown and value > 0.0f) {
+    } else if ((axis == GamepadAxisLeftXRight or axis == GamepadAxisRightXRight) and value > 0.0f) {
+        return Ok<float, JoysticErr>(value);
+    } else if ((axis == GamepadAxisLeftYUp or axis == GamepadAxisRightYUp) and value < 0.0f) {
         return Ok<float, JoysticErr>(-value);
-    }
-    return Ok<float, JoysticErr>(value);
+    } else if ((axis == GamepadAxisLeftYDown or axis == GamepadAxisRightYDown) and value > 0.0f) {
+        return Ok<float, JoysticErr>(value);
+    } else if (axis == GamepadAxisLeftY or axis == GamepadAxisRightY) {
+        return Ok<float, JoysticErr>(-value);
+    } else if (axis >= GamepadAxisLeftX)
+        return Ok<float, JoysticErr>(value);
+    else
+        return Ok<float, JoysticErr>(0.0f);
 }
 
 Option<std::string> OSDriverInterface::getJoystickName(JoystickHandle handle) {
@@ -477,129 +519,6 @@ glm::vec2 OSDriverInterface::OSWindow::getCursorPosition() {
 
 
 ////////////////////////////    Key mapping    ///////////////////////////////////
-static const int glfwKeyFromEnum[] = {
-        -1, // KeyInvalid
-        GLFW_KEY_SPACE, // KeySpace
-        GLFW_KEY_APOSTROPHE,
-        GLFW_KEY_COMMA, // KeyComma
-        GLFW_KEY_MINUS, // KeyMinus
-        GLFW_KEY_PERIOD, // KeyPeriod
-        GLFW_KEY_SLASH, // KeySlash
-        GLFW_KEY_0,
-        GLFW_KEY_1,
-        GLFW_KEY_2,
-        GLFW_KEY_3,
-        GLFW_KEY_4,
-        GLFW_KEY_5,
-        GLFW_KEY_6,
-        GLFW_KEY_7,
-        GLFW_KEY_8,
-        GLFW_KEY_9, // Key0 - Key9
-        GLFW_KEY_SEMICOLON, // KeySemicolon
-        GLFW_KEY_EQUAL, // KeyEqual
-        GLFW_KEY_A,
-        GLFW_KEY_B,
-        GLFW_KEY_C,
-        GLFW_KEY_D,
-        GLFW_KEY_E,
-        GLFW_KEY_F,
-        GLFW_KEY_G,
-        GLFW_KEY_H,
-        GLFW_KEY_I,
-        GLFW_KEY_J,
-        GLFW_KEY_K,
-        GLFW_KEY_L,
-        GLFW_KEY_M,
-        GLFW_KEY_N,
-        GLFW_KEY_O,
-        GLFW_KEY_P,
-        GLFW_KEY_Q,
-        GLFW_KEY_R,
-        GLFW_KEY_S,
-        GLFW_KEY_T,
-        GLFW_KEY_U,
-        GLFW_KEY_V,
-        GLFW_KEY_W,
-        GLFW_KEY_X,
-        GLFW_KEY_Y,
-        GLFW_KEY_Z, // KeyU - KeyZ
-        GLFW_KEY_LEFT_BRACKET, // KeyLeftBracket
-        GLFW_KEY_BACKSLASH, // KeyBackslash
-        GLFW_KEY_RIGHT_BRACKET, // KeyRightBracket
-        GLFW_KEY_GRAVE_ACCENT, // KeyGraveAccent
-        GLFW_KEY_WORLD_1, // KeyWorld1
-        GLFW_KEY_WORLD_2, // KeyWorld2
-        GLFW_KEY_ESCAPE, // KeyEscape
-        GLFW_KEY_ENTER, // KeyEnter
-        GLFW_KEY_TAB, // KeyTab
-        GLFW_KEY_BACKSPACE, // KeyBackspace
-        GLFW_KEY_INSERT, // KeyInsert
-        GLFW_KEY_DELETE, // KeyDelete
-        GLFW_KEY_RIGHT, // KeyRight
-        GLFW_KEY_LEFT, // KeyLeft
-        GLFW_KEY_DOWN, // KeyDown
-        GLFW_KEY_UP, // KeyUp
-        GLFW_KEY_PAGE_UP, // KeyPageUp
-        GLFW_KEY_PAGE_DOWN, // KeyPageDown
-        GLFW_KEY_HOME, // KeyHome
-        GLFW_KEY_END, // KeyEnd
-        GLFW_KEY_CAPS_LOCK, // KeyCapsLock
-        GLFW_KEY_SCROLL_LOCK, // KeyScrollLock
-        GLFW_KEY_NUM_LOCK, // KeyNumLock
-        GLFW_KEY_PRINT_SCREEN, // KeyPrintScreen
-        GLFW_KEY_PAUSE, // KeyPause
-        GLFW_KEY_F1,
-        GLFW_KEY_F2,
-        GLFW_KEY_F3,
-        GLFW_KEY_F4,
-        GLFW_KEY_F5,
-        GLFW_KEY_F6,
-        GLFW_KEY_F7,
-        GLFW_KEY_F8,
-        GLFW_KEY_F9,
-        GLFW_KEY_F10,
-        GLFW_KEY_F11,
-        GLFW_KEY_F12,
-        GLFW_KEY_F13,
-        GLFW_KEY_F14,
-        GLFW_KEY_F15,
-        GLFW_KEY_F16,
-        GLFW_KEY_F17,
-        GLFW_KEY_F18,
-        GLFW_KEY_F19,
-        GLFW_KEY_F20,
-        GLFW_KEY_F21,
-        GLFW_KEY_F22,
-        GLFW_KEY_F23,
-        GLFW_KEY_F24,
-        GLFW_KEY_F25,
-        GLFW_KEY_KP_0,
-        GLFW_KEY_KP_1,
-        GLFW_KEY_KP_2,
-        GLFW_KEY_KP_3,
-        GLFW_KEY_KP_4,
-        GLFW_KEY_KP_5,
-        GLFW_KEY_KP_6,
-        GLFW_KEY_KP_7,
-        GLFW_KEY_KP_8,
-        GLFW_KEY_KP_9,
-        GLFW_KEY_KP_DECIMAL,
-        GLFW_KEY_KP_DIVIDE,
-        GLFW_KEY_KP_MULTIPLY,
-        GLFW_KEY_KP_SUBTRACT,
-        GLFW_KEY_KP_ADD,
-        GLFW_KEY_KP_ENTER,
-        GLFW_KEY_KP_EQUAL,
-        GLFW_KEY_LEFT_SHIFT,
-        GLFW_KEY_LEFT_CONTROL,
-        GLFW_KEY_LEFT_ALT,
-        GLFW_KEY_LEFT_SUPER,
-        GLFW_KEY_RIGHT_SHIFT,
-        GLFW_KEY_RIGHT_CONTROL,
-        GLFW_KEY_RIGHT_ALT,
-        GLFW_KEY_RIGHT_SUPER,
-        GLFW_KEY_MENU
-};
 
 #define CASE(glfw_key, enum_key)                                                                        \
     case glfw_key:                                                                                      \
@@ -736,18 +655,9 @@ static MouseButton getEngineMouseButtonFromGLFWMouseButton(int btn) {
     return static_cast<MouseButton>(btn);
 }
 
-
-static int getGLFWKeyFromEngineKey(Key key) {
-    return glfwKeyFromEnum[key];
-}
-
-static int getGLFWMouseButtonFromEngineMouseButton(MouseButton btn) {
-    return static_cast<int>(btn);
-}
-
 int getGLFWGamepadAxisFromEngineJoystickAxis(GamepadAxis axis) {
     static_assert(
-            GamepadAxisLeftTrigger == 8, "Enum GamepadAxis was changed, need to update this function"
+            GamepadAxisRightTrigger == 13, "Enum GamepadAxis was changed, need to update this function"
     );
     static_assert(GLFW_GAMEPAD_AXIS_LEFT_X == 0, "GLFW API was changed, need to update this function");
     static_assert(
@@ -755,10 +665,10 @@ int getGLFWGamepadAxisFromEngineJoystickAxis(GamepadAxis axis) {
     );
 
     int int_axis = static_cast<int>(axis);
-    if (axis < GamepadAxisLeftTrigger) {
+    if (axis <= GamepadAxisRightYDown) {
         return int_axis >> 1;
     } else {
-        return int_axis - 4;
+        return int_axis - GamepadAxisLeftX;
     }
 }
 

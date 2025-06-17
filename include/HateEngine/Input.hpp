@@ -9,7 +9,12 @@
 namespace HateEngine {
     class InputClass {
     public:
-        enum ActionKeyType { KeyboardAction, MouseButtonAction, GamepadButtonAction, GamepadAxisAction };
+        enum ActionKeyType {
+            KeyboardAction,
+            MouseButtonAction,
+            AnyGamepadButtonAction,
+            AnyGamepadAxisAction
+        };
         struct ActionKey {
             ActionKeyType type;
             union {
@@ -35,6 +40,7 @@ namespace HateEngine {
 
         void addActionKeyToAction(const std::string& action, ActionKey& action_key);
         bool removeActionKeyFromAction(const std::string& action, ActionKey& action_key);
+        bool isActionKeyInAction(const std::string& action, ActionKey& action_key);
 
 
     public:
@@ -59,7 +65,7 @@ namespace HateEngine {
         float getAnyGamepadAxis(GamepadAxis axis, float deadzone = 0.05f);
 
         bool isActionPressed(const std::string& action, float trashzone = 0.5f);
-        float getActionAxis(const std::string& action);
+        float getActionPressed(const std::string& action);
         glm::vec2 getVectorAction(
                 const std::string& left, const std::string& right, const std::string& up,
                 const std::string& down

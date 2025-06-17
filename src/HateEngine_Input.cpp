@@ -1,7 +1,7 @@
 #include <HateEngine/HateEngine.hpp>
 #include "HateEngine/Input.hpp"
 #include "HateEngine/Log.hpp"
-#include "HateEngine/OSDriverInterface.hpp
+#include "HateEngine/OSDriverInterface.hpp"
 #include <json.hpp>
 
 #define WINVER 0x0501
@@ -23,6 +23,7 @@ glm::vec2 InputClass::getVector(Key left, Key right, Key up, Key down) {
     vec.y = isKeyPressed(up) - isKeyPressed(down);
     return vec;
 }
+
 
 glm::vec2 InputClass::getCursorPosition() {
     return window->getCursorPosition();
@@ -96,10 +97,10 @@ bool InputClass::isActionPressed(const std::string& action, float trashzone) {
         } else if (key.type == ActionKeyType::MouseButtonAction) {
             if (isMouseButtonPressed(key.button))
                 return true;
-        } else if (key.type == ActionKeyType::GamepadButtonAction) {
+        } else if (key.type == ActionKeyType::AnyGamepadButtonAction) {
             if (isAnyGamepadButtonPressed(key.gamepad_button))
                 return true;
-        } else if (key.type == ActionKeyType::GamepadAxisAction) {
+        } else if (key.type == ActionKeyType::AnyGamepadAxisAction) {
             float value = getAnyGamepadAxis(key.gamepad_axis, trashzone);
             if (value > trashzone)
                 return true;
@@ -108,33 +109,38 @@ bool InputClass::isActionPressed(const std::string& action, float trashzone) {
     return false;
 }
 
-float InputClass::getActionAxis(const std::string& action) {
+float InputClass::getActionPressed(const std::string& action) {
     if (this->actions_map.find(action) == this->actions_map.end()) {
         HATE_WARNING_F("Action %s not found", action.c_str())
-        return 0.0;
+        return false;
     }
+    float max_value = 0.0f;
     for (const auto key: this->actions_map[action]) {
-        if (key.type == ActionKeyType::GamepadAxisAction) {
+        if (key.type == ActionKeyType::KeyboardAction) {
+            if (isKeyPressed(key.key))
+                return 1.0f;
+        } else if (key.type == ActionKeyType::MouseButtonAction) {
+            if (isMouseButtonPressed(key.button))
+                return 1.0f;
+        } else if (key.type == ActionKeyType::AnyGamepadButtonAction) {
+            if (isAnyGamepadButtonPressed(key.gamepad_button))
+                return 1.0f;
+        } else if (key.type == ActionKeyType::AnyGamepadAxisAction) {
             float value = getAnyGamepadAxis(key.gamepad_axis);
-            if (value != 0.0f)
-                return value;
+            if (std::abs(value) > std::abs(max_value)) {
+                max_value = value;
+            }
         }
     }
-    return 0.0f;
+    return max_value;
 }
 
 glm::vec2 InputClass::getVectorAction(
         const std::string& left, const std::string& right, const std::string& up, const std::string& down
 ) {
-    glm::ivec2 key_vec;
-    key_vec.x = isActionPressed(right, 2.0f) - isActionPressed(left, 2.0f);
-    key_vec.y = isActionPressed(up, 2.0f) - isActionPressed(down, 2.0f);
-    glm::vec2 axis_vec;
-    axis_vec.x = getActionAxis(left);
-    axis_vec.y = getActionAxis(up);
     glm::vec2 result;
-    result.x = key_vec.x == 0 ? axis_vec.x : key_vec.x;
-    result.y = key_vec.y == 0 ? axis_vec.y : key_vec.y;
+    result.x = getActionPressed(right) - getActionPressed(left);
+    result.y = getActionPressed(up) - getActionPressed(down);
     return result;
 }
 
@@ -151,6 +157,17 @@ bool InputClass::removeActionKeyFromAction(const std::string& action, ActionKey&
     if (it != this->actions_map[action].end()) {
         this->actions_map[action].erase(it);
         return true;
+    }
+    return false;
+}
+
+bool InputClass::isActionKeyInAction(const std::string& action, ActionKey& action_key) {
+    if (this->actions_map.count(action)) {
+        auto it = std::find(
+                this->actions_map[action].begin(), this->actions_map[action].end(), action_key
+        );
+        if (it != this->actions_map[action].end())
+            return true;
     }
     return false;
 }
@@ -209,35 +226,23 @@ std::vector<InputClass::ActionKey> InputClass::getActionKeys(const std::string& 
 }
 
 bool InputClass::isKeyInAction(const std::string& action, Key key) {
-    if (this->actions_map.count(action)) {
-        ActionKey ak;
-        ak.type = ActionKeyType::KeyboardAction;
-        ak.key = key;
-        auto it = std::find(this->actions_map[action].begin(), this->actions_map[action].end(), ak);
-        if (it != this->actions_map[action].end())
-            return true;
-    }
-    return false;
+    ActionKey action_key = ActionKey::fromKey(key);
+    return this->isActionKeyInAction(action, action_key);
 }
 
 bool InputClass::isKeyInAction(const std::string& action, MouseButton button) {
-    if (this->actions_map.count(action)) {
-        ActionKey ak;
-        ak.type = ActionKeyType::MouseButtonAction;
-        ak.button = button;
-        auto it = std::find(this->actions_map[action].begin(), this->actions_map[action].end(), ak);
-        if (it != this->actions_map[action].end())
-            return true;
-    }
-    return false;
+    ActionKey action_key = ActionKey::fromMouseButton(button);
+    return this->isActionKeyInAction(action, action_key);
 }
 
 bool InputClass::isKeyInAction(const std::string& action, GamepadButtons button) {
-    return false;
+    ActionKey action_key = ActionKey::fromGamepadButton(button);
+    return this->isActionKeyInAction(action, action_key);
 }
 
 bool InputClass::isKeyInAction(const std::string& action, GamepadAxis axis) {
-    return false;
+    ActionKey action_key = ActionKey::fromGamepadAxis(axis);
+    return this->isActionKeyInAction(action, action_key);
 }
 
 void InputClass::changeInputWindow(std::shared_ptr<OSDriverInterface::OSWindow> win) {
@@ -267,14 +272,14 @@ InputClass::ActionKey InputClass::ActionKey::fromMouseButton(MouseButton button)
 
 InputClass::ActionKey InputClass::ActionKey::fromGamepadButton(GamepadButtons button) {
     ActionKey ak;
-    ak.type = InputClass::GamepadButtonAction;
+    ak.type = InputClass::AnyGamepadButtonAction;
     ak.gamepad_button = button;
     return ak;
 }
 
 InputClass::ActionKey InputClass::ActionKey::fromGamepadAxis(GamepadAxis axis) {
     ActionKey ak;
-    ak.type = InputClass::GamepadAxisAction;
+    ak.type = InputClass::AnyGamepadAxisAction;
     ak.gamepad_axis = axis;
     return ak;
 }

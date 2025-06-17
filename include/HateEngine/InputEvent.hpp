@@ -8,7 +8,9 @@ namespace HateEngine {
         InputEventKey,
         InputEventMouseButton,
         InputEventMouseMove,
-        InputEventMouseScroll
+        InputEventMouseScroll,
+        InputEventGamepadButton,
+        InputEventGamepadAxis,
     };
 
     struct InputEventInfo {
@@ -16,9 +18,14 @@ namespace HateEngine {
         union {
             Key key;
             MouseButton button;
+            GamepadButtons gamepadButton;
+            GamepadAxis gamepadAxis;
         };
         bool isPressed = false;
-        glm::vec2 offset = {0, 0};
-        glm::vec2 position = {0, 0};
+        union {
+            glm::vec2 offset;
+            glm::vec2 position;
+            float value;
+        };
     };
 } // namespace HateEngine

@@ -171,6 +171,10 @@ namespace HateEngine {
         GamepadAxisRightXRight,
         GamepadAxisRightYUp,
         GamepadAxisRightYDown,
+        GamepadAxisLeftX,
+        GamepadAxisLeftY,
+        GamepadAxisRightX,
+        GamepadAxisRightY,
         GamepadAxisLeftTrigger,
         GamepadAxisRightTrigger,
     };

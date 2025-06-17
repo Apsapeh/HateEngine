@@ -198,14 +198,29 @@ int main() {
     game.Input.addKeyToAction("forward", HateEngine::GamepadAxisLeftYUp);
     game.Input.addKeyToAction("backward", HateEngine::KeyS);
     game.Input.addKeyToAction("backward", HateEngine::KeyNumPad5);
+    game.Input.addKeyToAction("backward", HateEngine::GamepadAxisLeftYDown);
     game.Input.addKeyToAction("left", HateEngine::KeyA);
     game.Input.addKeyToAction("left", HateEngine::KeyNumPad4);
     game.Input.addKeyToAction("left", HateEngine::GamepadAxisLeftXLeft);
     game.Input.addKeyToAction("right", HateEngine::KeyD);
     game.Input.addKeyToAction("right", HateEngine::KeyNumPad6);
+    game.Input.addKeyToAction("right", HateEngine::GamepadAxisLeftXRight);
     game.Input.addKeyToAction("up", HateEngine::KeySpace);
     game.Input.addKeyToAction("down", HateEngine::KeyLeftControl);
     game.Input.addKeyToAction("down", HateEngine::KeyLeftSuper);
+    game.Input.addKeyToAction("look_up", HateEngine::GamepadAxisRightYUp);
+    game.Input.addKeyToAction("look_down", HateEngine::GamepadAxisRightYDown);
+    game.Input.addKeyToAction("look_left", HateEngine::GamepadAxisRightXLeft);
+    game.Input.addKeyToAction("look_right", HateEngine::GamepadAxisRightXRight);
+
+    game.OSDriver.onGamepadNewState.connect([](HateEngine::JoystickHandle, HateEngine::OSDriverInterface::JoystickState state) {
+       if (state == HateEngine::OSDriverInterface::JoystickState::Connected) {
+           HATE_INFO_F("Gamepad connected: %d", state);
+       } else if (state == HateEngine::OSDriverInterface::JoystickState::Disconnected) {
+           HATE_INFO_F("Gamepad disconnected: %d", state);
+       }
+    });
+
     // Setting textures for the cube and floor meshes
 
     std::thread th([&]() {
@@ -1009,6 +1024,17 @@ void _process(HateEngine::Engine* engine, double delta) {
         camera.offset(cos(cam_rot.y) * fabs(dir.x) * 0.1, 0, -sin(cam_rot.y) * fabs(dir.x) * 0.1);
     }
 
+    // Gamepad camera rotate
+    glm::vec2 gamepad_look =
+            engine->Input.getVectorAction("look_left", "look_right", "look_up", "look_down");
+    if (std::abs(gamepad_look.x) < 0.1)
+        gamepad_look.x = 0;
+    if (std::abs(gamepad_look.y) < 0.1)
+        gamepad_look.y = 0;
+    gamepad_look *= glm::vec2(delta * 60) * 2;
+    camera.rotate(0, -gamepad_look.x, 0, false);
+    camera.rotate(gamepad_look.y, 0, 0, true);
+
     if (engine->Input.isActionPressed("down"))
         camera.offset(0, -0.1 * speed * delta * 60, 0);
     if (engine->Input.isActionPressed("up"))
@@ -1018,7 +1044,7 @@ void _process(HateEngine::Engine* engine, double delta) {
 glm::vec3 cam_dir;
 
 void _physics_process(HateEngine::Engine* engine, double delta) {
-    // float xaxisvalue = engine->Input.getAnyGamepadAxis(HateEngine::GamepadAxisLeftYUp);
+    // float xaxisvalue = engine->Input.getAnyGamepadAxis(HateEngine::GamepadAxisLeftXLeft);
     //  xaxisvalue = engine->Input.getActionAxis("left");
     // HATE_INFO_F("X axis value: %f", xaxisvalue);
 
@@ -1297,5 +1323,8 @@ void _input_event(HateEngine::Engine* engine, const HateEngine::InputEventInfo& 
         if (event.key == HateEngine::KeyNumPadSubtract && event.isPressed) {
             lvl.setAmbientLightIntensity(lvl.getAmbientLightIntensity() - 0.1);
         }
+    }
+
+    if (event.type == HateEngine::InputEventGamepadAxis) {
     }
 }

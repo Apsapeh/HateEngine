@@ -39,6 +39,11 @@ namespace HateEngine {
             UnknownError,
         };
 
+        enum JoystickState {
+            Connected,
+            Disconnected,
+        };
+
         class OSDisplay {
             friend OSDriverInterface;
 
@@ -124,9 +129,14 @@ namespace HateEngine {
     public:
         Signal<std::shared_ptr<OSWindow>, int, int> onFramebufferSizeChanged;
         Signal<std::shared_ptr<OSWindow>, InputEventInfo> onCursorMoved;
-        Signal<std::shared_ptr<OSWindow>, InputEventInfo> onKeyPressed;
-        Signal<std::shared_ptr<OSWindow>, InputEventInfo> onMouseButtonPressed;
+        Signal<std::shared_ptr<OSWindow>, InputEventInfo> onKeyChanged;
+        Signal<std::shared_ptr<OSWindow>, InputEventInfo> onMouseButtonChanged;
         Signal<std::shared_ptr<OSWindow>, InputEventInfo> onMouseWheelScrolled;
+
+        Signal<JoystickHandle, JoystickState> onGamepadNewState;
+        Signal<JoystickHandle, JoystickState> onJoystickNewState;
+        Signal<JoystickHandle, InputEventInfo> onGamepadButtonChanged;
+        Signal<JoystickHandle, InputEventInfo> onGamepadAxisMoved;
 
 
         OSDriverInterface();

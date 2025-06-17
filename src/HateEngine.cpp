@@ -73,13 +73,13 @@ Engine::Engine(std::string window_lbl, int width, int height) : Input(&this->OSD
             this->_inputEvent(event);
     });
 
-    OSDriver.onKeyPressed.connect([this](std::shared_ptr<OSDriverInterface::OSWindow> win,
+    OSDriver.onKeyChanged.connect([this](std::shared_ptr<OSDriverInterface::OSWindow> win,
                                          InputEventInfo event) {
         if (win == this->mainWindow)
             this->_inputEvent(event);
     });
 
-    OSDriver.onMouseButtonPressed.connect([this](std::shared_ptr<OSDriverInterface::OSWindow> win,
+    OSDriver.onMouseButtonChanged.connect([this](std::shared_ptr<OSDriverInterface::OSWindow> win,
                                                  InputEventInfo event) {
         if (win == this->mainWindow)
             this->_inputEvent(event);
@@ -89,6 +89,14 @@ Engine::Engine(std::string window_lbl, int width, int height) : Input(&this->OSD
                                                  InputEventInfo event) {
         if (win == this->mainWindow)
             this->_inputEvent(event);
+    });
+
+    OSDriver.onGamepadButtonChanged.connect([this](JoystickHandle handle, InputEventInfo event) {
+        this->_inputEvent(event);
+    });
+
+    OSDriver.onGamepadAxisMoved.connect([this](JoystickHandle handle, InputEventInfo event) {
+        this->_inputEvent(event);
     });
 
     // Load Glad
