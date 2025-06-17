@@ -54,17 +54,17 @@ namespace HateEngine {
             void* OSDataPtr = nullptr;
             int swapInterval = 0;
 
-            #ifdef __HATE_ENGINE_USE_GLFW
-                glm::vec2 cachedCursorPos = glm::vec2(0, 0);
-                bool cachedKeys[KeyMenu];
-                bool cachedMouseButtons[MouseButton8+1];
-            #endif
+#ifdef __HATE_ENGINE_USE_GLFW
+            glm::vec2 cachedCursorPos = glm::vec2(0, 0);
+            bool cachedKeys[KeyMenu];
+            bool cachedMouseButtons[MouseButton8 + 1];
+#endif
 
             void init();
             void swapBuffers();
 
         public:
-            enum WindowMode { Window, Fullscreen, WindowedFullscreen, Error};
+            enum WindowMode { Window, Fullscreen, WindowedFullscreen, Error };
 
             OSWindow();
             ~OSWindow();

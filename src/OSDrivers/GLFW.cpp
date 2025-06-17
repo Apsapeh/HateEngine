@@ -97,7 +97,7 @@ Result<std::shared_ptr<OSDriverInterface::OSWindow>, bool> OSDriverInterface::cr
                     info.key = getEngineKeyFromGLFWKey(key);
 
                     // Caching keys because glfwGetKey not thread safe
-                    window->cachedKeys[info.key-1] = info.isPressed;
+                    window->cachedKeys[info.key - 1] = info.isPressed;
 
                     th->onKeyPressed.emit(window, info);
                 }
@@ -322,8 +322,8 @@ Option<std::string> OSDriverInterface::getGamepadName(JoystickHandle handle) {
 ///////////////////    OS Window    //////////////////////
 
 OSDriverInterface::OSWindow::OSWindow() {
-    std::fill(cachedKeys, cachedKeys+KeyMenu, false);
-    std::fill(cachedMouseButtons, cachedMouseButtons+MouseButton8+1, false);
+    std::fill(cachedKeys, cachedKeys + KeyMenu, false);
+    std::fill(cachedMouseButtons, cachedMouseButtons + MouseButton8 + 1, false);
 }
 
 OSDriverInterface::OSWindow::~OSWindow() {
@@ -358,7 +358,8 @@ void OSDriverInterface::OSWindow::RequireClose() {
 
 void OSDriverInterface::OSWindow::setTitle(const std::string& title) {
     if (std::this_thread::get_id() != Engine::getMainThreadId()) {
-        HATE_ERROR("OSDriverInterface::OSWindow::setTitle must be called only from main thread or via Engine::callDeferred/callDeferredAsync")
+        HATE_ERROR("OSDriverInterface::OSWindow::setTitle must be called only from main thread or via "
+                   "Engine::callDeferred/callDeferredAsync")
         return;
     }
     glfwSetWindowTitle((GLFWwindow*) this->OSDataPtr, title.c_str());
@@ -371,7 +372,8 @@ void OSDriverInterface::OSWindow::setSwapInterval(int interval) {
 
 void OSDriverInterface::OSWindow::setWindowSize(int w, int h) {
     if (std::this_thread::get_id() != Engine::getMainThreadId()) {
-        HATE_ERROR("OSDriverInterface::OSWindow::setWindowSize must be called only from main thread or via Engine::callDeferred/callDeferredAsync")
+        HATE_ERROR("OSDriverInterface::OSWindow::setWindowSize must be called only from main thread or "
+                   "via Engine::callDeferred/callDeferredAsync")
         return;
     }
     glfwSetWindowSize((GLFWwindow*) this->OSDataPtr, w, h);
@@ -380,7 +382,8 @@ void OSDriverInterface::OSWindow::setWindowSize(int w, int h) {
 
 void OSDriverInterface::OSWindow::setWindowMode(WindowMode mode, OSDisplay* display) {
     if (std::this_thread::get_id() != Engine::getMainThreadId()) {
-        HATE_ERROR("OSDriverInterface::OSWindow::setWindowMode must be called only from main thread or via Engine::callDeferred/callDeferredAsync")
+        HATE_ERROR("OSDriverInterface::OSWindow::setWindowMode must be called only from main thread or "
+                   "via Engine::callDeferred/callDeferredAsync")
         return;
     }
     // TODO: Add custom display for Fullscreen and WindowedFullscreen
@@ -389,27 +392,26 @@ void OSDriverInterface::OSWindow::setWindowMode(WindowMode mode, OSDisplay* disp
     if (mode == WindowMode::Window) {
         glfwSetWindowAttrib(window, GLFW_DECORATED, GLFW_TRUE);
         glfwSetWindowMonitor(window, nullptr, 100, 100, 800, 600, GLFW_DONT_CARE);
-    }
-    else if (mode == WindowMode::Fullscreen) {
+    } else if (mode == WindowMode::Fullscreen) {
         GLFWmonitor* monitor = glfwGetPrimaryMonitor();
         const GLFWvidmode* mode = glfwGetVideoMode(monitor);
         glfwSetWindowAttrib(window, GLFW_DECORATED, GLFW_TRUE);
         glfwSetWindowAttrib(window, GLFW_AUTO_ICONIFY, GLFW_TRUE);
         glfwSetWindowMonitor(window, monitor, 0, 0, mode->width, mode->height, mode->refreshRate);
-    }
-    else if (mode == WindowMode::WindowedFullscreen) {
+    } else if (mode == WindowMode::WindowedFullscreen) {
         GLFWmonitor* monitor = glfwGetPrimaryMonitor();
         const GLFWvidmode* mode = glfwGetVideoMode(monitor);
 
         glfwSetWindowMonitor(window, monitor, 0, 0, mode->width, mode->height, mode->refreshRate);
-        glfwSetWindowAttrib(window, GLFW_DECORATED, GLFW_FALSE);  // Убираем рамки
-        glfwSetWindowAttrib(window, GLFW_AUTO_ICONIFY, GLFW_FALSE);  // Убираем рамки
+        glfwSetWindowAttrib(window, GLFW_DECORATED, GLFW_FALSE); // Убираем рамки
+        glfwSetWindowAttrib(window, GLFW_AUTO_ICONIFY, GLFW_FALSE); // Убираем рамки
     }
 }
 
 OSDriverInterface::OSWindow::WindowMode OSDriverInterface::OSWindow::getWindowMode() {
     if (std::this_thread::get_id() != Engine::getMainThreadId()) {
-        HATE_ERROR("OSDriverInterface::OSWindow::getWindowMode must be called only from main thread or via Engine::callDeferred/callDeferredAsync")
+        HATE_ERROR("OSDriverInterface::OSWindow::getWindowMode must be called only from main thread or "
+                   "via Engine::callDeferred/callDeferredAsync")
         return WindowMode::Error;
     }
 
@@ -439,7 +441,8 @@ OSDriverInterface::OSWindow::WindowMode OSDriverInterface::OSWindow::getWindowMo
 
 void OSDriverInterface::OSWindow::setMouseMode(MouseMode mode) {
     if (std::this_thread::get_id() != Engine::getMainThreadId()) {
-        HATE_ERROR("OSDriverInterface::OSWindow::setMouseMode must be called only from main thread or via Engine::callDeferred/callDeferredAsync")
+        HATE_ERROR("OSDriverInterface::OSWindow::setMouseMode must be called only from main thread or "
+                   "via Engine::callDeferred/callDeferredAsync")
         return;
     }
 
@@ -447,7 +450,8 @@ void OSDriverInterface::OSWindow::setMouseMode(MouseMode mode) {
 }
 HateEngine::OSDriverInterface::MouseMode OSDriverInterface::OSWindow::getMouseMode() {
     if (std::this_thread::get_id() != Engine::getMainThreadId()) {
-        HATE_ERROR("OSDriverInterface::OSWindow::getMouseMode must be called only from main thread or via Engine::callDeferred/callDeferredAsync")
+        HATE_ERROR("OSDriverInterface::OSWindow::getMouseMode must be called only from main thread or "
+                   "via Engine::callDeferred/callDeferredAsync")
         return MouseMode::Error;
     }
     return (MouseMode) (glfwGetInputMode((GLFWwindow*) this->OSDataPtr, GLFW_CURSOR) - GLFW_CURSOR_NORMAL
@@ -460,7 +464,7 @@ int OSDriverInterface::OSWindow::getSwapInterval() {
 
 //// Input ////
 bool OSDriverInterface::OSWindow::isKeyPressed(Key key) {
-    return this->cachedKeys[key-1];
+    return this->cachedKeys[key - 1];
 }
 
 bool OSDriverInterface::OSWindow::isMouseButtonPressed(MouseButton btn) {

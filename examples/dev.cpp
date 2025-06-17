@@ -1018,9 +1018,9 @@ void _process(HateEngine::Engine* engine, double delta) {
 glm::vec3 cam_dir;
 
 void _physics_process(HateEngine::Engine* engine, double delta) {
-    //float xaxisvalue = engine->Input.getAnyGamepadAxis(HateEngine::GamepadAxisLeftYUp);
-    // xaxisvalue = engine->Input.getActionAxis("left");
-    //HATE_INFO_F("X axis value: %f", xaxisvalue);
+    // float xaxisvalue = engine->Input.getAnyGamepadAxis(HateEngine::GamepadAxisLeftYUp);
+    //  xaxisvalue = engine->Input.getActionAxis("left");
+    // HATE_INFO_F("X axis value: %f", xaxisvalue);
 
     auto rb_points = rigidBody.getCollisionPoints();
     int rb_points_count = 0;
@@ -1264,7 +1264,8 @@ void _input_event(HateEngine::Engine* engine, const HateEngine::InputEventInfo& 
             engine->mainWindow->setWindowMode(HateEngine::OSDriverInterface::OSWindow::Fullscreen);
         }
         if (event.key == HateEngine::KeyP && event.isPressed) {
-            engine->mainWindow->setWindowMode(HateEngine::OSDriverInterface::OSWindow::WindowedFullscreen);
+            engine->mainWindow->setWindowMode(HateEngine::OSDriverInterface::OSWindow::WindowedFullscreen
+            );
         }
 
 

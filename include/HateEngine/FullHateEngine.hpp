@@ -1,4 +1,4 @@
-#pragma once 
+#pragma once
 #include "AudioBus.hpp"
 #include "AudioServer.hpp"
 #include "NavMeshAgent.hpp"

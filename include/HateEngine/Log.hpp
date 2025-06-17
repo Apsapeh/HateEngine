@@ -15,19 +15,37 @@
 #define HATE_FATAL_F(msg, ...)                                                                          \
     HateEngine::Log::Fatal(HateEngine::LogFn::__log_format(msg, __VA_ARGS__), __FILE__, __LINE__);
 
-#define HATE_ASSERT_WARNING(cnd, msg) \
-    if (!(cnd)) { HateEngine::Log::Warning(msg, __FILE__, __LINE__); }
-#define HATE_ASSERT_ERROR(cnd, msg) \
-    if (!(cnd)) { HateEngine::Log::Error(msg, __FILE__, __LINE__); }
-#define HATE_ASSERT_FATAL(cnd, msg) \
-    if (!(cnd)) { HateEngine::Log::Fatal(msg, __FILE__, __LINE__); }
+#define HATE_ASSERT_WARNING(cnd, msg)                                                                   \
+    if (!(cnd)) {                                                                                       \
+        HateEngine::Log::Warning(msg, __FILE__, __LINE__);                                              \
+    }
+#define HATE_ASSERT_ERROR(cnd, msg)                                                                     \
+    if (!(cnd)) {                                                                                       \
+        HateEngine::Log::Error(msg, __FILE__, __LINE__);                                                \
+    }
+#define HATE_ASSERT_FATAL(cnd, msg)                                                                     \
+    if (!(cnd)) {                                                                                       \
+        HateEngine::Log::Fatal(msg, __FILE__, __LINE__);                                                \
+    }
 
-#define HATE_ASSERT_WARNING_F(cnd, msg, ...) \
-    if (!(cnd)) { HateEngine::Log::Warning(HateEngine::LogFn::__log_format(msg, __VA_ARGS__), __FILE__, __LINE__); }
-#define HATE_ASSERT_ERROR_F(cnd, msg, ...) \
-    if (!(cnd)) { HateEngine::Log::Warning(HateEngine::LogFn::__log_format(msg, __VA_ARGS__), __FILE__, __LINE__); }
-#define HATE_ASSERT_FATAL_F(cnd, msg, ...) \
-    if (!(cnd)) { HateEngine::Log::Warning(HateEngine::LogFn::__log_format(msg, __VA_ARGS__), __FILE__, __LINE__); }
+#define HATE_ASSERT_WARNING_F(cnd, msg, ...)                                                            \
+    if (!(cnd)) {                                                                                       \
+        HateEngine::Log::Warning(                                                                       \
+                HateEngine::LogFn::__log_format(msg, __VA_ARGS__), __FILE__, __LINE__                   \
+        );                                                                                              \
+    }
+#define HATE_ASSERT_ERROR_F(cnd, msg, ...)                                                              \
+    if (!(cnd)) {                                                                                       \
+        HateEngine::Log::Warning(                                                                       \
+                HateEngine::LogFn::__log_format(msg, __VA_ARGS__), __FILE__, __LINE__                   \
+        );                                                                                              \
+    }
+#define HATE_ASSERT_FATAL_F(cnd, msg, ...)                                                              \
+    if (!(cnd)) {                                                                                       \
+        HateEngine::Log::Warning(                                                                       \
+                HateEngine::LogFn::__log_format(msg, __VA_ARGS__), __FILE__, __LINE__                   \
+        );                                                                                              \
+    }
 
 #ifdef __HATE_ENGINE_DEBUG
 #define HATE_DEBUG(msg) HateEngine::Log::Debug(msg, __FILE__, __LINE__);
