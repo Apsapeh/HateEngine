@@ -9,7 +9,7 @@ def gen_AllHateEngine_hpp():
     while not os.path.exists(include_path):
         include_path = "../" + include_path
 
-    file_data = ""
+    file_data = "#pragma once \n"
 
     for filename in glob(include_path+'/**/*.hpp', recursive=True):
         if filename == include_path + "/FullHateEngine.hpp":

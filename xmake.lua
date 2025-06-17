@@ -1,25 +1,19 @@
-add_repositories("apsapeh-repo https://github.com/Apsapeh/xmake-repo.git")
-add_requires(
-    "glm 1.0.0", 
-    "tinygltf 2.8.13", 
-    "recastnavigation 1.6.0",
-    "glu",
-    "termcolor 5635ae00856eeddffcbf7091d13e2987abde91a2"
-)
--- On my pc it doesn't compile for Linux i386 when Wayland enabled
-add_requires("glfw 3.4", {configs = {wayland = is_plat("linux") and is_arch("x86_64")}})
-add_requires("hateengine-reactphysics3d 0.10.2", {debug = is_mode("debug")})
---add_requires("reactphysics3d 7060cb0fabdcc81ec5929897d3228efe70fae9da", {debug = is_mode("debug")})
-
-
-if is_arch("i386") then
-    add_requires("hateengine-soloud", {configs = {cxflags = {"-DDISABLE_SSE", "-DDISABLE_SIMD"}}})
-else 
-    add_requires("hateengine-soloud")
-end
-
+set_project("HateEngine")
+set_version("1.0.0")
 
 add_rules("mode.debug", "mode.release")
+
+option("platform_driver")
+    set_showmenu(true)
+    set_description("Select the platform driver")
+    if is_os("linux", "windows", "macosx") then
+        set_values("glfw")
+        set_default("glfw")
+    else
+        set_values("none")
+        set_default("none")
+    end
+option_end()
 
 option("build_examples")
     set_description("Build an examples")
@@ -32,12 +26,31 @@ option("profiler_mode")
 option_end()
 
 option("__package_mode")
-    set_description("Don't use it, it's 'system' option for normaly support a xmake package system")
+    set_description("Don't use it, it's 'system' option for normally support a xmake package system")
     set_default(false)
 option_end()
 
-set_project("HateEngine")
-set_version("1.0.0")
+
+add_repositories("apsapeh-repo https://github.com/Apsapeh/xmake-repo.git")
+add_requires(
+    "glm 1.0.0",
+    "tinygltf 2.8.13",
+    "recastnavigation 1.6.0",
+    "glu",
+    "termcolor 5635ae00856eeddffcbf7091d13e2987abde91a2"
+)
+-- On my pc it doesn't compile for Linux i386 when Wayland enabled
+add_requires("hateengine-reactphysics3d 0.10.2", {debug = is_mode("debug")})
+
+if is_config("platform_driver", "glfw") then
+    add_requires("glfw 3.4", {configs = {wayland = is_plat("linux") and is_arch("x86_64")}})
+end
+
+if is_arch("i386") then
+    add_requires("hateengine-soloud", {configs = {cxflags = {"-DDISABLE_SSE", "-DDISABLE_SIMD"}}})
+else
+    add_requires("hateengine-soloud")
+end
 
 
 function set_mode_rules(merge)
@@ -59,6 +72,10 @@ function set_mode_rules(merge)
         add_defines("__HATE_ENGINE_PROFILER")
     end
 
+    if is_config("platform_driver", "glfw") then
+        add_defines("__HATE_ENGINE_USE_GLFW")
+    end
+
     --add_defines("IS_RP3D_PROFILING_ENABLED")
     if is_plat("windows") then
         add_defines("and=&&", "or=||", "not=!", "_WIN32_WINNT=0x0501")
@@ -73,7 +90,12 @@ end
 
 
 function set_HateEngineLib_rules()
-    add_packages("glfw", "glm", "tinygltf", "hateengine-reactphysics3d", "glu", "termcolor", "hateengine-soloud", "recastnavigation")
+    add_packages("glm", "tinygltf", "hateengine-reactphysics3d", "glu", "termcolor", "hateengine-soloud", "recastnavigation")
+
+    if is_config("platform_driver", "glfw") then
+        add_packages("glfw")
+    end
+
     add_defines("GLM_ENABLE_EXPERIMENTAL", {public = true})
 
     set_languages("cxx11")
@@ -126,7 +148,8 @@ function set_Example_rules(custom_mode)
         add_deps("HateEngine-static")
     end
 
-    add_packages("glfw", "glm", "hateengine-reactphysics3d", "hateengine-soloud", "recastnavigation", {links = {}})
+    add_packages("glm", "hateengine-reactphysics3d", "hateengine-soloud", "recastnavigation", {links = {}})
+
 end
 
 target("Dev")

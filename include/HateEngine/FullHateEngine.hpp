@@ -1,3 +1,4 @@
+#pragma once 
 #include "AudioBus.hpp"
 #include "AudioServer.hpp"
 #include "NavMeshAgent.hpp"
@@ -5,10 +6,11 @@
 #include "Log.hpp"
 #include "HateEngine.hpp"
 #include "InputKeys.hpp"
-#include "Input.hpp"
 #include "InputEvent.hpp"
 #include "Level.hpp"
+#include "HateEngineCallDeferred.hpp"
 #include "OSDriverInterface.hpp"
+#include "Input.hpp"
 #include "Objects/BillboardMesh.hpp"
 #include "Objects/Camera.hpp"
 #include "Objects/CubeMesh.hpp"
@@ -62,3 +64,4 @@
 #include "Types/Bitset.hpp"
 #include "Types/BitsetSignal.hpp"
 #include "Types/Result.hpp"
+#include "Types/Option.hpp"

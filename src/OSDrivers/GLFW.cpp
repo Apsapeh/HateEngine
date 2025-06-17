@@ -1,8 +1,15 @@
+#ifdef __HATE_ENGINE_USE_GLFW
+#include "HateEngine/HateEngine.hpp"
+
+
 #include <GLFW/glfw3.h>
 #include <HateEngine/OSDriverInterface.hpp>
 #include <HateEngine/Log.hpp>
+#include <memory>
 #include "HateEngine/Input.hpp"
 #include "HateEngine/Types/Result.hpp"
+#include <array>
+#include <thread>
 
 using namespace HateEngine;
 
@@ -10,6 +17,7 @@ static Key getEngineKeyFromGLFWKey(int key);
 static MouseButton getEngineMouseButtonFromGLFWMouseButton(int btn);
 static int getGLFWKeyFromEngineKey(Key key);
 static int getGLFWMouseButtonFromEngineMouseButton(MouseButton btn);
+static int getGLFWGamepadAxisFromEngineJoystickAxis(GamepadAxis axis);
 
 ////////////////////    OS Driver     //////////////////////////////
 static bool glfw_inited = false;
@@ -19,7 +27,7 @@ OSDriverInterface::OSDriverInterface() {
         if (glfwInit() == GLFW_FALSE) {
             const char* msg;
             int error = glfwGetError(&msg);
-            HATE_FATAL_F("GLFW initializaiton error: code=%d, msg=%s", error, msg);
+            HATE_FATAL_F("GLFW initialization error: code=%d, msg=%s", error, msg);
         }
         glfw_inited = true;
     }
@@ -33,28 +41,41 @@ ProcAddr OSDriverInterface::getProcAddress(const char* proc) {
     return glfwGetProcAddress(proc);
 }
 
-Result<OSDriverInterface::OSWindow, bool> OSDriverInterface::createWindow(
+Result<std::shared_ptr<OSDriverInterface::OSWindow>, bool> OSDriverInterface::createWindow(
         int width, int height, const std::string& title, OSDisplay* display
 ) {
-    OSWindow window;
-    window.OSDataPtr = glfwCreateWindow(width, height, title.c_str(), NULL, NULL);
-    if (window.OSDataPtr) {
-        GLFWwindow* glfw_window = (GLFWwindow*) window.OSDataPtr;
-        glfwSetWindowUserPointer(glfw_window, this);
+    std::shared_ptr<OSWindow> window = std::make_shared<OSWindow>();
+    window->OSDataPtr = glfwCreateWindow(width, height, title.c_str(), NULL, NULL);
+
+    if (window->OSDataPtr) {
+        GLFWwindow* glfw_window = (GLFWwindow*) window->OSDataPtr;
+        makeWindowContextCurrent(*window);
+        glfwSetWindowUserPointer(
+                glfw_window, new std::pair<OSDriverInterface*, std::shared_ptr<OSWindow>>(this, window)
+        );
         glfwSetFramebufferSizeCallback(glfw_window, [](GLFWwindow* win, int w, int h) {
-            OSDriverInterface* th = static_cast<OSDriverInterface*>(glfwGetWindowUserPointer(win));
-            OSWindow window;
-            window.OSDataPtr = win;
+            std::pair<OSDriverInterface*, std::shared_ptr<OSWindow>>* data =
+                    static_cast<std::pair<OSDriverInterface*, std::shared_ptr<OSWindow>>*>(
+                            glfwGetWindowUserPointer(win)
+                    );
+            OSDriverInterface* th = data->first;
+            std::shared_ptr<OSWindow> window = data->second;
             th->onFramebufferSizeChanged.emit(window, w, h);
         });
 
         glfwSetCursorPosCallback(glfw_window, [](GLFWwindow* win, double x, double y) {
-            OSDriverInterface* th = static_cast<OSDriverInterface*>(glfwGetWindowUserPointer(win));
-            OSWindow window;
-            window.OSDataPtr = win;
+            auto* data = static_cast<std::pair<OSDriverInterface*, std::shared_ptr<OSWindow>>*>(
+                    glfwGetWindowUserPointer(win)
+            );
+            OSDriverInterface* th = data->first;
+            std::shared_ptr<OSWindow> window = data->second;
             InputEventInfo info;
             info.type = InputEventMouseMove;
             info.position = glm::vec2(x, y);
+
+            // Caching because glfwGetCursorPos not thread safe
+            window->cachedCursorPos = info.position;
+
             th->onCursorMoved.emit(window, info);
         });
 
@@ -64,15 +85,19 @@ Result<OSDriverInterface::OSWindow, bool> OSDriverInterface::createWindow(
                     if (action == GLFW_REPEAT)
                         return;
 
-                    OSDriverInterface* th =
-                            static_cast<OSDriverInterface*>(glfwGetWindowUserPointer(win));
-                    OSWindow window;
-                    window.OSDataPtr = win;
+                    auto* data = static_cast<std::pair<OSDriverInterface*, std::shared_ptr<OSWindow>>*>(
+                            glfwGetWindowUserPointer(win)
+                    );
+                    OSDriverInterface* th = data->first;
+                    std::shared_ptr<OSWindow> window = data->second;
 
                     InputEventInfo info;
                     info.type = InputEventKey;
                     info.isPressed = action == GLFW_PRESS;
                     info.key = getEngineKeyFromGLFWKey(key);
+
+                    // Caching keys because glfwGetKey not thread safe
+                    window->cachedKeys[info.key-1] = info.isPressed;
 
                     th->onKeyPressed.emit(window, info);
                 }
@@ -82,14 +107,18 @@ Result<OSDriverInterface::OSWindow, bool> OSDriverInterface::createWindow(
             if (action == GLFW_REPEAT)
                 return;
 
-            OSDriverInterface* th = static_cast<OSDriverInterface*>(glfwGetWindowUserPointer(win));
-            OSWindow window;
-            window.OSDataPtr = win;
+            auto* data = static_cast<std::pair<OSDriverInterface*, std::shared_ptr<OSWindow>>*>(
+                    glfwGetWindowUserPointer(win)
+            );
+            OSDriverInterface* th = data->first;
+            std::shared_ptr<OSWindow> window = data->second;
 
             InputEventInfo info;
             info.type = InputEventMouseButton;
             info.isPressed = action == GLFW_PRESS;
             info.button = getEngineMouseButtonFromGLFWMouseButton(button);
+
+            window->cachedMouseButtons[info.button] = info.isPressed;
 
             double xpos, ypos;
             glfwGetCursorPos(win, &xpos, &ypos);
@@ -99,9 +128,12 @@ Result<OSDriverInterface::OSWindow, bool> OSDriverInterface::createWindow(
         });
 
         glfwSetScrollCallback(glfw_window, [](GLFWwindow* win, double xoffset, double yoffset) {
-            OSDriverInterface* th = static_cast<OSDriverInterface*>(glfwGetWindowUserPointer(win));
-            OSWindow window;
-            window.OSDataPtr = win;
+            std::pair<OSDriverInterface*, std::shared_ptr<OSWindow>>* data =
+                    static_cast<std::pair<OSDriverInterface*, std::shared_ptr<OSWindow>>*>(
+                            glfwGetWindowUserPointer(win)
+                    );
+            OSDriverInterface* th = data->first;
+            std::shared_ptr<OSWindow> window = data->second;
 
             InputEventInfo info;
             info.type = InputEventMouseScroll;
@@ -109,9 +141,9 @@ Result<OSDriverInterface::OSWindow, bool> OSDriverInterface::createWindow(
 
             th->onMouseWheelScrolled.emit(window, info);
         });
-        return Result<OSWindow, bool>::Ok(window);
+        return Result<std::shared_ptr<OSWindow>, bool>::Ok(window);
     } else {
-        return Result<OSWindow, bool>::Err(false);
+        return Result<std::shared_ptr<OSWindow>, bool>::Err(false);
     }
 }
 
@@ -119,12 +151,37 @@ void OSDriverInterface::makeWindowContextCurrent(OSDriverInterface::OSWindow& wi
     glfwMakeContextCurrent((GLFWwindow*) window.OSDataPtr);
 }
 
-void OSDriverInterface::setSwapInterval(int interval) {
-    glfwSwapInterval(interval);
-}
-
-void OSDriverInterface::pollEvents() {
+void OSDriverInterface::poll() {
     glfwPollEvents();
+
+    // Update joystick data
+    static_assert(GLFW_JOYSTICK_1 == 0, "GLFW API is updated: GLFW_JOYSTICK_1 != 0");
+    GLFWgamepadstate GState;
+    for (int i = GLFW_JOYSTICK_1; i <= GLFW_JOYSTICK_LAST; ++i) {
+        auto& jdata = this->joysticksData[i];
+        if (not glfwJoystickPresent(i)) {
+            jdata.isPresent = false;
+            continue;
+        }
+
+        jdata.isPresent = true;
+
+        if (glfwJoystickIsGamepad(i)) {
+            jdata.isGamepad = true;
+            glfwGetGamepadState(i, &GState);
+
+            jdata.buttons.assign(GState.buttons, GState.buttons + 15);
+            jdata.axes.assign(GState.axes, GState.axes + 6);
+        } else {
+            jdata.isGamepad = false;
+
+            int count;
+            const auto buttons = glfwGetJoystickButtons(i, &count);
+            jdata.buttons.assign(buttons, buttons + count);
+            const auto axes = glfwGetJoystickAxes(i, &count);
+            jdata.axes.assign(axes, axes + count);
+        }
+    }
 }
 
 double OSDriverInterface::getTime() {
@@ -132,7 +189,154 @@ double OSDriverInterface::getTime() {
 }
 
 
+std::vector<JoystickHandle> OSDriverInterface::getAvailableJoysticks() {
+    std::vector<JoystickHandle> result;
+    result.reserve(16);
+
+    static_assert(GLFW_JOYSTICK_1 == 0, "GLFW API is updated: GLFW_JOYSTICK_1 != 0");
+    int i = 0;
+    for (const auto& jdata: this->joysticksData) {
+        if (jdata.isPresent)
+            result.push_back(i);
+        ++i;
+    }
+    return result;
+}
+std::vector<JoystickHandle> OSDriverInterface::getAvailableGamepads() {
+    std::vector<JoystickHandle> result;
+    result.reserve(16);
+
+    static_assert(GLFW_JOYSTICK_1 == 0, "GLFW API is updated: GLFW_JOYSTICK_1 != 0");
+    int i = 0;
+    for (const auto& jdata: this->joysticksData) {
+        if (jdata.isPresent and jdata.isGamepad)
+            result.push_back(i);
+        ++i;
+    }
+    return result;
+}
+
+bool OSDriverInterface::isJoystickAvailable(JoystickHandle handle) {
+    return this->joysticksData[handle].isPresent;
+}
+
+bool OSDriverInterface::isJoystickGamepad(JoystickHandle handle) {
+    return this->joysticksData[handle].isGamepad;
+}
+
+Result<std::vector<bool>, OSDriverInterface::JoysticErr> OSDriverInterface::getJoystickButtonsRaw(
+        JoystickHandle handle
+) {
+    const auto& jdata = this->joysticksData[handle];
+    if (not jdata.isPresent)
+        return Err<std::vector<bool>, JoysticErr>(IsNotAvailable);
+    if (jdata.isGamepad)
+        return Err<std::vector<bool>, JoysticErr>(IsNotRawJoystick);
+    return Ok<std::vector<bool>, JoysticErr>(jdata.buttons);
+}
+
+Result<std::vector<float>, OSDriverInterface::JoysticErr> OSDriverInterface::getJoystickAxisRaw(
+        JoystickHandle handle
+) {
+    const auto& jdata = this->joysticksData[handle];
+    if (not jdata.isPresent)
+        return Err<std::vector<float>, JoysticErr>(IsNotAvailable);
+    if (jdata.isGamepad)
+        return Err<std::vector<float>, JoysticErr>(IsNotRawJoystick);
+    return Ok<std::vector<float>, JoysticErr>(jdata.axes);
+}
+
+Result<bool, OSDriverInterface::JoysticErr> OSDriverInterface::isJoystickButtonPressed(
+        JoystickHandle handle, int button
+) {
+    const auto& jdata = this->joysticksData[handle];
+    if (not jdata.isPresent)
+        return Err<bool, JoysticErr>(IsNotAvailable);
+    if (jdata.isGamepad)
+        return Err<bool, JoysticErr>(IsNotRawJoystick);
+    if (jdata.buttons.size() >= button)
+        return Err<bool, JoysticErr>(OutOfIndex);
+    return Ok<bool, JoysticErr>(jdata.buttons[button]);
+}
+
+Result<float, OSDriverInterface::JoysticErr> OSDriverInterface::getJoystickAxis(
+        JoystickHandle handle, int axis
+) {
+    const auto& jdata = this->joysticksData[handle];
+    if (not jdata.isPresent)
+        return Err<float, JoysticErr>(IsNotAvailable);
+    if (jdata.isGamepad)
+        return Err<float, JoysticErr>(IsNotRawJoystick);
+    if (jdata.axes.size() >= axis)
+        return Err<float, JoysticErr>(OutOfIndex);
+    return Ok<float, JoysticErr>(jdata.axes[axis]);
+}
+
+Result<bool, OSDriverInterface::JoysticErr> OSDriverInterface::isGamepadButtonPressed(
+        JoystickHandle handle, GamepadButtons button
+) {
+    const auto& jdata = this->joysticksData[handle];
+    if (not jdata.isPresent)
+        return Err<bool, JoysticErr>(IsNotAvailable);
+    if (not jdata.isGamepad)
+        return Err<bool, JoysticErr>(IsNotGamepad);
+    return Ok<bool, JoysticErr>(jdata.buttons[button]);
+}
+
+Result<float, OSDriverInterface::JoysticErr> OSDriverInterface::getGamepadAxis(
+        JoystickHandle handle, GamepadAxis axis
+) {
+    const auto& jdata = this->joysticksData[handle];
+    if (not jdata.isPresent)
+        return Err<float, JoysticErr>(IsNotAvailable);
+    if (not jdata.isGamepad)
+        return Err<float, JoysticErr>(IsNotGamepad);
+    float value = jdata.axes[getGLFWGamepadAxisFromEngineJoystickAxis(axis)];
+    if (axis == GamepadAxisLeftXLeft or axis == GamepadAxisRightXLeft and value < 0.0f) {
+        return Ok<float, JoysticErr>(value);
+    } else if (axis == GamepadAxisLeftXRight or axis == GamepadAxisRightXRight and value > 0.0f) {
+        return Ok<float, JoysticErr>(value);
+    } else if (axis == GamepadAxisLeftYUp or axis == GamepadAxisRightYUp and value < 0.0f) {
+        return Ok<float, JoysticErr>(-value);
+    } else if (axis == GamepadAxisLeftYDown or axis == GamepadAxisRightYDown and value > 0.0f) {
+        return Ok<float, JoysticErr>(-value);
+    }
+    return Ok<float, JoysticErr>(value);
+}
+
+Option<std::string> OSDriverInterface::getJoystickName(JoystickHandle handle) {
+    auto cstr = glfwGetJoystickName(handle);
+    if (cstr == nullptr)
+        return None<std::string>();
+    return Some(std::string(cstr));
+}
+
+Option<std::string> OSDriverInterface::getGamepadName(JoystickHandle handle) {
+    auto cstr = glfwGetGamepadName(handle);
+    if (cstr == nullptr)
+        return None<std::string>();
+    return Some(std::string(cstr));
+}
+
+
 ///////////////////    OS Window    //////////////////////
+
+OSDriverInterface::OSWindow::OSWindow() {
+    std::fill(cachedKeys, cachedKeys+KeyMenu, false);
+    std::fill(cachedMouseButtons, cachedMouseButtons+MouseButton8+1, false);
+}
+
+OSDriverInterface::OSWindow::~OSWindow() {
+    glfwDestroyWindow((GLFWwindow*) this->OSDataPtr);
+    auto* data = static_cast<std::pair<OSDriverInterface*, std::shared_ptr<OSWindow>>*>(
+            glfwGetWindowUserPointer((GLFWwindow*) this->OSDataPtr)
+    );
+    delete data;
+}
+
+void OSDriverInterface::OSWindow::init() {
+    setSwapInterval(this->swapInterval);
+}
 
 void OSDriverInterface::OSWindow::swapBuffers() {
     glfwSwapBuffers((GLFWwindow*) this->OSDataPtr);
@@ -153,24 +357,118 @@ void OSDriverInterface::OSWindow::RequireClose() {
 }
 
 void OSDriverInterface::OSWindow::setTitle(const std::string& title) {
+    if (std::this_thread::get_id() != Engine::getMainThreadId()) {
+        HATE_ERROR("OSDriverInterface::OSWindow::setTitle must be called only from main thread or via Engine::callDeferred/callDeferredAsync")
+        return;
+    }
     glfwSetWindowTitle((GLFWwindow*) this->OSDataPtr, title.c_str());
+}
+
+void OSDriverInterface::OSWindow::setSwapInterval(int interval) {
+    glfwSwapInterval(interval);
+    this->swapInterval = interval;
+}
+
+void OSDriverInterface::OSWindow::setWindowSize(int w, int h) {
+    if (std::this_thread::get_id() != Engine::getMainThreadId()) {
+        HATE_ERROR("OSDriverInterface::OSWindow::setWindowSize must be called only from main thread or via Engine::callDeferred/callDeferredAsync")
+        return;
+    }
+    glfwSetWindowSize((GLFWwindow*) this->OSDataPtr, w, h);
+}
+
+
+void OSDriverInterface::OSWindow::setWindowMode(WindowMode mode, OSDisplay* display) {
+    if (std::this_thread::get_id() != Engine::getMainThreadId()) {
+        HATE_ERROR("OSDriverInterface::OSWindow::setWindowMode must be called only from main thread or via Engine::callDeferred/callDeferredAsync")
+        return;
+    }
+    // TODO: Add custom display for Fullscreen and WindowedFullscreen
+    GLFWwindow* window = static_cast<GLFWwindow*>(this->OSDataPtr);
+
+    if (mode == WindowMode::Window) {
+        glfwSetWindowAttrib(window, GLFW_DECORATED, GLFW_TRUE);
+        glfwSetWindowMonitor(window, nullptr, 100, 100, 800, 600, GLFW_DONT_CARE);
+    }
+    else if (mode == WindowMode::Fullscreen) {
+        GLFWmonitor* monitor = glfwGetPrimaryMonitor();
+        const GLFWvidmode* mode = glfwGetVideoMode(monitor);
+        glfwSetWindowAttrib(window, GLFW_DECORATED, GLFW_TRUE);
+        glfwSetWindowAttrib(window, GLFW_AUTO_ICONIFY, GLFW_TRUE);
+        glfwSetWindowMonitor(window, monitor, 0, 0, mode->width, mode->height, mode->refreshRate);
+    }
+    else if (mode == WindowMode::WindowedFullscreen) {
+        GLFWmonitor* monitor = glfwGetPrimaryMonitor();
+        const GLFWvidmode* mode = glfwGetVideoMode(monitor);
+
+        glfwSetWindowMonitor(window, monitor, 0, 0, mode->width, mode->height, mode->refreshRate);
+        glfwSetWindowAttrib(window, GLFW_DECORATED, GLFW_FALSE);  // Убираем рамки
+        glfwSetWindowAttrib(window, GLFW_AUTO_ICONIFY, GLFW_FALSE);  // Убираем рамки
+    }
+}
+
+OSDriverInterface::OSWindow::WindowMode OSDriverInterface::OSWindow::getWindowMode() {
+    if (std::this_thread::get_id() != Engine::getMainThreadId()) {
+        HATE_ERROR("OSDriverInterface::OSWindow::getWindowMode must be called only from main thread or via Engine::callDeferred/callDeferredAsync")
+        return WindowMode::Error;
+    }
+
+    GLFWwindow* window = static_cast<GLFWwindow*>(this->OSDataPtr);
+    GLFWmonitor* monitor = glfwGetWindowMonitor(window);
+
+    if (monitor != nullptr) {
+        return WindowMode::Fullscreen;
+    }
+
+    int decorated = glfwGetWindowAttrib(window, GLFW_DECORATED);
+    if (!decorated) {
+        int wx, wy;
+        glfwGetWindowSize(window, &wx, &wy);
+
+        GLFWmonitor* primary = glfwGetPrimaryMonitor();
+        const GLFWvidmode* mode = glfwGetVideoMode(primary);
+
+        if (wx == mode->width && wy == mode->height) {
+            return WindowMode::WindowedFullscreen;
+        }
+    }
+
+    return WindowMode::Window;
+}
+
+
+void OSDriverInterface::OSWindow::setMouseMode(MouseMode mode) {
+    if (std::this_thread::get_id() != Engine::getMainThreadId()) {
+        HATE_ERROR("OSDriverInterface::OSWindow::setMouseMode must be called only from main thread or via Engine::callDeferred/callDeferredAsync")
+        return;
+    }
+
+    glfwSetInputMode((GLFWwindow*) this->OSDataPtr, GLFW_CURSOR, GLFW_CURSOR_NORMAL + mode);
+}
+HateEngine::OSDriverInterface::MouseMode OSDriverInterface::OSWindow::getMouseMode() {
+    if (std::this_thread::get_id() != Engine::getMainThreadId()) {
+        HATE_ERROR("OSDriverInterface::OSWindow::getMouseMode must be called only from main thread or via Engine::callDeferred/callDeferredAsync")
+        return MouseMode::Error;
+    }
+    return (MouseMode) (glfwGetInputMode((GLFWwindow*) this->OSDataPtr, GLFW_CURSOR) - GLFW_CURSOR_NORMAL
+    );
+}
+
+int OSDriverInterface::OSWindow::getSwapInterval() {
+    return this->swapInterval;
 }
 
 //// Input ////
 bool OSDriverInterface::OSWindow::isKeyPressed(Key key) {
-    return glfwGetKey((GLFWwindow*) this->OSDataPtr, getGLFWKeyFromEngineKey(key));
+    return this->cachedKeys[key-1];
 }
 
 bool OSDriverInterface::OSWindow::isMouseButtonPressed(MouseButton btn) {
-    return glfwGetMouseButton(
-            (GLFWwindow*) this->OSDataPtr, getGLFWMouseButtonFromEngineMouseButton(btn)
-    );
+    return this->cachedMouseButtons[btn];
 }
 
 glm::vec2 OSDriverInterface::OSWindow::getCursorPosition() {
-    double x, y;
-    glfwGetCursorPos((GLFWwindow*) this->OSDataPtr, &x, &y);
-    return glm::vec2(x, y);
+    return this->cachedCursorPos;
 }
 
 
@@ -178,6 +476,7 @@ glm::vec2 OSDriverInterface::OSWindow::getCursorPosition() {
 static const int glfwKeyFromEnum[] = {
         -1, // KeyInvalid
         GLFW_KEY_SPACE, // KeySpace
+        GLFW_KEY_APOSTROPHE,
         GLFW_KEY_COMMA, // KeyComma
         GLFW_KEY_MINUS, // KeyMinus
         GLFW_KEY_PERIOD, // KeyPeriod
@@ -425,7 +724,7 @@ static Key getEngineKeyFromGLFWKey(int key) {
         CASE(GLFW_KEY_RIGHT_SUPER, KeyRightSuper);
         CASE(GLFW_KEY_MENU, KeyMenu);
         default:
-            return KeyMenu; // или другой "invalid" ключ
+            return KeyInvalid; // или другой "invalid" ключ
     }
 }
 
@@ -441,3 +740,23 @@ static int getGLFWKeyFromEngineKey(Key key) {
 static int getGLFWMouseButtonFromEngineMouseButton(MouseButton btn) {
     return static_cast<int>(btn);
 }
+
+int getGLFWGamepadAxisFromEngineJoystickAxis(GamepadAxis axis) {
+    static_assert(
+            GamepadAxisLeftTrigger == 8, "Enum GamepadAxis was changed, need to update this function"
+    );
+    static_assert(GLFW_GAMEPAD_AXIS_LEFT_X == 0, "GLFW API was changed, need to update this function");
+    static_assert(
+            GLFW_GAMEPAD_AXIS_RIGHT_TRIGGER == 5, "GLFW API was changed, need to update this function"
+    );
+
+    int int_axis = static_cast<int>(axis);
+    if (axis < GamepadAxisLeftTrigger) {
+        return int_axis >> 1;
+    } else {
+        return int_axis - 4;
+    }
+}
+
+
+#endif // __HATE_ENGINE_USE_GLFW

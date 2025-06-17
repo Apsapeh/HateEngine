@@ -1,6 +1,7 @@
 #include "HateEngine/AudioBus.hpp"
 #include "HateEngine/Input.hpp"
 #include "HateEngine/NavMeshAgent.hpp"
+#include "HateEngine/OSDriverInterface.hpp"
 #include "HateEngine/Objects/Decal.hpp"
 #include "HateEngine/Objects/Light/OmniLight.hpp"
 #include "HateEngine/Objects/Light/SpotLight.hpp"
@@ -111,6 +112,7 @@ HateEngine::Decal decal;
 HateEngine::NavMeshAgent* nav_agent_ptr = nullptr;
 HateEngine::CubeMesh nav_agent_cube;
 
+HateEngine::JoystickHandle gamepad;
 
 int main() {
     // int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
@@ -180,7 +182,7 @@ int main() {
     // std::cout << sizeof(game) << "\n";
     // while(true) {}
 
-    game.setMouseCapture(true);
+    game.mainWindow->setMouseMode(HateEngine::OSDriverInterface::Disabled);
     // std::cout << "\n\n\n\n" << glfwGetInputMode(game.window, GLFW_CURSOR) << "\n\n\n\n";
     game.setOneThreadMode(true);
     game.setVSync(true);
@@ -193,16 +195,29 @@ int main() {
 
     game.Input.addKeyToAction("forward", HateEngine::KeyW);
     game.Input.addKeyToAction("forward", HateEngine::KeyNumPad8);
+    game.Input.addKeyToAction("forward", HateEngine::GamepadAxisLeftYUp);
     game.Input.addKeyToAction("backward", HateEngine::KeyS);
     game.Input.addKeyToAction("backward", HateEngine::KeyNumPad5);
     game.Input.addKeyToAction("left", HateEngine::KeyA);
     game.Input.addKeyToAction("left", HateEngine::KeyNumPad4);
+    game.Input.addKeyToAction("left", HateEngine::GamepadAxisLeftXLeft);
     game.Input.addKeyToAction("right", HateEngine::KeyD);
     game.Input.addKeyToAction("right", HateEngine::KeyNumPad6);
     game.Input.addKeyToAction("up", HateEngine::KeySpace);
     game.Input.addKeyToAction("down", HateEngine::KeyLeftControl);
     game.Input.addKeyToAction("down", HateEngine::KeyLeftSuper);
     // Setting textures for the cube and floor meshes
+
+    std::thread th([&]() {
+        std::ostringstream oss;
+        oss << std::this_thread::get_id() << std::endl;
+        HATE_ERROR_F("Thread id: %s", oss.str().c_str());
+        game.callDeferred([]() {
+            std::ostringstream oss;
+            oss << std::this_thread::get_id() << std::endl;
+            HATE_ERROR_F("Deferred thread id: %s", oss.str().c_str());
+        });
+    });
 
 
     // ambient_bus->addSource("examples/Assets/ambient.wav");
@@ -928,6 +943,7 @@ int main() {
     // int p = glfwGetPlatform();
     // std::cout << p << " | " << GLFW_PLATFORM_WAYLAND << "\n";
     //  HateEngine::AudioServer::Deinit();
+    th.join();
 }
 
 
@@ -1002,7 +1018,9 @@ void _process(HateEngine::Engine* engine, double delta) {
 glm::vec3 cam_dir;
 
 void _physics_process(HateEngine::Engine* engine, double delta) {
-
+    //float xaxisvalue = engine->Input.getAnyGamepadAxis(HateEngine::GamepadAxisLeftYUp);
+    // xaxisvalue = engine->Input.getActionAxis("left");
+    //HATE_INFO_F("X axis value: %f", xaxisvalue);
 
     auto rb_points = rigidBody.getCollisionPoints();
     int rb_points_count = 0;
@@ -1114,9 +1132,9 @@ void _physics_process(HateEngine::Engine* engine, double delta) {
 
 
     if (engine->Input.isKeyPressed(HateEngine::KeyY))
-        engine->setMouseCapture(false);
+        engine->mainWindow->setMouseMode(HateEngine::OSDriverInterface::Normal);
     if (engine->Input.isKeyPressed(HateEngine::KeyU))
-        engine->setMouseCapture(true);
+        engine->mainWindow->setMouseMode(HateEngine::OSDriverInterface::Disabled);
 
     /*if (engine->Input.isKeyPressed(GLFW_KEY_P))
         engine->setFullScreen(!engine->getFullScreen());*/
@@ -1186,7 +1204,7 @@ void _input_event(HateEngine::Engine* engine, const HateEngine::InputEventInfo& 
             is_first_iter = false;
         }
 
-        if (engine->getMouseCapture()) {
+        if (engine->mainWindow->getMouseMode() == HateEngine::OSDriverInterface::Disabled) {
             camera.rotate(0, -xoffset, 0, false);
             camera.rotate(-yoffset, 0, 0, true);
         }
@@ -1195,7 +1213,7 @@ void _input_event(HateEngine::Engine* engine, const HateEngine::InputEventInfo& 
     }
 
     if (event.type == HateEngine::InputEventMouseScroll) {
-        if (event.position.y < 0)
+        if (event.offset.y < 0)
             // fps_widget_ptr->zoom(-0.1);
             speed /= 1.1;
         else
@@ -1239,10 +1257,16 @@ void _input_event(HateEngine::Engine* engine, const HateEngine::InputEventInfo& 
     }
 
     if (event.type == HateEngine::InputEventKey) {
-        if (event.key == HateEngine::KeyP && event.isPressed) {
-            engine->setFullScreen(!engine->getFullScreen());
-            HATE_WARNING("Toggled fullscreen")
+        if (event.key == HateEngine::KeyI && event.isPressed) {
+            engine->mainWindow->setWindowMode(HateEngine::OSDriverInterface::OSWindow::Window);
         }
+        if (event.key == HateEngine::KeyO && event.isPressed) {
+            engine->mainWindow->setWindowMode(HateEngine::OSDriverInterface::OSWindow::Fullscreen);
+        }
+        if (event.key == HateEngine::KeyP && event.isPressed) {
+            engine->mainWindow->setWindowMode(HateEngine::OSDriverInterface::OSWindow::WindowedFullscreen);
+        }
+
 
         if (event.key == HateEngine::KeyM and event.isPressed) {
             glm::vec3 velocity = rigidBody.getLinearVelocity();

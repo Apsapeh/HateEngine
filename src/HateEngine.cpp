@@ -39,39 +39,54 @@
 #endif
 
 bool glad_is_initialized = false;
+std::thread::id HateEngine::Engine::mainThreadId;
+bool HateEngine::Engine::isMainThreadIdInitialized = false;
 
 using namespace HateEngine;
 
-Engine::Engine(std::string window_lbl, int width, int height) : Input(nullptr) {
-    this->mainWindow = OSDriver.createWindow(width, height, window_lbl).unwrap();
-    OSDriver.makeWindowContextCurrent(this->mainWindow);
+std::thread::id Engine::getMainThreadId() {
+    return HateEngine::Engine::mainThreadId;
+}
+
+Engine::Engine(std::string window_lbl, int width, int height) : Input(&this->OSDriver) {
+    if (not this->isMainThreadIdInitialized) {
+        this->mainThreadId = std::this_thread::get_id();
+        this->isMainThreadIdInitialized = true;
+    }
+
+    this->mainWindow = OSDriver.createWindow(width, height, window_lbl).takeOk();
 
     // float xscale, yscale;
-    this->Input.changeInputWindow(&this->mainWindow);
+    this->Input.changeInputWindow(this->mainWindow);
 
     __updateResolution(width, height);
 
-    OSDriver.onFramebufferSizeChanged.connect([this](OSDriverInterface::OSWindow win, int w, int h) {
+    OSDriver.onFramebufferSizeChanged.connect([this](std::shared_ptr<OSDriverInterface::OSWindow> win,
+                                                     int w, int h) {
         if (win == this->mainWindow)
             this->__updateResolution(w, h);
     });
 
-    OSDriver.onCursorMoved.connect([this](OSDriverInterface::OSWindow win, InputEventInfo event) {
+    OSDriver.onCursorMoved.connect([this](std::shared_ptr<OSDriverInterface::OSWindow> win,
+                                          InputEventInfo event) {
         if (win == this->mainWindow)
             this->_inputEvent(event);
     });
 
-    OSDriver.onKeyPressed.connect([this](OSDriverInterface::OSWindow win, InputEventInfo event) {
+    OSDriver.onKeyPressed.connect([this](std::shared_ptr<OSDriverInterface::OSWindow> win,
+                                         InputEventInfo event) {
         if (win == this->mainWindow)
             this->_inputEvent(event);
     });
 
-    OSDriver.onMouseButtonPressed.connect([this](OSDriverInterface::OSWindow win, InputEventInfo event) {
+    OSDriver.onMouseButtonPressed.connect([this](std::shared_ptr<OSDriverInterface::OSWindow> win,
+                                                 InputEventInfo event) {
         if (win == this->mainWindow)
             this->_inputEvent(event);
     });
 
-    OSDriver.onMouseWheelScrolled.connect([this](OSDriverInterface::OSWindow win, InputEventInfo event) {
+    OSDriver.onMouseWheelScrolled.connect([this](std::shared_ptr<OSDriverInterface::OSWindow> win,
+                                                 InputEventInfo event) {
         if (win == this->mainWindow)
             this->_inputEvent(event);
     });
@@ -113,7 +128,6 @@ Engine::Engine(std::string window_lbl, int width, int height) : Input(nullptr) {
     this->physicsEngineIterateDelayMCS = physDelay - d_pp;
 
     AudioServer::Reinit();
-    this->threadSafeRequestsQueue.reserve(16);
 
     this->renderInterface = new class OpenGL_1_3(this);
 }
@@ -138,11 +152,12 @@ void Engine::Run() {
     double fixed_process_loop_delay = 1.0 / this->fixedLoopRefreshRate;
     double physics_engine_iterate_loop_delay = 1.0 / this->physicsEngineIterateLoopRefreshRate;
     double audio_engine_iterate_loop_delay = 1.0 / this->audioEngineIterateLoopRefreshRate;
-    while (not this->mainWindow.isShouldBeClosed()) {
+    while (not this->mainWindow->isShouldBeClosed()) {
         auto time_start = std::chrono::high_resolution_clock::now();
         this->frameDelta = OSDriver.getTime() - oldTime;
         oldTime = OSDriver.getTime();
-        OSDriver.pollEvents();
+        OSDriver.poll();
+        pollDeferredTasks();
 
 #ifdef __HATE_ENGINE_PROFILER
         if (this->Input.isKeyPressed(KeyF8)) {
@@ -150,27 +165,6 @@ void Engine::Run() {
             continue;
         }
 #endif
-
-        /// Thread safety GLFW calls
-        if (!this->threadSafeRequestsQueue.empty()) {
-            for (auto& req: this->threadSafeRequestsQueue) {
-                switch (req.type) {
-                    case ThreadSafeRequestType::ChangeWindowTitle:
-                        __changeWindowTitle(req);
-                        break;
-                    case ThreadSafeRequestType::ChangeMouseCaptureMode:
-                        __changeMouseCaptureMode(req);
-                        break;
-                    case ThreadSafeRequestType::ChangeFullScreenMode:
-                        __changeFullScreenMode(req);
-                        break;
-                    case ThreadSafeRequestType::ChangeLevelRef:
-                        __changeLevelRef(req);
-                        break;
-                }
-            }
-            this->threadSafeRequestsQueue.clear();
-        }
 
         // meshesMutex.lock();
         // std::lock_guard<std::mutex> lock(this->levelMutex);
@@ -226,7 +220,7 @@ void Engine::Run() {
         long time = std::chrono::duration_cast<std::chrono::nanoseconds>(time_end - time_start).count();
         lastCPUTime = time - this->renderInterface->last_gpu_time;
 
-        this->mainWindow.swapBuffers();
+        this->mainWindow->swapBuffers();
     }
 
     if (fixedProcessThread != nullptr and fixedProcessThread->joinable())
@@ -237,7 +231,7 @@ void Engine::Run() {
 }
 
 void Engine::Exit() {
-    this->mainWindow.RequireClose();
+    this->mainWindow->RequireClose();
 }
 
 
@@ -250,39 +244,8 @@ void Engine::_inputEvent(const InputEventInfo& event) {
 }
 
 
-void Engine::__changeWindowTitle(ThreadSafeRequest req) {
-    std::string* title = (std::string*) req.data;
-    this->mainWindow.setTitle(*title);
-    delete title;
-}
-
-void Engine::__changeMouseCaptureMode(ThreadSafeRequest req) {
-    /*glfwSetInputMode(
-            this->window, GLFW_CURSOR,
-            (bool) (uintptr_t) req.data ? GLFW_CURSOR_DISABLED : GLFW_CURSOR_NORMAL
-    );*/
-}
-
-void Engine::__changeFullScreenMode(ThreadSafeRequest req) {
-    /*if ((bool) (uintptr_t) req.data) {
-        GLFWmonitor* monitor = glfwGetPrimaryMonitor();
-        const GLFWvidmode* mode = glfwGetVideoMode(monitor);
-        glfwWindowHint(GLFW_RED_BITS, mode->redBits);
-        glfwWindowHint(GLFW_GREEN_BITS, mode->greenBits);
-        glfwWindowHint(GLFW_BLUE_BITS, mode->blueBits);
-        glfwWindowHint(GLFW_REFRESH_RATE, mode->refreshRate);
-        glfwSetWindowMonitor(this->window, monitor, 0, 0, mode->width, mode->height, mode->refreshRate);
-    } else
-        glfwSetWindowMonitor(this->window, nullptr, 0, 0, 800, 600, GLFW_DONT_CARE);*/
-}
-
-void Engine::__changeLevelRef(ThreadSafeRequest req) {
-    this->setLevel((Level*) req.data);
-}
-
-
 void Engine::__updateResolution(int width, int height) {
-    const auto scale = this->mainWindow.getScale();
+    const auto scale = this->mainWindow->getScale();
     const auto old_scale = this->getDisplayScale();
     const auto old_res = this->getResolution();
     const auto old_aspect_ratio = this->getAspectRatio();
@@ -311,22 +274,7 @@ void Engine::setOneThreadMode(bool mode) {
 }
 
 void Engine::setVSync(bool vsync) {
-    this->OSDriver.setSwapInterval(vsync);
-    this->isVSync = vsync;
-}
-
-void Engine::setMouseCapture(bool capture) {
-    ThreadSafeRequest req;
-    req.type = ThreadSafeRequestType::ChangeMouseCaptureMode;
-    req.data = (void*) (uintptr_t) capture;
-    this->threadSafeRequestsQueue.push_back(req);
-}
-
-void Engine::setFullScreen(bool fullScreen) {
-    ThreadSafeRequest req;
-    req.type = ThreadSafeRequestType::ChangeFullScreenMode;
-    req.data = (void*) (uintptr_t) fullScreen;
-    this->threadSafeRequestsQueue.push_back(req);
+    this->mainWindow->setSwapInterval(vsync);
 }
 
 RenderInterface* Engine::getRenderInterface() {
@@ -366,18 +314,9 @@ bool Engine::getOneThreadMode() {
 }
 
 bool Engine::getVSync() {
-    return this->isVSync;
+    return mainWindow->getSwapInterval();
 }
 
-bool Engine::getMouseCapture() {
-    // return glfwGetInputMode(this->window, GLFW_CURSOR) == GLFW_CURSOR_DISABLED;
-    return false;
-}
-
-bool Engine::getFullScreen() {
-    return false;
-    // return glfwGetWindowMonitor(this->window) != nullptr;
-}
 
 void Engine::threadFixedProcessLoop() {
     SET_THREAD_HIGH_PRIORITY
@@ -386,7 +325,7 @@ void Engine::threadFixedProcessLoop() {
     double delta = (float) this->fixedProcessDelayMCS / 1000000;
     double func_delta = 0.0;
 
-    while (this->mainWindow.isShouldBeClosed()) {
+    while (not this->mainWindow->isShouldBeClosed()) {
         int64_t a = this->fixedProcessDelayMCS - int64_t(func_delta * 1000000);
         std::this_thread::sleep_for(std::chrono::microseconds(a));
         // std::cout << d / 10<< "\n";
@@ -410,7 +349,7 @@ void Engine::threadPhysicsEngineIterateLoop() {
     double delta = (double) this->physicsEngineIterateDelayMCS / 1000000;
     double func_delta = 0.0;
 
-    while (this->mainWindow.isShouldBeClosed()) {
+    while (not this->mainWindow->isShouldBeClosed()) {
         int64_t a = this->fixedProcessDelayMCS - int64_t(func_delta * 1000000);
         std::this_thread::sleep_for(std::chrono::microseconds(a));
 
@@ -423,13 +362,6 @@ void Engine::threadPhysicsEngineIterateLoop() {
     }
 }
 
-void Engine::changeWindowTitle(std::string title) {
-    ThreadSafeRequest req;
-    req.type = ThreadSafeRequestType::ChangeWindowTitle;
-    req.data = new std::string(title);
-    this->threadSafeRequestsQueue.push_back(req);
-}
-
 void Engine::setProcessLoop(void (*func)(Engine*, double)) {
     this->processLoop = func;
 }
@@ -438,14 +370,6 @@ void Engine::setFixedProcessLoop(void (*func)(Engine*, double)) {
 }
 void Engine::setInputEvent(void (*func)(Engine*, const InputEventInfo&)) {
     this->inputEventFunc = func;
-}
-
-
-void Engine::requestChangeLevel(Level* lvl) {
-    ThreadSafeRequest req;
-    req.type = ThreadSafeRequestType::ChangeLevelRef;
-    req.data = lvl;
-    this->threadSafeRequestsQueue.push_back(req);
 }
 
 void Engine::setLevel(Level* lvl) {

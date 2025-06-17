@@ -1,7 +1,6 @@
 #pragma once
 
 #include <unordered_map>
-#include "HateEngine/Input.hpp"
 #include "HateEngine/Utilities/Signal.hpp"
 #include "Objects/Camera.hpp"
 #include "Objects/Light/Light.hpp"
@@ -9,10 +8,8 @@
 #include "PhysEngine.hpp"
 #include "UI/WidgetUI.hpp"
 #include "Utilities/UUID.hpp"
-#include "glm/ext/vector_float4.hpp"
 #include "Objects/Interfaces/Renderable3DInterface.hpp"
 #include "Objects/Interfaces/UpdatableInterface.hpp"
-// #include "Render/RenderInterface.hpp"
 
 namespace HateEngine {
     class Level {

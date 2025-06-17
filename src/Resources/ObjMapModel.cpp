@@ -17,8 +17,6 @@
 #include "HateEngine/Objects/Physics/ConvexShape.hpp"
 #include "HateEngine/Objects/Physics/PhysicalBody.hpp"
 #include "HateEngine/Objects/Physics/StaticBody.hpp"
-#include "glm/ext/vector_float2.hpp"
-#include "glm/ext/vector_float3.hpp"
 #include "glm/geometric.hpp"
 #include "glm/matrix.hpp"
 

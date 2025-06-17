@@ -1,10 +1,7 @@
 #pragma once
-#include <cstddef>
 #include <cstdint>
 #include <string>
-#include <sys/types.h>
 #include <unordered_map>
-#include "HateEngine/Objects/Interfaces/Renderable3DInterface.hpp"
 #include "HateEngine/Objects/LODMesh.hpp"
 #include "HateEngine/Objects/Object.hpp"
 #include "HateEngine/Objects/Physics/PhysicalBody.hpp"
@@ -15,7 +12,6 @@
 #include "../Objects/BillboardMesh.hpp"
 #include "../Objects/GLTFAnimationPlayer.hpp"
 
-#include "../Objects/Particles.hpp"
 #include "HateEngine/Resources/Texture.hpp"
 #include "glm/fwd.hpp"
 

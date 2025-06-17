@@ -20,7 +20,6 @@ const int HEIGHT = 600;
 
 int main() {
     HateEngine::Engine game("HateEngine Test", WIDTH, HEIGHT);
-    game.setMouseCapture(false);
     game.setOneThreadMode(true);
     game.setVSync(false);
 

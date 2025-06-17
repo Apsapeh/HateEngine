@@ -9,45 +9,78 @@
 namespace HateEngine {
     class InputClass {
     public:
-        enum ActionKeyType { KEYBOARD, MOUSE };
+        enum ActionKeyType { KeyboardAction, MouseButtonAction, GamepadButtonAction, GamepadAxisAction };
         struct ActionKey {
             ActionKeyType type;
             union {
                 Key key;
                 MouseButton button;
+                GamepadButtons gamepad_button;
+                GamepadAxis gamepad_axis;
             };
 
-            bool operator==(const ActionKey& other) const {
-                return type == other.type && (key == other.key || button == other.button);
-            }
+            bool operator==(const ActionKey& other) const;
+
+            static ActionKey fromKey(Key key);
+            static ActionKey fromMouseButton(MouseButton button);
+            static ActionKey fromGamepadButton(GamepadButtons button);
+            static ActionKey fromGamepadAxis(GamepadAxis axis);
         };
 
 
     private:
-        OSDriverInterface::OSWindow* window = nullptr;
+        OSDriverInterface* OSDriver = nullptr;
+        std::shared_ptr<OSDriverInterface::OSWindow> window;
         std::unordered_map<std::string, std::vector<ActionKey>> actions_map;
 
+        void addActionKeyToAction(const std::string& action, ActionKey& action_key);
+        bool removeActionKeyFromAction(const std::string& action, ActionKey& action_key);
+
+
     public:
-        InputClass(OSDriverInterface::OSWindow* window);
+        InputClass(OSDriverInterface* OSDriver);
         bool isKeyPressed(Key key);
         glm::vec2 getVector(Key left, Key right, Key up, Key down);
 
         glm::vec2 getCursorPosition();
         bool isMouseButtonPressed(MouseButton button);
 
-        bool isActionPressed(std::string action);
-        glm::vec2 getVectorAction(std::string left, std::string right, std::string up, std::string down);
+        std::vector<JoystickHandle> getAvailableGamepads();
+        bool isGamepadAvailable(JoystickHandle gamepad);
+        Option<std::string> getGamepadMappedName(JoystickHandle gamepad);
+        Option<std::string> getGamepadRawName(JoystickHandle gamepad);
+        Result<bool, OSDriverInterface::JoysticErr> isGamepadButtonPressed(
+                JoystickHandle gamepad, GamepadButtons button
+        );
+        Result<float, OSDriverInterface::JoysticErr> getGamepadAxis(
+                JoystickHandle gamepad, GamepadAxis axis
+        );
+        bool isAnyGamepadButtonPressed(GamepadButtons button);
+        float getAnyGamepadAxis(GamepadAxis axis, float deadzone = 0.05f);
 
-        void addKeyToAction(std::string action, Key key);
-        void addKeyToAction(std::string action, MouseButton button);
-        bool removeKeyFromAction(std::string action, Key key);
-        bool removeKeyFromAction(std::string action, MouseButton button);
-        bool removeAction(std::string action);
-        std::vector<ActionKey> getActionKeys(std::string action);
-        bool isKeyInAction(std::string action, Key key);
-        bool isKeyInAction(std::string action, MouseButton button);
+        bool isActionPressed(const std::string& action, float trashzone = 0.5f);
+        float getActionAxis(const std::string& action);
+        glm::vec2 getVectorAction(
+                const std::string& left, const std::string& right, const std::string& up,
+                const std::string& down
+        );
+
+        void addKeyToAction(const std::string& action, Key key);
+        void addKeyToAction(const std::string& action, MouseButton button);
+        void addKeyToAction(const std::string& action, GamepadButtons button);
+        void addKeyToAction(const std::string& action, GamepadAxis axis);
+        bool removeKeyFromAction(const std::string& action, Key key);
+        bool removeKeyFromAction(const std::string& action, MouseButton button);
+        bool removeKeyFromAction(const std::string& action, GamepadButtons button);
+        bool removeKeyFromAction(const std::string& action, GamepadAxis axis);
+        bool removeAction(const std::string& action);
+        std::vector<ActionKey> getActionKeys(const std::string& action);
+        bool isKeyInAction(const std::string& action, Key key);
+        bool isKeyInAction(const std::string& action, MouseButton button);
+        bool isKeyInAction(const std::string& action, GamepadButtons button);
+        bool isKeyInAction(const std::string& action, GamepadAxis axis);
         // bool isKeyPressed(int key);
         //
-        void changeInputWindow(OSDriverInterface::OSWindow* window);
+        void changeInputWindow(std::shared_ptr<OSDriverInterface::OSWindow> window);
     };
 } // namespace HateEngine

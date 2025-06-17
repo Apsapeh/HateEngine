@@ -1,4 +1,7 @@
 #pragma once
+#include "HateEngineCallDeferred.hpp"
+
+
 #include <cstdint>
 #include <mutex>
 #include <string>
@@ -10,8 +13,10 @@
 #include "Input.hpp"
 #include "OSDriverInterface.hpp"
 
+#include <thread>
+
 namespace HateEngine {
-    class Engine {
+    class Engine : public HateEngineCallDeferred {
     private:
         friend class InputClass;
 
@@ -20,6 +25,10 @@ namespace HateEngine {
 
 
     private:
+        // Call deffered
+        static std::thread::id mainThreadId;
+        static bool isMainThreadIdInitialized;
+
         void (*processLoop)(Engine*, double) = nullptr;
         void (*fixedProcessLoop)(Engine*, double) = nullptr;
         void (*inputEventFunc)(Engine*, const InputEventInfo&) = nullptr;
@@ -37,7 +46,6 @@ namespace HateEngine {
         bool isRunned = false;
 
         bool isOneThread = false;
-        bool isVSync = true;
 
         double frameDelta = 0.0;
 
@@ -51,21 +59,6 @@ namespace HateEngine {
 
         std::mutex levelMutex;
 
-        /* Thread safety queue operations*/
-        enum ThreadSafeRequestType {
-            ChangeWindowTitle,
-            ChangeMouseCaptureMode,
-            ChangeFullScreenMode,
-            ChangeLevelRef
-        };
-
-        struct ThreadSafeRequest {
-            ThreadSafeRequestType type;
-            void* data = nullptr;
-        };
-
-        std::vector<ThreadSafeRequest> threadSafeRequestsQueue;
-
         // Scene objects
         // std::unordered_map<UUID_Generator::UUID, SceneObject> objects;
 
@@ -75,16 +68,11 @@ namespace HateEngine {
 
         void _inputEvent(const InputEventInfo& event);
 
-        void __changeWindowTitle(ThreadSafeRequest req);
-        void __changeMouseCaptureMode(ThreadSafeRequest req);
-        void __changeFullScreenMode(ThreadSafeRequest req);
-        void __changeLevelRef(ThreadSafeRequest req);
-
         void __updateResolution(int width, int height);
 
     public:
         OSDriverInterface OSDriver;
-        OSDriverInterface::OSWindow mainWindow;
+        std::shared_ptr<OSDriverInterface::OSWindow> mainWindow;
         InputClass Input;
 
         // New Level, Old Level
@@ -96,23 +84,21 @@ namespace HateEngine {
         // New aspect ratio, Old aspect ratio
         Signal<Engine*, const float, const float> onAspectRatioChanged;
 
+        static std::thread::id getMainThreadId();
+
         Engine(std::string window_lbl, int width, int height);
         void Run();
         void Exit();
 
-        void changeWindowTitle(std::string title);
-
-        void setResolution(int width, int height);
         void setOneThreadMode(bool mode);
         void setVSync(bool mode);
-        void setMouseCapture(bool capture);
-        void setFullScreen(bool fullScreen);
+        void setResolution(int width, int height);
 
         RenderInterface* getRenderInterface();
         RenderAPI getRenderAPI();
 
         /**
-         * @brief Return the GPU time in milliseconds
+         * @brief Return the GPU time in Pmilliseconds
          * @warning Only for 32-bit systems. If GPU rendering takes more, then 2.147 seconds, the
          * result will be incorrect (long overflow)
          *
@@ -141,24 +127,15 @@ namespace HateEngine {
         float getAspectRatio();
         bool getOneThreadMode();
         bool getVSync();
-        bool getMouseCapture();
-        bool getFullScreen();
 
         void setProcessLoop(void (*func)(Engine*, double));
         void setFixedProcessLoop(void (*func)(Engine*, double));
         void setInputEvent(void (*func)(Engine*, const InputEventInfo&));
 
         /**
-         * @brief Thread safe request to change the scene
-         *
-         * @note It's not change scene immediately, only before the next frame
-         * @param lvl
-         */
-        void requestChangeLevel(Level* lvl);
-        /**
          * @brief Set the scene. NOT THREAD SAFE
          *
-         * @warning It's set scene immediately, but not thread safe
+         * @warning It's set scene immediately, but not thread safe. For thread safety use callDeferred
          * @param lvl The level to set
          */
         void setLevel(Level* lvl);

@@ -139,4 +139,39 @@ namespace HateEngine {
         MouseButtonRight = MouseButton2,
         MouseButtonMiddle = MouseButton3,
     };
+
+    enum GamepadButtons {
+        GamepadA,
+        GamepadB,
+        GamepadX,
+        GamepadY,
+        GamepadLeftBumper,
+        GamepadRightBumper,
+        GamepadBack,
+        GamepadStart,
+        GamepadGuide,
+        GamepadLeftThumb,
+        GamepadRightThumb,
+        GamepadDPadUp,
+        GamepadDPadRight,
+        GamepadDPadDown,
+        GamepadDPadLeft,
+        GamepadCross = GamepadA,
+        GamepadCircle = GamepadB,
+        GamepadSquare = GamepadX,
+        GamepadTriangle = GamepadY,
+    };
+
+    enum GamepadAxis {
+        GamepadAxisLeftXLeft,
+        GamepadAxisLeftXRight,
+        GamepadAxisLeftYUp,
+        GamepadAxisLeftYDown,
+        GamepadAxisRightXLeft,
+        GamepadAxisRightXRight,
+        GamepadAxisRightYUp,
+        GamepadAxisRightYDown,
+        GamepadAxisLeftTrigger,
+        GamepadAxisRightTrigger,
+    };
 } // namespace HateEngine
