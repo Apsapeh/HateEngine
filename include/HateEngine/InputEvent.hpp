@@ -22,10 +22,8 @@ namespace HateEngine {
             GamepadAxis gamepadAxis;
         };
         bool isPressed = false;
-        union {
-            glm::vec2 offset;
-            glm::vec2 position;
-            float value;
-        };
+        glm::vec2 offset = glm::vec2(0.0f);
+        glm::vec2 position = glm::vec2(0.0f);
+        float value = 0.0f;
     };
 } // namespace HateEngine

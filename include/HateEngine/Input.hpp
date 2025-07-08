@@ -45,7 +45,7 @@ namespace HateEngine {
 
     public:
         InputClass(OSDriverInterface* OSDriver);
-        bool isKeyPressed(Key key);
+        bool isPhysicalKeyPressed(Key key);
         glm::vec2 getVector(Key left, Key right, Key up, Key down);
 
         glm::vec2 getCursorPosition();

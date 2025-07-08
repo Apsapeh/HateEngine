@@ -488,21 +488,21 @@ static void pump_input(struct nk_context* ctx, Engine* engine) {
     nk_input_begin(ctx);
     // glfwPollEvents();
 
-    nk_input_key(ctx, NK_KEY_DEL, engine->Input.isKeyPressed(HateEngine::KeyDelete));
-    nk_input_key(ctx, NK_KEY_ENTER, engine->Input.isKeyPressed(HateEngine::KeyEnter));
-    nk_input_key(ctx, NK_KEY_TAB, engine->Input.isKeyPressed(HateEngine::KeyTab));
-    nk_input_key(ctx, NK_KEY_BACKSPACE, engine->Input.isKeyPressed(HateEngine::KeyBackspace));
-    nk_input_key(ctx, NK_KEY_LEFT, engine->Input.isKeyPressed(HateEngine::KeyLeft));
-    nk_input_key(ctx, NK_KEY_RIGHT, engine->Input.isKeyPressed(HateEngine::KeyRight));
-    nk_input_key(ctx, NK_KEY_UP, engine->Input.isKeyPressed(HateEngine::KeyUp));
-    nk_input_key(ctx, NK_KEY_DOWN, engine->Input.isKeyPressed(HateEngine::KeyDown));
+    nk_input_key(ctx, NK_KEY_DEL, engine->Input.isPhysicalKeyPressed(HateEngine::KeyDelete));
+    nk_input_key(ctx, NK_KEY_ENTER, engine->Input.isPhysicalKeyPressed(HateEngine::KeyReturn));
+    nk_input_key(ctx, NK_KEY_TAB, engine->Input.isPhysicalKeyPressed(HateEngine::KeyTab));
+    nk_input_key(ctx, NK_KEY_BACKSPACE, engine->Input.isPhysicalKeyPressed(HateEngine::KeyBackspace));
+    nk_input_key(ctx, NK_KEY_LEFT, engine->Input.isPhysicalKeyPressed(HateEngine::KeyLeft));
+    nk_input_key(ctx, NK_KEY_RIGHT, engine->Input.isPhysicalKeyPressed(HateEngine::KeyRight));
+    nk_input_key(ctx, NK_KEY_UP, engine->Input.isPhysicalKeyPressed(HateEngine::KeyUp));
+    nk_input_key(ctx, NK_KEY_DOWN, engine->Input.isPhysicalKeyPressed(HateEngine::KeyDown));
 
-    if (engine->Input.isKeyPressed(HateEngine::KeyLeftControl) ||
-        engine->Input.isKeyPressed(HateEngine::KeyRightControl)) {
-        nk_input_key(ctx, NK_KEY_COPY, engine->Input.isKeyPressed(HateEngine::KeyC));
-        nk_input_key(ctx, NK_KEY_PASTE, engine->Input.isKeyPressed(HateEngine::KeyP));
-        nk_input_key(ctx, NK_KEY_CUT, engine->Input.isKeyPressed(HateEngine::KeyX));
-        nk_input_key(ctx, NK_KEY_CUT, engine->Input.isKeyPressed(HateEngine::KeyE));
+    if (engine->Input.isPhysicalKeyPressed(HateEngine::KeyLeftCtrl) ||
+        engine->Input.isPhysicalKeyPressed(HateEngine::KeyRightCtrl)) {
+        nk_input_key(ctx, NK_KEY_COPY, engine->Input.isPhysicalKeyPressed(HateEngine::KeyC));
+        nk_input_key(ctx, NK_KEY_PASTE, engine->Input.isPhysicalKeyPressed(HateEngine::KeyP));
+        nk_input_key(ctx, NK_KEY_CUT, engine->Input.isPhysicalKeyPressed(HateEngine::KeyX));
+        nk_input_key(ctx, NK_KEY_CUT, engine->Input.isPhysicalKeyPressed(HateEngine::KeyE));
         nk_input_key(ctx, NK_KEY_SHIFT, 1);
     } else {
         nk_input_key(ctx, NK_KEY_COPY, 0);

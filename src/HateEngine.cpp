@@ -55,6 +55,7 @@ Engine::Engine(std::string window_lbl, int width, int height) : Input(&this->OSD
     }
 
     this->mainWindow = OSDriver.createWindow(width, height, window_lbl).takeOk();
+    OSDriver.createWindow(width, height, "Test").unwrap();
 
     // float xscale, yscale;
     this->Input.changeInputWindow(this->mainWindow);
@@ -160,7 +161,7 @@ void Engine::Run() {
     double fixed_process_loop_delay = 1.0 / this->fixedLoopRefreshRate;
     double physics_engine_iterate_loop_delay = 1.0 / this->physicsEngineIterateLoopRefreshRate;
     double audio_engine_iterate_loop_delay = 1.0 / this->audioEngineIterateLoopRefreshRate;
-    while (not this->mainWindow->isShouldBeClosed()) {
+    while (not this->OSDriver.isShouldBeClosed()) {
         auto time_start = std::chrono::high_resolution_clock::now();
         this->frameDelta = OSDriver.getTime() - oldTime;
         oldTime = OSDriver.getTime();
@@ -168,7 +169,7 @@ void Engine::Run() {
         pollDeferredTasks();
 
 #ifdef __HATE_ENGINE_PROFILER
-        if (this->Input.isKeyPressed(KeyF8)) {
+        if (this->Input.isPhysicalKeyPressed(KeyF8)) {
             this->Exit();
             continue;
         }
@@ -239,7 +240,7 @@ void Engine::Run() {
 }
 
 void Engine::Exit() {
-    this->mainWindow->RequireClose();
+    this->OSDriver.requireClose();
 }
 
 

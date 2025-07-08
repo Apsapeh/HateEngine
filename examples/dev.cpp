@@ -184,7 +184,7 @@ int main() {
 
     game.mainWindow->setMouseMode(HateEngine::OSDriverInterface::Disabled);
     // std::cout << "\n\n\n\n" << glfwGetInputMode(game.window, GLFW_CURSOR) << "\n\n\n\n";
-    game.setOneThreadMode(true);
+    game.setOneThreadMode(false);
     game.setVSync(true);
 
     game.onLevelChanged.connect([](HateEngine::Engine* e, HateEngine::Level* lvl,
@@ -206,8 +206,8 @@ int main() {
     game.Input.addKeyToAction("right", HateEngine::KeyNumPad6);
     game.Input.addKeyToAction("right", HateEngine::GamepadAxisLeftXRight);
     game.Input.addKeyToAction("up", HateEngine::KeySpace);
-    game.Input.addKeyToAction("down", HateEngine::KeyLeftControl);
-    game.Input.addKeyToAction("down", HateEngine::KeyLeftSuper);
+    game.Input.addKeyToAction("down", HateEngine::KeyLeftCtrl);
+    game.Input.addKeyToAction("down", HateEngine::KeyLeftMeta);
     game.Input.addKeyToAction("look_up", HateEngine::GamepadAxisRightYUp);
     game.Input.addKeyToAction("look_down", HateEngine::GamepadAxisRightYDown);
     game.Input.addKeyToAction("look_left", HateEngine::GamepadAxisRightXLeft);
@@ -1129,7 +1129,7 @@ void _physics_process(HateEngine::Engine* engine, double delta) {
 
     // mesh1.setPosition(rbodyPosVect.z, rbodyPosVect.y, rbodyPosVect.x);
 
-    if (engine->Input.isKeyPressed(HateEngine::KeyEscape))
+    if (engine->Input.isPhysicalKeyPressed(HateEngine::KeyEscape))
         engine->Exit();
 
 
@@ -1137,10 +1137,10 @@ void _physics_process(HateEngine::Engine* engine, double delta) {
         rbody_body->setLinearVelocity({0, -1, 0});*/
 
 
-    if (engine->Input.isKeyPressed(HateEngine::KeyQ))
+    if (engine->Input.isPhysicalKeyPressed(HateEngine::KeyQ))
         head.rotate(0, 1, 0);
 
-    if (engine->Input.isKeyPressed(HateEngine::KeyE)) {
+    if (engine->Input.isPhysicalKeyPressed(HateEngine::KeyE)) {
         std::vector<HateEngine::Mesh> meshes = {};
         meshes.reserve(64535);
         for (int i = 0; i < 64535; ++i) {
@@ -1151,15 +1151,15 @@ void _physics_process(HateEngine::Engine* engine, double delta) {
         HATE_INFO_F("LAST UUID: %llu\n", meshes.back().getUUID().getU64());
     }
 
-    if (engine->Input.isKeyPressed(HateEngine::KeyT)) {
+    if (engine->Input.isPhysicalKeyPressed(HateEngine::KeyT)) {
         cube_part_ptr->reset();
         cube_part_ptr->play();
     }
 
 
-    if (engine->Input.isKeyPressed(HateEngine::KeyY))
+    if (engine->Input.isPhysicalKeyPressed(HateEngine::KeyY))
         engine->mainWindow->setMouseMode(HateEngine::OSDriverInterface::Normal);
-    if (engine->Input.isKeyPressed(HateEngine::KeyU))
+    if (engine->Input.isPhysicalKeyPressed(HateEngine::KeyU))
         engine->mainWindow->setMouseMode(HateEngine::OSDriverInterface::Disabled);
 
     /*if (engine->Input.isKeyPressed(GLFW_KEY_P))
@@ -1216,8 +1216,10 @@ float sensitivity = 0.05;
 bool is_first_iter = true;
 void _input_event(HateEngine::Engine* engine, const HateEngine::InputEventInfo& event) {
     if (event.type == HateEngine::InputEventType::InputEventMouseMove) {
-        float xoffset = event.position.x - lastX;
-        float yoffset = event.position.y - lastY;
+        //float xoffset = event.position.x - lastX;
+        //float yoffset = event.position.y - lastY;
+        float xoffset = event.offset.x;
+        float yoffset = event.offset.y;
         lastX = event.position.x;
         lastY = event.position.y;
 
@@ -1317,10 +1319,10 @@ void _input_event(HateEngine::Engine* engine, const HateEngine::InputEventInfo& 
             rigidBody.setLinearVelocity({0, 4, 0});
         }
 
-        if (event.key == HateEngine::KeyNumPadAdd && event.isPressed) {
+        if (event.key == HateEngine::KeyNumPadPlus && event.isPressed) {
             lvl.setAmbientLightIntensity(lvl.getAmbientLightIntensity() + 0.1);
         }
-        if (event.key == HateEngine::KeyNumPadSubtract && event.isPressed) {
+        if (event.key == HateEngine::KeyNumPadMinus && event.isPressed) {
             lvl.setAmbientLightIntensity(lvl.getAmbientLightIntensity() - 0.1);
         }
     }

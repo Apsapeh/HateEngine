@@ -13,14 +13,14 @@ InputClass::InputClass(OSDriverInterface* driver) {
     this->OSDriver = driver;
 }
 
-bool InputClass::isKeyPressed(Key key) {
-    return window->isKeyPressed(key);
+bool InputClass::isPhysicalKeyPressed(Key key) {
+    return window->isPhysicalKeyPressed(key);
 }
 
 glm::vec2 InputClass::getVector(Key left, Key right, Key up, Key down) {
     glm::vec2 vec;
-    vec.x = isKeyPressed(right) - isKeyPressed(left);
-    vec.y = isKeyPressed(up) - isKeyPressed(down);
+    vec.x = isPhysicalKeyPressed(right) - isPhysicalKeyPressed(left);
+    vec.y = isPhysicalKeyPressed(up) - isPhysicalKeyPressed(down);
     return vec;
 }
 
@@ -92,7 +92,7 @@ bool InputClass::isActionPressed(const std::string& action, float trashzone) {
     }
     for (const auto key: this->actions_map[action]) {
         if (key.type == ActionKeyType::KeyboardAction) {
-            if (isKeyPressed(key.key))
+            if (isPhysicalKeyPressed(key.key))
                 return true;
         } else if (key.type == ActionKeyType::MouseButtonAction) {
             if (isMouseButtonPressed(key.button))
@@ -117,7 +117,7 @@ float InputClass::getActionPressed(const std::string& action) {
     float max_value = 0.0f;
     for (const auto key: this->actions_map[action]) {
         if (key.type == ActionKeyType::KeyboardAction) {
-            if (isKeyPressed(key.key))
+            if (isPhysicalKeyPressed(key.key))
                 return 1.0f;
         } else if (key.type == ActionKeyType::MouseButtonAction) {
             if (isMouseButtonPressed(key.button))

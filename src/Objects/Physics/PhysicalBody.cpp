@@ -36,15 +36,22 @@ void PhysicalBody::Init(reactphysics3d::RigidBody* body) {
         this->reactRigidBody->setIsAllowedToSleep(false);
     }
 
-    this->reactRigidBody->setLinearVelocity(reactphysics3d::Vector3(
-            this->linearVelocity.z, this->linearVelocity.y, this->linearVelocity.x
-    ));
-    this->reactRigidBody->setAngularVelocity(reactphysics3d::Vector3(
-            this->angularVelocity.z, this->angularVelocity.y, this->angularVelocity.x
-    ));
-    this->reactRigidBody->setAngularLockAxisFactor(reactphysics3d::Vector3(
-            this->angularLockAxisFactor.z, this->angularLockAxisFactor.y, this->angularLockAxisFactor.x
-    ));
+    this->reactRigidBody->setLinearVelocity(
+            reactphysics3d::Vector3(
+                    this->linearVelocity.z, this->linearVelocity.y, this->linearVelocity.x
+            )
+    );
+    this->reactRigidBody->setAngularVelocity(
+            reactphysics3d::Vector3(
+                    this->angularVelocity.z, this->angularVelocity.y, this->angularVelocity.x
+            )
+    );
+    this->reactRigidBody->setAngularLockAxisFactor(
+            reactphysics3d::Vector3(
+                    this->angularLockAxisFactor.z, this->angularLockAxisFactor.y,
+                    this->angularLockAxisFactor.x
+            )
+    );
     this->reactRigidBody->applyLocalForceAtCenterOfMass(
             reactphysics3d::Vector3(this->forceLocal.z, this->forceLocal.y, this->forceLocal.x)
     );

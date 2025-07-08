@@ -141,8 +141,8 @@ namespace HateEngine {
          * Gets a pointer to the collision points
          * @return A pointer to the collision points
          */
-        std::unordered_map<PhysicalBody*, std::vector<CollisionPoint>> const* const getCollisionPoints(
-        ) const;
+        std::unordered_map<PhysicalBody*, std::vector<CollisionPoint>> const* const
+        getCollisionPoints() const;
 
 
         /**

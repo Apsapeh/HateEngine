@@ -6,12 +6,12 @@ add_rules("mode.debug", "mode.release")
 option("platform_driver")
     set_showmenu(true)
     set_description("Select the platform driver")
-    if is_os("linux", "windows", "macosx") then
-        set_values("glfw")
-        set_default("glfw")
+    if is_os("linux", "windows", "macosx") or is_plat("mingw") then
+        set_values("glfw", "sdl3")
+        set_default("sdl3")
     else
-        set_values("none")
-        set_default("none")
+        set_values("sdl3")
+        set_default("sdl3")
     end
 option_end()
 
@@ -44,6 +44,8 @@ add_requires("hateengine-reactphysics3d 0.10.2", {debug = is_mode("debug")})
 
 if is_config("platform_driver", "glfw") then
     add_requires("glfw 3.4", {configs = {wayland = is_plat("linux") and is_arch("x86_64")}})
+elseif is_config("platform_driver", "sdl3")  then
+    add_requires("libsdl3 3.2.16")
 end
 
 if is_arch("i386") then
@@ -51,7 +53,6 @@ if is_arch("i386") then
 else
     add_requires("hateengine-soloud")
 end
-
 
 function set_mode_rules(merge)
     merge = merge or false
@@ -74,6 +75,8 @@ function set_mode_rules(merge)
 
     if is_config("platform_driver", "glfw") then
         add_defines("__HATE_ENGINE_USE_GLFW")
+    elseif is_config("platform_driver", "sdl3") then
+        add_defines("__HATE_ENGINE_USE_SDL3")
     end
 
     --add_defines("IS_RP3D_PROFILING_ENABLED")
@@ -82,9 +85,12 @@ function set_mode_rules(merge)
     elseif is_plat("linux") then
         set_toolchains("clang")
     elseif is_plat("mingw") then 
-        add_cxxflags("-specs=msvcr120v2.spec -Wl,-subsystem,windows", {force=true})        
-        add_shflags("-specs=msvcr120v2.spec", {force = true})
-        add_ldflags("-specs=msvcr120v2.spec", {force = true})
+        -- add_cxxflags("-specs=msvcr120v2.spec -Wl,-subsystem,windows", {force=true})        
+        -- add_shflags("-specs=msvcr120v2.spec", {force = true})
+        -- add_ldflags("-specs=msvcr120v2.spec", {force = true})
+        add_cxxflags("-mcrtdll=msvcrt-os -Wl,-subsystem,windows", {force=true})        
+        add_shflags("-mcrtdll=msvcrt-os", {force = true})
+        add_ldflags("-mcrtdll=msvcrt-os", {force = true})
     end
 end
 
@@ -94,6 +100,8 @@ function set_HateEngineLib_rules()
 
     if is_config("platform_driver", "glfw") then
         add_packages("glfw")
+    elseif is_config("platform_driver", "sdl3") then
+        add_packages("libsdl3")
     end
 
     add_defines("GLM_ENABLE_EXPERIMENTAL", {public = true})

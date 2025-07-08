@@ -338,7 +338,8 @@ bool PhysEngine::removeObject(UUID uuid) {
                     shape->reactCollider = nullptr;
                 } else if (shape_type == CollisionShape::Capsule) {
                     CapsuleShape* shape = (CapsuleShape*) shape_pair.second;
-                    physicsCommon->destroyCapsuleShape((reactphysics3d::CapsuleShape*) shape->reactShape
+                    physicsCommon->destroyCapsuleShape(
+                            (reactphysics3d::CapsuleShape*) shape->reactShape
                     );
                     shape->reactShape = nullptr;
                     shape->reactCollider = nullptr;

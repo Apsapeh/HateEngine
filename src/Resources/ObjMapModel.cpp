@@ -279,10 +279,12 @@ void ObjMapModel::parseObj(
         if (words[0] == "v") {
             if (words.size() < 4)
                 continue;
-            vertices.push_back(glm::vec3(
-                    std::stof(words[1]) / grid_size, std::stof(words[2]) / grid_size,
-                    std::stof(words[3]) / grid_size
-            ));
+            vertices.push_back(
+                    glm::vec3(
+                            std::stof(words[1]) / grid_size, std::stof(words[2]) / grid_size,
+                            std::stof(words[3]) / grid_size
+                    )
+            );
         } else if (words[0] == "f") {
             if (words.size() < 4)
                 continue;

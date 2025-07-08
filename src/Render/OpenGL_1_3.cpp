@@ -190,7 +190,7 @@ void OpenGL_1_3::Draw3D(
     // frustrum_mat = glm::inverse(frustrum_mat);
 
 #ifdef __HATE_ENGINE_PROFILER
-    if (!this->engine->Input.isKeyPressed(HateEngine::KeyLeftShift))
+    if (!this->engine->Input.isPhysicalKeyPressed(HateEngine::KeyLeftShift))
         frustrum.update(frustrum_mat);
 #else
     frustrum.update(frustrum_mat);

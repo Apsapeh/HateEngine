@@ -1,5 +1,6 @@
 #pragma once
 
+#include <cstdint>
 #include <string>
 #include "InputEvent.hpp"
 #include "Types/Result.hpp"
@@ -7,15 +8,17 @@
 #include "Utilities/Signal.hpp"
 #include <glm/glm.hpp>
 #include <memory>
+#include <unordered_map>
 #include <vector>
-#include <GLFW/glfw3.h>
 
 namespace HateEngine {
     typedef void (*ProcAddr)(void);
 #ifdef __HATE_ENGINE_USE_GLFW
     typedef int JoystickHandle;
+#elif __HATE_ENGINE_USE_SDL3
+    typedef uint32_t JoystickHandle;
 #else
-    typedef int* JoystickHandle;
+    typedef int JoystickHandle;
 #endif
 
     class OSDriverInterface {
@@ -29,6 +32,7 @@ namespace HateEngine {
             Disabled, ///< Cursor is hiden, can't leave the window area
             Captured, ///< Cursor is visible, can't leave the window area
             Error,
+            Unknown,
         };
 
         enum JoysticErr {
@@ -63,6 +67,10 @@ namespace HateEngine {
             glm::vec2 cachedCursorPos = glm::vec2(0, 0);
             bool cachedKeys[KeyMenu];
             bool cachedMouseButtons[MouseButton8 + 1];
+#elif defined(__HATE_ENGINE_USE_SDL3)
+            bool shouldBeClosed = false;
+            void* OSContextPtr = nullptr;
+            // e
 #endif
 
             void init();
@@ -76,7 +84,7 @@ namespace HateEngine {
 
             bool isShouldBeClosed();
             glm::vec2 getScale();
-            void RequireClose();
+            void requireClose();
             void setTitle(const std::string& title);
             void setSwapInterval(int interval);
             void setWindowSize(int w, int h);
@@ -89,7 +97,7 @@ namespace HateEngine {
             int getSwapInterval();
 
             //// Input ////
-            bool isKeyPressed(Key key);
+            bool isPhysicalKeyPressed(Key key);
             bool isMouseButtonPressed(MouseButton btn);
             glm::vec2 getCursorPosition();
 
@@ -97,6 +105,15 @@ namespace HateEngine {
             bool operator==(const OSWindow& other) {
                 return this->OSDataPtr == other.OSDataPtr;
             }
+        };
+        
+        class OSJoystick {
+          
+        };
+        
+        class OSGamepad {
+        public:
+            static Option<std::shared_ptr<OSGamepad>> open();
         };
 
 
@@ -117,6 +134,7 @@ namespace HateEngine {
         JoystickData joysticksData[16];
 #else
         void* OSDataPtr = nullptr;
+        std::unordered_map<uint32_t, std::shared_ptr<OSWindow>> windows;
 #endif
 
         // TODO: Change to normal Err type
@@ -144,6 +162,10 @@ namespace HateEngine {
 
         static ProcAddr getProcAddress(const char* proc);
 
+        double getTime();
+
+        bool isShouldBeClosed();
+        void requireClose();
 
         std::vector<JoystickHandle> getAvailableJoysticks();
         std::vector<JoystickHandle> getAvailableGamepads();
@@ -159,8 +181,6 @@ namespace HateEngine {
         Option<std::string> getGamepadName(JoystickHandle handle);
 
         void makeWindowContextCurrent(OSWindow& window);
-
-        double getTime();
     };
 
 } // namespace HateEngine
