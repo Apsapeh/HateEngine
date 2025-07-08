@@ -1,0 +1,81 @@
+[
+{
+  "directory": "/home/ghost/Desktop/C++ Projects/HateEngineCBranch",
+  "arguments": ["i686-w64-mingw32-gcc", "-c", "-m32", "-fvisibility=hidden", "-Wpedantic", "-ffast-math", "-Ofast", "-std=c99", "-Isrc", "-Ideps", "-isystem", "/home/ghost/.xmake/packages/l/libsdl3/3.2.16/af2c9aa30bf84defb1b4499a58f1a3eb/include", "-isystem", "/home/ghost/.xmake/packages/o/opengl-headers/2024.01.04/a04c48bf7347405abd62d55e7e3b7ec9/include", "-isystem", "/home/ghost/.xmake/packages/e/egl-headers/2023.12.16/36c52a69676e4e549ac3f50c5488390f/include", "-flto", "-DNDEBUG", "-o", "build/.objs/HateEngineRuntime/mingw/i386/release/src/platform/dylib_unix.c.obj", "src/platform/dylib_unix.c"],
+  "file": "src/platform/dylib_unix.c"
+},
+{
+  "directory": "/home/ghost/Desktop/C++ Projects/HateEngineCBranch",
+  "arguments": ["i686-w64-mingw32-gcc", "-c", "-m32", "-fvisibility=hidden", "-Wpedantic", "-ffast-math", "-Ofast", "-std=c99", "-Isrc", "-Ideps", "-isystem", "/home/ghost/.xmake/packages/l/libsdl3/3.2.16/af2c9aa30bf84defb1b4499a58f1a3eb/include", "-isystem", "/home/ghost/.xmake/packages/o/opengl-headers/2024.01.04/a04c48bf7347405abd62d55e7e3b7ec9/include", "-isystem", "/home/ghost/.xmake/packages/e/egl-headers/2023.12.16/36c52a69676e4e549ac3f50c5488390f/include", "-flto", "-DNDEBUG", "-o", "build/.objs/HateEngineRuntime/mingw/i386/release/src/platform/dylib_win.c.obj", "src/platform/dylib_win.c"],
+  "file": "src/platform/dylib_win.c"
+},
+{
+  "directory": "/home/ghost/Desktop/C++ Projects/HateEngineCBranch",
+  "arguments": ["i686-w64-mingw32-gcc", "-c", "-m32", "-fvisibility=hidden", "-Wpedantic", "-ffast-math", "-Ofast", "-std=c99", "-Isrc", "-Ideps", "-isystem", "/home/ghost/.xmake/packages/l/libsdl3/3.2.16/af2c9aa30bf84defb1b4499a58f1a3eb/include", "-isystem", "/home/ghost/.xmake/packages/o/opengl-headers/2024.01.04/a04c48bf7347405abd62d55e7e3b7ec9/include", "-isystem", "/home/ghost/.xmake/packages/e/egl-headers/2023.12.16/36c52a69676e4e549ac3f50c5488390f/include", "-flto", "-DNDEBUG", "-o", "build/.objs/HateEngineRuntime/mingw/i386/release/src/platform/memory.c.obj", "src/platform/memory.c"],
+  "file": "src/platform/memory.c"
+},
+{
+  "directory": "/home/ghost/Desktop/C++ Projects/HateEngineCBranch",
+  "arguments": ["i686-w64-mingw32-gcc", "-c", "-m32", "-fvisibility=hidden", "-Wpedantic", "-ffast-math", "-Ofast", "-std=c99", "-Isrc", "-Ideps", "-isystem", "/home/ghost/.xmake/packages/l/libsdl3/3.2.16/af2c9aa30bf84defb1b4499a58f1a3eb/include", "-isystem", "/home/ghost/.xmake/packages/o/opengl-headers/2024.01.04/a04c48bf7347405abd62d55e7e3b7ec9/include", "-isystem", "/home/ghost/.xmake/packages/e/egl-headers/2023.12.16/36c52a69676e4e549ac3f50c5488390f/include", "-flto", "-DNDEBUG", "-o", "build/.objs/HateEngineRuntime/mingw/i386/release/src/game_loader/compile-time.c.obj", "src/game_loader/compile-time.c"],
+  "file": "src/game_loader/compile-time.c"
+},
+{
+  "directory": "/home/ghost/Desktop/C++ Projects/HateEngineCBranch",
+  "arguments": ["i686-w64-mingw32-gcc", "-c", "-m32", "-fvisibility=hidden", "-Wpedantic", "-ffast-math", "-Ofast", "-std=c99", "-Isrc", "-Ideps", "-isystem", "/home/ghost/.xmake/packages/l/libsdl3/3.2.16/af2c9aa30bf84defb1b4499a58f1a3eb/include", "-isystem", "/home/ghost/.xmake/packages/o/opengl-headers/2024.01.04/a04c48bf7347405abd62d55e7e3b7ec9/include", "-isystem", "/home/ghost/.xmake/packages/e/egl-headers/2023.12.16/36c52a69676e4e549ac3f50c5488390f/include", "-flto", "-DNDEBUG", "-o", "build/.objs/HateEngineRuntime/mingw/i386/release/src/game_loader/run-time.c.obj", "src/game_loader/run-time.c"],
+  "file": "src/game_loader/run-time.c"
+},
+{
+  "directory": "/home/ghost/Desktop/C++ Projects/HateEngineCBranch",
+  "arguments": ["i686-w64-mingw32-gcc", "-c", "-m32", "-fvisibility=hidden", "-Wpedantic", "-ffast-math", "-Ofast", "-std=c99", "-Isrc", "-Ideps", "-isystem", "/home/ghost/.xmake/packages/l/libsdl3/3.2.16/af2c9aa30bf84defb1b4499a58f1a3eb/include", "-isystem", "/home/ghost/.xmake/packages/o/opengl-headers/2024.01.04/a04c48bf7347405abd62d55e7e3b7ec9/include", "-isystem", "/home/ghost/.xmake/packages/e/egl-headers/2023.12.16/36c52a69676e4e549ac3f50c5488390f/include", "-flto", "-DNDEBUG", "-o", "build/.objs/HateEngineRuntime/mingw/i386/release/src/runtime.c.obj", "src/runtime.c"],
+  "file": "src/runtime.c"
+},
+{
+  "directory": "/home/ghost/Desktop/C++ Projects/HateEngineCBranch",
+  "arguments": ["i686-w64-mingw32-gcc", "-c", "-m32", "-fvisibility=hidden", "-Wpedantic", "-ffast-math", "-Ofast", "-std=c99", "-Isrc", "-Ideps", "-isystem", "/home/ghost/.xmake/packages/l/libsdl3/3.2.16/af2c9aa30bf84defb1b4499a58f1a3eb/include", "-isystem", "/home/ghost/.xmake/packages/o/opengl-headers/2024.01.04/a04c48bf7347405abd62d55e7e3b7ec9/include", "-isystem", "/home/ghost/.xmake/packages/e/egl-headers/2023.12.16/36c52a69676e4e549ac3f50c5488390f/include", "-flto", "-DNDEBUG", "-o", "build/.objs/HateEngineRuntime/mingw/i386/release/src/object/node/node3d/node3d.c.obj", "src/object/node/node3d/node3d.c"],
+  "file": "src/object/node/node3d/node3d.c"
+},
+{
+  "directory": "/home/ghost/Desktop/C++ Projects/HateEngineCBranch",
+  "arguments": ["i686-w64-mingw32-gcc", "-c", "-m32", "-fvisibility=hidden", "-Wpedantic", "-ffast-math", "-Ofast", "-std=c99", "-Isrc", "-Ideps", "-isystem", "/home/ghost/.xmake/packages/l/libsdl3/3.2.16/af2c9aa30bf84defb1b4499a58f1a3eb/include", "-isystem", "/home/ghost/.xmake/packages/o/opengl-headers/2024.01.04/a04c48bf7347405abd62d55e7e3b7ec9/include", "-isystem", "/home/ghost/.xmake/packages/e/egl-headers/2023.12.16/36c52a69676e4e549ac3f50c5488390f/include", "-flto", "-DNDEBUG", "-o", "build/.objs/HateEngineRuntime/mingw/i386/release/src/object/node/node.c.obj", "src/object/node/node.c"],
+  "file": "src/object/node/node.c"
+},
+{
+  "directory": "/home/ghost/Desktop/C++ Projects/HateEngineCBranch",
+  "arguments": ["i686-w64-mingw32-gcc", "-c", "-m32", "-fvisibility=hidden", "-Wpedantic", "-ffast-math", "-Ofast", "-std=c99", "-Isrc", "-Ideps", "-isystem", "/home/ghost/.xmake/packages/l/libsdl3/3.2.16/af2c9aa30bf84defb1b4499a58f1a3eb/include", "-isystem", "/home/ghost/.xmake/packages/o/opengl-headers/2024.01.04/a04c48bf7347405abd62d55e7e3b7ec9/include", "-isystem", "/home/ghost/.xmake/packages/e/egl-headers/2023.12.16/36c52a69676e4e549ac3f50c5488390f/include", "-flto", "-DNDEBUG", "-o", "build/.objs/HateEngineRuntime/mingw/i386/release/src/object/object.c.obj", "src/object/object.c"],
+  "file": "src/object/object.c"
+},
+{
+  "directory": "/home/ghost/Desktop/C++ Projects/HateEngineCBranch",
+  "arguments": ["i686-w64-mingw32-gcc", "-c", "-m32", "-fvisibility=hidden", "-Wpedantic", "-ffast-math", "-Ofast", "-std=c99", "-Isrc", "-Ideps", "-isystem", "/home/ghost/.xmake/packages/l/libsdl3/3.2.16/af2c9aa30bf84defb1b4499a58f1a3eb/include", "-isystem", "/home/ghost/.xmake/packages/o/opengl-headers/2024.01.04/a04c48bf7347405abd62d55e7e3b7ec9/include", "-isystem", "/home/ghost/.xmake/packages/e/egl-headers/2023.12.16/36c52a69676e4e549ac3f50c5488390f/include", "-flto", "-DNDEBUG", "-o", "build/.objs/HateEngineRuntime/mingw/i386/release/src/math/vec3.c.obj", "src/math/vec3.c"],
+  "file": "src/math/vec3.c"
+},
+{
+  "directory": "/home/ghost/Desktop/C++ Projects/HateEngineCBranch",
+  "arguments": ["i686-w64-mingw32-gcc", "-c", "-m32", "-fvisibility=hidden", "-Wpedantic", "-ffast-math", "-Ofast", "-std=c99", "-Isrc", "-Ideps", "-isystem", "/home/ghost/.xmake/packages/l/libsdl3/3.2.16/af2c9aa30bf84defb1b4499a58f1a3eb/include", "-isystem", "/home/ghost/.xmake/packages/o/opengl-headers/2024.01.04/a04c48bf7347405abd62d55e7e3b7ec9/include", "-isystem", "/home/ghost/.xmake/packages/e/egl-headers/2023.12.16/36c52a69676e4e549ac3f50c5488390f/include", "-flto", "-DNDEBUG", "-o", "build/.objs/HateEngineRuntime/mingw/i386/release/src/math/mat4.c.obj", "src/math/mat4.c"],
+  "file": "src/math/mat4.c"
+},
+{
+  "directory": "/home/ghost/Desktop/C++ Projects/HateEngineCBranch",
+  "arguments": ["i686-w64-mingw32-gcc", "-c", "-m32", "-fvisibility=hidden", "-Wpedantic", "-ffast-math", "-Ofast", "-std=c99", "-Isrc", "-Ideps", "-isystem", "/home/ghost/.xmake/packages/l/libsdl3/3.2.16/af2c9aa30bf84defb1b4499a58f1a3eb/include", "-isystem", "/home/ghost/.xmake/packages/o/opengl-headers/2024.01.04/a04c48bf7347405abd62d55e7e3b7ec9/include", "-isystem", "/home/ghost/.xmake/packages/e/egl-headers/2023.12.16/36c52a69676e4e549ac3f50c5488390f/include", "-flto", "-DNDEBUG", "-o", "build/.objs/HateEngineRuntime/mingw/i386/release/src/main.c.obj", "src/main.c"],
+  "file": "src/main.c"
+},
+{
+  "directory": "/home/ghost/Desktop/C++ Projects/HateEngineCBranch",
+  "arguments": ["i686-w64-mingw32-gcc", "-c", "-m32", "-fvisibility=hidden", "-Wpedantic", "-ffast-math", "-Ofast", "-std=c99", "-Isrc", "-Ideps", "-isystem", "/home/ghost/.xmake/packages/l/libsdl3/3.2.16/af2c9aa30bf84defb1b4499a58f1a3eb/include", "-isystem", "/home/ghost/.xmake/packages/o/opengl-headers/2024.01.04/a04c48bf7347405abd62d55e7e3b7ec9/include", "-isystem", "/home/ghost/.xmake/packages/e/egl-headers/2023.12.16/36c52a69676e4e549ac3f50c5488390f/include", "-flto", "-DNDEBUG", "-o", "build/.objs/HateEngineRuntime/mingw/i386/release/src/types/uid.c.obj", "src/types/uid.c"],
+  "file": "src/types/uid.c"
+},
+{
+  "directory": "/home/ghost/Desktop/C++ Projects/HateEngineCBranch",
+  "arguments": ["i686-w64-mingw32-gcc", "-c", "-m32", "-fvisibility=hidden", "-Wpedantic", "-ffast-math", "-Ofast", "-std=c99", "-Isrc", "-Ideps", "-isystem", "/home/ghost/.xmake/packages/l/libsdl3/3.2.16/af2c9aa30bf84defb1b4499a58f1a3eb/include", "-isystem", "/home/ghost/.xmake/packages/o/opengl-headers/2024.01.04/a04c48bf7347405abd62d55e7e3b7ec9/include", "-isystem", "/home/ghost/.xmake/packages/e/egl-headers/2023.12.16/36c52a69676e4e549ac3f50c5488390f/include", "-flto", "-DNDEBUG", "-o", "build/.objs/HateEngineRuntime/mingw/i386/release/src/types/vec_def.c.obj", "src/types/vec_def.c"],
+  "file": "src/types/vec_def.c"
+},
+{
+  "directory": "/home/ghost/Desktop/C++ Projects/HateEngineCBranch",
+  "arguments": ["i686-w64-mingw32-gcc", "-c", "-m32", "-fvisibility=hidden", "-Wpedantic", "-ffast-math", "-Ofast", "-std=c99", "-Isrc", "-Ideps", "-isystem", "/home/ghost/.xmake/packages/l/libsdl3/3.2.16/af2c9aa30bf84defb1b4499a58f1a3eb/include", "-isystem", "/home/ghost/.xmake/packages/o/opengl-headers/2024.01.04/a04c48bf7347405abd62d55e7e3b7ec9/include", "-isystem", "/home/ghost/.xmake/packages/e/egl-headers/2023.12.16/36c52a69676e4e549ac3f50c5488390f/include", "-flto", "-DNDEBUG", "-o", "build/.objs/HateEngineRuntime/mingw/i386/release/src/log.c.obj", "src/log.c"],
+  "file": "src/log.c"
+},
+{
+  "directory": "/home/ghost/Desktop/C++ Projects/HateEngineCBranch",
+  "arguments": ["i686-w64-mingw32-gcc", "-c", "-m32", "-Wpedantic", "-O3", "-std=c99", "-Iinclude", "-DNDEBUG", "-o", "build/.objs/Dev/mingw/i386/release/examples/dev.c.obj", "examples/dev.c"],
+  "file": "examples/dev.c"
+}]
