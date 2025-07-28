@@ -1,9 +1,9 @@
 #pragma once
 
-#include <stddef.h>
+#include <stdint.h>
 
 // [[API Generator: forward]]
-typedef size_t UID;
+typedef uint64_t UID;
 
 // [[API Generator]]
 UID uid_new(void);

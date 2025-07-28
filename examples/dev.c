@@ -1,11 +1,27 @@
-#include <stdlib.h>
-#define HERAPI_LOAD_IMPL
+#define HEAPI_LOAD_IMPL
+//#define HEAPI_FULL_TRACE
 #include <HateEngineRuntimeAPI.h>
 
 #include <stdio.h>
+#include <stdlib.h>
 
 void _ready(void) {
-    printf("Ptr: %p\n", node_new);
+    vfs_mount_rfs("/");
+    
+    printf("Used mem: %zu\n", get_allocated_memory());
+    size_t size;
+    char* data = vfs_res_read_file("/assets/text.txt", &size);
+    
+    if (data) {
+        printf("Data: %s\n", data);
+        tfree(data);
+    } else {
+        printf("Failed to load data\n");
+    }
+    printf("Used mem: %zu\n", get_allocated_memory());
+    
+
+    printf("Ptr: %p\n", raw_node_new);
     Node* node = node_new("Jopa");
     const char* name = node_get_name(node);
 

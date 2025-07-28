@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 import re
 import os
 from glob import glob
@@ -12,18 +13,36 @@ api_header = """
 
 //TYPES
 
+#if defined(HEAPI_COMPILE_TIME)
+
+//CT_FN_DECL
+
+#else
+
 //FN_PTRS_DECL
 
-#if defined(HERAPI_LOAD_IMPL)
+#if defined(HEAPI_LOAD_IMPL)
     //FN_PTRS_IMPL
 
     void ___hate_engine_runtime_init(void* (*proc_addr)(const char* name)) {
         //FN_PTRS_LOAD
     }
 #endif
+#endif
+
+#if defined(HEAPI_FULL_TRACE)
+//TRACE_DEFINES
+#else
+//RAW_DEFINES
+#endif
+
 """
 
 api_fn_lookup_table = """
+#pragma once
+#define HE_MEM_NO_MACRO
+#include <extra/full_trace.h>
+
 //LOOKUP_INCLUDES
 
 typedef struct {
@@ -34,6 +53,24 @@ typedef struct {
 APIFunctionLookupTable api_function_lookup_table[] = {
     //FN_PTRS_LOOKUP
 };
+
+"""
+
+
+####### FULL TRACE ######
+
+full_trace_c = """
+#include <log.h>
+#include "full_trace.h"
+
+//F_TRACE_IMPL
+"""
+
+full_trace_h = """
+#pragma once
+//INCLUDES
+
+//F_TRACE_DECL
 """
 
 
@@ -139,16 +176,24 @@ def main():
     global search_path
     global api_header
     global api_fn_lookup_table
+    global full_trace_c
+    global full_trace_h
 
     while not os.path.exists(search_path):
         search_path = "../" + search_path
 
     types = ""
+    ct_fn_decl = ""
     fn_ptrs_decl = ""
     fn_ptrs_impl = ""
     fn_ptrs_load = ""
     lookup_includes = ""
     fn_ptrs_lookup = ""
+    trace_defines = ""
+    raw_defines = ""
+    
+    f_trace_impl = ""
+    f_trace_decl = ""
 
     for filename in glob(search_path+'/**/*.h', recursive=True):
         f = filename[len(search_path)+1:]
@@ -160,10 +205,57 @@ def main():
             for e in entries:
                 if isinstance(e, APIFunction):
                     fn_ptrs_lookup += f"    {{\"{e.name}\", (void*){e.name}}},\n"
+                    fn_ptrs_lookup += f"    {{\"t_{e.name}\", (void*)full_trace_{e.name}}},\n"
                     doc = "" if e.doc is None else f"{e.doc}\n"
-                    fn_ptrs_decl += f"{doc}extern {e.rtype} (*{e.name})({e.args});\n\n"
-                    fn_ptrs_impl += f"    {e.rtype} (*{e.name})({e.args});\n"
-                    fn_ptrs_load += f"    {e.name} = ({e.rtype} (*)({e.args}))proc_addr(\"{e.name}\");\n"
+                    ct_fn_decl += f"{doc} {e.rtype} {e.name} ({e.args});\n\n"
+                    #fn_ptrs_decl += f"{doc}extern {e.rtype} (*{e.name})({e.args});\n\n"
+                    fn_ptrs_decl += f"{doc}extern {e.rtype} (*raw_{e.name})({e.args});\n\n"
+                    fn_ptrs_impl += f"    {e.rtype} (*raw_{e.name})({e.args});\n"
+                    fn_ptrs_load += f"    raw_{e.name} = ({e.rtype} (*)({e.args}))proc_addr(\"{e.name}\");\n"
+                    #fn_ptrs_load += f"    trace_{e.name} = ({e.rtype} (*)({e.args}))proc_addr(\"trace_{e.name}\");\n"
+
+                    t_args = e.args.strip()
+                    if t_args == "" or t_args == "void":
+                        t_args = "const char *___file___, int ___line___"
+                    else:
+                        t_args = f"const char *___file___, int ___line___, {e.args}"
+                    fn_ptrs_decl += f"{doc}extern {e.rtype} (*trace_{e.name})({t_args});\n\n"
+                    fn_ptrs_impl += f"    {e.rtype} (*trace_{e.name})({t_args});\n"
+                    fn_ptrs_load += f"    trace_{e.name} = ({e.rtype} (*)({t_args}))proc_addr(\"t_{e.name}\");\n"
+                    
+                    if e.args.strip() == "" or e.args.strip() == "void":
+                        f_trace_impl += f"inline {e.rtype} full_trace_{e.name}(const char *___file___, int ___line___) {{\n"
+                        f_trace_decl += f"{e.rtype} full_trace_{e.name}(const char *___file___, int ___line___);\n"
+                    else:
+                        f_trace_impl += f"inline {e.rtype} full_trace_{e.name}(const char *___file___, int ___line___, {e.args}) {{\n"
+                        f_trace_decl += f"{e.rtype} full_trace_{e.name}(const char *___file___, int ___line___, {e.args});\n"
+                    f_trace_impl += f"    he_update_full_trace_info(\"{e.name}\", ___file___, ___line___);\n"
+                    
+                    spltted_args = e.args.split(",")
+                    clear_args = ""
+                    for i, arg in enumerate(spltted_args):
+                        s = arg.strip().split()[-1]
+                        clear_args += s
+                        if i < len(spltted_args) - 1:
+                            clear_args += ", "
+                    if clear_args == "void":
+                        clear_args = ""
+                        
+                    if e.rtype == "void":
+                        f_trace_impl += f"    {e.name}({clear_args});\n"
+                    else:
+                        f_trace_impl += f"    {e.rtype} result = {e.name}({clear_args});\n"
+                        
+                    f_trace_impl += "    he_update_full_trace_info(\"\", \"\", -1);\n"
+                    if e.rtype != "void":
+                        f_trace_impl += f"    return result;\n"
+                    f_trace_impl += f"}}\n\n"
+
+
+                    trace_defines += f"#define {e.name}({clear_args}) trace_{e.name}(__FILE__, __LINE__{clear_args and ', '} {clear_args})\n"
+                    raw_defines += f"#define {e.name}({clear_args}) raw_{e.name}({clear_args})\n"
+
+                    
                 elif isinstance(e, APIType):
                     doc = "" if e.doc is None else f"{e.doc}\n"
                     if e.mode == "forward":
@@ -186,13 +278,21 @@ def main():
 
 
     api_header = api_header.replace("//TYPES", types)
+    api_header = api_header.replace("//CT_FN_DECL", ct_fn_decl)
     api_header = api_header.replace("//FN_PTRS_DECL", fn_ptrs_decl)
     api_header = api_header.replace("//FN_PTRS_IMPL", fn_ptrs_impl)
     api_header = api_header.replace("//FN_PTRS_LOAD", fn_ptrs_load)
+    api_header = api_header.replace("//TRACE_DEFINES", trace_defines)
+    api_header = api_header.replace("//RAW_DEFINES", raw_defines)
 
     api_fn_lookup_table = api_fn_lookup_table.replace("//LOOKUP_INCLUDES", lookup_includes)
     api_fn_lookup_table = api_fn_lookup_table.replace("//FN_PTRS_LOOKUP", fn_ptrs_lookup)
+    
+    full_trace_c = full_trace_c.replace("//F_TRACE_IMPL", f_trace_impl)
+    #full_trace_c = full_trace_c.replace("//INCLUDES", lookup_includes)
 
+    full_trace_h = full_trace_h.replace("//F_TRACE_DECL", f_trace_decl)
+    full_trace_h = full_trace_h.replace("//INCLUDES", lookup_includes)
 
     #print(api_header)
     with open("include/HateEngineRuntimeAPI.h", "w") as f:
@@ -200,8 +300,13 @@ def main():
 
     with open("src/api_sym_lookup_table.h", "w") as f:
         f.write(api_fn_lookup_table)
+        
 
+    with open("src/extra/full_trace.c", "w") as f:
+        f.write(full_trace_c)
 
+    with open("src/extra/full_trace.h", "w") as f:
+        f.write(full_trace_h)
 
 multi_line_comments = []
 def find_multi_line_comments(file):

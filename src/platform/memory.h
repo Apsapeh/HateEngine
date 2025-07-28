@@ -30,6 +30,16 @@ void* trealloc(void* ptr, size_t size);
 void tfree(void* ptr);
 
 
+void* trace_tmalloc(const char* ___file__, int __line__, size_t size);
+
+void* trace_trealloc(const char* ___file__, int __line__, void* ptr, size_t size);
+
+#if defined(HE_MEM_TRACK) && defined(HE_MEM_TRACK_TRACE) && !defined(HE_MEM_NO_MACRO)
+#define tmalloc(size) trace_tmalloc(__FILE__, __LINE__, size)
+#define trealloc(ptr, size) trace_trealloc(__FILE__, __LINE__, ptr, size)
+#endif
+
+
 // [[API Generator]]
 /**
  * @brief Get allocated memory

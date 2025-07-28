@@ -105,10 +105,9 @@ size_t fs_stream_write(FSFileStream* stream, void* buffer, size_t size);
  * @param stream
  * @param from
  * @param offset
- * @return true if success
- * @return false if fail
+ * @return final offset
  */
-bool fs_stream_seek(FSFileStream* stream, enum FSSeekFrom from, size_t offset);
+size_t fs_stream_seek(FSFileStream* stream, enum FSSeekFrom from, size_t offset);
 
 /**
  * @brief Get current position in file stream

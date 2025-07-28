@@ -7,6 +7,11 @@ if is_plat("linux") then
     set_toolset("ar", "gcc")
     set_toolset("ld", "gcc")
     set_toolset("sh", "gcc")
+elseif is_plat("macosx") then
+    set_toolset("cc", "clang")
+    set_toolset("ar", "clang")
+    set_toolset("ld", "clang")
+    set_toolset("sh", "clang")
 elseif is_plat("mingw") then 
     set_toolset("cc", "i686-w64-mingw32-gcc")
     set_toolset("ar", "i686-w64-mingw32-gcc")
@@ -21,6 +26,7 @@ target("HateEngineRuntime")
     add_files("src/**.c")
     add_includedirs("src", "deps")
     add_packages("libsdl3")
+    -- set_rundir("$(projectdir)")
     if is_mode("debug") then 
         set_symbols("debug")
         set_optimize("none")
@@ -32,11 +38,46 @@ target("HateEngineRuntime")
         set_optimize("aggressive")
     end 
     add_links("m")
+    
+    add_defines("HE_SDL3")
+    add_defines("HE_MEM_TRACK", "HE_MEM_TRACK_TRACE")
 
     if is_plat("mingw") then
         add_ldflags("-mcrtdll=msvcrt-os", {force=true})
     end
     --add_ldflags("-Wl,-gc-sections -ffunction-sections")
+    
+    after_build(function (target)
+        p = path.join(target:targetdir(), "assets")
+        if not os.exists(p) then
+            os.ln("$(projectdir)/examples/assets", path.join(target:targetdir(), "assets"), {force = true, symbolic = true})
+        end
+        -- local os = import("core.base.os")
+        -- os.ln("$(installdir)/bin/myapp", "$(installdir)/bin/myapp-link", {force = true, symbolic = true})
+    end)
+    
+    on_load(function (target)
+        -- os.exec("python instrumentor.py src build/instrumented_src")
+        print("Hello, World!")
+        -- local file = io.open("$(projectdir)/src/tesoeueouteou.c", "w")
+        -- if file then
+        
+        --     -- Write data to file with native lua interface, does not support formatting, no line breaks, does not support built-in variables
+        --     file:write("hello xmake\n")
+        
+        --     -- Write data to file with xmake extended interface, support formatting, no line breaks, no built-in variables
+        --     file:writef("hello %s\n", "xmake")
+        
+        --     -- Use xmake extended formatted parameters to write to one line, with line breaks, and support for built-in variables
+        --     file:print("hello %s and $(buildir)", "xmake")
+        
+        --     -- Write a line using the xmake extended formatted arguments, no line breaks, and support for built-in variables
+        --     file:printf("hello %s and $(buildir) \n", "xmake")
+        
+        --     -- Close the file
+        --     file:close()
+        -- end
+    end)
 
 target("Dev")
     set_languages("c99")
@@ -48,6 +89,8 @@ target("Dev")
     if is_plat("mingw") then
         add_shflags("-mcrtdll=msvcrt-os", {force=true})
     end
+    
+    
 
 
 --

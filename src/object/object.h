@@ -2,11 +2,18 @@
 
 #include "types/uid.h"
 
+// clang-format off
 enum ObjectType {
-    TypeObject,
-    TypeNode,
-    TypeNode3D,
+    // Root
+    ObjectTypeObject,
+    // Object->Node
+    ObjectTypeNode,
+        // Object->Node->Node3D
+        ObjectTypeNode3D,
+        // Object->Node->Window
+        ObjectTypeWindow,
 };
+// clang-format on
 
 // [[API Generator]]
 typedef struct {

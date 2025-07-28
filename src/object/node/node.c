@@ -6,7 +6,7 @@
 #include "types/vec_def.h"
 
 void node_init(Node* this, const char* name) {
-    object_init(&this->object, TypeNode);
+    object_init(&this->object, ObjectTypeNode);
     this->children = vec_ptr_init();
     node_set_name(this, name);
 }

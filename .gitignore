@@ -5,4 +5,7 @@ build/
 # MacOS Cache
 .DS_Store
 
+# Visual Studio Code
+.vscode/
 
+.cache

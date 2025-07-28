@@ -1,7 +1,9 @@
+#if defined(HE_SDL3)
 #include "fs.h"
 #include <SDL3/SDL.h>
 #include <stdbool.h>
 #include <string.h>
+#include <stdint.h>
 
 #include "platform/memory.h"
 #include "log.h"
@@ -97,7 +99,7 @@ FSFileStream* fs_stream_open(const char* path, const char* mode) {
     stream->path = tmalloc(strlen(path) + 1);
     strcpy(stream->path, path);
 
-    return (FSFileStream*) io_stream;
+    return (FSFileStream*) stream;
 }
 
 size_t fs_stream_size(FSFileStream* stream, bool* success) {
@@ -184,7 +186,7 @@ size_t fs_stream_write(FSFileStream* stream, void* buffer, size_t size) {
     return bytes_written;
 }
 
-bool fs_stream_seek(FSFileStream* stream, enum FSSeekFrom from, size_t offset) {
+size_t fs_stream_seek(FSFileStream* stream, enum FSSeekFrom from, size_t offset) {
     if (stream == NULL) {
         return false;
     }
@@ -204,8 +206,8 @@ bool fs_stream_seek(FSFileStream* stream, enum FSSeekFrom from, size_t offset) {
             return false;
     }
 
-    bool result = SDL_SeekIO(stream->io_stream, (Sint64) offset, whence);
-    if (!result) {
+    int64_t result = SDL_SeekIO(stream->io_stream, (Sint64) offset, whence);
+    if (result == -1) {
         HATE_ERROR("Failed to seek in file '%s'. SDL Error: %s", stream->path, SDL_GetError());
     }
     return result;
@@ -256,3 +258,5 @@ bool fs_stream_close(FSFileStream* stream) {
     tfree(stream);
     return result;
 }
+
+#endif

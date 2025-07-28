@@ -47,7 +47,7 @@ enum VFSStreamType { VFSStreamTypeRFS, VFSStreamTypeResourceFile };
 typedef struct FileStream {
     struct FSFileStream* stream;
     enum VFSStreamType type;
-    bool is_res; // true if it's a res scope, false if it's a usr scope. Used for readonly guarantee
+    bool is_res_scope; // true if it's a res scope, false if it's a usr scope. Used for readonly guarantee
 } FileStream;
 
 

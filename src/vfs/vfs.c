@@ -115,6 +115,16 @@ bool vfs_unmount_rfs(void) {
     return false;
 }
 
+bool vfs_res_path_exists(const char *path) {
+    // TODO: impl
+}
+
+bool vfs_usr_path_exists(const char *path, bool prefer_res) {
+    // TODO: impl
+}
+
+
+
 
 static void free_split_path(char** parts) {
     if (!parts)
@@ -263,7 +273,12 @@ void* vfs_res_read_file(const char* path, size_t* size) {
     // Check path
     char** _parts = split_path(path);
     if (!_parts) {
-        HATE_ERROR("Invalid path: %s", path);
+        if (path) {
+            HATE_ERROR("Invalid path: %s", path)
+        }
+        else {
+            HATE_ERROR("Invalid path is null");
+        }
         return NULL;
     }
 
@@ -274,10 +289,12 @@ void* vfs_res_read_file(const char* path, size_t* size) {
     }
 
     if (rfs_mnt.path != NULL) {
+        // TODO: Add whitelist impl
         size_t parts_len = 0;
         for (char** part = _parts; *part != NULL; part++)
             parts_len += strlen(*part) + 1;
 
+        parts_len += strlen(rfs_mnt.path);
         char* full_path = tmalloc(parts_len);
         strcpy(full_path, rfs_mnt.path);
         for (char** part = _parts; *part != NULL; part++) {
@@ -286,8 +303,10 @@ void* vfs_res_read_file(const char* path, size_t* size) {
                 strcat(full_path, "/");
             }
         }
-
-        FSFileStream* stream = fs_stream_open(path, "rb");
+        full_path[parts_len-1] = '\0';
+        
+        FSFileStream* stream = fs_stream_open(full_path, "rb");
+        tfree(full_path);
         if (stream) {
             void* data = fs_stream_read_all(stream, size);
             fs_stream_close(stream);
@@ -302,10 +321,62 @@ void* vfs_res_read_file(const char* path, size_t* size) {
 
 
 FileStream* vfs_res_stream_open(const char* path) {
+    // Check path
+    char** _parts = split_path(path);
+    if (!_parts) {
+        HATE_ERROR("Invalid path: %s", path);
+        return NULL;
+    }
+
+    struct VFSResFile* file = vfs_res_find_file(path);
+    if (file) {
+        // TODO: impl read
+        HATE_FATAL("TODO: vfs_res_read_file");
+    }
+
+    if (rfs_mnt.path != NULL && vfs_path_starts_with(path, rfs_mnt.mount_point)) {
+        char** mnt_parts = split_path(rfs_mnt.mount_point);
+        size_t mnt_parts_len = 0;
+        for (char** part = mnt_parts; *part != NULL; part++)
+            mnt_parts_len++;
+        free_split_path(mnt_parts);
+
+        // TODO: Add whitelist impl
+        size_t parts_len = 0;
+        for (char** part = _parts + mnt_parts_len; *part != NULL; part++)
+            parts_len += strlen(*part) + 1;
+
+        char* full_path = tmalloc(parts_len);
+        strcpy(full_path, rfs_mnt.path);
+        for (char** part = _parts + mnt_parts_len; *part != NULL; part++) {
+            strcat(full_path, *part);
+            if (*(part + 1) != NULL) {
+                strcat(full_path, "/");
+            }
+        }
+
+        FSFileStream* stream = fs_stream_open(full_path, "rb");
+        tfree(full_path);
+        if (stream) {
+            FileStream* result_stream = tmalloc(sizeof(FileStream));
+            result_stream->stream = stream;
+            result_stream->type = VFSStreamTypeRFS;
+            result_stream->is_res_scope = true;
+            free_split_path(_parts);
+            return result_stream;
+        }
+    }
+
+    free_split_path(_parts);
+    return NULL;
 }
 
 
 void* vfs_usr_read_file(const char* path, size_t* size, bool prefer_res) {
+}
+
+bool vfs_usr_write_file(const char *path, const void *data, size_t size) {
+    
 }
 
 
