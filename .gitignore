@@ -8,4 +8,6 @@ build/
 # Visual Studio Code
 .vscode/
 
-.cache
+.cache/
+
+__pycache__

@@ -29,14 +29,14 @@ GameFunctions load_game(void) {
 
     handle = dylib_open("libDev");
     if (!handle) {
-        HATE_FATAL("Failed to load game: %s", " ");
+        LOG_FATAL("Failed to load game: %s", " ");
     }
 
     void (*runtime_init)(void* (*) (const char* name)) =
             dylib_sym(handle, "___hate_engine_runtime_init");
     if (!runtime_init) {
         dylib_close(handle);
-        HATE_FATAL("Failed to load game: %s", " ");
+        LOG_FATAL("Failed to load game: %s", " ");
     }
 
     runtime_init(runtime_proc_loader);
@@ -46,7 +46,7 @@ GameFunctions load_game(void) {
         game_functions._ready = _ready;
     } else {
         game_functions._ready = _ready_placeholder;
-        HATE_WARN("Game _ready function not found: %s", " ");
+        LOG_WARN("Game _ready function not found: %s", " ");
     }
 
     void (*_process)(double) = dylib_sym(handle, "_process");
@@ -54,7 +54,7 @@ GameFunctions load_game(void) {
         game_functions._process = _process;
     } else {
         game_functions._process = _process_placeholder;
-        HATE_WARN("Game _process function not found: %s", " ");
+        LOG_WARN("Game _process function not found: %s", " ");
     }
 
     void (*_physics_process)(double) = dylib_sym(handle, "_physics_process");
@@ -62,7 +62,7 @@ GameFunctions load_game(void) {
         game_functions._physics_process = _physics_process;
     } else {
         game_functions._physics_process = _physics_process_placeholder;
-        HATE_WARN("Game _physics_process function not found: %s", " ");
+        LOG_WARN("Game _physics_process function not found: %s", " ");
     }
 
     return game_functions;

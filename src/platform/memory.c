@@ -6,7 +6,10 @@
 #include <stdlib.h>
 
 #if defined(HE_MEM_TRACK)
-#include <extc/extc_vec.h>
+
+#define VECTOR_NO_TRACK
+#include <types/vector.h>
+
 struct mem_pair {
     void* ptr;
     size_t size;
@@ -21,11 +24,11 @@ static vec_mem_pair allocated_mem = {0, 0, NULL, NULL};
 
 void mem_atexit() {
     size_t used = get_allocated_memory();
-    HATE_ERROR("UNALLOCATED MEM SIZE: %zu bytes", used);
-    
+    LOG_ERROR("UNALLOCATED MEM SIZE: %zu bytes", used);
+
     for (size_t i = 0; i < allocated_mem.size; i++) {
         struct mem_pair pair = allocated_mem.data[i];
-        HATE_ERROR("UNALLOCATED %zu bytes AT %s:%d", pair.size, pair.file, pair.line);
+        LOG_ERROR("UNALLOCATED %zu bytes AT %s:%d", pair.size, pair.file, pair.line);
     }
 }
 
@@ -52,14 +55,22 @@ void* tmalloc(size_t size) {
 void* trealloc(void* ptr, size_t size) {
 #if defined(HE_MEM_TRACK)
     init_mem_tracking();
-    for (size_t i = 0; i < allocated_mem.size; i++) {
-        if (allocated_mem.data[i].ptr == ptr) {
-            allocated_mem.data[i].size = size;
-            break;
+    if (ptr == NULL) {
+        return tmalloc(size);
+    } else {
+        void* new_ptr = realloc(ptr, size);
+        for (size_t i = 0; i < allocated_mem.size; i++) {
+            if (allocated_mem.data[i].ptr == ptr) {
+                allocated_mem.data[i].ptr = ptr;
+                allocated_mem.data[i].size = size;
+                break;
+            }
         }
+        return new_ptr;
     }
-#endif
+#else
     return realloc(ptr, size);
+#endif
 }
 
 void tfree(void* ptr) {
@@ -88,20 +99,26 @@ void* trace_tmalloc(const char* ___file__, int __line__, size_t size) {
 }
 
 void* trace_trealloc(const char* ___file__, int __line__, void* ptr, size_t size) {
-    void* new_ptr = realloc(ptr, size);
 #if defined(HE_MEM_TRACK) && defined(HE_MEM_TRACK_TRACE)
     init_mem_tracking();
-    for (size_t i = 0; i < allocated_mem.size; i++) {
-        if (allocated_mem.data[i].ptr == ptr) {
-            allocated_mem.data[i].ptr = new_ptr;
-            allocated_mem.data[i].size = size;
-            allocated_mem.data[i].file = ___file__;
-            allocated_mem.data[i].line = __line__;
-            break;
+    if (ptr == NULL) {
+        return trace_tmalloc(___file__, __line__, size);
+    } else {
+        void* new_ptr = realloc(ptr, size);
+        for (size_t i = 0; i < allocated_mem.size; i++) {
+            if (allocated_mem.data[i].ptr == ptr) {
+                allocated_mem.data[i].ptr = new_ptr;
+                allocated_mem.data[i].size = size;
+                allocated_mem.data[i].file = ___file__;
+                allocated_mem.data[i].line = __line__;
+                break;
+            }
         }
+        return new_ptr;
     }
+#else
+    return realloc(ptr, size);
 #endif
-    return new_ptr;
 }
 
 

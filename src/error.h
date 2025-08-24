@@ -1,0 +1,75 @@
+#pragma once
+
+#include "log.h"
+
+// API START
+
+enum ErrorDomain { ErrorDomainNoError = 0, ErrorDomainGeneral = 1, ErrorDomainSDL3 = 2 };
+
+enum ErrorGeneral {
+    ErrorGeneralInvalid = 0,
+    ErrorGeneralUnknown = 1,
+    ErrorGeneralInvalidArgument = 2,
+    ErrorGeneralNotImplemented = 3,
+    ErrorGeneralNotSupported = 4,
+    ErrorGeneralAlreadyExists = 5,
+};
+
+enum ErrorSDL3 {
+    ErrorSDL3Any = 0,
+    ErrorSDL3NotMainThread = 1,
+};
+
+typedef const char* Error;
+
+#define ERROR_ASSERT_INFO(error, ...)                                                                   \
+    do {                                                                                                \
+        if (error != NULL) {                                                                          \
+            LOG_INFO(__VA_ARGS__);                                                                      \
+        }                                                                                               \
+    } while (0)
+
+#define ERROR_ASSERT_WARN(error, ...)                                                                   \
+    do {                                                                                                \
+        if (error != NULL) {                                                                          \
+            LOG_WARN(__VA_ARGS__);                                                                      \
+        }                                                                                               \
+    } while (0)
+
+#define ERROR_ASSERT_ERROR(error, ...)                                                                  \
+    do {                                                                                                \
+        if (error != NULL) {                                                                          \
+            LOG_ERROR(__VA_ARGS__);                                                                     \
+        }                                                                                               \
+    } while (0)
+
+#define ERROR_ASSERT_FATAL(error, ...)                                                                  \
+    do {                                                                                                \
+        if (error != NULL) {                                                                          \
+            LOG_FATAL(__VA_ARGS__);                                                                     \
+        }                                                                                               \
+    } while (0)
+
+
+#define ERROR_ARG_CHECK(arg)                                                                            \
+    if (!(arg)) {                                                                                       \
+        LOG_ERROR("Invalid argument: " #arg);                                                           \
+        return ERROR_INVALID_ARGUMENT;                                                                  \
+    }
+
+#define ERROR_ARGS_CHECK_1(a) ERROR_ARG_CHECK(a)
+#define ERROR_ARGS_CHECK_2(a, b) ERROR_ARG_CHECK(a) ERROR_ARG_CHECK(b)
+#define ERROR_ARGS_CHECK_3(a, b, c) ERROR_ARG_CHECK(a) ERROR_ARG_CHECK(b) ERROR_ARG_CHECK(c)
+#define ERROR_ARGS_CHECK_4(a, b, c, d)                                                                  \
+    ERROR_ARG_CHECK(a) ERROR_ARG_CHECK(b) ERROR_ARG_CHECK(c) ERROR_ARG_CHECK(d)
+
+
+#define ERROR_ASSERT(error, ...) ERROR_ASSERT_FATAL(error, __VA_ARGS__)
+
+#define ERROR_SUCCESS ((Error) NULL)
+
+#define ERROR_NOT_IMPLEMENTED "NotImplemented"
+#define ERROR_INVALID_ARGUMENT "InvalidArgument"
+#define ERROR_ALREADY_EXISTS "AlreadyExists"
+#define ERROR_NOT_FOUND "NotFound"
+#define ERROR_INVALID_STATE "InvalidState"

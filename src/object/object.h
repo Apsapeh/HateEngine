@@ -1,19 +1,7 @@
 #pragma once
 
 #include "types/uid.h"
-
-// clang-format off
-enum ObjectType {
-    // Root
-    ObjectTypeObject,
-    // Object->Node
-    ObjectTypeNode,
-        // Object->Node->Node3D
-        ObjectTypeNode3D,
-        // Object->Node->Window
-        ObjectTypeWindow,
-};
-// clang-format on
+#include "object_types.h"
 
 // [[API Generator]]
 typedef struct {
@@ -29,6 +17,6 @@ typedef struct {
  */
 void auto_free(Object* object);
 
-void object_init(Object* object, enum ObjectType type);
+void object_init(Object* this, enum ObjectType type);
 
 void object_free(Object* object);

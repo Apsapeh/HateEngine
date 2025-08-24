@@ -12,10 +12,12 @@ const char* dylib_extension = ".dylib";
 const char* dylib_extension = ".so";
 #endif
 
+const char* PREFIX = "./";
 
 dylib_handle* dylib_open(const char* path) {
-    char* full_path = tmalloc(strlen(path) + strlen(dylib_extension) + 1);
-    strcpy(full_path, path);
+    char* full_path = tmalloc(strlen(PREFIX) + strlen(path) + strlen(dylib_extension) + 1);
+    strcpy(full_path, PREFIX);
+    strcat(full_path, path);
     strcat(full_path, dylib_extension);
     dylib_handle* handle = dylib_open_raw(full_path);
     tfree(full_path);

@@ -1,22 +1,19 @@
 #include "vfs.h"
-#include "extc/extc_vec.h"
+#include <types/vector.h>
 #include "platform/fs/fs.h"
 #include "platform/memory.h"
 #include "log.h"
 #include <stddef.h>
 #include <string.h>
 
-#define VECTOR_MALLOC(size) tmalloc(size)
-#define VECTOR_REALLOC(ptr, size) trealloc(ptr, size)
-#define VECTOR_FREE(ptr) tfree(ptr)
-#define VECTOR_MEMMOVE(dest, src, size) memmove(dest, src, size)
-#define VECTOR_MEMCPY(dest, src, size) memcpy(dest, src, size)
-
-vector_template_def(vfs_mnt, struct VFSMnt);
-vector_template_impl(vfs_mnt, struct VFSMnt);
+// clang-format off
+vector_template_def(vfs_mnt, struct VFSMnt)
+vector_template_impl(vfs_mnt, struct VFSMnt)
 
 static vec_vfs_mnt mnts;
 static struct VFSRFSMnt rfs_mnt;
+// clang-format on
+
 
 void vfs_init(void) {
     mnts = vec_vfs_mnt_init();
@@ -35,18 +32,18 @@ bool vfs_unmount_res(const char* path, const char* mount_point) {
 
 bool vfs_mount_rfs(const char* mount_point) {
     if (mount_point == NULL) {
-        HATE_ERROR("Mount point cannot be null");
+        LOG_ERROR("Mount point cannot be null");
         return false;
     }
 
     if (rfs_mnt.path != NULL) {
-        HATE_ERROR("RFS is already mounted");
+        LOG_ERROR("RFS is already mounted");
         return false;
     }
 
     const char* base_path = fs_get_data_dir();
     if (base_path == NULL) {
-        HATE_ERROR("Unable to get base path");
+        LOG_ERROR("Unable to get base path");
         return false;
     }
 
@@ -57,7 +54,7 @@ bool vfs_mount_rfs(const char* mount_point) {
     strcpy(rfs_mnt.path, base_path);
 
     if (mount_point[0] != '/') {
-        HATE_WARN("Mount point does not start with '/': %s", mount_point);
+        LOG_WARN("Mount point does not start with '/': %s", mount_point);
         rfs_mnt.mount_point = tmalloc(strlen(mount_point) + 2);
         strcpy(&rfs_mnt.mount_point[1], mount_point);
         rfs_mnt.mount_point[0] = '/';
@@ -71,17 +68,17 @@ bool vfs_mount_rfs(const char* mount_point) {
 
 bool vfs_mount_rfs_whitelist(const char** whitelist, size_t count, const char* mount_point) {
     if (mount_point == NULL) {
-        HATE_ERROR("Mount point cannot be null");
+        LOG_ERROR("Mount point cannot be null");
         return false;
     }
 
     if (whitelist == NULL || count == 0) {
-        HATE_ERROR("Whitelist cannot be null or empty");
+        LOG_ERROR("Whitelist cannot be null or empty");
         return false;
     }
 
     if (rfs_mnt.path != NULL) {
-        HATE_ERROR("RFS is already mounted");
+        LOG_ERROR("RFS is already mounted");
         return false;
     }
 
@@ -115,15 +112,15 @@ bool vfs_unmount_rfs(void) {
     return false;
 }
 
-bool vfs_res_path_exists(const char *path) {
+bool vfs_res_path_exists(const char* path) {
     // TODO: impl
+    return false;
 }
 
-bool vfs_usr_path_exists(const char *path, bool prefer_res) {
+bool vfs_usr_path_exists(const char* path, bool prefer_res) {
     // TODO: impl
+    return false;
 }
-
-
 
 
 static void free_split_path(char** parts) {
@@ -274,10 +271,9 @@ void* vfs_res_read_file(const char* path, size_t* size) {
     char** _parts = split_path(path);
     if (!_parts) {
         if (path) {
-            HATE_ERROR("Invalid path: %s", path)
-        }
-        else {
-            HATE_ERROR("Invalid path is null");
+            LOG_ERROR("Invalid path: %s", path)
+        } else {
+            LOG_ERROR("Invalid path is null");
         }
         return NULL;
     }
@@ -285,7 +281,7 @@ void* vfs_res_read_file(const char* path, size_t* size) {
     struct VFSResFile* file = vfs_res_find_file(path);
     if (file) {
         // TODO: impl read
-        HATE_FATAL("TODO: vfs_res_read_file");
+        LOG_FATAL("TODO: vfs_res_read_file");
     }
 
     if (rfs_mnt.path != NULL) {
@@ -303,8 +299,8 @@ void* vfs_res_read_file(const char* path, size_t* size) {
                 strcat(full_path, "/");
             }
         }
-        full_path[parts_len-1] = '\0';
-        
+        full_path[parts_len - 1] = '\0';
+
         FSFileStream* stream = fs_stream_open(full_path, "rb");
         tfree(full_path);
         if (stream) {
@@ -324,14 +320,14 @@ FileStream* vfs_res_stream_open(const char* path) {
     // Check path
     char** _parts = split_path(path);
     if (!_parts) {
-        HATE_ERROR("Invalid path: %s", path);
+        LOG_ERROR("Invalid path: %s", path);
         return NULL;
     }
 
     struct VFSResFile* file = vfs_res_find_file(path);
     if (file) {
         // TODO: impl read
-        HATE_FATAL("TODO: vfs_res_read_file");
+        LOG_FATAL("TODO: vfs_res_read_file");
     }
 
     if (rfs_mnt.path != NULL && vfs_path_starts_with(path, rfs_mnt.mount_point)) {
@@ -375,8 +371,7 @@ FileStream* vfs_res_stream_open(const char* path) {
 void* vfs_usr_read_file(const char* path, size_t* size, bool prefer_res) {
 }
 
-bool vfs_usr_write_file(const char *path, const void *data, size_t size) {
-    
+bool vfs_usr_write_file(const char* path, const void* data, size_t size) {
 }
 
 

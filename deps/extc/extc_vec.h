@@ -12,7 +12,7 @@
     #define VECTOR_MEMCPY(dest, src, size) memcpy(dest, src, size)
 #endif
 
-#define vector_template_def(name, type)\
+#define extc_vector_template_def(name, type)\
     typedef struct {\
         unsigned long capacity;\
         unsigned long size;\
@@ -37,7 +37,7 @@
 
 
 
-#define vector_template_impl(name, type)\
+#define extc_vector_template_impl(name, type)\
     vec_##name vec_##name##_init(void) {\
         vec_##name res;\
         res.size = 0;\

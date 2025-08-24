@@ -1,7 +1,7 @@
 #pragma once
 #include <stdint.h>
 
-const uint8_t HEFS_MAGIC[4] = { 'H', 'E', 'F', 'S' };
+const uint8_t HEFS_MAGIC[4] = {'H', 'E', 'F', 'S'};
 
 const uint32_t HEFS_CURRENT_VERSION = 0x1000;
 
@@ -18,7 +18,7 @@ const uint32_t HEFS_CURRENT_VERSION = 0x1000;
 /* ======================== Version 0x1000 ========================= */
 
 // Compression method - LZ4
-// Encryption method - AES-256
+// Encryption method - хз
 // Hash method - xxHash64
 
 enum HEFSFileFlags {
@@ -41,6 +41,3 @@ struct HEFSFile_TreeNodeSpec_v1 {
     uint64_t data_offset;
     uint64_t data_size;
 };
-
-
-

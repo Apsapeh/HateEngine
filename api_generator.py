@@ -11,6 +11,8 @@ api_header = """
 #include <stdint.h>
 #include <stdbool.h>
 
+//INCLUDE_ERROR
+
 //TYPES
 
 #if defined(HEAPI_COMPILE_TIME)
@@ -90,7 +92,7 @@ class APIType:
         self.definition = definition
         self.name = name
 
-    
+
 
 def parse_api_entries(source: str):
     global multi_line_comments
@@ -126,6 +128,7 @@ def parse_api_entries(source: str):
                     i += 1
                     if depth == 0 and trimmed.endswith(";"):
                         code = code[:-1]
+                        i -= 1
                         break
                     else:
                         code += "\n"
@@ -137,6 +140,7 @@ def parse_api_entries(source: str):
                     i += 1
                     if trimmed.endswith(";"):
                         code = code[:-1]
+                        i -= 1
                         break
                     else:
                         code += "\n"
@@ -145,6 +149,7 @@ def parse_api_entries(source: str):
             #print()
 
             trimmed = code.strip()
+            #print(trimmed)
             if trimmed.startswith("typedef") or trimmed.startswith("struct") or trimmed.startswith("union") or trimmed.startswith("enum"):
                 words = trimmed.split()
                 name = words[-1]
@@ -154,6 +159,10 @@ def parse_api_entries(source: str):
                     _type += " " + words[1]
                 doc = multi_line_comments[number] if number is not None else None
                 entries.append(APIType(_type, generator_mode, doc, code, name))
+            elif trimmed.startswith("DECLARE_RESULT"):
+                doc = multi_line_comments[number] if number is not None else None
+                code += ";"
+                entries.append(APIType("", "forward", doc, code, ""))
             else:
                 pattern = re.compile(r"[ \t]*([a-zA-Z_][a-zA-Z0-9_\*\s]*?)\s+([a-zA-Z_][a-zA-Z0-9_]*)\s*\(([^;{]*)\)\s*", re.MULTILINE)
                 match = pattern.match(code)
@@ -165,7 +174,7 @@ def parse_api_entries(source: str):
                     entries.append(APIFunction(generator_mode, doc, rtype, name, args))
                 else:
                     print(f"\033[31mFailed to parse: {code}\n\033[0m")
-                
+
         i += 1
 
     return entries
@@ -191,13 +200,13 @@ def main():
     fn_ptrs_lookup = ""
     trace_defines = ""
     raw_defines = ""
-    
+
     f_trace_impl = ""
     f_trace_decl = ""
 
     for filename in glob(search_path+'/**/*.h', recursive=True):
         f = filename[len(search_path)+1:]
-        
+
         with open(filename, 'r') as f:
             code = find_multi_line_comments(f.read())
             entries = parse_api_entries(code)
@@ -222,7 +231,7 @@ def main():
                     fn_ptrs_decl += f"{doc}extern {e.rtype} (*trace_{e.name})({t_args});\n\n"
                     fn_ptrs_impl += f"    {e.rtype} (*trace_{e.name})({t_args});\n"
                     fn_ptrs_load += f"    trace_{e.name} = ({e.rtype} (*)({t_args}))proc_addr(\"t_{e.name}\");\n"
-                    
+
                     if e.args.strip() == "" or e.args.strip() == "void":
                         f_trace_impl += f"inline {e.rtype} full_trace_{e.name}(const char *___file___, int ___line___) {{\n"
                         f_trace_decl += f"{e.rtype} full_trace_{e.name}(const char *___file___, int ___line___);\n"
@@ -230,7 +239,7 @@ def main():
                         f_trace_impl += f"inline {e.rtype} full_trace_{e.name}(const char *___file___, int ___line___, {e.args}) {{\n"
                         f_trace_decl += f"{e.rtype} full_trace_{e.name}(const char *___file___, int ___line___, {e.args});\n"
                     f_trace_impl += f"    he_update_full_trace_info(\"{e.name}\", ___file___, ___line___);\n"
-                    
+
                     spltted_args = e.args.split(",")
                     clear_args = ""
                     for i, arg in enumerate(spltted_args):
@@ -240,22 +249,22 @@ def main():
                             clear_args += ", "
                     if clear_args == "void":
                         clear_args = ""
-                        
+
                     if e.rtype == "void":
                         f_trace_impl += f"    {e.name}({clear_args});\n"
                     else:
                         f_trace_impl += f"    {e.rtype} result = {e.name}({clear_args});\n"
-                        
+
                     f_trace_impl += "    he_update_full_trace_info(\"\", \"\", -1);\n"
                     if e.rtype != "void":
                         f_trace_impl += f"    return result;\n"
                     f_trace_impl += f"}}\n\n"
 
 
-                    trace_defines += f"#define {e.name}({clear_args}) trace_{e.name}(__FILE__, __LINE__{clear_args and ', '} {clear_args})\n"
-                    raw_defines += f"#define {e.name}({clear_args}) raw_{e.name}({clear_args})\n"
+                    trace_defines += f"{doc}#define {e.name}({clear_args}) trace_{e.name}(__FILE__, __LINE__{clear_args and ', '} {clear_args})\n\n"
+                    raw_defines += f"{doc}#define {e.name}({clear_args}) raw_{e.name}({clear_args})\n\n"
 
-                    
+
                 elif isinstance(e, APIType):
                     doc = "" if e.doc is None else f"{e.doc}\n"
                     if e.mode == "forward":
@@ -274,20 +283,27 @@ def main():
             if len(entries) > 0:
                 filename = filename[len(search_path)+1:]
                 lookup_includes += f"#include \"{filename}\"\n"
-                
 
 
-    api_header = api_header.replace("//TYPES", types)
-    api_header = api_header.replace("//CT_FN_DECL", ct_fn_decl)
-    api_header = api_header.replace("//FN_PTRS_DECL", fn_ptrs_decl)
-    api_header = api_header.replace("//FN_PTRS_IMPL", fn_ptrs_impl)
-    api_header = api_header.replace("//FN_PTRS_LOAD", fn_ptrs_load)
-    api_header = api_header.replace("//TRACE_DEFINES", trace_defines)
-    api_header = api_header.replace("//RAW_DEFINES", raw_defines)
+    # api_header = api_header.replace("//INCLUDE_RESULT", include_file("src/types/result.h"))
+    to_replace = (
+        ("//INCLUDE_ERROR", include_file("src/error.h")),
+        ("//TYPES", types),
+        ("//CT_FN_DECL", ct_fn_decl),
+        ("//FN_PTRS_DECL", fn_ptrs_decl),
+        ("//FN_PTRS_IMPL", fn_ptrs_impl),
+        ("//FN_PTRS_LOAD", fn_ptrs_load),
+        ("//TRACE_DEFINES", trace_defines),
+        ("//RAW_DEFINES", raw_defines),
+    )
+
+    for old, new in to_replace:
+        api_header = api_header.replace(old, new)
+
 
     api_fn_lookup_table = api_fn_lookup_table.replace("//LOOKUP_INCLUDES", lookup_includes)
     api_fn_lookup_table = api_fn_lookup_table.replace("//FN_PTRS_LOOKUP", fn_ptrs_lookup)
-    
+
     full_trace_c = full_trace_c.replace("//F_TRACE_IMPL", f_trace_impl)
     #full_trace_c = full_trace_c.replace("//INCLUDES", lookup_includes)
 
@@ -295,12 +311,13 @@ def main():
     full_trace_h = full_trace_h.replace("//INCLUDES", lookup_includes)
 
     #print(api_header)
+    #return
     with open("include/HateEngineRuntimeAPI.h", "w") as f:
         f.write(api_header)
 
     with open("src/api_sym_lookup_table.h", "w") as f:
         f.write(api_fn_lookup_table)
-        
+
 
     with open("src/extra/full_trace.c", "w") as f:
         f.write(full_trace_c)
@@ -329,6 +346,21 @@ def find_multi_line_comments(file):
         else:
             new_file += str(ch)
     return new_file
+
+def include_file(file) -> str:
+    with open(file, "r") as f:
+        code = f.read().splitlines()
+        n = 0
+        for i, c in enumerate(code):
+            if c.startswith("// API START"):
+                n = i + 1
+                break
+
+        if n == len(code):
+            n = 0
+
+        code = code[n:]
+        return "\n".join(code)
 
 
 if __name__ == "__main__":

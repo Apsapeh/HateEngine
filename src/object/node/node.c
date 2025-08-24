@@ -3,22 +3,24 @@
 #include <string.h>
 #include "object/object.h"
 #include "platform/memory.h"
-#include "types/vec_def.h"
 
-void node_init(Node* this, const char* name) {
-    object_init(&this->object, ObjectTypeNode);
+void node_init(Node* this, enum ObjectType object_type, const char* name) {
+    object_init(&this->object, object_type);
     this->children = vec_ptr_init();
+    this->name = NULL;
     node_set_name(this, name);
 }
 
-void node_free(Node* node) {
-    object_free(&node->object);
+void node_free(Node* this) {
+    object_free(&this->object);
+    vec_ptr_free(&this->children);
+    tfree(this->name);
 }
 
 
 Node* node_new(const char* name) {
     Node* node = tmalloc(sizeof(Node));
-    node_init(node, name);
+    node_init(node, ObjectTypeNode, name);
     return node;
 }
 
@@ -27,8 +29,14 @@ Node* from_node(Node* node) {
     return new_node;
 }
 
-void node_set_name(Node* node, const char* name) {
-    node->name = name;
+void node_set_name(Node* this, const char* name) {
+    if (this->name != NULL) {
+        tfree(this->name);
+    }
+
+    size_t len = strlen(name) + 1;
+    this->name = tmalloc(len);
+    memcpy(this->name, name, len);
 }
 
 const char* node_get_name(Node* node) {

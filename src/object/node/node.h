@@ -4,16 +4,16 @@
 #include <stdint.h>
 #include <stdbool.h>
 #include "../object.h"
-#include "types/vec_def.h"
+#include "types/vector.h"
 
 // [[API Generator]]
 typedef struct {
     Object object;
-    const char* name;
+    char* name;
     vec_ptr children;
 } Node;
 
-void node_init(Node* node, const char* name);
+void node_init(Node* this, enum ObjectType object_type, const char* name);
 
 void node_free(Node* node);
 

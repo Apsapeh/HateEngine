@@ -39,7 +39,7 @@ target("HateEngineRuntime")
     end 
     add_links("m")
     
-    add_defines("HE_SDL3")
+    add_defines("HE_FS_SDL3", "HE_WS_SDL3")
     add_defines("HE_MEM_TRACK", "HE_MEM_TRACK_TRACE")
 
     if is_plat("mingw") then

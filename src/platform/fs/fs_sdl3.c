@@ -1,4 +1,4 @@
-#if defined(HE_SDL3)
+#if defined(HE_FS_SDL3)
 #include "fs.h"
 #include <SDL3/SDL.h>
 #include <stdbool.h>
@@ -16,7 +16,7 @@ struct FSFileStream {
 const char* fs_get_data_dir(void) {
     const char* base_path = SDL_GetBasePath();
     if (base_path == NULL) {
-        HATE_ERROR("Failed to get base path. SDL Error: %s", SDL_GetError());
+        LOG_ERROR("Failed to get base path. SDL Error: %s", SDL_GetError());
     }
     return base_path;
 }
@@ -25,7 +25,7 @@ const char* fs_get_user_dir(void) {
     // TODO: Impl user org and app details
     const char* pref_path = SDL_GetPrefPath("", "MyApp");
     if (pref_path == NULL) {
-        HATE_ERROR("Failed to get pref path. SDL Error: %s", SDL_GetError());
+        LOG_ERROR("Failed to get pref path. SDL Error: %s", SDL_GetError());
     }
     return pref_path;
 }
@@ -40,7 +40,7 @@ bool fs_exists(const char* path) {
         return true;
     }
 
-    HATE_ERROR("Failed to get path info. SDL Error: %s", SDL_GetError());
+    LOG_ERROR("Failed to get path info. SDL Error: %s", SDL_GetError());
     return false;
 }
 
@@ -54,7 +54,7 @@ bool fs_is_dir(const char* path) {
         return info.type == SDL_PATHTYPE_DIRECTORY;
     }
 
-    HATE_ERROR("Failed to get path info. SDL Error: %s", SDL_GetError());
+    LOG_ERROR("Failed to get path info. SDL Error: %s", SDL_GetError());
     return false;
 }
 
@@ -72,10 +72,10 @@ size_t fs_get_file_size(const char* path, bool* success) {
                 *success = true;
             return (size_t) info.size;
         } else {
-            HATE_ERROR("Path '%s' is not a file", path);
+            LOG_ERROR("Path '%s' is not a file", path);
         }
     } else {
-        HATE_ERROR("Failed to get path info. SDL Error: %s", SDL_GetError());
+        LOG_ERROR("Failed to get path info. SDL Error: %s", SDL_GetError());
     }
 
     if (success)
@@ -90,7 +90,7 @@ FSFileStream* fs_stream_open(const char* path, const char* mode) {
 
     SDL_IOStream* io_stream = SDL_IOFromFile(path, mode);
     if (io_stream == NULL) {
-        HATE_ERROR("Failed to open file '%s' with mode '%s. SDL Error: %s", path, mode, SDL_GetError());
+        LOG_ERROR("Failed to open file '%s' with mode '%s. SDL Error: %s", path, mode, SDL_GetError());
         return NULL;
     }
 
@@ -113,7 +113,7 @@ size_t fs_stream_size(FSFileStream* stream, bool* success) {
     if (size < 0) {
         if (success)
             *success = false;
-        HATE_ERROR("Failed to get size of file '%s'. SDL Error: %s", stream->path, SDL_GetError());
+        LOG_ERROR("Failed to get size of file '%s'. SDL Error: %s", stream->path, SDL_GetError());
         return 0;
     }
 
@@ -129,7 +129,7 @@ size_t fs_stream_read_n(FSFileStream* stream, void* buffer, size_t size) {
 
     size_t bytes_read = SDL_ReadIO(stream->io_stream, buffer, size);
     if (bytes_read == 0) {
-        HATE_ERROR("Failed to read from file '%s'. SDL Error: %s", stream->path, SDL_GetError());
+        LOG_ERROR("Failed to read from file '%s'. SDL Error: %s", stream->path, SDL_GetError());
     }
     return bytes_read;
 }
@@ -181,7 +181,7 @@ size_t fs_stream_write(FSFileStream* stream, void* buffer, size_t size) {
 
     size_t bytes_written = SDL_WriteIO(stream->io_stream, buffer, size);
     if (bytes_written == 0) {
-        HATE_ERROR("Failed to write to file '%s'. SDL Error: %s", stream->path, SDL_GetError());
+        LOG_ERROR("Failed to write to file '%s'. SDL Error: %s", stream->path, SDL_GetError());
     }
     return bytes_written;
 }
@@ -208,7 +208,7 @@ size_t fs_stream_seek(FSFileStream* stream, enum FSSeekFrom from, size_t offset)
 
     int64_t result = SDL_SeekIO(stream->io_stream, (Sint64) offset, whence);
     if (result == -1) {
-        HATE_ERROR("Failed to seek in file '%s'. SDL Error: %s", stream->path, SDL_GetError());
+        LOG_ERROR("Failed to seek in file '%s'. SDL Error: %s", stream->path, SDL_GetError());
     }
     return result;
 }
@@ -224,7 +224,7 @@ size_t fs_stream_tell(FSFileStream* stream, bool* success) {
     if (position < 0) {
         if (success)
             *success = false;
-        HATE_ERROR("Failed to get position in file '%s'. SDL Error: %s", stream->path, SDL_GetError());
+        LOG_ERROR("Failed to get position in file '%s'. SDL Error: %s", stream->path, SDL_GetError());
         return 0;
     }
 
@@ -240,7 +240,7 @@ bool fs_stream_flush(FSFileStream* stream) {
 
     bool result = SDL_FlushIO(stream->io_stream);
     if (!result) {
-        HATE_ERROR("Failed to flush file '%s'. SDL Error: %s", stream->path, SDL_GetError());
+        LOG_ERROR("Failed to flush file '%s'. SDL Error: %s", stream->path, SDL_GetError());
     }
     return result;
 }
@@ -252,7 +252,7 @@ bool fs_stream_close(FSFileStream* stream) {
 
     bool result = SDL_CloseIO(stream->io_stream);
     if (!result) {
-        HATE_ERROR("Failed to close file '%s'. SDL Error: %s", stream->path, SDL_GetError());
+        LOG_ERROR("Failed to close file '%s'. SDL Error: %s", stream->path, SDL_GetError());
     }
     tfree(stream->path);
     tfree(stream);

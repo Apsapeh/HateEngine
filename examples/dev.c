@@ -8,6 +8,11 @@
 void _ready(void) {
     vfs_mount_rfs("/");
     
+    Error err =window_server_register_backend("Hello", NULL);
+    if (err != ERROR_SUCCESS) {
+        printf("Failed to register backend with error %s\n", err);
+    }
+    
     printf("Used mem: %zu\n", get_allocated_memory());
     size_t size;
     char* data = vfs_res_read_file("/assets/text.txt", &size);
@@ -19,7 +24,6 @@ void _ready(void) {
         printf("Failed to load data\n");
     }
     printf("Used mem: %zu\n", get_allocated_memory());
-    
 
     printf("Ptr: %p\n", raw_node_new);
     Node* node = node_new("Jopa");
@@ -38,8 +42,9 @@ void _ready(void) {
     printf("%f %f %f\n", pos.x, pos.y, pos.z);
 
     auto_free((Object*) node);
+    vfs_unmount_rfs();
 }
-
+                 
 static int count = 0;
 void _process(double delta) {
     //printf("Process %d\n", count);

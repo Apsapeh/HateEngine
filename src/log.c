@@ -12,6 +12,8 @@ void he_update_full_trace_info(const char* func, const char* file, int line) {
     full_trace_mod_level_func = func;
     full_trace_mod_level_file = file;
     full_trace_mod_level_line = line;
+    if (line != -1)
+        printf("\tCalled [%s:%d]: %s\n", file, line, func);
 }
 
 void he_log_fatal(int line, const char* file, const char* fmt, ...) {
