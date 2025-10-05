@@ -4,8 +4,8 @@
 #include "stdio.h"
 #include "stdlib.h"
 
-const char* full_trace_mod_level_func = "";
-const char* full_trace_mod_level_file = "";
+c_str full_trace_mod_level_func = (c_str) "";
+c_str full_trace_mod_level_file = (c_str) "";
 int full_trace_mod_level_line = -1;
 
 void __he_update_full_trace_info(const char* func, const char* file, int line) {

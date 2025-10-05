@@ -2,14 +2,16 @@
 
 #include <error.h>
 
+#include <types/types.h>
+
 /*
 API ENUM {
         "name": "WindowServerWindowVSync",
         "type": "char",
         "values": [
-                ["Disabled", "d"],
-                ["Enabled", "e"],
-                ["EnabledAsync", "a"]
+                ["Disabled", "'d'"],
+                ["Enabled", "'e'"],
+                ["EnabledAsync", "'a'"]
         ]
 }
 */
@@ -27,7 +29,7 @@ API ENUM {
  *
  * @api
  */
-typedef char WindowServerWindowVSync;
+typedef u8 WindowServerWindowVSync;
 
 
 /*
@@ -35,9 +37,9 @@ API ENUM {
         "name": "WindowServerWindowMode",
         "type": "char",
         "values": [
-                ["Windowed", "w"],
-                ["Fullscreen", "f"],
-                ["BorderlessFullscreen", "b"]
+                ["Windowed", "'w'"],
+                ["Fullscreen", "'f'"],
+                ["BorderlessFullscreen", "'b'"]
         ]
 }
 */
@@ -82,8 +84,7 @@ typedef struct WindowServerDisplay WindowServerDisplay;
  * @api server
  * @api_config {
  *     "fn_prefix": "window_server_",
- *     "init_method": "___hate_engine_runtime_init_window_server",
- *     "global_server_backend_var": "WindowServer"
+ *     "init_method": "___hate_engine_runtime_init_window_server"
  * }
  */
 typedef struct {

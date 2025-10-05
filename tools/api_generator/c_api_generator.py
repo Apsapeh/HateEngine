@@ -8,7 +8,7 @@ API_HEADER = """
 #include <stdint.h>
 #include <stdbool.h>
 
-INCLUDE_NUM_TYPES
+INCLUDE_TYPES
 
 INCLUDE_ERROR
 
@@ -85,6 +85,12 @@ def run(data: ParseResult):
             types += f"{typedef.doc}\n"
         types += f"typedef {general.get_correct_variable(typedef.type, typedef.name)};\n\n"
         pass
+
+    for enum in data.api_enums:
+        for value in enum.values:
+            name = camel_to_upper_snake_case(enum.name + value.name)
+            types += f"#define {name} {value.value}\n\n"
+            pass
 
 
     fn_ptrs_decl = ""
@@ -170,7 +176,7 @@ def run(data: ParseResult):
             
 
     to_replace = (
-        ("INCLUDE_NUM_TYPES", include_file("src/types/num.h")),
+        ("INCLUDE_TYPES", include_file("src/types/types.h")),
         ("INCLUDE_ERROR", include_file("src/error.h")),
         ("TYPES", types),
         ("CT_FN_DECL", ""),
@@ -255,3 +261,29 @@ def include_file(file) -> str:
 
         code = code[n:]
         return "\n".join(code)
+    
+def camel_to_upper_snake_case(name):
+    result = []
+    n = len(name)
+    
+    for i in range(n):
+        current_char = name[i]
+        prev_char = name[i-1] if i > 0 else ''
+        next_char = name[i+1] if i < n-1 else ''
+        
+        should_add_underscore = False
+        
+        if current_char.isupper():
+            if prev_char.islower():
+                should_add_underscore = True
+            elif prev_char == '_':
+                should_add_underscore = True
+            elif i > 0 and next_char.islower():
+                should_add_underscore = True
+        
+        if should_add_underscore:
+            result.append('_')
+        
+        result.append(current_char)
+    
+    return ''.join(result).upper()

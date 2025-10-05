@@ -23,9 +23,11 @@ typedef uintptr_t uptr;
 typedef intptr_t iptr;
 
 
+typedef i8* str;
+typedef const i8* c_str;
 
 
-typedef const char* Error;
+typedef c_str Error;
 
 #define ERROR_ASSERT_INFO(error, ...)                                                                   \
     do {                                                                                                \
@@ -85,64 +87,64 @@ typedef const char* Error;
 typedef struct Object Object;
 
 /**
- * @brief 
- * 
+ * @brief
+ *
  * @api
  */
 typedef struct Node Node;
 
 /**
- * @brief 
- * 
+ * @brief
+ *
  * @api
  */
 typedef struct Node3D Node3D;
 
 /**
- * @brief 
- * 
+ * @brief
+ *
  * @api
  */
 typedef struct Window Window;
 
 /**
- * @brief 
- * 
+ * @brief
+ *
  * @api
  */
 typedef struct CanvasItem CanvasItem;
 
 /**
- * @brief 
- * 
+ * @brief
+ *
  * @api
  */
 typedef struct Control Control;
 
 /**
- * @brief 
- * 
+ * @brief
+ *
  * @api
  */
 typedef struct Viewport Viewport;
 
 /**
- * @brief 
- * 
+ * @brief
+ *
  * @api
  */
 typedef struct FileStream FileStream;
 
 /**
- * @brief 
- * 
+ * @brief
+ *
  * @api
  */
 typedef struct WindowServerWindow WindowServerWindow;
 
 /**
- * @brief 
- * 
+ * @brief
+ *
  * @api
  */
 typedef struct WindowServerDisplay WindowServerDisplay;
@@ -151,15 +153,14 @@ typedef struct WindowServerDisplay WindowServerDisplay;
  * @api server
  * @api_config {
  *     "fn_prefix": "window_server_",
- *     "init_method": "___hate_engine_runtime_init_window_server",
- *     "global_server_backend_var": "WindowServer"
+ *     "init_method": "___hate_engine_runtime_init_window_server"
  * }
  */
 typedef struct WindowServerBackend WindowServerBackend;
 
 /**
  * @brief Primitive 4x4 matrix
- * 
+ *
  * Raw data - m
  *
  * @api forward
@@ -167,6 +168,16 @@ typedef struct WindowServerBackend WindowServerBackend;
 typedef struct Mat4 {
     float m[4];
 } Mat4;
+
+/**
+ * @brief Primitive 2D vector
+ *
+ * @api forward
+ */
+typedef struct Vec2 {
+    float x;
+    float y;
+} Vec2;
 
 /**
  * @brief Primitive 3D vector
@@ -180,16 +191,6 @@ typedef struct Vec3 {
 } Vec3;
 
 /**
- * @brief Primitive 2D vector
- *
- * @api forward
- */
-typedef struct Vec2 {
-    float x;
-    float y;
-} Vec2;
-
-/**
  * 's' - Seek from start
  *
  * 'c' - Seek from current
@@ -201,8 +202,8 @@ typedef struct Vec2 {
 typedef char FSSeekFrom;
 
 /**
- * @brief 
- * 
+ * @brief
+ *
  * @api
  */
 typedef uint64_t UID;
@@ -210,24 +211,42 @@ typedef uint64_t UID;
 /**
  * 'd' - disabled
  *
- * 'e' - enabled 
+ * 'e' - enabled
  *
- * 'a' - enabled async 
+ * 'a' - enabled async
  *
  * @api
  */
-typedef char WindowServerWindowVSync;
+typedef u8 WindowServerWindowVSync;
 
 /**
  * 'w' - windowed
  *
- * 'f' - exclusive fullscreen 
+ * 'f' - exclusive fullscreen
  *
- * 'b' - borderless fullscreen 
+ * 'b' - borderless fullscreen
  *
  * @api
  */
 typedef char WindowServerWindowMode;
+
+#define FS_SEEK_FROM_START 's'
+
+#define FS_SEEK_FROM_CURRENT 'c'
+
+#define FS_SEEK_FROM_END 'e'
+
+#define WINDOW_SERVER_WINDOW_V_SYNC_DISABLED 'd'
+
+#define WINDOW_SERVER_WINDOW_V_SYNC_ENABLED 'e'
+
+#define WINDOW_SERVER_WINDOW_V_SYNC_ENABLED_ASYNC 'a'
+
+#define WINDOW_SERVER_WINDOW_MODE_WINDOWED 'w'
+
+#define WINDOW_SERVER_WINDOW_MODE_FULLSCREEN 'f'
+
+#define WINDOW_SERVER_WINDOW_MODE_BORDERLESS_FULLSCREEN 'b'
 
 
 
@@ -239,8 +258,9 @@ typedef char WindowServerWindowMode;
 #else
 
 /**
- * @brief Inner function to update the full trace info. Used for tracing with HEAPI_FULL_TRACE. Don't use directly
- * 
+ * @brief Inner function to update the full trace info. Used for tracing with HEAPI_FULL_TRACE. Don't use
+ directly
+ *
  * @param func function_name, "" for reset
  * @param file "" for reset
  * @param line -1 for reset
@@ -373,7 +393,7 @@ extern int (*raw_node_remove_all_children)(Node * node);
  * @param node
  * @param name
  * @return Pointer to found child, NULL if not found
- * 
+ *
  * @api
  */
 extern Node * (*raw_node_get_child_by_name)(Node * node, const char * name);
@@ -384,8 +404,8 @@ extern Node * (*raw_node_get_child_by_name)(Node * node, const char * name);
 extern Node * (*raw_node_get_child_by_uid)(Node * node, UID uid);
 
 /**
- * @brief 
- * 
+ * @brief
+ *
  * @api
  */
 extern Node3D * (*raw_node3d_new)(const char * name);
@@ -401,15 +421,15 @@ extern Node3D * (*raw_node3d_new)(const char * name);
 extern Window * (*raw_window_new)(const char * name, const char * title, int w, int h);
 
 /**
- * @brief 
- * 
+ * @brief
+ *
  * @api
  */
 extern void (*raw_window_set_title)(Window * this, const char * title);
 
 /**
- * @brief 
- * 
+ * @brief
+ *
  * @api
  */
 extern const char * (*raw_window_get_title)(const Window * this);
@@ -420,247 +440,145 @@ extern const char * (*raw_window_get_title)(const Window * this);
 extern CanvasItem * (*raw_canvas_item_new)(const char * name);
 
 /**
- * @brief 
- * 
+ * @brief
+ *
  * @api
  */
 extern Control * (*raw_control_new)(const char * name);
 
 /**
- * @brief 
- * 
+ * @brief
+ *
  * @api
  */
 extern Viewport * (*raw_viewport_new)(const char * name);
 
 /**
- * @brief 
- * 
- * @param m00 
- * @param m01 
- * @param m02 
- * @param m03 
- * @param m10 
- * @param m11 
- * @param m12 
- * @param m13 
- * @param m20 
- * @param m21 
- * @param m22 
- * @param m23 
- * @param m30 
- * @param m31 
- * @param m32 
- * @param m33 
- * @return Mat4 
+ * @brief
+ *
+ * @param m00
+ * @param m01
+ * @param m02
+ * @param m03
+ * @param m10
+ * @param m11
+ * @param m12
+ * @param m13
+ * @param m20
+ * @param m21
+ * @param m22
+ * @param m23
+ * @param m30
+ * @param m31
+ * @param m32
+ * @param m33
+ * @return Mat4
  *
  * @api
  */
 extern Mat4 (*raw_mat4_new)(float m00, float m01, float m02, float m03, float m10, float m11, float m12, float m13, float m20, float m21, float m22, float m23, float m30, float m31, float m32, float m33);
 
 /**
- * @brief 
- * 
- * @return Mat4 
+ * @brief
+ *
+ * @return Mat4
  *
  * @api
  */
 extern Mat4 (*raw_mat4_new_zero)(void);
 
 /**
- * @brief 
- * 
- * @return Mat4 
+ * @brief
+ *
+ * @return Mat4
  *
  * @api
  */
 extern Mat4 (*raw_mat4_new_one)(void);
 
 /**
- * @brief 
- * 
- * @param array 
- * @return Mat4 
+ * @brief
+ *
+ * @param array
+ * @return Mat4
  *
  * @api
  */
 extern Mat4 (*raw_mat4_from_array)(const float *const array);
 
 /**
- * @brief 
- * 
- * @param a 
- * @return Mat4 
+ * @brief
+ *
+ * @param a
+ * @return Mat4
  *
  * @api
  */
 extern Mat4 (*raw_mat4_from_mat4)(const Mat4 *const a);
 
 /**
- * @brief 
- * 
- * @param a 
- * @param b 
- * @return Mat4 
+ * @brief
+ *
+ * @param a
+ * @param b
+ * @return Mat4
  *
  * @api
  */
 extern Mat4 (*raw_mat4_add)(const Mat4 *const a, const Mat4 *const b);
 
 /**
- * @brief 
- * 
- * @param a 
- * @param b 
- * @return Mat4 
+ * @brief
+ *
+ * @param a
+ * @param b
+ * @return Mat4
  *
  * @api
  */
 extern Mat4 (*raw_mat4_sub)(const Mat4 *const a, const Mat4 *const b);
 
 /**
- * @brief 
- * 
- * @param a 
- * @param b 
- * @return Mat4 
+ * @brief
+ *
+ * @param a
+ * @param b
+ * @return Mat4
  *
  * @api
  */
 extern Mat4 (*raw_mat4_mul)(const Mat4 *const a, const Mat4 *const b);
 
 /**
- * @brief 
- * 
- * @param a 
- * @param factor 
- * @return Mat4 
+ * @brief
+ *
+ * @param a
+ * @param factor
+ * @return Mat4
  *
  * @api
  */
 extern Mat4 (*raw_mat4_scale)(const Mat4 *const a, const float factor);
 
 /**
- * @brief 
- * 
- * @param a 
- * @return Mat4 
+ * @brief
+ *
+ * @param a
+ * @return Mat4
  *
  * @api
  */
 extern Mat4 (*raw_mat4_transpose)(const Mat4 *const a);
 
 /**
- * @brief 
- * 
- * @param a 
- * @return Mat4 
+ * @brief
+ *
+ * @param a
+ * @return Mat4
  *
  * @api
  */
 extern Mat4 (*raw_mat4_inverse)(const Mat4 *const a);
-
-/**
- * @brief 
- * 
- * @api
- */
-extern Vec3 (*raw_vec3_new)(float x, float y, float z);
-
-/**
- * @brief 
- * 
- * @api
- */
-extern Vec3 (*raw_vec3_add)(const Vec3 *const a, const Vec3 *const b);
-
-/**
- * @brief 
- * 
- * @api
- */
-extern Vec3 (*raw_vec3_sub)(const Vec3 *const a, const Vec3 *const b);
-
-/**
- * @brief 
- * 
- * @api
- */
-extern Vec3 (*raw_vec3_scale)(const Vec3 *const a, const float factor);
-
-/**
- * @brief 
- * 
- * @api
- */
-extern float (*raw_vec3_dot)(const Vec3 *const a, const Vec3 *const b);
-
-/**
- * @brief 
- * 
- * @api
- */
-extern Vec3 (*raw_vec3_cross)(const Vec3 *const a, const Vec3 *const b);
-
-/**
- * @brief 
- * 
- * @api
- */
-extern float (*raw_vec3_length)(const Vec3 *const a);
-
-/**
- * @brief 
- * 
- * @api
- */
-extern Vec3 (*raw_vec3_normalize)(const Vec3 *const a);
-
-/**
- * @brief 
- * 
- * @api
- */
-extern float (*raw_vec3_distance)(const Vec3 *const a, const Vec3 *const b);
-
-/**
- * @brief Add b to a
- *
- * @param a
- * @param b
- *
- * @api
- */
-extern void (*raw_vec3_add_in)(Vec3 *const to, const Vec3 *const what);
-
-/**
- * @brief Subtrtact 'what' from 'from'
- * 
- * @param from 
- * @param what 
- *
- * @api
- */
-extern void (*raw_vec3_sub_in)(Vec3 *const from, const Vec3 *const what);
-
-/**
- * @brief Scale vector 'to' by 'factor'
- * 
- * @param to 
- * @param factor 
- *
- * @api
- */
-extern void (*raw_vec3_scale_in)(Vec3 *const to, const float factor);
-
-/**
- * @brief 
- * 
- * @param a 
- *
- * @api
- */
-extern void (*raw_vec3_normalize_in)(Vec3 *const a);
 
 /**
  * @api
@@ -707,54 +625,156 @@ extern float (*raw_vec2_distance)(const Vec2 *const a, const Vec2 *const b);
  *
  * @param[in/out] a
  * @param[in] b
- * 
+ *
  * @api
  */
 extern void (*raw_vec2_add_in)(Vec2 *const to, const Vec2 *const what);
 
 /**
- * @brief 
- * 
- * @param[in/out] from 
- * @param[in] what 
- * 
+ * @brief
+ *
+ * @param[in/out] from
+ * @param[in] what
+ *
  * @api
  */
 extern void (*raw_vec2_sub_in)(Vec2 *const from, const Vec2 *const what);
 
 /**
- * @brief 
- * 
- * @param[in/out] to 
- * @param[in] factor 
- * 
+ * @brief
+ *
+ * @param[in/out] to
+ * @param[in] factor
+ *
  * @api
  */
 extern void (*raw_vec2_scale_in)(Vec2 *const to, const float factor);
 
 /**
- * @brief 
- * 
- * @param[in/out] a 
- * 
+ * @brief
+ *
+ * @param[in/out] a
+ *
  * @api
  */
 extern void (*raw_vec2_normalize_in)(Vec2 *const a);
 
 /**
- * @brief 
- * 
+ * @brief
+ *
+ * @api
+ */
+extern Vec3 (*raw_vec3_new)(float x, float y, float z);
+
+/**
+ * @brief
+ *
+ * @api
+ */
+extern Vec3 (*raw_vec3_add)(const Vec3 *const a, const Vec3 *const b);
+
+/**
+ * @brief
+ *
+ * @api
+ */
+extern Vec3 (*raw_vec3_sub)(const Vec3 *const a, const Vec3 *const b);
+
+/**
+ * @brief
+ *
+ * @api
+ */
+extern Vec3 (*raw_vec3_scale)(const Vec3 *const a, const float factor);
+
+/**
+ * @brief
+ *
+ * @api
+ */
+extern float (*raw_vec3_dot)(const Vec3 *const a, const Vec3 *const b);
+
+/**
+ * @brief
+ *
+ * @api
+ */
+extern Vec3 (*raw_vec3_cross)(const Vec3 *const a, const Vec3 *const b);
+
+/**
+ * @brief
+ *
+ * @api
+ */
+extern float (*raw_vec3_length)(const Vec3 *const a);
+
+/**
+ * @brief
+ *
+ * @api
+ */
+extern Vec3 (*raw_vec3_normalize)(const Vec3 *const a);
+
+/**
+ * @brief
+ *
+ * @api
+ */
+extern float (*raw_vec3_distance)(const Vec3 *const a, const Vec3 *const b);
+
+/**
+ * @brief Add b to a
+ *
+ * @param a
+ * @param b
+ *
+ * @api
+ */
+extern void (*raw_vec3_add_in)(Vec3 *const to, const Vec3 *const what);
+
+/**
+ * @brief Subtrtact 'what' from 'from'
+ *
+ * @param from
+ * @param what
+ *
+ * @api
+ */
+extern void (*raw_vec3_sub_in)(Vec3 *const from, const Vec3 *const what);
+
+/**
+ * @brief Scale vector 'to' by 'factor'
+ *
+ * @param to
+ * @param factor
+ *
+ * @api
+ */
+extern void (*raw_vec3_scale_in)(Vec3 *const to, const float factor);
+
+/**
+ * @brief
+ *
+ * @param a
+ *
+ * @api
+ */
+extern void (*raw_vec3_normalize_in)(Vec3 *const a);
+
+/**
+ * @brief
+ *
  * @api
  */
 extern UID (*raw_uid_new)(void);
 
 /**
  * @brief Mount Resource File (*.hefs) to Virtual File System
- * 
- * @param path Path to resource file 
+ *
+ * @param path Path to resource file
  * @param mount_point Mount point
- * @return true 
- * @return false 
+ * @return true
+ * @return false
  *
  * @api
  */
@@ -762,10 +782,10 @@ extern int (*raw_vfs_mount_res)(const char * path, const char * mount_point);
 
 /**
  * @brief Unmount Resource File from Virtual File System
- * 
+ *
  * @param mount_point Mount point
- * @return true 
- * @return false 
+ * @return true
+ * @return false
  *
  * @api
  */
@@ -1014,7 +1034,7 @@ extern Error (*raw_window_server_backend_set_function)(WindowServerBackend * bac
  * @brief Get a function pointer for a backend
  * @return "InvalidArgument" if backend is NULL or name is NULL or function is NULL
  * @return "NotFound" if a function with the given name is not registered
- * 
+ *
  * @api
  */
 extern Error (*raw_window_server_backend_get_function)(WindowServerBackend * backend, const char * name, void (** function) (void));
@@ -1029,7 +1049,7 @@ extern Error (*raw_window_server_window_get_title)(WindowServerWindow * this, co
 
 /**
      * @brief HOLA BOLA
-     * 
+     *
      */
 extern Error (*raw_window_server_window_set_mode)(WindowServerWindow * this, WindowServerWindowMode mode);
 
@@ -1049,8 +1069,9 @@ extern Error (*raw_window_server_window_set_fullscreen_display)(WindowServerWind
 
 #if !defined(HEAPI_FULL_TRACE)
     /**
- * @brief Inner function to update the full trace info. Used for tracing with HEAPI_FULL_TRACE. Don't use directly
- * 
+ * @brief Inner function to update the full trace info. Used for tracing with HEAPI_FULL_TRACE. Don't use
+ directly
+ *
  * @param func function_name, "" for reset
  * @param file "" for reset
  * @param line -1 for reset
@@ -1183,7 +1204,7 @@ extern int (*node_remove_all_children)(Node * node);
  * @param node
  * @param name
  * @return Pointer to found child, NULL if not found
- * 
+ *
  * @api
  */
 extern Node * (*node_get_child_by_name)(Node * node, const char * name);
@@ -1194,8 +1215,8 @@ extern Node * (*node_get_child_by_name)(Node * node, const char * name);
 extern Node * (*node_get_child_by_uid)(Node * node, UID uid);
 
 /**
- * @brief 
- * 
+ * @brief
+ *
  * @api
  */
 extern Node3D * (*node3d_new)(const char * name);
@@ -1211,15 +1232,15 @@ extern Node3D * (*node3d_new)(const char * name);
 extern Window * (*window_new)(const char * name, const char * title, int w, int h);
 
 /**
- * @brief 
- * 
+ * @brief
+ *
  * @api
  */
 extern void (*window_set_title)(Window * this, const char * title);
 
 /**
- * @brief 
- * 
+ * @brief
+ *
  * @api
  */
 extern const char * (*window_get_title)(const Window * this);
@@ -1230,247 +1251,145 @@ extern const char * (*window_get_title)(const Window * this);
 extern CanvasItem * (*canvas_item_new)(const char * name);
 
 /**
- * @brief 
- * 
+ * @brief
+ *
  * @api
  */
 extern Control * (*control_new)(const char * name);
 
 /**
- * @brief 
- * 
+ * @brief
+ *
  * @api
  */
 extern Viewport * (*viewport_new)(const char * name);
 
 /**
- * @brief 
- * 
- * @param m00 
- * @param m01 
- * @param m02 
- * @param m03 
- * @param m10 
- * @param m11 
- * @param m12 
- * @param m13 
- * @param m20 
- * @param m21 
- * @param m22 
- * @param m23 
- * @param m30 
- * @param m31 
- * @param m32 
- * @param m33 
- * @return Mat4 
+ * @brief
+ *
+ * @param m00
+ * @param m01
+ * @param m02
+ * @param m03
+ * @param m10
+ * @param m11
+ * @param m12
+ * @param m13
+ * @param m20
+ * @param m21
+ * @param m22
+ * @param m23
+ * @param m30
+ * @param m31
+ * @param m32
+ * @param m33
+ * @return Mat4
  *
  * @api
  */
 extern Mat4 (*mat4_new)(float m00, float m01, float m02, float m03, float m10, float m11, float m12, float m13, float m20, float m21, float m22, float m23, float m30, float m31, float m32, float m33);
 
 /**
- * @brief 
- * 
- * @return Mat4 
+ * @brief
+ *
+ * @return Mat4
  *
  * @api
  */
 extern Mat4 (*mat4_new_zero)(void);
 
 /**
- * @brief 
- * 
- * @return Mat4 
+ * @brief
+ *
+ * @return Mat4
  *
  * @api
  */
 extern Mat4 (*mat4_new_one)(void);
 
 /**
- * @brief 
- * 
- * @param array 
- * @return Mat4 
+ * @brief
+ *
+ * @param array
+ * @return Mat4
  *
  * @api
  */
 extern Mat4 (*mat4_from_array)(const float *const array);
 
 /**
- * @brief 
- * 
- * @param a 
- * @return Mat4 
+ * @brief
+ *
+ * @param a
+ * @return Mat4
  *
  * @api
  */
 extern Mat4 (*mat4_from_mat4)(const Mat4 *const a);
 
 /**
- * @brief 
- * 
- * @param a 
- * @param b 
- * @return Mat4 
+ * @brief
+ *
+ * @param a
+ * @param b
+ * @return Mat4
  *
  * @api
  */
 extern Mat4 (*mat4_add)(const Mat4 *const a, const Mat4 *const b);
 
 /**
- * @brief 
- * 
- * @param a 
- * @param b 
- * @return Mat4 
+ * @brief
+ *
+ * @param a
+ * @param b
+ * @return Mat4
  *
  * @api
  */
 extern Mat4 (*mat4_sub)(const Mat4 *const a, const Mat4 *const b);
 
 /**
- * @brief 
- * 
- * @param a 
- * @param b 
- * @return Mat4 
+ * @brief
+ *
+ * @param a
+ * @param b
+ * @return Mat4
  *
  * @api
  */
 extern Mat4 (*mat4_mul)(const Mat4 *const a, const Mat4 *const b);
 
 /**
- * @brief 
- * 
- * @param a 
- * @param factor 
- * @return Mat4 
+ * @brief
+ *
+ * @param a
+ * @param factor
+ * @return Mat4
  *
  * @api
  */
 extern Mat4 (*mat4_scale)(const Mat4 *const a, const float factor);
 
 /**
- * @brief 
- * 
- * @param a 
- * @return Mat4 
+ * @brief
+ *
+ * @param a
+ * @return Mat4
  *
  * @api
  */
 extern Mat4 (*mat4_transpose)(const Mat4 *const a);
 
 /**
- * @brief 
- * 
- * @param a 
- * @return Mat4 
+ * @brief
+ *
+ * @param a
+ * @return Mat4
  *
  * @api
  */
 extern Mat4 (*mat4_inverse)(const Mat4 *const a);
-
-/**
- * @brief 
- * 
- * @api
- */
-extern Vec3 (*vec3_new)(float x, float y, float z);
-
-/**
- * @brief 
- * 
- * @api
- */
-extern Vec3 (*vec3_add)(const Vec3 *const a, const Vec3 *const b);
-
-/**
- * @brief 
- * 
- * @api
- */
-extern Vec3 (*vec3_sub)(const Vec3 *const a, const Vec3 *const b);
-
-/**
- * @brief 
- * 
- * @api
- */
-extern Vec3 (*vec3_scale)(const Vec3 *const a, const float factor);
-
-/**
- * @brief 
- * 
- * @api
- */
-extern float (*vec3_dot)(const Vec3 *const a, const Vec3 *const b);
-
-/**
- * @brief 
- * 
- * @api
- */
-extern Vec3 (*vec3_cross)(const Vec3 *const a, const Vec3 *const b);
-
-/**
- * @brief 
- * 
- * @api
- */
-extern float (*vec3_length)(const Vec3 *const a);
-
-/**
- * @brief 
- * 
- * @api
- */
-extern Vec3 (*vec3_normalize)(const Vec3 *const a);
-
-/**
- * @brief 
- * 
- * @api
- */
-extern float (*vec3_distance)(const Vec3 *const a, const Vec3 *const b);
-
-/**
- * @brief Add b to a
- *
- * @param a
- * @param b
- *
- * @api
- */
-extern void (*vec3_add_in)(Vec3 *const to, const Vec3 *const what);
-
-/**
- * @brief Subtrtact 'what' from 'from'
- * 
- * @param from 
- * @param what 
- *
- * @api
- */
-extern void (*vec3_sub_in)(Vec3 *const from, const Vec3 *const what);
-
-/**
- * @brief Scale vector 'to' by 'factor'
- * 
- * @param to 
- * @param factor 
- *
- * @api
- */
-extern void (*vec3_scale_in)(Vec3 *const to, const float factor);
-
-/**
- * @brief 
- * 
- * @param a 
- *
- * @api
- */
-extern void (*vec3_normalize_in)(Vec3 *const a);
 
 /**
  * @api
@@ -1517,54 +1436,156 @@ extern float (*vec2_distance)(const Vec2 *const a, const Vec2 *const b);
  *
  * @param[in/out] a
  * @param[in] b
- * 
+ *
  * @api
  */
 extern void (*vec2_add_in)(Vec2 *const to, const Vec2 *const what);
 
 /**
- * @brief 
- * 
- * @param[in/out] from 
- * @param[in] what 
- * 
+ * @brief
+ *
+ * @param[in/out] from
+ * @param[in] what
+ *
  * @api
  */
 extern void (*vec2_sub_in)(Vec2 *const from, const Vec2 *const what);
 
 /**
- * @brief 
- * 
- * @param[in/out] to 
- * @param[in] factor 
- * 
+ * @brief
+ *
+ * @param[in/out] to
+ * @param[in] factor
+ *
  * @api
  */
 extern void (*vec2_scale_in)(Vec2 *const to, const float factor);
 
 /**
- * @brief 
- * 
- * @param[in/out] a 
- * 
+ * @brief
+ *
+ * @param[in/out] a
+ *
  * @api
  */
 extern void (*vec2_normalize_in)(Vec2 *const a);
 
 /**
- * @brief 
- * 
+ * @brief
+ *
+ * @api
+ */
+extern Vec3 (*vec3_new)(float x, float y, float z);
+
+/**
+ * @brief
+ *
+ * @api
+ */
+extern Vec3 (*vec3_add)(const Vec3 *const a, const Vec3 *const b);
+
+/**
+ * @brief
+ *
+ * @api
+ */
+extern Vec3 (*vec3_sub)(const Vec3 *const a, const Vec3 *const b);
+
+/**
+ * @brief
+ *
+ * @api
+ */
+extern Vec3 (*vec3_scale)(const Vec3 *const a, const float factor);
+
+/**
+ * @brief
+ *
+ * @api
+ */
+extern float (*vec3_dot)(const Vec3 *const a, const Vec3 *const b);
+
+/**
+ * @brief
+ *
+ * @api
+ */
+extern Vec3 (*vec3_cross)(const Vec3 *const a, const Vec3 *const b);
+
+/**
+ * @brief
+ *
+ * @api
+ */
+extern float (*vec3_length)(const Vec3 *const a);
+
+/**
+ * @brief
+ *
+ * @api
+ */
+extern Vec3 (*vec3_normalize)(const Vec3 *const a);
+
+/**
+ * @brief
+ *
+ * @api
+ */
+extern float (*vec3_distance)(const Vec3 *const a, const Vec3 *const b);
+
+/**
+ * @brief Add b to a
+ *
+ * @param a
+ * @param b
+ *
+ * @api
+ */
+extern void (*vec3_add_in)(Vec3 *const to, const Vec3 *const what);
+
+/**
+ * @brief Subtrtact 'what' from 'from'
+ *
+ * @param from
+ * @param what
+ *
+ * @api
+ */
+extern void (*vec3_sub_in)(Vec3 *const from, const Vec3 *const what);
+
+/**
+ * @brief Scale vector 'to' by 'factor'
+ *
+ * @param to
+ * @param factor
+ *
+ * @api
+ */
+extern void (*vec3_scale_in)(Vec3 *const to, const float factor);
+
+/**
+ * @brief
+ *
+ * @param a
+ *
+ * @api
+ */
+extern void (*vec3_normalize_in)(Vec3 *const a);
+
+/**
+ * @brief
+ *
  * @api
  */
 extern UID (*uid_new)(void);
 
 /**
  * @brief Mount Resource File (*.hefs) to Virtual File System
- * 
- * @param path Path to resource file 
+ *
+ * @param path Path to resource file
  * @param mount_point Mount point
- * @return true 
- * @return false 
+ * @return true
+ * @return false
  *
  * @api
  */
@@ -1572,10 +1593,10 @@ extern int (*vfs_mount_res)(const char * path, const char * mount_point);
 
 /**
  * @brief Unmount Resource File from Virtual File System
- * 
+ *
  * @param mount_point Mount point
- * @return true 
- * @return false 
+ * @return true
+ * @return false
  *
  * @api
  */
@@ -1824,7 +1845,7 @@ extern Error (*window_server_backend_set_function)(WindowServerBackend * backend
  * @brief Get a function pointer for a backend
  * @return "InvalidArgument" if backend is NULL or name is NULL or function is NULL
  * @return "NotFound" if a function with the given name is not registered
- * 
+ *
  * @api
  */
 extern Error (*window_server_backend_get_function)(WindowServerBackend * backend, const char * name, void (** function) (void));
@@ -1839,7 +1860,7 @@ extern Error (*window_server_window_get_title)(WindowServerWindow * this, const 
 
 /**
      * @brief HOLA BOLA
-     * 
+     *
      */
 extern Error (*window_server_window_set_mode)(WindowServerWindow * this, WindowServerWindowMode mode);
 
@@ -1894,6 +1915,18 @@ extern Error (*window_server_window_set_fullscreen_display)(WindowServerWindow *
     Mat4 (*raw_mat4_scale)(const Mat4 *const a, const float factor);
     Mat4 (*raw_mat4_transpose)(const Mat4 *const a);
     Mat4 (*raw_mat4_inverse)(const Mat4 *const a);
+    Vec2 (*raw_vec2_new)(float x, float y, float z);
+    Vec2 (*raw_vec2_add)(const Vec2 *const a, const Vec2 *const b);
+    Vec2 (*raw_vec2_sub)(const Vec2 *const a, const Vec2 *const b);
+    Vec2 (*raw_vec2_scale)(const Vec2 *const a, const float factor);
+    float (*raw_vec2_dot)(const Vec2 *const a, const Vec2 *const b);
+    float (*raw_vec2_length)(const Vec2 *const a);
+    Vec2 (*raw_vec2_normalize)(const Vec2 *const a);
+    float (*raw_vec2_distance)(const Vec2 *const a, const Vec2 *const b);
+    void (*raw_vec2_add_in)(Vec2 *const to, const Vec2 *const what);
+    void (*raw_vec2_sub_in)(Vec2 *const from, const Vec2 *const what);
+    void (*raw_vec2_scale_in)(Vec2 *const to, const float factor);
+    void (*raw_vec2_normalize_in)(Vec2 *const a);
     Vec3 (*raw_vec3_new)(float x, float y, float z);
     Vec3 (*raw_vec3_add)(const Vec3 *const a, const Vec3 *const b);
     Vec3 (*raw_vec3_sub)(const Vec3 *const a, const Vec3 *const b);
@@ -1907,18 +1940,6 @@ extern Error (*window_server_window_set_fullscreen_display)(WindowServerWindow *
     void (*raw_vec3_sub_in)(Vec3 *const from, const Vec3 *const what);
     void (*raw_vec3_scale_in)(Vec3 *const to, const float factor);
     void (*raw_vec3_normalize_in)(Vec3 *const a);
-    Vec2 (*raw_vec2_new)(float x, float y, float z);
-    Vec2 (*raw_vec2_add)(const Vec2 *const a, const Vec2 *const b);
-    Vec2 (*raw_vec2_sub)(const Vec2 *const a, const Vec2 *const b);
-    Vec2 (*raw_vec2_scale)(const Vec2 *const a, const float factor);
-    float (*raw_vec2_dot)(const Vec2 *const a, const Vec2 *const b);
-    float (*raw_vec2_length)(const Vec2 *const a);
-    Vec2 (*raw_vec2_normalize)(const Vec2 *const a);
-    float (*raw_vec2_distance)(const Vec2 *const a, const Vec2 *const b);
-    void (*raw_vec2_add_in)(Vec2 *const to, const Vec2 *const what);
-    void (*raw_vec2_sub_in)(Vec2 *const from, const Vec2 *const what);
-    void (*raw_vec2_scale_in)(Vec2 *const to, const float factor);
-    void (*raw_vec2_normalize_in)(Vec2 *const a);
     UID (*raw_uid_new)(void);
     int (*raw_vfs_mount_res)(const char * path, const char * mount_point);
     int (*raw_vfs_unmount_res)(const char * mount_point);
@@ -1994,6 +2015,18 @@ extern Error (*window_server_window_set_fullscreen_display)(WindowServerWindow *
     Mat4 (*mat4_scale)(const Mat4 *const a, const float factor);
     Mat4 (*mat4_transpose)(const Mat4 *const a);
     Mat4 (*mat4_inverse)(const Mat4 *const a);
+    Vec2 (*vec2_new)(float x, float y, float z);
+    Vec2 (*vec2_add)(const Vec2 *const a, const Vec2 *const b);
+    Vec2 (*vec2_sub)(const Vec2 *const a, const Vec2 *const b);
+    Vec2 (*vec2_scale)(const Vec2 *const a, const float factor);
+    float (*vec2_dot)(const Vec2 *const a, const Vec2 *const b);
+    float (*vec2_length)(const Vec2 *const a);
+    Vec2 (*vec2_normalize)(const Vec2 *const a);
+    float (*vec2_distance)(const Vec2 *const a, const Vec2 *const b);
+    void (*vec2_add_in)(Vec2 *const to, const Vec2 *const what);
+    void (*vec2_sub_in)(Vec2 *const from, const Vec2 *const what);
+    void (*vec2_scale_in)(Vec2 *const to, const float factor);
+    void (*vec2_normalize_in)(Vec2 *const a);
     Vec3 (*vec3_new)(float x, float y, float z);
     Vec3 (*vec3_add)(const Vec3 *const a, const Vec3 *const b);
     Vec3 (*vec3_sub)(const Vec3 *const a, const Vec3 *const b);
@@ -2007,18 +2040,6 @@ extern Error (*window_server_window_set_fullscreen_display)(WindowServerWindow *
     void (*vec3_sub_in)(Vec3 *const from, const Vec3 *const what);
     void (*vec3_scale_in)(Vec3 *const to, const float factor);
     void (*vec3_normalize_in)(Vec3 *const a);
-    Vec2 (*vec2_new)(float x, float y, float z);
-    Vec2 (*vec2_add)(const Vec2 *const a, const Vec2 *const b);
-    Vec2 (*vec2_sub)(const Vec2 *const a, const Vec2 *const b);
-    Vec2 (*vec2_scale)(const Vec2 *const a, const float factor);
-    float (*vec2_dot)(const Vec2 *const a, const Vec2 *const b);
-    float (*vec2_length)(const Vec2 *const a);
-    Vec2 (*vec2_normalize)(const Vec2 *const a);
-    float (*vec2_distance)(const Vec2 *const a, const Vec2 *const b);
-    void (*vec2_add_in)(Vec2 *const to, const Vec2 *const what);
-    void (*vec2_sub_in)(Vec2 *const from, const Vec2 *const what);
-    void (*vec2_scale_in)(Vec2 *const to, const float factor);
-    void (*vec2_normalize_in)(Vec2 *const a);
     UID (*uid_new)(void);
     int (*vfs_mount_res)(const char * path, const char * mount_point);
     int (*vfs_unmount_res)(const char * mount_point);
@@ -2095,6 +2116,18 @@ extern Error (*window_server_window_set_fullscreen_display)(WindowServerWindow *
         raw_mat4_scale = (Mat4 (*)(const Mat4 *const, const float))proc_addr("mat4_scale");
         raw_mat4_transpose = (Mat4 (*)(const Mat4 *const))proc_addr("mat4_transpose");
         raw_mat4_inverse = (Mat4 (*)(const Mat4 *const))proc_addr("mat4_inverse");
+        raw_vec2_new = (Vec2 (*)(float, float, float))proc_addr("vec2_new");
+        raw_vec2_add = (Vec2 (*)(const Vec2 *const, const Vec2 *const))proc_addr("vec2_add");
+        raw_vec2_sub = (Vec2 (*)(const Vec2 *const, const Vec2 *const))proc_addr("vec2_sub");
+        raw_vec2_scale = (Vec2 (*)(const Vec2 *const, const float))proc_addr("vec2_scale");
+        raw_vec2_dot = (float (*)(const Vec2 *const, const Vec2 *const))proc_addr("vec2_dot");
+        raw_vec2_length = (float (*)(const Vec2 *const))proc_addr("vec2_length");
+        raw_vec2_normalize = (Vec2 (*)(const Vec2 *const))proc_addr("vec2_normalize");
+        raw_vec2_distance = (float (*)(const Vec2 *const, const Vec2 *const))proc_addr("vec2_distance");
+        raw_vec2_add_in = (void (*)(Vec2 *const, const Vec2 *const))proc_addr("vec2_add_in");
+        raw_vec2_sub_in = (void (*)(Vec2 *const, const Vec2 *const))proc_addr("vec2_sub_in");
+        raw_vec2_scale_in = (void (*)(Vec2 *const, const float))proc_addr("vec2_scale_in");
+        raw_vec2_normalize_in = (void (*)(Vec2 *const))proc_addr("vec2_normalize_in");
         raw_vec3_new = (Vec3 (*)(float, float, float))proc_addr("vec3_new");
         raw_vec3_add = (Vec3 (*)(const Vec3 *const, const Vec3 *const))proc_addr("vec3_add");
         raw_vec3_sub = (Vec3 (*)(const Vec3 *const, const Vec3 *const))proc_addr("vec3_sub");
@@ -2108,18 +2141,6 @@ extern Error (*window_server_window_set_fullscreen_display)(WindowServerWindow *
         raw_vec3_sub_in = (void (*)(Vec3 *const, const Vec3 *const))proc_addr("vec3_sub_in");
         raw_vec3_scale_in = (void (*)(Vec3 *const, const float))proc_addr("vec3_scale_in");
         raw_vec3_normalize_in = (void (*)(Vec3 *const))proc_addr("vec3_normalize_in");
-        raw_vec2_new = (Vec2 (*)(float, float, float))proc_addr("vec2_new");
-        raw_vec2_add = (Vec2 (*)(const Vec2 *const, const Vec2 *const))proc_addr("vec2_add");
-        raw_vec2_sub = (Vec2 (*)(const Vec2 *const, const Vec2 *const))proc_addr("vec2_sub");
-        raw_vec2_scale = (Vec2 (*)(const Vec2 *const, const float))proc_addr("vec2_scale");
-        raw_vec2_dot = (float (*)(const Vec2 *const, const Vec2 *const))proc_addr("vec2_dot");
-        raw_vec2_length = (float (*)(const Vec2 *const))proc_addr("vec2_length");
-        raw_vec2_normalize = (Vec2 (*)(const Vec2 *const))proc_addr("vec2_normalize");
-        raw_vec2_distance = (float (*)(const Vec2 *const, const Vec2 *const))proc_addr("vec2_distance");
-        raw_vec2_add_in = (void (*)(Vec2 *const, const Vec2 *const))proc_addr("vec2_add_in");
-        raw_vec2_sub_in = (void (*)(Vec2 *const, const Vec2 *const))proc_addr("vec2_sub_in");
-        raw_vec2_scale_in = (void (*)(Vec2 *const, const float))proc_addr("vec2_scale_in");
-        raw_vec2_normalize_in = (void (*)(Vec2 *const))proc_addr("vec2_normalize_in");
         raw_uid_new = (UID (*)(void))proc_addr("uid_new");
         raw_vfs_mount_res = (int (*)(const char *, const char *))proc_addr("vfs_mount_res");
         raw_vfs_unmount_res = (int (*)(const char *))proc_addr("vfs_unmount_res");
@@ -2184,6 +2205,18 @@ extern Error (*window_server_window_set_fullscreen_display)(WindowServerWindow *
             mat4_scale = raw_mat4_scale;
             mat4_transpose = raw_mat4_transpose;
             mat4_inverse = raw_mat4_inverse;
+            vec2_new = raw_vec2_new;
+            vec2_add = raw_vec2_add;
+            vec2_sub = raw_vec2_sub;
+            vec2_scale = raw_vec2_scale;
+            vec2_dot = raw_vec2_dot;
+            vec2_length = raw_vec2_length;
+            vec2_normalize = raw_vec2_normalize;
+            vec2_distance = raw_vec2_distance;
+            vec2_add_in = raw_vec2_add_in;
+            vec2_sub_in = raw_vec2_sub_in;
+            vec2_scale_in = raw_vec2_scale_in;
+            vec2_normalize_in = raw_vec2_normalize_in;
             vec3_new = raw_vec3_new;
             vec3_add = raw_vec3_add;
             vec3_sub = raw_vec3_sub;
@@ -2197,18 +2230,6 @@ extern Error (*window_server_window_set_fullscreen_display)(WindowServerWindow *
             vec3_sub_in = raw_vec3_sub_in;
             vec3_scale_in = raw_vec3_scale_in;
             vec3_normalize_in = raw_vec3_normalize_in;
-            vec2_new = raw_vec2_new;
-            vec2_add = raw_vec2_add;
-            vec2_sub = raw_vec2_sub;
-            vec2_scale = raw_vec2_scale;
-            vec2_dot = raw_vec2_dot;
-            vec2_length = raw_vec2_length;
-            vec2_normalize = raw_vec2_normalize;
-            vec2_distance = raw_vec2_distance;
-            vec2_add_in = raw_vec2_add_in;
-            vec2_sub_in = raw_vec2_sub_in;
-            vec2_scale_in = raw_vec2_scale_in;
-            vec2_normalize_in = raw_vec2_normalize_in;
             uid_new = raw_uid_new;
             vfs_mount_res = raw_vfs_mount_res;
             vfs_unmount_res = raw_vfs_unmount_res;
@@ -2303,6 +2324,18 @@ Mat4 full_trace_mat4_mul(const char* ___file___, uint32_t ___line___, const Mat4
 Mat4 full_trace_mat4_scale(const char* ___file___, uint32_t ___line___, const Mat4 *const, const float);
 Mat4 full_trace_mat4_transpose(const char* ___file___, uint32_t ___line___, const Mat4 *const);
 Mat4 full_trace_mat4_inverse(const char* ___file___, uint32_t ___line___, const Mat4 *const);
+Vec2 full_trace_vec2_new(const char* ___file___, uint32_t ___line___, float, float, float);
+Vec2 full_trace_vec2_add(const char* ___file___, uint32_t ___line___, const Vec2 *const, const Vec2 *const);
+Vec2 full_trace_vec2_sub(const char* ___file___, uint32_t ___line___, const Vec2 *const, const Vec2 *const);
+Vec2 full_trace_vec2_scale(const char* ___file___, uint32_t ___line___, const Vec2 *const, const float);
+float full_trace_vec2_dot(const char* ___file___, uint32_t ___line___, const Vec2 *const, const Vec2 *const);
+float full_trace_vec2_length(const char* ___file___, uint32_t ___line___, const Vec2 *const);
+Vec2 full_trace_vec2_normalize(const char* ___file___, uint32_t ___line___, const Vec2 *const);
+float full_trace_vec2_distance(const char* ___file___, uint32_t ___line___, const Vec2 *const, const Vec2 *const);
+void full_trace_vec2_add_in(const char* ___file___, uint32_t ___line___, Vec2 *const, const Vec2 *const);
+void full_trace_vec2_sub_in(const char* ___file___, uint32_t ___line___, Vec2 *const, const Vec2 *const);
+void full_trace_vec2_scale_in(const char* ___file___, uint32_t ___line___, Vec2 *const, const float);
+void full_trace_vec2_normalize_in(const char* ___file___, uint32_t ___line___, Vec2 *const);
 Vec3 full_trace_vec3_new(const char* ___file___, uint32_t ___line___, float, float, float);
 Vec3 full_trace_vec3_add(const char* ___file___, uint32_t ___line___, const Vec3 *const, const Vec3 *const);
 Vec3 full_trace_vec3_sub(const char* ___file___, uint32_t ___line___, const Vec3 *const, const Vec3 *const);
@@ -2316,18 +2349,6 @@ void full_trace_vec3_add_in(const char* ___file___, uint32_t ___line___, Vec3 *c
 void full_trace_vec3_sub_in(const char* ___file___, uint32_t ___line___, Vec3 *const, const Vec3 *const);
 void full_trace_vec3_scale_in(const char* ___file___, uint32_t ___line___, Vec3 *const, const float);
 void full_trace_vec3_normalize_in(const char* ___file___, uint32_t ___line___, Vec3 *const);
-Vec2 full_trace_vec2_new(const char* ___file___, uint32_t ___line___, float, float, float);
-Vec2 full_trace_vec2_add(const char* ___file___, uint32_t ___line___, const Vec2 *const, const Vec2 *const);
-Vec2 full_trace_vec2_sub(const char* ___file___, uint32_t ___line___, const Vec2 *const, const Vec2 *const);
-Vec2 full_trace_vec2_scale(const char* ___file___, uint32_t ___line___, const Vec2 *const, const float);
-float full_trace_vec2_dot(const char* ___file___, uint32_t ___line___, const Vec2 *const, const Vec2 *const);
-float full_trace_vec2_length(const char* ___file___, uint32_t ___line___, const Vec2 *const);
-Vec2 full_trace_vec2_normalize(const char* ___file___, uint32_t ___line___, const Vec2 *const);
-float full_trace_vec2_distance(const char* ___file___, uint32_t ___line___, const Vec2 *const, const Vec2 *const);
-void full_trace_vec2_add_in(const char* ___file___, uint32_t ___line___, Vec2 *const, const Vec2 *const);
-void full_trace_vec2_sub_in(const char* ___file___, uint32_t ___line___, Vec2 *const, const Vec2 *const);
-void full_trace_vec2_scale_in(const char* ___file___, uint32_t ___line___, Vec2 *const, const float);
-void full_trace_vec2_normalize_in(const char* ___file___, uint32_t ___line___, Vec2 *const);
 UID full_trace_uid_new(const char* ___file___, uint32_t ___line___);
 int full_trace_vfs_mount_res(const char* ___file___, uint32_t ___line___, const char *, const char *);
 int full_trace_vfs_unmount_res(const char* ___file___, uint32_t ___line___, const char *);
@@ -2601,6 +2622,86 @@ inline Mat4 full_trace_mat4_inverse(const char* ___file___, uint32_t ___line___,
     return result;
 }
 
+inline Vec2 full_trace_vec2_new(const char* ___file___, uint32_t ___line___, float x, float y, float z) {
+    raw___he_update_full_trace_info("vec2_new", ___file___, ___line___);
+    Vec2 result = raw_vec2_new(x, y, z);
+    raw___he_update_full_trace_info("", "", -1);
+    return result;
+}
+
+inline Vec2 full_trace_vec2_add(const char* ___file___, uint32_t ___line___, const Vec2 *const a, const Vec2 *const b) {
+    raw___he_update_full_trace_info("vec2_add", ___file___, ___line___);
+    Vec2 result = raw_vec2_add(a, b);
+    raw___he_update_full_trace_info("", "", -1);
+    return result;
+}
+
+inline Vec2 full_trace_vec2_sub(const char* ___file___, uint32_t ___line___, const Vec2 *const a, const Vec2 *const b) {
+    raw___he_update_full_trace_info("vec2_sub", ___file___, ___line___);
+    Vec2 result = raw_vec2_sub(a, b);
+    raw___he_update_full_trace_info("", "", -1);
+    return result;
+}
+
+inline Vec2 full_trace_vec2_scale(const char* ___file___, uint32_t ___line___, const Vec2 *const a, const float factor) {
+    raw___he_update_full_trace_info("vec2_scale", ___file___, ___line___);
+    Vec2 result = raw_vec2_scale(a, factor);
+    raw___he_update_full_trace_info("", "", -1);
+    return result;
+}
+
+inline float full_trace_vec2_dot(const char* ___file___, uint32_t ___line___, const Vec2 *const a, const Vec2 *const b) {
+    raw___he_update_full_trace_info("vec2_dot", ___file___, ___line___);
+    float result = raw_vec2_dot(a, b);
+    raw___he_update_full_trace_info("", "", -1);
+    return result;
+}
+
+inline float full_trace_vec2_length(const char* ___file___, uint32_t ___line___, const Vec2 *const a) {
+    raw___he_update_full_trace_info("vec2_length", ___file___, ___line___);
+    float result = raw_vec2_length(a);
+    raw___he_update_full_trace_info("", "", -1);
+    return result;
+}
+
+inline Vec2 full_trace_vec2_normalize(const char* ___file___, uint32_t ___line___, const Vec2 *const a) {
+    raw___he_update_full_trace_info("vec2_normalize", ___file___, ___line___);
+    Vec2 result = raw_vec2_normalize(a);
+    raw___he_update_full_trace_info("", "", -1);
+    return result;
+}
+
+inline float full_trace_vec2_distance(const char* ___file___, uint32_t ___line___, const Vec2 *const a, const Vec2 *const b) {
+    raw___he_update_full_trace_info("vec2_distance", ___file___, ___line___);
+    float result = raw_vec2_distance(a, b);
+    raw___he_update_full_trace_info("", "", -1);
+    return result;
+}
+
+inline void full_trace_vec2_add_in(const char* ___file___, uint32_t ___line___, Vec2 *const to, const Vec2 *const what) {
+    raw___he_update_full_trace_info("vec2_add_in", ___file___, ___line___);
+    raw_vec2_add_in(to, what);
+    raw___he_update_full_trace_info("", "", -1);
+}
+
+inline void full_trace_vec2_sub_in(const char* ___file___, uint32_t ___line___, Vec2 *const from, const Vec2 *const what) {
+    raw___he_update_full_trace_info("vec2_sub_in", ___file___, ___line___);
+    raw_vec2_sub_in(from, what);
+    raw___he_update_full_trace_info("", "", -1);
+}
+
+inline void full_trace_vec2_scale_in(const char* ___file___, uint32_t ___line___, Vec2 *const to, const float factor) {
+    raw___he_update_full_trace_info("vec2_scale_in", ___file___, ___line___);
+    raw_vec2_scale_in(to, factor);
+    raw___he_update_full_trace_info("", "", -1);
+}
+
+inline void full_trace_vec2_normalize_in(const char* ___file___, uint32_t ___line___, Vec2 *const a) {
+    raw___he_update_full_trace_info("vec2_normalize_in", ___file___, ___line___);
+    raw_vec2_normalize_in(a);
+    raw___he_update_full_trace_info("", "", -1);
+}
+
 inline Vec3 full_trace_vec3_new(const char* ___file___, uint32_t ___line___, float x, float y, float z) {
     raw___he_update_full_trace_info("vec3_new", ___file___, ___line___);
     Vec3 result = raw_vec3_new(x, y, z);
@@ -2685,86 +2786,6 @@ inline void full_trace_vec3_scale_in(const char* ___file___, uint32_t ___line___
 inline void full_trace_vec3_normalize_in(const char* ___file___, uint32_t ___line___, Vec3 *const a) {
     raw___he_update_full_trace_info("vec3_normalize_in", ___file___, ___line___);
     raw_vec3_normalize_in(a);
-    raw___he_update_full_trace_info("", "", -1);
-}
-
-inline Vec2 full_trace_vec2_new(const char* ___file___, uint32_t ___line___, float x, float y, float z) {
-    raw___he_update_full_trace_info("vec2_new", ___file___, ___line___);
-    Vec2 result = raw_vec2_new(x, y, z);
-    raw___he_update_full_trace_info("", "", -1);
-    return result;
-}
-
-inline Vec2 full_trace_vec2_add(const char* ___file___, uint32_t ___line___, const Vec2 *const a, const Vec2 *const b) {
-    raw___he_update_full_trace_info("vec2_add", ___file___, ___line___);
-    Vec2 result = raw_vec2_add(a, b);
-    raw___he_update_full_trace_info("", "", -1);
-    return result;
-}
-
-inline Vec2 full_trace_vec2_sub(const char* ___file___, uint32_t ___line___, const Vec2 *const a, const Vec2 *const b) {
-    raw___he_update_full_trace_info("vec2_sub", ___file___, ___line___);
-    Vec2 result = raw_vec2_sub(a, b);
-    raw___he_update_full_trace_info("", "", -1);
-    return result;
-}
-
-inline Vec2 full_trace_vec2_scale(const char* ___file___, uint32_t ___line___, const Vec2 *const a, const float factor) {
-    raw___he_update_full_trace_info("vec2_scale", ___file___, ___line___);
-    Vec2 result = raw_vec2_scale(a, factor);
-    raw___he_update_full_trace_info("", "", -1);
-    return result;
-}
-
-inline float full_trace_vec2_dot(const char* ___file___, uint32_t ___line___, const Vec2 *const a, const Vec2 *const b) {
-    raw___he_update_full_trace_info("vec2_dot", ___file___, ___line___);
-    float result = raw_vec2_dot(a, b);
-    raw___he_update_full_trace_info("", "", -1);
-    return result;
-}
-
-inline float full_trace_vec2_length(const char* ___file___, uint32_t ___line___, const Vec2 *const a) {
-    raw___he_update_full_trace_info("vec2_length", ___file___, ___line___);
-    float result = raw_vec2_length(a);
-    raw___he_update_full_trace_info("", "", -1);
-    return result;
-}
-
-inline Vec2 full_trace_vec2_normalize(const char* ___file___, uint32_t ___line___, const Vec2 *const a) {
-    raw___he_update_full_trace_info("vec2_normalize", ___file___, ___line___);
-    Vec2 result = raw_vec2_normalize(a);
-    raw___he_update_full_trace_info("", "", -1);
-    return result;
-}
-
-inline float full_trace_vec2_distance(const char* ___file___, uint32_t ___line___, const Vec2 *const a, const Vec2 *const b) {
-    raw___he_update_full_trace_info("vec2_distance", ___file___, ___line___);
-    float result = raw_vec2_distance(a, b);
-    raw___he_update_full_trace_info("", "", -1);
-    return result;
-}
-
-inline void full_trace_vec2_add_in(const char* ___file___, uint32_t ___line___, Vec2 *const to, const Vec2 *const what) {
-    raw___he_update_full_trace_info("vec2_add_in", ___file___, ___line___);
-    raw_vec2_add_in(to, what);
-    raw___he_update_full_trace_info("", "", -1);
-}
-
-inline void full_trace_vec2_sub_in(const char* ___file___, uint32_t ___line___, Vec2 *const from, const Vec2 *const what) {
-    raw___he_update_full_trace_info("vec2_sub_in", ___file___, ___line___);
-    raw_vec2_sub_in(from, what);
-    raw___he_update_full_trace_info("", "", -1);
-}
-
-inline void full_trace_vec2_scale_in(const char* ___file___, uint32_t ___line___, Vec2 *const to, const float factor) {
-    raw___he_update_full_trace_info("vec2_scale_in", ___file___, ___line___);
-    raw_vec2_scale_in(to, factor);
-    raw___he_update_full_trace_info("", "", -1);
-}
-
-inline void full_trace_vec2_normalize_in(const char* ___file___, uint32_t ___line___, Vec2 *const a) {
-    raw___he_update_full_trace_info("vec2_normalize_in", ___file___, ___line___);
-    raw_vec2_normalize_in(a);
     raw___he_update_full_trace_info("", "", -1);
 }
 
@@ -3063,6 +3084,18 @@ inline Error full_trace_window_server_window_set_fullscreen_display(const char* 
 #define mat4_scale(a, factor) full_trace_mat4_scale(__FILE__, __LINE__, a, factor)
 #define mat4_transpose(a) full_trace_mat4_transpose(__FILE__, __LINE__, a)
 #define mat4_inverse(a) full_trace_mat4_inverse(__FILE__, __LINE__, a)
+#define vec2_new(x, y, z) full_trace_vec2_new(__FILE__, __LINE__, x, y, z)
+#define vec2_add(a, b) full_trace_vec2_add(__FILE__, __LINE__, a, b)
+#define vec2_sub(a, b) full_trace_vec2_sub(__FILE__, __LINE__, a, b)
+#define vec2_scale(a, factor) full_trace_vec2_scale(__FILE__, __LINE__, a, factor)
+#define vec2_dot(a, b) full_trace_vec2_dot(__FILE__, __LINE__, a, b)
+#define vec2_length(a) full_trace_vec2_length(__FILE__, __LINE__, a)
+#define vec2_normalize(a) full_trace_vec2_normalize(__FILE__, __LINE__, a)
+#define vec2_distance(a, b) full_trace_vec2_distance(__FILE__, __LINE__, a, b)
+#define vec2_add_in(to, what) full_trace_vec2_add_in(__FILE__, __LINE__, to, what)
+#define vec2_sub_in(from, what) full_trace_vec2_sub_in(__FILE__, __LINE__, from, what)
+#define vec2_scale_in(to, factor) full_trace_vec2_scale_in(__FILE__, __LINE__, to, factor)
+#define vec2_normalize_in(a) full_trace_vec2_normalize_in(__FILE__, __LINE__, a)
 #define vec3_new(x, y, z) full_trace_vec3_new(__FILE__, __LINE__, x, y, z)
 #define vec3_add(a, b) full_trace_vec3_add(__FILE__, __LINE__, a, b)
 #define vec3_sub(a, b) full_trace_vec3_sub(__FILE__, __LINE__, a, b)
@@ -3076,18 +3109,6 @@ inline Error full_trace_window_server_window_set_fullscreen_display(const char* 
 #define vec3_sub_in(from, what) full_trace_vec3_sub_in(__FILE__, __LINE__, from, what)
 #define vec3_scale_in(to, factor) full_trace_vec3_scale_in(__FILE__, __LINE__, to, factor)
 #define vec3_normalize_in(a) full_trace_vec3_normalize_in(__FILE__, __LINE__, a)
-#define vec2_new(x, y, z) full_trace_vec2_new(__FILE__, __LINE__, x, y, z)
-#define vec2_add(a, b) full_trace_vec2_add(__FILE__, __LINE__, a, b)
-#define vec2_sub(a, b) full_trace_vec2_sub(__FILE__, __LINE__, a, b)
-#define vec2_scale(a, factor) full_trace_vec2_scale(__FILE__, __LINE__, a, factor)
-#define vec2_dot(a, b) full_trace_vec2_dot(__FILE__, __LINE__, a, b)
-#define vec2_length(a) full_trace_vec2_length(__FILE__, __LINE__, a)
-#define vec2_normalize(a) full_trace_vec2_normalize(__FILE__, __LINE__, a)
-#define vec2_distance(a, b) full_trace_vec2_distance(__FILE__, __LINE__, a, b)
-#define vec2_add_in(to, what) full_trace_vec2_add_in(__FILE__, __LINE__, to, what)
-#define vec2_sub_in(from, what) full_trace_vec2_sub_in(__FILE__, __LINE__, from, what)
-#define vec2_scale_in(to, factor) full_trace_vec2_scale_in(__FILE__, __LINE__, to, factor)
-#define vec2_normalize_in(a) full_trace_vec2_normalize_in(__FILE__, __LINE__, a)
 #define uid_new() full_trace_uid_new(__FILE__, __LINE__)
 #define vfs_mount_res(path, mount_point) full_trace_vfs_mount_res(__FILE__, __LINE__, path, mount_point)
 #define vfs_unmount_res(mount_point) full_trace_vfs_unmount_res(__FILE__, __LINE__, mount_point)

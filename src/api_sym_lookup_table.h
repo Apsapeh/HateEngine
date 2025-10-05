@@ -4,21 +4,21 @@
 #define HE_MEM_NO_MACRO
 //#include <extra/full_trace.h>
 
-#include "object/node/node3d/node3d.h"
-#include "object/object.h"
-#include "types/uid.h"
-#include "log.h"
-#include "object/node/window/window.h"
-#include "object/node/node.h"
-#include "servers/window_server/window_server.h"
-#include "math/vec3.h"
-#include "vfs/vfs.h"
 #include "object/node/canvas_item/control/viewport/viewport.h"
-#include "object/node/canvas_item/canvas_item.h"
-#include "math/vec2.h"
 #include "platform/memory.h"
-#include "math/mat4.h"
+#include "math/vec2.h"
+#include "servers/window_server/window_server.h"
 #include "object/node/canvas_item/control/control.h"
+#include "types/uid.h"
+#include "object/object.h"
+#include "log.h"
+#include "vfs/vfs.h"
+#include "object/node/node.h"
+#include "object/node/node3d/node3d.h"
+#include "object/node/window/window.h"
+#include "math/vec3.h"
+#include "object/node/canvas_item/canvas_item.h"
+#include "math/mat4.h"
 
 
 typedef struct {
@@ -63,6 +63,18 @@ APIFunctionLookupTable api_function_lookup_table[] = {
     {"mat4_scale", (void*)mat4_scale},
     {"mat4_transpose", (void*)mat4_transpose},
     {"mat4_inverse", (void*)mat4_inverse},
+    {"vec2_new", (void*)vec2_new},
+    {"vec2_add", (void*)vec2_add},
+    {"vec2_sub", (void*)vec2_sub},
+    {"vec2_scale", (void*)vec2_scale},
+    {"vec2_dot", (void*)vec2_dot},
+    {"vec2_length", (void*)vec2_length},
+    {"vec2_normalize", (void*)vec2_normalize},
+    {"vec2_distance", (void*)vec2_distance},
+    {"vec2_add_in", (void*)vec2_add_in},
+    {"vec2_sub_in", (void*)vec2_sub_in},
+    {"vec2_scale_in", (void*)vec2_scale_in},
+    {"vec2_normalize_in", (void*)vec2_normalize_in},
     {"vec3_new", (void*)vec3_new},
     {"vec3_add", (void*)vec3_add},
     {"vec3_sub", (void*)vec3_sub},
@@ -76,18 +88,6 @@ APIFunctionLookupTable api_function_lookup_table[] = {
     {"vec3_sub_in", (void*)vec3_sub_in},
     {"vec3_scale_in", (void*)vec3_scale_in},
     {"vec3_normalize_in", (void*)vec3_normalize_in},
-    {"vec2_new", (void*)vec2_new},
-    {"vec2_add", (void*)vec2_add},
-    {"vec2_sub", (void*)vec2_sub},
-    {"vec2_scale", (void*)vec2_scale},
-    {"vec2_dot", (void*)vec2_dot},
-    {"vec2_length", (void*)vec2_length},
-    {"vec2_normalize", (void*)vec2_normalize},
-    {"vec2_distance", (void*)vec2_distance},
-    {"vec2_add_in", (void*)vec2_add_in},
-    {"vec2_sub_in", (void*)vec2_sub_in},
-    {"vec2_scale_in", (void*)vec2_scale_in},
-    {"vec2_normalize_in", (void*)vec2_normalize_in},
     {"uid_new", (void*)uid_new},
     {"vfs_mount_res", (void*)vfs_mount_res},
     {"vfs_unmount_res", (void*)vfs_unmount_res},

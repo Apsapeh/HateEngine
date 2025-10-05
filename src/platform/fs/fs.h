@@ -11,9 +11,9 @@ API ENUM {
         "name": "FSSeekFrom",
         "type": "char",
         "values": [
-                ["Start", "s"],
-                ["Current", "c"],
-                ["End", "e"]
+                ["Start", "'s'"],
+                ["Current", "'c'"],
+                ["End", "'e'"]
         ]
 }
 */

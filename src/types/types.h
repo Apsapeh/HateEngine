@@ -19,3 +19,7 @@ typedef double f64;
 
 typedef uintptr_t uptr;
 typedef intptr_t iptr;
+
+
+typedef i8* str;
+typedef const i8* c_str;

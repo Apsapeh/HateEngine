@@ -1,9 +1,9 @@
 #pragma once
 
-#include "types/num.h"
+#include "types/types.h"
 
-extern const char* full_trace_mod_level_func;
-extern const char* full_trace_mod_level_file;
+extern c_str full_trace_mod_level_func;
+extern c_str full_trace_mod_level_file;
 extern i32 full_trace_mod_level_line;
 
 /**

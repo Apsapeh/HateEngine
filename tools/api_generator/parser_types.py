@@ -73,11 +73,10 @@ class StructForward:
         yield 'doc', self.doc
 
 class Server:
-    def __init__ (self, name: str, fn_prefix: str, init_method: str, global_server_backend_var: str, methods: list[Function], filename: str, line: int, doc: str):
+    def __init__ (self, name: str, fn_prefix: str, init_method: str, methods: list[Function], filename: str, line: int, doc: str):
         self.name = name
         self.fn_prefix = fn_prefix
         self.init_method = init_method
-        self.global_server_backend_var = global_server_backend_var
         self.methods = methods
         self.filename = filename
         self.line = line
@@ -87,7 +86,6 @@ class Server:
         yield 'name', self.name
         yield 'fn_prefix', self.fn_prefix
         yield 'init_method', self.init_method
-        yield 'global_server_backend_var', self.global_server_backend_var
         yield 'methods', [dict(method) for method in self.methods]
         yield 'filename', self.filename
         yield 'line', self.line

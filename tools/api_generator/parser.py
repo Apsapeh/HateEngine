@@ -143,10 +143,6 @@ def parse_struct_decl(cursor: cc.Cursor, generator_mode: str, config: dict) -> P
         if init_method == None:
             error.error(f"[{cursor.location.file}:{cursor.location.line}] Missing init_method in api_config")
         
-        global_server_backend_var = config.get("global_server_backend_var")
-        if global_server_backend_var == None:
-            error.error(f"[{cursor.location.file}:{cursor.location.line}] Missing global_server_backend_var in api_config")
-        
         functions = []
 
         for child in cursor.get_children():
@@ -173,7 +169,7 @@ def parse_struct_decl(cursor: cc.Cursor, generator_mode: str, config: dict) -> P
 
                         functions.append(Function(fn_name, return_type, args, filename, line, doc))
 
-        result.add_server(Server(struct_name, fn_prefix, init_method, global_server_backend_var, functions, str(cursor.location.file), int(cursor.location.line), doc))
+        result.add_server(Server(struct_name, fn_prefix, init_method, functions, str(cursor.location.file), int(cursor.location.line), doc))
     else:
         error.error(f"[{cursor.location.file}:{cursor.location.line}] Unknown generator mode: {generator_mode}")
 

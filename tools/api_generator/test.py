@@ -56,3 +56,52 @@ comment = """/*
 
 
 print(doxygen_comment_parse(comment))
+
+
+# VIBE
+def camel_to_upper_snake_case(name):
+    result = []
+    n = len(name)
+    
+    for i in range(n):
+        current_char = name[i]
+        prev_char = name[i-1] if i > 0 else ''
+        next_char = name[i+1] if i < n-1 else ''
+        
+        should_add_underscore = False
+        
+        if current_char.isupper():
+            if prev_char.islower():
+                should_add_underscore = True
+            elif prev_char == '_':
+                should_add_underscore = True
+            elif i > 0 and next_char.islower():
+                should_add_underscore = True
+        
+        if should_add_underscore:
+            result.append('_')
+        
+        result.append(current_char)
+    
+    return ''.join(result).upper()
+
+# Тестирование
+test_cases = [
+    "FSSeekFrom_Start",  # FS_SEEK_FROM_START
+    "FileName",          # FILE_NAME  
+    "HTTPRequest",       # HTTP_REQUEST (две большие рядом - одно слово)
+    "XMLParser",         # XML_PARSER (две большие рядом - одно слово)
+    "MyVariableName",    # MY_VARIABLE_NAME
+    "userID",            # USER_ID
+    "HTMLParser",        # HTML_PARSER (три большие рядом - одно слово)
+    "FS_Seek_From_Start", # FS_SEEK_FROM_START
+    "ABC",               # ABC (все большие - одно слово)
+    "Abc",               # ABC (одно слово)
+    "aBC",               # A_BC (разделяем, т.к. предыдущая маленькая)
+]
+
+print("Преобразование CamelCase/PascalCase в UPPER_SNAKE_CASE:")
+print("-" * 50)
+for case in test_cases:
+    result = camel_to_upper_snake_case(case)
+    print(f"{case:20} -> {result}")

@@ -1,10 +1,10 @@
 #pragma once
 
-#include "log.h"
+#include "types/types.h"
 
 // API START
 
-typedef const char* Error;
+typedef c_str Error;
 
 #define ERROR_ASSERT_INFO(error, ...)                                                                   \
     do {                                                                                                \
