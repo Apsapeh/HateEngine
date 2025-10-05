@@ -43,7 +43,11 @@ struct VFSRFSMnt {
 
 enum VFSStreamType { VFSStreamTypeRFS, VFSStreamTypeResourceFile };
 
-// [[API Generator]]
+/**
+ * @brief
+ *
+ * @api
+ */
 typedef struct FileStream {
     struct FSFileStream* stream;
     enum VFSStreamType type;
@@ -56,50 +60,70 @@ void vfs_init(void);
 
 
 /* ================================> Base <================================ */
-// [[API Generator]]
+/**
+ * @brief Mount Resource File (*.hefs) to Virtual File System
+ *
+ * @param path Path to resource file
+ * @param mount_point Mount point
+ * @return true
+ * @return false
+ *
+ * @api
+ */
 bool vfs_mount_res(const char* path, const char* mount_point);
 
-// [[API Generator]]
-bool vfs_unmount_res(const char* path, const char* mount_point);
+/**
+ * @brief Unmount Resource File from Virtual File System
+ *
+ * @param mount_point Mount point
+ * @return true
+ * @return false
+ *
+ * @api
+ */
+bool vfs_unmount_res(const char* mount_point);
 
-// [[API Generator]]
 /**
  * @brief Mount Real File System to Virtual File System Res
  *
  * @return true if mounted successfully
  * @return false if mount failed
+ *
+ * @api
  */
 bool vfs_mount_rfs(const char* mount_point);
 
-// [[API Generator]]
 /**
  * @brief Mount Real File System to Virtual File System Res only with allowed files in whitelist
  *
  * @return true if mounted successfully
  * @return false if mount failed
+ *
+ * @api
  */
 bool vfs_mount_rfs_whitelist(const char** whitelist, size_t count, const char* mount_point);
 
-// [[API Generator]]
 /**
  * @brief Unmount Real File System from Virtual File System Res
  *
  * @return true if unmounted successfully
  * @return false if unmount failed
+ *
+ * @api
  */
 bool vfs_unmount_rfs(void);
 
-// [[API Generator]]
 /**
  * @brief Check if file exists
  *
  * @param path
  * @return true if exists
  * @return false if not exists
+ *
+ * @api
  */
 bool vfs_res_path_exists(const char* path);
 
-// [[API Generator]]
 /**
  * @brief Check if file exists in User scope
  *
@@ -107,13 +131,14 @@ bool vfs_res_path_exists(const char* path);
  * @param prefer_res If true, try to read from Resource scope first
  * @return true if exists
  * @return false if not exists
+ *
+ * @api
  */
 bool vfs_usr_path_exists(const char* path, bool prefer_res);
 
 
 /* ================================> File Access <================================ */
 
-// [[API Generator]]
 /**
  * @brief Allocate memory and read file from Reosource scope
  * @warning You must free the memory
@@ -121,19 +146,21 @@ bool vfs_usr_path_exists(const char* path, bool prefer_res);
  * @param path
  * @param size Size of file. Can be NULL
  * @return Pointer to allocated memory with file data if success, else NULL
+ *
+ * @api
  */
 void* vfs_res_read_file(const char* path, size_t* size);
 
-// [[API Generator]]
 /**
  * @brief Open file stream from Resource scope
  *
  * @param path
  * @return FileStream* If success, else NULL
+ *
+ * @api
  */
 FileStream* vfs_res_stream_open(const char* path);
 
-// [[API Generator]]
 /**
  * @brief Allocate memory and read file from User scope
  * @warning You must free the memory
@@ -142,10 +169,11 @@ FileStream* vfs_res_stream_open(const char* path);
  * @param size Size of file. Can be NULL
  * @param prefer_res If true, try to read from Resource scope first
  * @return Pointer to allocated memory with file data if success, else NULL
+ *
+ * @api
  */
 void* vfs_usr_read_file(const char* path, size_t* size, bool prefer_res);
 
-// [[API Generator]]
 /**
  * @brief Write file to User scope
  *
@@ -154,30 +182,33 @@ void* vfs_usr_read_file(const char* path, size_t* size, bool prefer_res);
  * @param size
  * @return true if success
  * @return false if fail
+ *
+ * @api
  */
 bool vfs_usr_write_file(const char* path, const void* data, size_t size);
 
-// [[API Generator]]
 /**
  * @brief Open file stream from User scope
  *
  * @param path
  * @param prefer_res If true, try to read from Resource scope first
  * @return FileStream* If success, else NULL
+ *
+ * @api
  */
 FileStream* vfs_usr_stream_open(const char* path, bool prefer_res);
 
 
-// [[API Generator]]
 /**
  * @brief Get file stream size in bytes
  *
  * @param path
  * @return size_t
+ *
+ * @api
  */
 size_t vfs_stream_size(FileStream* stream);
 
-// [[API Generator]]
 /**
  * @brief Read from file stream n bytes to buffer
  *
@@ -185,10 +216,11 @@ size_t vfs_stream_size(FileStream* stream);
  * @param buffer
  * @param size
  * @return size_t
+ *
+ * @api
  */
 size_t vfs_stream_read_n(FileStream* stream, void* buffer, size_t size);
 
-// [[API Generator]]
 /**
  * @brief Allocate buffer and read all file to it
  *
@@ -196,10 +228,11 @@ size_t vfs_stream_read_n(FileStream* stream, void* buffer, size_t size);
  * @param stream
  * @param size
  * @return void*
+ *
+ * @api
  */
 void* vfs_stream_read_all(FileStream* stream, size_t* size);
 
-// [[API Generator]]
 /**
  * @brief Write to file stream n bytes from buffer
  * @warning Only for 'res' scope
@@ -209,10 +242,11 @@ void* vfs_stream_read_all(FileStream* stream, size_t* size);
  * @param size
  *
  * @return size_t Number of bytes written. 0 if fail
+ *
+ * @api
  */
 size_t vfs_stream_write(FileStream* stream, void* buffer, size_t size);
 
-// [[API Generator]]
 /**
  * @brief Seek file stream
  *
@@ -221,34 +255,37 @@ size_t vfs_stream_write(FileStream* stream, void* buffer, size_t size);
  * @param offset
  * @return true if success
  * @return false if fail
+ *
+ * @api
  */
-bool vfs_stream_seek(FileStream* stream, enum FSSeekFrom whence, size_t offset);
+bool vfs_stream_seek(FileStream* stream, FSSeekFrom whence, size_t offset);
 
-// [[API Generator]]
 /**
  * @brief Get file stream current position
  *
  * @param stream
  * @param success Can be NULL
  * @return size_t
+ *
+ * @api
  */
 size_t vfs_stream_tell(FileStream* stream, bool* success);
 
-// [[API Generator]]
 /**
  * @brief Flush file stream
  *
  * @param stream
  * @return true if success
  * @return false if fail
+ * @api
  */
 bool vfs_stream_flush(FileStream* stream);
 
-// [[API Generator]]
 /**
  * @brief Close file stream
  *
  * @param stream
+ * @api
  */
 void vfs_stream_close(FileStream* stream);
 

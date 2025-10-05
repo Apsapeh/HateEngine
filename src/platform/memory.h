@@ -2,30 +2,33 @@
 
 #include <stddef.h>
 
-// [[API Generator]]
 /**
  * @brief Malloc with tracking if compiled with HE_MEM_TRACK
  *
  * @param size
  * @return void*
+ *
+ * @api
  */
 void* tmalloc(size_t size);
 
-// [[API Generator]]
 /**
  * @brief Realloc with tracking if compiled with HE_MEM_TRACK
  *
  * @param ptr
  * @param size
  * @return void*
+ *
+ * @api
  */
 void* trealloc(void* ptr, size_t size);
 
-// [[API Generator]]
 /**
  * @brief Free with tracking if compiled with HE_MEM_TRACK
  *
  * @param ptr
+ *
+ * @api
  */
 void tfree(void* ptr);
 
@@ -40,10 +43,11 @@ void* trace_trealloc(const char* ___file__, int __line__, void* ptr, size_t size
 #endif
 
 
-// [[API Generator]]
 /**
  * @brief Get allocated memory
  *
  * @return size in bytes if compiled with HE_MEM_TRACK, 0 otherwise
+ *
+ * @api
  */
 size_t get_allocated_memory(void);

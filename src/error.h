@@ -4,48 +4,32 @@
 
 // API START
 
-enum ErrorDomain { ErrorDomainNoError = 0, ErrorDomainGeneral = 1, ErrorDomainSDL3 = 2 };
-
-enum ErrorGeneral {
-    ErrorGeneralInvalid = 0,
-    ErrorGeneralUnknown = 1,
-    ErrorGeneralInvalidArgument = 2,
-    ErrorGeneralNotImplemented = 3,
-    ErrorGeneralNotSupported = 4,
-    ErrorGeneralAlreadyExists = 5,
-};
-
-enum ErrorSDL3 {
-    ErrorSDL3Any = 0,
-    ErrorSDL3NotMainThread = 1,
-};
-
 typedef const char* Error;
 
 #define ERROR_ASSERT_INFO(error, ...)                                                                   \
     do {                                                                                                \
-        if (error != NULL) {                                                                          \
+        if (error != NULL) {                                                                            \
             LOG_INFO(__VA_ARGS__);                                                                      \
         }                                                                                               \
     } while (0)
 
 #define ERROR_ASSERT_WARN(error, ...)                                                                   \
     do {                                                                                                \
-        if (error != NULL) {                                                                          \
+        if (error != NULL) {                                                                            \
             LOG_WARN(__VA_ARGS__);                                                                      \
         }                                                                                               \
     } while (0)
 
 #define ERROR_ASSERT_ERROR(error, ...)                                                                  \
     do {                                                                                                \
-        if (error != NULL) {                                                                          \
+        if (error != NULL) {                                                                            \
             LOG_ERROR(__VA_ARGS__);                                                                     \
         }                                                                                               \
     } while (0)
 
 #define ERROR_ASSERT_FATAL(error, ...)                                                                  \
     do {                                                                                                \
-        if (error != NULL) {                                                                          \
+        if (error != NULL) {                                                                            \
             LOG_FATAL(__VA_ARGS__);                                                                     \
         }                                                                                               \
     } while (0)

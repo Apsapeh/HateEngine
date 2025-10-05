@@ -7,7 +7,11 @@ build/
 
 # Visual Studio Code
 .vscode/
+.ropeproject
+doc/
 
 .cache/
 
 __pycache__
+
+gen.out

@@ -2,4 +2,4 @@
 
 #include "../window_server.h"
 
-WindowServerBackend window_server_sdl3_backend_init(void);
+void window_server_sdl3_backend_register(void);

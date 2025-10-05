@@ -3,17 +3,19 @@
 #include "types/uid.h"
 #include "object_types.h"
 
-// [[API Generator]]
+/**
+ * @api
+ */
 typedef struct {
     enum ObjectType type;
     UID uid;
 } Object;
 
-// [[API Generator]]
 /**
  * @brief Free object by type
  *
  * @param object
+ * @api
  */
 void auto_free(Object* object);
 

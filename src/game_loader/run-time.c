@@ -41,6 +41,8 @@ GameFunctions load_game(void) {
 
     runtime_init(runtime_proc_loader);
 
+    // TODO: Добавить функцию _settings, которая будет вызываться перед инициализацией серверов
+
     void (*_ready)(void) = dylib_sym(handle, "_ready");
     if (_ready) {
         game_functions._ready = _ready;
@@ -68,7 +70,7 @@ GameFunctions load_game(void) {
     return game_functions;
 }
 
-#include "api_sym_lookup_table.h"
+#include <api_sym_lookup_table.h>
 
 void* runtime_proc_loader(const char* name) {
     for (int i = 0; i < sizeof(api_function_lookup_table) / sizeof(api_function_lookup_table[0]); i++) {

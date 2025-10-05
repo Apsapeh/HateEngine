@@ -64,7 +64,7 @@ static Error window_get_title(WindowServerWindow* this, const char** out) {
 }
 
 
-static Error window_set_vsync(WindowServerWindow* this, enum WindowServerWindowVSync vsync) {
+static Error window_set_mode(WindowServerWindow* this, WindowServerWindowMode mode) {
     ERROR_ARGS_CHECK_1(this)
     MAIN_THREAD_CHECK();
 
@@ -74,25 +74,7 @@ static Error window_set_vsync(WindowServerWindow* this, enum WindowServerWindowV
     return ERROR_SUCCESS;
 }
 
-static Error window_get_vsync(WindowServerWindow* this, enum WindowServerWindowVSync* out) {
-    // TODO: Implement this function
-    return ERROR_NOT_IMPLEMENTED;
-
-    return ERROR_SUCCESS;
-}
-
-
-static Error window_set_mode(WindowServerWindow* this, enum WindowServerWindowMode mode) {
-    ERROR_ARGS_CHECK_1(this)
-    MAIN_THREAD_CHECK();
-
-    // TODO: Implement this function
-    return ERROR_NOT_IMPLEMENTED;
-
-    return ERROR_SUCCESS;
-}
-
-static Error window_get_mode(WindowServerWindow* this, enum WindowServerWindowMode* out) {
+static Error window_get_mode(WindowServerWindow* this, WindowServerWindowMode* out) {
     ERROR_ARGS_CHECK_2(this, out)
     MAIN_THREAD_CHECK();
 
@@ -160,27 +142,27 @@ static Error window_set_fullscreen_display(WindowServerWindow* this, WindowServe
 }
 
 
-WindowServerBackend window_server_sdl3_backend_init(void) {
-    WindowServerBackend ws = {
-            .create_window = create_window,
-            .destroy_window = destroy_window,
+void window_server_sdl3_backend_register(void) {
+    WindowServerBackend* ws = window_server_backend_new();
 
-            .window_set_title = window_set_title,
-            .window_get_title = window_get_title,
+#define REGISTER(fn) window_server_backend_set_function(ws, #fn, (void (*)(void)) fn)
 
-            .window_set_vsync = window_set_vsync,
-            .window_get_vsync = window_get_vsync,
+    REGISTER(create_window);
+    REGISTER(destroy_window);
 
-            .window_set_mode = window_set_mode,
-            .window_get_mode = window_get_mode,
+    REGISTER(window_set_title);
+    REGISTER(window_get_title);
 
-            .window_set_size = window_set_size,
-            .window_get_size = window_get_size,
+    REGISTER(window_set_mode);
+    REGISTER(window_get_mode);
 
-            .window_set_position = window_set_position,
-            .window_get_position = window_get_position,
+    REGISTER(window_set_size);
+    REGISTER(window_get_size);
 
-            .window_set_fullscreen_display = window_set_fullscreen_display,
-    };
-    return ws;
+    REGISTER(window_set_position);
+    REGISTER(window_get_position);
+
+    REGISTER(window_set_fullscreen_display);
+
+    window_server_register_backend("SDL3", ws);
 }

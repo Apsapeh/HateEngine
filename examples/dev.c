@@ -1,6 +1,6 @@
 #define HEAPI_LOAD_IMPL
-//#define HEAPI_FULL_TRACE
-#include <HateEngineRuntimeAPI.h>
+#define HEAPI_FULL_TRACE
+#include <HateEngineAPI.h>
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -15,7 +15,7 @@ void _ready(void) {
     
     printf("Used mem: %zu\n", get_allocated_memory());
     size_t size;
-    char* data = vfs_res_read_file("/assets/text.txt", &size);
+    char* data = vfs_res_read_file("/assets/text.txt", (int*)&size);
     
     if (data) {
         printf("Data: %s\n", data);
@@ -41,7 +41,7 @@ void _ready(void) {
     vec3_normalize_in(&pos);
     printf("%f %f %f\n", pos.x, pos.y, pos.z);
 
-    auto_free((Object*) node);
+    //auto_free((Object*) node);
     vfs_unmount_rfs();
 }
                  

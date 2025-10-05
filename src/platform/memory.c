@@ -15,6 +15,9 @@ struct mem_pair {
     size_t size;
     const char* file;
     int line;
+    const char* user_func;
+    const char* user_file;
+    int user_line;
 };
 
 vector_template_def(mem_pair, struct mem_pair);
@@ -22,17 +25,24 @@ vector_template_impl(mem_pair, struct mem_pair);
 
 static vec_mem_pair allocated_mem = {0, 0, NULL, NULL};
 
-void mem_atexit() {
+void mem_atexit(void) {
     size_t used = get_allocated_memory();
     LOG_ERROR("UNALLOCATED MEM SIZE: %zu bytes", used);
 
     for (size_t i = 0; i < allocated_mem.size; i++) {
         struct mem_pair pair = allocated_mem.data[i];
-        LOG_ERROR("UNALLOCATED %zu bytes AT %s:%d", pair.size, pair.file, pair.line);
+        if (pair.user_line != -1) {
+            LOG_ERROR(
+                    "UNALLOCATED %zu bytes AT %s:%d IN \"%s\"@%s:%d", pair.size, pair.file, pair.line,
+                    pair.user_func, pair.user_file, pair.user_line
+            );
+        } else {
+            LOG_ERROR("UNALLOCATED %zu bytes AT %s:%d", pair.size, pair.file, pair.line);
+        }
     }
 }
 
-void init_mem_tracking() {
+void init_mem_tracking(void) {
     if (allocated_mem.data == NULL) {
         allocated_mem = vec_mem_pair_init();
         atexit(mem_atexit);
@@ -44,7 +54,13 @@ void* tmalloc(size_t size) {
     void* ptr = malloc(size);
 #if defined(HE_MEM_TRACK)
     init_mem_tracking();
-    struct mem_pair pair = {ptr, size, "", -1};
+    struct mem_pair pair = {ptr,
+                            size,
+                            "",
+                            -1,
+                            full_trace_mod_level_func,
+                            full_trace_mod_level_file,
+                            full_trace_mod_level_line};
     vec_mem_pair_push_back(&allocated_mem, pair);
     size_t used = get_allocated_memory();
     printf("USED MEM: %zu\n", used);
@@ -90,7 +106,15 @@ void* trace_tmalloc(const char* ___file__, int __line__, size_t size) {
     void* ptr = malloc(size);
 #if defined(HE_MEM_TRACK) && defined(HE_MEM_TRACK_TRACE)
     init_mem_tracking();
-    struct mem_pair pair = {ptr, size, ___file__, __line__};
+    struct mem_pair pair = {
+            ptr,
+            size,
+            ___file__,
+            __line__,
+            full_trace_mod_level_func,
+            full_trace_mod_level_file,
+            full_trace_mod_level_line
+    };
     vec_mem_pair_push_back(&allocated_mem, pair);
     size_t used = get_allocated_memory();
     printf("USED MEM: %zu\n", used);

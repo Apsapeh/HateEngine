@@ -2,7 +2,11 @@
 
 #include "../canvas_item.h"
 
-// [[API Generator]]
+/**
+ * @brief
+ *
+ * @api
+ */
 typedef struct {
     CanvasItem canvas_item;
     // Add your custom fields here
@@ -12,5 +16,9 @@ void control_init(Control* this, enum ObjectType object_type, const char* name);
 
 void control_free(Control* this);
 
-// [[API Generator]]
+/**
+ * @brief
+ *
+ * @api
+ */
 Control* control_new(const char* name);

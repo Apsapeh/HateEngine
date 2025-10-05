@@ -2,138 +2,185 @@
 
 #include <error.h>
 
-enum WindowServerWindowVSync {
-    WindowServerVsyncDisabled = 0,
-    WindowServerVsyncEnabled = 1,
-    WindowServerVsyncEnabledAsync = 2,
-    WindowServerWindowUnknown = 100
-};
+/*
+API ENUM {
+        "name": "WindowServerWindowVSync",
+        "type": "char",
+        "values": [
+                ["Disabled", "d"],
+                ["Enabled", "e"],
+                ["EnabledAsync", "a"]
+        ]
+}
+*/
 
-enum WindowServerWindowMode {
-    WindowServerWindowModeWindowed = 0,
-    WindowServerWindowModeFullscreen = 1,
-    WindowServerWindowModeBorderlessFullscreen = 2,
-    WindowServerWindowModeUnknown = 100
-};
+#define WINDOW_SERVER_WINDOW_VSYNC_DISABLED 'd'
+#define WINDOW_SERVER_WINDOW_VSYNC_ENABLED 'e'
+#define WINDOW_SERVER_WINDOW_VSYNC_ENABLED_ASYNC 'a'
 
+/**
+ * 'd' - disabled
+ *
+ * 'e' - enabled
+ *
+ * 'a' - enabled async
+ *
+ * @api
+ */
+typedef char WindowServerWindowVSync;
+
+
+/*
+API ENUM {
+        "name": "WindowServerWindowMode",
+        "type": "char",
+        "values": [
+                ["Windowed", "w"],
+                ["Fullscreen", "f"],
+                ["BorderlessFullscreen", "b"]
+        ]
+}
+*/
+
+#define WINDOW_SERVER_WINDOW_MODE_WINDOWED 'w'
+#define WINDOW_SERVER_WINDOW_MODE_FULLSCREEN 'f'
+#define WINDOW_SERVER_WINDOW_MODE_BORDERLESS_FULLSCREEN 'b'
+
+/**
+ * 'w' - windowed
+ *
+ * 'f' - exclusive fullscreen
+ *
+ * 'b' - borderless fullscreen
+ *
+ * @api
+ */
+typedef char WindowServerWindowMode;
+
+/**
+ * @brief
+ *
+ * @api
+ */
 typedef struct WindowServerWindow WindowServerWindow;
 
+/**
+ * @brief
+ *
+ * @api
+ */
 typedef struct WindowServerDisplay WindowServerDisplay;
 
-// #define FN(fn, ...) (*fn)(__VA_ARGS__)
-// #define METHOD(fn) FN(fn, WindowServerWindow* this)
-// #define METHOD_ARGS(fn, ...) FN(fn, WindowServerWindow* this, __VA_ARGS__)
 
-/// [[API Generator]]
-// DECLARE_RESULT(WindowServerWindowPtr, WindowServerWindow*);
-/// [[API Generator]]
-// DECLARE_RESULT(WindowServerWindowVSyncEnum, enum WindowServerWindowVSync);
-/// [[API Generator]]
-// DECLARE_RESULT(WindowServerWindowModeEnum, enum WindowServerWindowMode);
+// [[API Generator: server]]
+/*
+{fn_prefix: "window_server_", init_method: "___hate_engine_runtime_init_window_server"}
+ */
 
 
-typedef Error (*WindowServerBackend_create_window)(
-        const char* title, int w, int h, WindowServerWindow* parent, WindowServerWindow** out
-);
-
-typedef Error (*WindowServerBackend_destroy_window)(WindowServerWindow* this);
-
-typedef Error (*WindowServerBackend_window_set_title)(WindowServerWindow* this, const char* title);
-typedef Error (*WindowServerBackend_window_get_title)(WindowServerWindow* this, const char** out);
-
-typedef Error (*WindowServerBackend_window_set_vsync)(
-        WindowServerWindow* this, enum WindowServerWindowVSync vsync
-);
-typedef Error (*WindowServerBackend_window_get_vsync)(
-        WindowServerWindow* this, enum WindowServerWindowVSync* out
-);
-
-typedef Error (*WindowServerBackend_window_set_mode)(
-        WindowServerWindow* this, enum WindowServerWindowMode mode
-);
-typedef Error (*WindowServerBackend_window_get_mode)(
-        WindowServerWindow* this, enum WindowServerWindowMode* out
-);
-
-typedef Error (*WindowServerBackend_window_set_size)(WindowServerWindow* this, int w, int h);
-typedef Error (*WindowServerBackend_window_get_size)(WindowServerWindow* this, int* w, int* h);
-
-typedef Error (*WindowServerBackend_window_set_position)(WindowServerWindow* this, int x, int y);
-typedef Error (*WindowServerBackend_window_get_position)(WindowServerWindow* this, int* x, int* y);
-
-typedef Error (*WindowServerBackend_window_set_fullscreen_display)(
-        WindowServerWindow* this, WindowServerDisplay* fullscreen
-);
-
-// [[API Generator]]
+/**
+ * @api server
+ * @api_config {
+ *     "fn_prefix": "window_server_",
+ *     "init_method": "___hate_engine_runtime_init_window_server",
+ *     "global_server_backend_var": "WindowServer"
+ * }
+ */
 typedef struct {
-    WindowServerBackend_create_window create_window;
-    WindowServerBackend_destroy_window destroy_window;
+    Error (*create_window)(
+            const char* title, int w, int h, WindowServerWindow* parent, WindowServerWindow** out
+    );
+    Error (*destroy_window)(WindowServerWindow* this);
 
-    WindowServerBackend_window_set_title window_set_title;
-    WindowServerBackend_window_get_title window_get_title;
+    Error (*window_set_title)(WindowServerWindow* this, const char* title);
+    Error (*window_get_title)(WindowServerWindow* this, const char** out);
 
-    WindowServerBackend_window_set_vsync window_set_vsync;
-    WindowServerBackend_window_get_vsync window_get_vsync;
+    /**
+     * @brief HOLA BOLA
+     *
+     */
+    Error (*window_set_mode)(WindowServerWindow* this, WindowServerWindowMode mode);
+    Error (*window_get_mode)(WindowServerWindow* this, WindowServerWindowMode* out);
 
-    WindowServerBackend_window_set_mode window_set_mode;
-    WindowServerBackend_window_get_mode window_get_mode;
+    Error (*window_set_size)(WindowServerWindow* this, int w, int h);
+    Error (*window_get_size)(WindowServerWindow* this, int* w, int* h);
 
-    WindowServerBackend_window_set_size window_set_size;
-    WindowServerBackend_window_get_size window_get_size;
+    Error (*window_set_position)(WindowServerWindow* this, int x, int y);
+    Error (*window_get_position)(WindowServerWindow* this, int* x, int* y);
 
-    WindowServerBackend_window_set_position window_set_position;
-    WindowServerBackend_window_get_position window_get_position;
-
-    WindowServerBackend_window_set_fullscreen_display window_set_fullscreen_display;
+    Error (*window_set_fullscreen_display)(WindowServerWindow* this, WindowServerDisplay* fullscreen);
 } WindowServerBackend;
+
+/*
+
+    тип 'server' будет генерировать:
+
+    extern функции-переменные
+
+    реализации функций-переменных
+
+    init метод для инициализации функций-переменных
+
+ */
 
 // Static global WindowServer
 extern WindowServerBackend WindowServer;
 
-//
-// extern WindowServerWindow
-
-
-/*
+/**
  * @brief Initialize the static variables and default backends
  */
 void window_server_init(void);
 
-// [[API Generator]]
-/*
+/**
  * @brief Register a backend
  * @return "InvalidArgument" if name is NULL or backend is NULL
  * @return "AlreadyExists" if a backend with the same name is already registered
+ *
+ * @api
  */
 Error window_server_register_backend(const char* name, WindowServerBackend* backend);
 
-// [[API Generator]]
-/*
+/**
  * @brief Load a backend. First you should register them via window_server_register_backend
  * @warning If the backend is already loaded, this function does nothing.
  * @return "InvalidArgument" if name is NULL
  * @return "NotFound" if a backend with the given name is not registered
  * @return "InvalidState" if the backend is already loaded
+ *
+ * @api
  */
 Error window_server_load_backend(const char* name);
 
 
 /* ====================> WindowServerBackend functions <==================== */
 
-// [[API Generator]]
-/*
+/**
  * @brief Create a new WindowServerBackend instance
  * @return NULL if memory allocation fails
+ *
+ * @api
  */
 WindowServerBackend* window_server_backend_new(void);
 
-// [[API Generator]]
-/*
+/**
  * @brief Set a function pointer for a backend
  * @return "InvalidArgument" if name is NULL or func is NULL
- * @return "AlreadyExists" if a function with the same name is already registered
+ * @return "NotFound" if a function with the given name does not exist in the backend
+ *
+ * @api
  */
 Error window_server_backend_set_function(
         WindowServerBackend* backend, const char* name, void (*function)(void)
+);
+
+
+/**
+ * @brief Get a function pointer for a backend
+ * @return "InvalidArgument" if backend is NULL or name is NULL or function is NULL
+ * @return "NotFound" if a function with the given name is not registered
+ *
+ * @api
+ */
+Error window_server_backend_get_function(
+        WindowServerBackend* backend, const char* name, void (**function)(void)
 );

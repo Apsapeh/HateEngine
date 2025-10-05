@@ -25,7 +25,7 @@ bool vfs_mount_res(const char* path, const char* mount_point) {
     return true;
 }
 
-bool vfs_unmount_res(const char* path, const char* mount_point) {
+bool vfs_unmount_res(const char* mount_point) {
     // TODO: impl
     return true;
 }
@@ -369,43 +369,54 @@ FileStream* vfs_res_stream_open(const char* path) {
 
 
 void* vfs_usr_read_file(const char* path, size_t* size, bool prefer_res) {
+    LOG_FATAL("NOT IMPLEMENTED");
 }
 
 bool vfs_usr_write_file(const char* path, const void* data, size_t size) {
+    LOG_FATAL("NOT IMPLEMENTED");
 }
 
 
 FileStream* vfs_usr_stream_open(const char* path, bool prefer_res) {
+    LOG_FATAL("NOT IMPLEMENTED");
 }
 
 
 size_t vfs_stream_size(FileStream* stream) {
+    LOG_FATAL("NOT IMPLEMENTED");
 }
 
 
 size_t vfs_stream_read_n(FileStream* stream, void* buffer, size_t size) {
+    LOG_FATAL("NOT IMPLEMENTED");
 }
 
 
 void* vfs_stream_read_all(FileStream* stream, size_t* size) {
+    LOG_FATAL("NOT IMPLEMENTED");
 }
 
 
 size_t vfs_stream_write(FileStream* stream, void* buffer, size_t size) {
+    LOG_FATAL("NOT IMPLEMENTED");
 }
 
 
-bool vfs_stream_seek(FileStream* stream, enum FSSeekFrom whence, size_t offset) {
+bool vfs_stream_seek(FileStream* stream, FSSeekFrom whence, size_t offset) {
+    LOG_FATAL("NOT IMPLEMENTED");
 }
 
 
 size_t vfs_stream_tell(FileStream* stream, bool* success) {
+    LOG_FATAL("NOT IMPLEMENTED");
 }
 
 
 bool vfs_stream_flush(FileStream* stream) {
+    LOG_FATAL("NOT IMPLEMENTED");
 }
 
 
 void vfs_stream_close(FileStream* stream) {
+    LOG_FATAL("NOT IMPLEMENTED");
 }

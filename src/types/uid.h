@@ -2,8 +2,16 @@
 
 #include <stdint.h>
 
-// [[API Generator: forward]]
+/**
+ * @brief
+ *
+ * @api
+ */
 typedef uint64_t UID;
 
-// [[API Generator]]
+/**
+ * @brief
+ *
+ * @api
+ */
 UID uid_new(void);

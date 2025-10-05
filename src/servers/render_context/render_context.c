@@ -1,0 +1,97 @@
+// #include "window_server.h"
+// #include "error.h"
+// #include "log.h"
+// #include <types/vector.h>
+
+// /* ==> Backends <== */
+// #include "sdl3_backend/mod.h"
+// /* ================ */
+
+// WindowServerBackend WindowServer;
+
+// struct BackendPair {
+//     const char* name;
+//     WindowServerBackend* backend;
+// };
+
+
+// vector_template_def(BackendPair, struct BackendPair);
+// vector_template_impl(BackendPair, struct BackendPair);
+
+// static vec_BackendPair registred_backends;
+
+// void window_server_init(void) {
+//     registred_backends = vec_BackendPair_init();
+
+//     // Register default backend
+//     // window_server_register_backend("SDL3", window_server_sdl3_backend_init());
+// }
+
+// Error window_server_register_backend(const char* name, WindowServerBackend* backend) {
+//     ERROR_ARGS_CHECK_2(name, backend)
+
+//     for (size_t i = 0; i < registred_backends.size; i++) {
+//         if (strcmp(registred_backends.data[i].name, name) == 0) {
+//             LOG_ERROR("Backend with name '%s' already registered", name);
+//             return ERROR_ALREADY_EXISTS;
+//         }
+//     }
+
+//     vec_BackendPair_push_back(&registred_backends, (struct BackendPair) {name, backend});
+
+//     return ERROR_SUCCESS;
+// }
+
+// Error window_server_load_backend(const char* name) {
+//     return ERROR_SUCCESS;
+// }
+
+
+// /* ====================> WindowServerBackend functions <==================== */
+
+// WindowServerBackend* window_server_backend_new(void) {
+//     WindowServerBackend* backend = tmalloc(sizeof(WindowServerBackend));
+
+//     // TODO: Add default functions
+
+//     return backend;
+// }
+
+// Error window_server_backend_set_function(
+//         WindowServerBackend* backend, const char* name, void (*function)(void)
+// ) {
+//     if (!backend) {
+//         LOG_ERROR("Backend is NULL");
+//         return ERROR_INVALID_ARGUMENT;
+//     }
+//     if (!name) {
+//         LOG_ERROR("Function name is NULL");
+//         return ERROR_INVALID_ARGUMENT;
+//     }
+//     if (!function) {
+//         LOG_ERROR("Function pointer is NULL");
+//         return ERROR_INVALID_ARGUMENT;
+//     }
+
+// #define IF(func, cast)                                                                                  \
+//     if (!strcmp(name, #func)) {                                                                         \
+//         backend->func = (cast) function;                                                                \
+//     }
+// #define ELIF(func, cast) else IF(func, cast)
+
+//     IF(create_window, WindowServerBackend_create_window)
+//     ELIF(destroy_window, WindowServerBackend_destroy_window)
+//     ELIF(window_set_title, WindowServerBackend_window_set_title)
+//     ELIF(window_get_title, WindowServerBackend_window_get_title)
+//     ELIF(window_set_size, WindowServerBackend_window_set_size)
+//     ELIF(window_get_size, WindowServerBackend_window_get_size)
+//     else {
+//         LOG_ERROR("Unknown function name: %s", name);
+//         return ERROR_INVALID_ARGUMENT;
+//     }
+
+// #undef IF
+// #undef ELIF
+
+//     return ERROR_SUCCESS;
+// }

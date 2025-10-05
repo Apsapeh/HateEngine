@@ -5,8 +5,33 @@
 
 typedef struct FSFileStream FSFileStream;
 
-// [[API Generator: forward]]
-enum FSSeekFrom { FSSeekFromStart, FSSeekFromCurrent, FSSeekFromEnd };
+
+/*
+API ENUM {
+        "name": "FSSeekFrom",
+        "type": "char",
+        "values": [
+                ["Start", "s"],
+                ["Current", "c"],
+                ["End", "e"]
+        ]
+}
+*/
+
+#define FS_SEEK_FROM_START 's'
+#define FS_SEEK_FROM_CURRENT 'c'
+#define FS_SEEK_FROM_END 'e'
+
+/**
+ * 's' - Seek from start
+ *
+ * 'c' - Seek from current
+ *
+ * 'e' - Seek from end
+ *
+ * @api
+ */
+typedef char FSSeekFrom;
 
 /**
  * @brief Return path to directory containing the executable (in most OSes)
@@ -107,7 +132,7 @@ size_t fs_stream_write(FSFileStream* stream, void* buffer, size_t size);
  * @param offset
  * @return final offset
  */
-size_t fs_stream_seek(FSFileStream* stream, enum FSSeekFrom from, size_t offset);
+size_t fs_stream_seek(FSFileStream* stream, FSSeekFrom from, size_t offset);
 
 /**
  * @brief Get current position in file stream

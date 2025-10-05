@@ -149,14 +149,14 @@ void* fs_stream_read_all(FSFileStream* stream, size_t* size) {
         return NULL;
     }
 
-    size_t eof = fs_stream_seek(stream, FSSeekFromEnd, 0);
+    size_t eof = fs_stream_seek(stream, FS_SEEK_FROM_END, 0);
     if (eof == 0) {
         if (size)
             *size = 0;
         return NULL;
     }
 
-    fs_stream_seek(stream, FSSeekFromStart, curr_pos);
+    fs_stream_seek(stream, FS_SEEK_FROM_START, curr_pos);
     size_t file_size = eof - curr_pos;
 
     if (file_size == 0) {
@@ -186,20 +186,20 @@ size_t fs_stream_write(FSFileStream* stream, void* buffer, size_t size) {
     return bytes_written;
 }
 
-size_t fs_stream_seek(FSFileStream* stream, enum FSSeekFrom from, size_t offset) {
+size_t fs_stream_seek(FSFileStream* stream, FSSeekFrom from, size_t offset) {
     if (stream == NULL) {
         return false;
     }
 
     int whence;
     switch (from) {
-        case FSSeekFromStart:
+        case FS_SEEK_FROM_START:
             whence = SDL_IO_SEEK_SET;
             break;
-        case FSSeekFromCurrent:
+        case FS_SEEK_FROM_CURRENT:
             whence = SDL_IO_SEEK_CUR;
             break;
-        case FSSeekFromEnd:
+        case FS_SEEK_FROM_END:
             whence = SDL_IO_SEEK_END;
             break;
         default:

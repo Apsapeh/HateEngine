@@ -3,7 +3,11 @@
 #include "../node.h"
 
 
-// [[API Generator]]
+/**
+ * @brief
+ *
+ * @api
+ */
 typedef struct {
     Node node;
     // Add your custom fields here
@@ -13,5 +17,7 @@ void canvas_item_init(CanvasItem* this, enum ObjectType object_type, const char*
 
 void canvas_item_free(CanvasItem* this);
 
-// [[API Generator]]
+/**
+ * @api
+ */
 CanvasItem* canvas_item_new(const char* name);

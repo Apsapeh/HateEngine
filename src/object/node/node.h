@@ -6,7 +6,11 @@
 #include "../object.h"
 #include "types/vector.h"
 
-// [[API Generator]]
+/**
+ * @brief
+ *
+ * @api
+ */
 typedef struct {
     Object object;
     char* name;
@@ -18,29 +22,37 @@ void node_init(Node* this, enum ObjectType object_type, const char* name);
 void node_free(Node* node);
 
 
-// [[API Generator]]
+/**
+ * @api
+ */
 Node* node_new(const char* name);
 
-// [[API Generator]]
+/**
+ * @api
+ */
 Node* from_node(Node* node);
 
 
-// [[API Generator]]
+/**
+ * @api
+ */
 void node_set_name(Node* node, const char* name);
 
-// [[API Generator]]
+/**
+ * @api
+ */
 const char* node_get_name(Node* node);
 
-// [[API Generator]]
 /**
  * @brief Add a child node to a parent node
  * @warning Take ownership of child. Do not free it!
  * @param node
  * @param child
+ *
+ * @api
  */
 void node_add_child(Node* node, Node* child);
 
-// [[API Generator]]
 /**
  * @brief Remove and free a child node by pointer from a parent node
  *
@@ -48,10 +60,11 @@ void node_add_child(Node* node, Node* child);
  * @param child
  * @return true if child was removed
  * @return false if child was not found
+ *
+ * @api
  */
 bool node_remove_child(Node* node, Node* child);
 
-// [[API Generator]]
 /**
  * @brief Remove and free a child node by name from a parent node
  *
@@ -59,10 +72,11 @@ bool node_remove_child(Node* node, Node* child);
  * @param name
  * @return true if child was removed
  * @return false if child was not found
+ *
+ * @api
  */
 bool node_remove_child_by_name(Node* node, const char* name);
 
-// [[API Generator]]
 /**
  * @brief Remove and free a child node by uid from a parent node
  *
@@ -70,21 +84,28 @@ bool node_remove_child_by_name(Node* node, const char* name);
  * @param uid
  * @return true if child was removed
  * @return false if child was not found
+ *
+ * @api
  */
 bool node_remove_child_by_uid(Node* node, UID uid);
 
-// [[API Generator]]
+/**
+ * @api
+ */
 bool node_remove_all_children(Node* node);
 
-// [[API Generator]]
 /**
  * @brief Get a child node by name
  *
  * @param node
  * @param name
  * @return Pointer to found child, NULL if not found
+ *
+ * @api
  */
 Node* node_get_child_by_name(Node* node, const char* name);
 
-// [[API Generator]]
+/**
+ * @api
+ */
 Node* node_get_child_by_uid(Node* node, UID uid);
