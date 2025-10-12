@@ -1,6 +1,6 @@
 #pragma once
 
-#include <stddef.h>
+#include "types/types.h"
 
 /**
  * @brief Malloc with tracking if compiled with HE_MEM_TRACK
@@ -10,7 +10,7 @@
  *
  * @api
  */
-void* tmalloc(size_t size);
+void* tmalloc(usize size);
 
 /**
  * @brief Realloc with tracking if compiled with HE_MEM_TRACK
@@ -41,6 +41,12 @@ void* trace_trealloc(const char* ___file__, int __line__, void* ptr, size_t size
 #define tmalloc(size) trace_tmalloc(__FILE__, __LINE__, size)
 #define trealloc(ptr, size) trace_trealloc(__FILE__, __LINE__, ptr, size)
 #endif
+
+#define tmalloc_or_err(size, var_name)                                                                  \
+    tmalloc(size);                                                                                      \
+    if (!var_name) {                                                                                    \
+        return ERROR_ALLOCATION_FAILED;                                                                 \
+    }
 
 
 /**

@@ -1,97 +1,131 @@
-// #include "window_server.h"
-// #include "error.h"
-// #include "log.h"
-// #include <types/vector.h>
+#include "render_context.h"
+#include "error.h"
+#include "log.h"
+#include <types/vector.h>
 
-// /* ==> Backends <== */
-// #include "sdl3_backend/mod.h"
-// /* ================ */
+/* ==> Backends <== */
+#include "opengl_13/sdl3/render_context_opengl_13_sdl3.h"
+/* ================ */
 
-// WindowServerBackend WindowServer;
+RenderContextBackend RenderContext;
 
-// struct BackendPair {
-//     const char* name;
-//     WindowServerBackend* backend;
-// };
-
-
-// vector_template_def(BackendPair, struct BackendPair);
-// vector_template_impl(BackendPair, struct BackendPair);
-
-// static vec_BackendPair registred_backends;
-
-// void window_server_init(void) {
-//     registred_backends = vec_BackendPair_init();
-
-//     // Register default backend
-//     // window_server_register_backend("SDL3", window_server_sdl3_backend_init());
-// }
-
-// Error window_server_register_backend(const char* name, WindowServerBackend* backend) {
-//     ERROR_ARGS_CHECK_2(name, backend)
-
-//     for (size_t i = 0; i < registred_backends.size; i++) {
-//         if (strcmp(registred_backends.data[i].name, name) == 0) {
-//             LOG_ERROR("Backend with name '%s' already registered", name);
-//             return ERROR_ALREADY_EXISTS;
-//         }
-//     }
-
-//     vec_BackendPair_push_back(&registred_backends, (struct BackendPair) {name, backend});
-
-//     return ERROR_SUCCESS;
-// }
-
-// Error window_server_load_backend(const char* name) {
-//     return ERROR_SUCCESS;
-// }
+struct RenderContextBackendPair {
+    const char* render_server_name;
+    const char* window_server_name;
+    RenderContextBackend* backend;
+};
 
 
-// /* ====================> WindowServerBackend functions <==================== */
+vector_template_def(RenderContextBackendPair, struct RenderContextBackendPair);
+vector_template_impl(RenderContextBackendPair, struct RenderContextBackendPair);
 
-// WindowServerBackend* window_server_backend_new(void) {
-//     WindowServerBackend* backend = tmalloc(sizeof(WindowServerBackend));
+static vec_RenderContextBackendPair registred_backends;
 
-//     // TODO: Add default functions
+void render_context_init(void) {
+    registred_backends = vec_RenderContextBackendPair_init();
 
-//     return backend;
-// }
+    // Register default backend
+    render_context_opengl_13_sdl3_backend_register();
+}
 
-// Error window_server_backend_set_function(
-//         WindowServerBackend* backend, const char* name, void (*function)(void)
-// ) {
-//     if (!backend) {
-//         LOG_ERROR("Backend is NULL");
-//         return ERROR_INVALID_ARGUMENT;
-//     }
-//     if (!name) {
-//         LOG_ERROR("Function name is NULL");
-//         return ERROR_INVALID_ARGUMENT;
-//     }
-//     if (!function) {
-//         LOG_ERROR("Function pointer is NULL");
-//         return ERROR_INVALID_ARGUMENT;
-//     }
+Error render_context_register_backend(
+        const char* render_server_name, const char* window_server_name, RenderContextBackend* backend
+) {
+    ERROR_ARGS_CHECK_3(render_server_name, window_server_name, backend);
 
-// #define IF(func, cast)                                                                                  \
-//     if (!strcmp(name, #func)) {                                                                         \
-//         backend->func = (cast) function;                                                                \
-//     }
-// #define ELIF(func, cast) else IF(func, cast)
+    for (size_t i = 0; i < registred_backends.size; i++) {
+        if (strcmp(registred_backends.data[i].render_server_name, render_server_name) == 0 &&
+            strcmp(registred_backends.data[i].window_server_name, window_server_name) == 0) {
+            LOG_ERROR(
+                    "Backend with RenderServer = '%s' and WindowServer = '%s' already registered",
+                    render_server_name, window_server_name
+            );
+            return ERROR_ALREADY_EXISTS;
+        }
+    }
 
-//     IF(create_window, WindowServerBackend_create_window)
-//     ELIF(destroy_window, WindowServerBackend_destroy_window)
-//     ELIF(window_set_title, WindowServerBackend_window_set_title)
-//     ELIF(window_get_title, WindowServerBackend_window_get_title)
-//     ELIF(window_set_size, WindowServerBackend_window_set_size)
-//     ELIF(window_get_size, WindowServerBackend_window_get_size)
-//     else {
-//         LOG_ERROR("Unknown function name: %s", name);
-//         return ERROR_INVALID_ARGUMENT;
-//     }
+    vec_RenderContextBackendPair_push_back(
+            &registred_backends,
+            (struct RenderContextBackendPair) {render_server_name, window_server_name, backend}
+    );
 
-// #undef IF
-// #undef ELIF
+    return ERROR_SUCCESS;
+}
 
-//     return ERROR_SUCCESS;
-// }
+Error render_context_load_backend(const char* render_server_name, const char* window_server_name) {
+    ERROR_ARGS_CHECK_2(render_server_name, window_server_name);
+
+    for (size_t i = 0; i < registred_backends.size; i++) {
+        if (strcmp(registred_backends.data[i].render_server_name, render_server_name) == 0 &&
+            strcmp(registred_backends.data[i].window_server_name, window_server_name) == 0) {
+
+            RenderContext = *registred_backends.data[i].backend;
+            return ERROR_SUCCESS;
+        }
+    }
+
+    return ERROR_NOT_FOUND;
+}
+
+
+/* ====================> RenderContextBackend functions <==================== */
+static Error backend_set_get(
+        RenderContextBackend* backend, const char* name, void (**fn)(void), u8 is_set
+);
+
+RenderContextBackend* render_context_backend_new(void) {
+    RenderContextBackend* backend = tmalloc(sizeof(RenderContextBackend));
+
+    // TODO: Add default functions
+
+    return backend;
+}
+
+Error render_context_backend_set_function(
+        RenderContextBackend* backend, const char* name, void (*function)(void)
+) {
+    ERROR_ARGS_CHECK_3(backend, name, function);
+    return backend_set_get(backend, name, (void (**)(void)) function, 1);
+}
+
+Error render_context_backend_get_function(
+        RenderContextBackend* backend, const char* name, void (**function)(void)
+) {
+    ERROR_ARGS_CHECK_3(backend, name, function);
+    return backend_set_get(backend, name, function, 0);
+}
+
+
+static Error backend_set_get(
+        RenderContextBackend* backend, const char* name, void (**fn)(void), u8 is_set
+) {
+    typedef void (**fn_t)(void);
+    struct fn_pair {
+        const char* name;
+        fn_t function;
+    };
+
+    // TODO: generate with API Generator
+    const struct fn_pair pairs[] = {
+            {"_init", (fn_t) &backend->_init},
+            {"_quit", (fn_t) &backend->_quit},
+            {"create_surface", (fn_t) &backend->create_surface},
+            {"destroy_surface", (fn_t) &backend->destroy_surface},
+            {"surface_make_current", (fn_t) &backend->surface_make_current},
+            {"surface_present", (fn_t) &backend->surface_present},
+            {"get_proc_addr", (fn_t) &backend->get_proc_addr},
+    };
+
+    for (usize i = 0; i < sizeof(pairs) / sizeof(pairs[0]); i++) {
+        if (!strcmp(name, pairs[i].name)) {
+            if (is_set)
+                *pairs[i].function = (void (*)(void)) fn;
+            else
+                *fn = *pairs[i].function;
+            return ERROR_SUCCESS;
+        }
+    }
+
+    LOG_ERROR("Unknown function name: %s", name);
+    return ERROR_NOT_FOUND;
+}

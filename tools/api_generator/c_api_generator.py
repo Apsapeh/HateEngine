@@ -160,7 +160,7 @@ def run(data: ParseResult):
             if cast_args == "":
                 cast_args = "void"
         
-            servers_init += f"        raw_{server.fn_prefix}backend_get_function(backend, \"{method.name}\", (void (**)(void)){method_name});\n"
+            servers_init += f"        raw_{server.fn_prefix}backend_get_function(backend, \"{method.name}\", (void (**)(void))&{method_name});\n"
             norm_methods_init += f"            {norm_method_name} = {method_name};\n"
 
 
@@ -172,7 +172,7 @@ def run(data: ParseResult):
         servers_init += norm_methods_init
         servers_init += f"        #endif\n"
         
-        servers_init += f"    }}"
+        servers_init += f"    }}\n\n"
             
 
     to_replace = (

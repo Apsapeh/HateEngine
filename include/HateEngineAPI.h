@@ -16,6 +16,8 @@ typedef int16_t i16;
 typedef int32_t i32;
 typedef int64_t i64;
 
+typedef size_t usize;
+
 typedef float f32;
 typedef double f64;
 
@@ -23,8 +25,10 @@ typedef uintptr_t uptr;
 typedef intptr_t iptr;
 
 
-typedef i8* str;
-typedef const i8* c_str;
+typedef char* str;
+typedef const char* c_str;
+
+typedef void (*fptr) (void);
 
 
 typedef c_str Error;
@@ -59,16 +63,26 @@ typedef c_str Error;
 
 
 #define ERROR_ARG_CHECK(arg)                                                                            \
-    if (!(arg)) {                                                                                       \
-        LOG_ERROR("Invalid argument: " #arg);                                                           \
-        return ERROR_INVALID_ARGUMENT;                                                                  \
-    }
+    do {                                                                                                \
+        if (!(arg)) {                                                                                   \
+            LOG_ERROR("Invalid argument (is NULL): " #arg);                                             \
+            return ERROR_INVALID_ARGUMENT;                                                              \
+        }                                                                                               \
+    } while (0)
 
 #define ERROR_ARGS_CHECK_1(a) ERROR_ARG_CHECK(a)
-#define ERROR_ARGS_CHECK_2(a, b) ERROR_ARG_CHECK(a) ERROR_ARG_CHECK(b)
-#define ERROR_ARGS_CHECK_3(a, b, c) ERROR_ARG_CHECK(a) ERROR_ARG_CHECK(b) ERROR_ARG_CHECK(c)
+#define ERROR_ARGS_CHECK_2(a, b)                                                                        \
+    ERROR_ARG_CHECK(a);                                                                                 \
+    ERROR_ARG_CHECK(b)
+#define ERROR_ARGS_CHECK_3(a, b, c)                                                                     \
+    ERROR_ARG_CHECK(a);                                                                                 \
+    ERROR_ARG_CHECK(b);                                                                                 \
+    ERROR_ARG_CHECK(c)
 #define ERROR_ARGS_CHECK_4(a, b, c, d)                                                                  \
-    ERROR_ARG_CHECK(a) ERROR_ARG_CHECK(b) ERROR_ARG_CHECK(c) ERROR_ARG_CHECK(d)
+    ERROR_ARG_CHECK(a);                                                                                 \
+    ERROR_ARG_CHECK(b);                                                                                 \
+    ERROR_ARG_CHECK(c);                                                                                 \
+    ERROR_ARG_CHECK(d)
 
 
 #define ERROR_ASSERT(error, ...) ERROR_ASSERT_FATAL(error, __VA_ARGS__)
@@ -80,6 +94,7 @@ typedef c_str Error;
 #define ERROR_ALREADY_EXISTS "AlreadyExists"
 #define ERROR_NOT_FOUND "NotFound"
 #define ERROR_INVALID_STATE "InvalidState"
+#define ERROR_ALLOCATION_FAILED "AllocationFailed"
 
 /**
  * @api
@@ -159,6 +174,22 @@ typedef struct WindowServerDisplay WindowServerDisplay;
 typedef struct WindowServerBackend WindowServerBackend;
 
 /**
+ * @brief
+ *
+ * @api
+ */
+typedef struct RenderContextSurface RenderContextSurface;
+
+/**
+ * @api server
+ * @api_config {
+ *     "fn_prefix": "render_context_",
+ *     "init_method": "___hate_engine_runtime_init_render_context"
+ * }
+ */
+typedef struct RenderContextBackend RenderContextBackend;
+
+/**
  * @brief Primitive 4x4 matrix
  *
  * Raw data - m
@@ -228,7 +259,7 @@ typedef u8 WindowServerWindowVSync;
  *
  * @api
  */
-typedef char WindowServerWindowMode;
+typedef u8 WindowServerWindowMode;
 
 #define FS_SEEK_FROM_START 's'
 
@@ -277,7 +308,7 @@ extern void (*raw___he_update_full_trace_info)(const char * func, const char * f
  *
  * @api
  */
-extern void * (*raw_tmalloc)(int size);
+extern void * (*raw_tmalloc)(usize size);
 
 /**
  * @brief Realloc with tracking if compiled with HE_MEM_TRACK
@@ -1039,7 +1070,53 @@ extern Error (*raw_window_server_backend_set_function)(WindowServerBackend * bac
  */
 extern Error (*raw_window_server_backend_get_function)(WindowServerBackend * backend, const char * name, void (** function) (void));
 
-extern Error (*raw_window_server_create_window)(const char * title, int w, int h, WindowServerWindow * parent, WindowServerWindow ** out);
+/**
+ * @brief Register a backend
+ * @return "InvalidArgument" if render_server_name is NULL or window_server_name is NULL or backend is NULL
+ * @return "AlreadyExists" if a backend with the same render_server_name and window_server_name is already registered
+ *
+ * @api
+ */
+extern Error (*raw_render_context_register_backend)(const char * render_server_name, const char * window_server_name, RenderContextBackend * backend);
+
+/**
+ * @brief Load a backend. First you should register them via render_context_register_backend
+ * @warning If the backend is already loaded, this function does nothing.
+ * @return "InvalidArgument" if render_server_name is NULL or window_server_name
+ * @return "NotFound" if a backend with the given names is not registered
+ * @return "InvalidState" if the backend is already loaded
+ *
+ * @api
+ */
+extern Error (*raw_render_context_load_backend)(const char * render_server_name, const char * window_server_name);
+
+/**
+ * @brief Create a new RenderContextBackend instance
+ * @return NULL if memory allocation fails
+ *
+ * @api
+ */
+extern RenderContextBackend * (*raw_render_context_backend_new)(void);
+
+/**
+ * @brief Set a function pointer for a backend
+ * @return "InvalidArgument" if name is NULL or func is NULL
+ * @return "NotFound" if a function with the given name does not exist in the backend
+ *
+ * @api
+ */
+extern Error (*raw_render_context_backend_set_function)(RenderContextBackend * backend, const char * name, void (* function) (void));
+
+/**
+ * @brief Get a function pointer for a backend
+ * @return "InvalidArgument" if backend is NULL or name is NULL or function is NULL
+ * @return "NotFound" if a function with the given name is not registered
+ *
+ * @api
+ */
+extern Error (*raw_render_context_backend_get_function)(RenderContextBackend * backend, const char * name, void (** function) (void));
+
+extern Error (*raw_window_server_create_window)(const char * title, i32 w, i32 h, WindowServerWindow * parent, WindowServerWindow ** out);
 
 extern Error (*raw_window_server_destroy_window)(WindowServerWindow * this);
 
@@ -1055,15 +1132,25 @@ extern Error (*raw_window_server_window_set_mode)(WindowServerWindow * this, Win
 
 extern Error (*raw_window_server_window_get_mode)(WindowServerWindow * this, WindowServerWindowMode * out);
 
-extern Error (*raw_window_server_window_set_size)(WindowServerWindow * this, int w, int h);
+extern Error (*raw_window_server_window_set_size)(WindowServerWindow * this, i32 w, i32 h);
 
-extern Error (*raw_window_server_window_get_size)(WindowServerWindow * this, int * w, int * h);
+extern Error (*raw_window_server_window_get_size)(WindowServerWindow * this, i32 * w, i32 * h);
 
-extern Error (*raw_window_server_window_set_position)(WindowServerWindow * this, int x, int y);
+extern Error (*raw_window_server_window_set_position)(WindowServerWindow * this, i32 x, i32 y);
 
-extern Error (*raw_window_server_window_get_position)(WindowServerWindow * this, int * x, int * y);
+extern Error (*raw_window_server_window_get_position)(WindowServerWindow * this, i32 * x, i32 * y);
 
 extern Error (*raw_window_server_window_set_fullscreen_display)(WindowServerWindow * this, WindowServerDisplay * fullscreen);
+
+extern Error (*raw_render_context_create_surface)(WindowServerWindow * window, RenderContextSurface ** out);
+
+extern Error (*raw_render_context_destroy_surface)(RenderContextSurface * surface);
+
+extern Error (*raw_render_context_surface_make_current)(RenderContextSurface * surface);
+
+extern Error (*raw_render_context_surface_present)(RenderContextSurface * surface);
+
+extern fptr (*raw_render_context_get_proc_addr)(const char * proc);
 
 
 
@@ -1088,7 +1175,7 @@ extern void (*__he_update_full_trace_info)(const char * func, const char * file,
  *
  * @api
  */
-extern void * (*tmalloc)(int size);
+extern void * (*tmalloc)(usize size);
 
 /**
  * @brief Realloc with tracking if compiled with HE_MEM_TRACK
@@ -1850,7 +1937,53 @@ extern Error (*window_server_backend_set_function)(WindowServerBackend * backend
  */
 extern Error (*window_server_backend_get_function)(WindowServerBackend * backend, const char * name, void (** function) (void));
 
-extern Error (*window_server_create_window)(const char * title, int w, int h, WindowServerWindow * parent, WindowServerWindow ** out);
+/**
+ * @brief Register a backend
+ * @return "InvalidArgument" if render_server_name is NULL or window_server_name is NULL or backend is NULL
+ * @return "AlreadyExists" if a backend with the same render_server_name and window_server_name is already registered
+ *
+ * @api
+ */
+extern Error (*render_context_register_backend)(const char * render_server_name, const char * window_server_name, RenderContextBackend * backend);
+
+/**
+ * @brief Load a backend. First you should register them via render_context_register_backend
+ * @warning If the backend is already loaded, this function does nothing.
+ * @return "InvalidArgument" if render_server_name is NULL or window_server_name
+ * @return "NotFound" if a backend with the given names is not registered
+ * @return "InvalidState" if the backend is already loaded
+ *
+ * @api
+ */
+extern Error (*render_context_load_backend)(const char * render_server_name, const char * window_server_name);
+
+/**
+ * @brief Create a new RenderContextBackend instance
+ * @return NULL if memory allocation fails
+ *
+ * @api
+ */
+extern RenderContextBackend * (*render_context_backend_new)(void);
+
+/**
+ * @brief Set a function pointer for a backend
+ * @return "InvalidArgument" if name is NULL or func is NULL
+ * @return "NotFound" if a function with the given name does not exist in the backend
+ *
+ * @api
+ */
+extern Error (*render_context_backend_set_function)(RenderContextBackend * backend, const char * name, void (* function) (void));
+
+/**
+ * @brief Get a function pointer for a backend
+ * @return "InvalidArgument" if backend is NULL or name is NULL or function is NULL
+ * @return "NotFound" if a function with the given name is not registered
+ *
+ * @api
+ */
+extern Error (*render_context_backend_get_function)(RenderContextBackend * backend, const char * name, void (** function) (void));
+
+extern Error (*window_server_create_window)(const char * title, i32 w, i32 h, WindowServerWindow * parent, WindowServerWindow ** out);
 
 extern Error (*window_server_destroy_window)(WindowServerWindow * this);
 
@@ -1866,22 +1999,32 @@ extern Error (*window_server_window_set_mode)(WindowServerWindow * this, WindowS
 
 extern Error (*window_server_window_get_mode)(WindowServerWindow * this, WindowServerWindowMode * out);
 
-extern Error (*window_server_window_set_size)(WindowServerWindow * this, int w, int h);
+extern Error (*window_server_window_set_size)(WindowServerWindow * this, i32 w, i32 h);
 
-extern Error (*window_server_window_get_size)(WindowServerWindow * this, int * w, int * h);
+extern Error (*window_server_window_get_size)(WindowServerWindow * this, i32 * w, i32 * h);
 
-extern Error (*window_server_window_set_position)(WindowServerWindow * this, int x, int y);
+extern Error (*window_server_window_set_position)(WindowServerWindow * this, i32 x, i32 y);
 
-extern Error (*window_server_window_get_position)(WindowServerWindow * this, int * x, int * y);
+extern Error (*window_server_window_get_position)(WindowServerWindow * this, i32 * x, i32 * y);
 
 extern Error (*window_server_window_set_fullscreen_display)(WindowServerWindow * this, WindowServerDisplay * fullscreen);
+
+extern Error (*render_context_create_surface)(WindowServerWindow * window, RenderContextSurface ** out);
+
+extern Error (*render_context_destroy_surface)(RenderContextSurface * surface);
+
+extern Error (*render_context_surface_make_current)(RenderContextSurface * surface);
+
+extern Error (*render_context_surface_present)(RenderContextSurface * surface);
+
+extern fptr (*render_context_get_proc_addr)(const char * proc);
 
 
 #endif
 
 #if defined(HEAPI_LOAD_IMPL)
         void (*raw___he_update_full_trace_info)(const char * func, const char * file, i32 line);
-    void * (*raw_tmalloc)(int size);
+    void * (*raw_tmalloc)(usize size);
     void * (*raw_trealloc)(void * ptr, int size);
     void (*raw_tfree)(void * ptr);
     int (*raw_get_allocated_memory)(void);
@@ -1966,22 +2109,32 @@ extern Error (*window_server_window_set_fullscreen_display)(WindowServerWindow *
     WindowServerBackend * (*raw_window_server_backend_new)(void);
     Error (*raw_window_server_backend_set_function)(WindowServerBackend * backend, const char * name, void (* function) (void));
     Error (*raw_window_server_backend_get_function)(WindowServerBackend * backend, const char * name, void (** function) (void));
-    Error (*raw_window_server_create_window)(const char * title, int w, int h, WindowServerWindow * parent, WindowServerWindow ** out);
+    Error (*raw_render_context_register_backend)(const char * render_server_name, const char * window_server_name, RenderContextBackend * backend);
+    Error (*raw_render_context_load_backend)(const char * render_server_name, const char * window_server_name);
+    RenderContextBackend * (*raw_render_context_backend_new)(void);
+    Error (*raw_render_context_backend_set_function)(RenderContextBackend * backend, const char * name, void (* function) (void));
+    Error (*raw_render_context_backend_get_function)(RenderContextBackend * backend, const char * name, void (** function) (void));
+    Error (*raw_window_server_create_window)(const char * title, i32 w, i32 h, WindowServerWindow * parent, WindowServerWindow ** out);
     Error (*raw_window_server_destroy_window)(WindowServerWindow * this);
     Error (*raw_window_server_window_set_title)(WindowServerWindow * this, const char * title);
     Error (*raw_window_server_window_get_title)(WindowServerWindow * this, const char ** out);
     Error (*raw_window_server_window_set_mode)(WindowServerWindow * this, WindowServerWindowMode mode);
     Error (*raw_window_server_window_get_mode)(WindowServerWindow * this, WindowServerWindowMode * out);
-    Error (*raw_window_server_window_set_size)(WindowServerWindow * this, int w, int h);
-    Error (*raw_window_server_window_get_size)(WindowServerWindow * this, int * w, int * h);
-    Error (*raw_window_server_window_set_position)(WindowServerWindow * this, int x, int y);
-    Error (*raw_window_server_window_get_position)(WindowServerWindow * this, int * x, int * y);
+    Error (*raw_window_server_window_set_size)(WindowServerWindow * this, i32 w, i32 h);
+    Error (*raw_window_server_window_get_size)(WindowServerWindow * this, i32 * w, i32 * h);
+    Error (*raw_window_server_window_set_position)(WindowServerWindow * this, i32 x, i32 y);
+    Error (*raw_window_server_window_get_position)(WindowServerWindow * this, i32 * x, i32 * y);
     Error (*raw_window_server_window_set_fullscreen_display)(WindowServerWindow * this, WindowServerDisplay * fullscreen);
+    Error (*raw_render_context_create_surface)(WindowServerWindow * window, RenderContextSurface ** out);
+    Error (*raw_render_context_destroy_surface)(RenderContextSurface * surface);
+    Error (*raw_render_context_surface_make_current)(RenderContextSurface * surface);
+    Error (*raw_render_context_surface_present)(RenderContextSurface * surface);
+    fptr (*raw_render_context_get_proc_addr)(const char * proc);
 
 
     #if !defined(HEAPI_FULL_TRACE)
             void (*__he_update_full_trace_info)(const char * func, const char * file, i32 line);
-    void * (*tmalloc)(int size);
+    void * (*tmalloc)(usize size);
     void * (*trealloc)(void * ptr, int size);
     void (*tfree)(void * ptr);
     int (*get_allocated_memory)(void);
@@ -2066,23 +2219,33 @@ extern Error (*window_server_window_set_fullscreen_display)(WindowServerWindow *
     WindowServerBackend * (*window_server_backend_new)(void);
     Error (*window_server_backend_set_function)(WindowServerBackend * backend, const char * name, void (* function) (void));
     Error (*window_server_backend_get_function)(WindowServerBackend * backend, const char * name, void (** function) (void));
-    Error (*window_server_create_window)(const char * title, int w, int h, WindowServerWindow * parent, WindowServerWindow ** out);
+    Error (*render_context_register_backend)(const char * render_server_name, const char * window_server_name, RenderContextBackend * backend);
+    Error (*render_context_load_backend)(const char * render_server_name, const char * window_server_name);
+    RenderContextBackend * (*render_context_backend_new)(void);
+    Error (*render_context_backend_set_function)(RenderContextBackend * backend, const char * name, void (* function) (void));
+    Error (*render_context_backend_get_function)(RenderContextBackend * backend, const char * name, void (** function) (void));
+    Error (*window_server_create_window)(const char * title, i32 w, i32 h, WindowServerWindow * parent, WindowServerWindow ** out);
     Error (*window_server_destroy_window)(WindowServerWindow * this);
     Error (*window_server_window_set_title)(WindowServerWindow * this, const char * title);
     Error (*window_server_window_get_title)(WindowServerWindow * this, const char ** out);
     Error (*window_server_window_set_mode)(WindowServerWindow * this, WindowServerWindowMode mode);
     Error (*window_server_window_get_mode)(WindowServerWindow * this, WindowServerWindowMode * out);
-    Error (*window_server_window_set_size)(WindowServerWindow * this, int w, int h);
-    Error (*window_server_window_get_size)(WindowServerWindow * this, int * w, int * h);
-    Error (*window_server_window_set_position)(WindowServerWindow * this, int x, int y);
-    Error (*window_server_window_get_position)(WindowServerWindow * this, int * x, int * y);
+    Error (*window_server_window_set_size)(WindowServerWindow * this, i32 w, i32 h);
+    Error (*window_server_window_get_size)(WindowServerWindow * this, i32 * w, i32 * h);
+    Error (*window_server_window_set_position)(WindowServerWindow * this, i32 x, i32 y);
+    Error (*window_server_window_get_position)(WindowServerWindow * this, i32 * x, i32 * y);
     Error (*window_server_window_set_fullscreen_display)(WindowServerWindow * this, WindowServerDisplay * fullscreen);
+    Error (*render_context_create_surface)(WindowServerWindow * window, RenderContextSurface ** out);
+    Error (*render_context_destroy_surface)(RenderContextSurface * surface);
+    Error (*render_context_surface_make_current)(RenderContextSurface * surface);
+    Error (*render_context_surface_present)(RenderContextSurface * surface);
+    fptr (*render_context_get_proc_addr)(const char * proc);
 
     #endif
 
     void ___hate_engine_runtime_init(void* (*proc_addr)(const char* name)) {
                 raw___he_update_full_trace_info = (void (*)(const char *, const char *, i32))proc_addr("__he_update_full_trace_info");
-        raw_tmalloc = (void * (*)(int))proc_addr("tmalloc");
+        raw_tmalloc = (void * (*)(usize))proc_addr("tmalloc");
         raw_trealloc = (void * (*)(void *, int))proc_addr("trealloc");
         raw_tfree = (void (*)(void *))proc_addr("tfree");
         raw_get_allocated_memory = (int (*)(void))proc_addr("get_allocated_memory");
@@ -2167,6 +2330,11 @@ extern Error (*window_server_window_set_fullscreen_display)(WindowServerWindow *
         raw_window_server_backend_new = (WindowServerBackend * (*)(void))proc_addr("window_server_backend_new");
         raw_window_server_backend_set_function = (Error (*)(WindowServerBackend *, const char *, void (*)(void)))proc_addr("window_server_backend_set_function");
         raw_window_server_backend_get_function = (Error (*)(WindowServerBackend *, const char *, void (**)(void)))proc_addr("window_server_backend_get_function");
+        raw_render_context_register_backend = (Error (*)(const char *, const char *, RenderContextBackend *))proc_addr("render_context_register_backend");
+        raw_render_context_load_backend = (Error (*)(const char *, const char *))proc_addr("render_context_load_backend");
+        raw_render_context_backend_new = (RenderContextBackend * (*)(void))proc_addr("render_context_backend_new");
+        raw_render_context_backend_set_function = (Error (*)(RenderContextBackend *, const char *, void (*)(void)))proc_addr("render_context_backend_set_function");
+        raw_render_context_backend_get_function = (Error (*)(RenderContextBackend *, const char *, void (**)(void)))proc_addr("render_context_backend_get_function");
 
 
         #if !defined(HEAPI_FULL_TRACE)
@@ -2256,22 +2424,27 @@ extern Error (*window_server_window_set_fullscreen_display)(WindowServerWindow *
             window_server_backend_new = raw_window_server_backend_new;
             window_server_backend_set_function = raw_window_server_backend_set_function;
             window_server_backend_get_function = raw_window_server_backend_get_function;
+            render_context_register_backend = raw_render_context_register_backend;
+            render_context_load_backend = raw_render_context_load_backend;
+            render_context_backend_new = raw_render_context_backend_new;
+            render_context_backend_set_function = raw_render_context_backend_set_function;
+            render_context_backend_get_function = raw_render_context_backend_get_function;
 
         #endif
     }
 
     void ___hate_engine_runtime_init_window_server(WindowServerBackend* backend) {
-        raw_window_server_backend_get_function(backend, "create_window", (void (**)(void))raw_window_server_create_window);
-        raw_window_server_backend_get_function(backend, "destroy_window", (void (**)(void))raw_window_server_destroy_window);
-        raw_window_server_backend_get_function(backend, "window_set_title", (void (**)(void))raw_window_server_window_set_title);
-        raw_window_server_backend_get_function(backend, "window_get_title", (void (**)(void))raw_window_server_window_get_title);
-        raw_window_server_backend_get_function(backend, "window_set_mode", (void (**)(void))raw_window_server_window_set_mode);
-        raw_window_server_backend_get_function(backend, "window_get_mode", (void (**)(void))raw_window_server_window_get_mode);
-        raw_window_server_backend_get_function(backend, "window_set_size", (void (**)(void))raw_window_server_window_set_size);
-        raw_window_server_backend_get_function(backend, "window_get_size", (void (**)(void))raw_window_server_window_get_size);
-        raw_window_server_backend_get_function(backend, "window_set_position", (void (**)(void))raw_window_server_window_set_position);
-        raw_window_server_backend_get_function(backend, "window_get_position", (void (**)(void))raw_window_server_window_get_position);
-        raw_window_server_backend_get_function(backend, "window_set_fullscreen_display", (void (**)(void))raw_window_server_window_set_fullscreen_display);
+        raw_window_server_backend_get_function(backend, "create_window", (void (**)(void))&raw_window_server_create_window);
+        raw_window_server_backend_get_function(backend, "destroy_window", (void (**)(void))&raw_window_server_destroy_window);
+        raw_window_server_backend_get_function(backend, "window_set_title", (void (**)(void))&raw_window_server_window_set_title);
+        raw_window_server_backend_get_function(backend, "window_get_title", (void (**)(void))&raw_window_server_window_get_title);
+        raw_window_server_backend_get_function(backend, "window_set_mode", (void (**)(void))&raw_window_server_window_set_mode);
+        raw_window_server_backend_get_function(backend, "window_get_mode", (void (**)(void))&raw_window_server_window_get_mode);
+        raw_window_server_backend_get_function(backend, "window_set_size", (void (**)(void))&raw_window_server_window_set_size);
+        raw_window_server_backend_get_function(backend, "window_get_size", (void (**)(void))&raw_window_server_window_get_size);
+        raw_window_server_backend_get_function(backend, "window_set_position", (void (**)(void))&raw_window_server_window_set_position);
+        raw_window_server_backend_get_function(backend, "window_get_position", (void (**)(void))&raw_window_server_window_get_position);
+        raw_window_server_backend_get_function(backend, "window_set_fullscreen_display", (void (**)(void))&raw_window_server_window_set_fullscreen_display);
         #if !defined(HEAPI_FULL_TRACE)
             window_server_create_window = raw_window_server_create_window;
             window_server_destroy_window = raw_window_server_destroy_window;
@@ -2286,11 +2459,28 @@ extern Error (*window_server_window_set_fullscreen_display)(WindowServerWindow *
             window_server_window_set_fullscreen_display = raw_window_server_window_set_fullscreen_display;
         #endif
     }
+
+    void ___hate_engine_runtime_init_render_context(RenderContextBackend* backend) {
+        raw_render_context_backend_get_function(backend, "create_surface", (void (**)(void))&raw_render_context_create_surface);
+        raw_render_context_backend_get_function(backend, "destroy_surface", (void (**)(void))&raw_render_context_destroy_surface);
+        raw_render_context_backend_get_function(backend, "surface_make_current", (void (**)(void))&raw_render_context_surface_make_current);
+        raw_render_context_backend_get_function(backend, "surface_present", (void (**)(void))&raw_render_context_surface_present);
+        raw_render_context_backend_get_function(backend, "get_proc_addr", (void (**)(void))&raw_render_context_get_proc_addr);
+        #if !defined(HEAPI_FULL_TRACE)
+            render_context_create_surface = raw_render_context_create_surface;
+            render_context_destroy_surface = raw_render_context_destroy_surface;
+            render_context_surface_make_current = raw_render_context_surface_make_current;
+            render_context_surface_present = raw_render_context_surface_present;
+            render_context_get_proc_addr = raw_render_context_get_proc_addr;
+        #endif
+    }
+
+
 #endif
 #endif
 
 #if defined(HEAPI_FULL_TRACE)
-void * full_trace_tmalloc(const char* ___file___, uint32_t ___line___, int);
+void * full_trace_tmalloc(const char* ___file___, uint32_t ___line___, usize);
 void * full_trace_trealloc(const char* ___file___, uint32_t ___line___, void *, int);
 void full_trace_tfree(const char* ___file___, uint32_t ___line___, void *);
 int full_trace_get_allocated_memory(const char* ___file___, uint32_t ___line___);
@@ -2375,21 +2565,31 @@ Error full_trace_window_server_load_backend(const char* ___file___, uint32_t ___
 WindowServerBackend * full_trace_window_server_backend_new(const char* ___file___, uint32_t ___line___);
 Error full_trace_window_server_backend_set_function(const char* ___file___, uint32_t ___line___, WindowServerBackend *, const char *, void (*)(void));
 Error full_trace_window_server_backend_get_function(const char* ___file___, uint32_t ___line___, WindowServerBackend *, const char *, void (**)(void));
-Error full_trace_window_server_create_window(const char* ___file___, uint32_t ___line___, const char *, int, int, WindowServerWindow *, WindowServerWindow **);
+Error full_trace_render_context_register_backend(const char* ___file___, uint32_t ___line___, const char *, const char *, RenderContextBackend *);
+Error full_trace_render_context_load_backend(const char* ___file___, uint32_t ___line___, const char *, const char *);
+RenderContextBackend * full_trace_render_context_backend_new(const char* ___file___, uint32_t ___line___);
+Error full_trace_render_context_backend_set_function(const char* ___file___, uint32_t ___line___, RenderContextBackend *, const char *, void (*)(void));
+Error full_trace_render_context_backend_get_function(const char* ___file___, uint32_t ___line___, RenderContextBackend *, const char *, void (**)(void));
+Error full_trace_window_server_create_window(const char* ___file___, uint32_t ___line___, const char *, i32, i32, WindowServerWindow *, WindowServerWindow **);
 Error full_trace_window_server_destroy_window(const char* ___file___, uint32_t ___line___, WindowServerWindow *);
 Error full_trace_window_server_window_set_title(const char* ___file___, uint32_t ___line___, WindowServerWindow *, const char *);
 Error full_trace_window_server_window_get_title(const char* ___file___, uint32_t ___line___, WindowServerWindow *, const char **);
 Error full_trace_window_server_window_set_mode(const char* ___file___, uint32_t ___line___, WindowServerWindow *, WindowServerWindowMode);
 Error full_trace_window_server_window_get_mode(const char* ___file___, uint32_t ___line___, WindowServerWindow *, WindowServerWindowMode *);
-Error full_trace_window_server_window_set_size(const char* ___file___, uint32_t ___line___, WindowServerWindow *, int, int);
-Error full_trace_window_server_window_get_size(const char* ___file___, uint32_t ___line___, WindowServerWindow *, int *, int *);
-Error full_trace_window_server_window_set_position(const char* ___file___, uint32_t ___line___, WindowServerWindow *, int, int);
-Error full_trace_window_server_window_get_position(const char* ___file___, uint32_t ___line___, WindowServerWindow *, int *, int *);
+Error full_trace_window_server_window_set_size(const char* ___file___, uint32_t ___line___, WindowServerWindow *, i32, i32);
+Error full_trace_window_server_window_get_size(const char* ___file___, uint32_t ___line___, WindowServerWindow *, i32 *, i32 *);
+Error full_trace_window_server_window_set_position(const char* ___file___, uint32_t ___line___, WindowServerWindow *, i32, i32);
+Error full_trace_window_server_window_get_position(const char* ___file___, uint32_t ___line___, WindowServerWindow *, i32 *, i32 *);
 Error full_trace_window_server_window_set_fullscreen_display(const char* ___file___, uint32_t ___line___, WindowServerWindow *, WindowServerDisplay *);
+Error full_trace_render_context_create_surface(const char* ___file___, uint32_t ___line___, WindowServerWindow *, RenderContextSurface **);
+Error full_trace_render_context_destroy_surface(const char* ___file___, uint32_t ___line___, RenderContextSurface *);
+Error full_trace_render_context_surface_make_current(const char* ___file___, uint32_t ___line___, RenderContextSurface *);
+Error full_trace_render_context_surface_present(const char* ___file___, uint32_t ___line___, RenderContextSurface *);
+fptr full_trace_render_context_get_proc_addr(const char* ___file___, uint32_t ___line___, const char *);
 
 
 #if defined(HEAPI_LOAD_IMPL)
-    inline void * full_trace_tmalloc(const char* ___file___, uint32_t ___line___, int size) {
+    inline void * full_trace_tmalloc(const char* ___file___, uint32_t ___line___, usize size) {
     raw___he_update_full_trace_info("tmalloc", ___file___, ___line___);
     void * result = raw_tmalloc(size);
     raw___he_update_full_trace_info("", "", -1);
@@ -2970,7 +3170,42 @@ inline Error full_trace_window_server_backend_get_function(const char* ___file__
     return result;
 }
 
-inline Error full_trace_window_server_create_window(const char* ___file___, uint32_t ___line___, const char * title, int w, int h, WindowServerWindow * parent, WindowServerWindow ** out) {
+inline Error full_trace_render_context_register_backend(const char* ___file___, uint32_t ___line___, const char * render_server_name, const char * window_server_name, RenderContextBackend * backend) {
+    raw___he_update_full_trace_info("render_context_register_backend", ___file___, ___line___);
+    Error result = raw_render_context_register_backend(render_server_name, window_server_name, backend);
+    raw___he_update_full_trace_info("", "", -1);
+    return result;
+}
+
+inline Error full_trace_render_context_load_backend(const char* ___file___, uint32_t ___line___, const char * render_server_name, const char * window_server_name) {
+    raw___he_update_full_trace_info("render_context_load_backend", ___file___, ___line___);
+    Error result = raw_render_context_load_backend(render_server_name, window_server_name);
+    raw___he_update_full_trace_info("", "", -1);
+    return result;
+}
+
+inline RenderContextBackend * full_trace_render_context_backend_new(const char* ___file___, uint32_t ___line___) {
+    raw___he_update_full_trace_info("render_context_backend_new", ___file___, ___line___);
+    RenderContextBackend * result = raw_render_context_backend_new();
+    raw___he_update_full_trace_info("", "", -1);
+    return result;
+}
+
+inline Error full_trace_render_context_backend_set_function(const char* ___file___, uint32_t ___line___, RenderContextBackend * backend, const char * name, void (* function) (void)) {
+    raw___he_update_full_trace_info("render_context_backend_set_function", ___file___, ___line___);
+    Error result = raw_render_context_backend_set_function(backend, name, function);
+    raw___he_update_full_trace_info("", "", -1);
+    return result;
+}
+
+inline Error full_trace_render_context_backend_get_function(const char* ___file___, uint32_t ___line___, RenderContextBackend * backend, const char * name, void (** function) (void)) {
+    raw___he_update_full_trace_info("render_context_backend_get_function", ___file___, ___line___);
+    Error result = raw_render_context_backend_get_function(backend, name, function);
+    raw___he_update_full_trace_info("", "", -1);
+    return result;
+}
+
+inline Error full_trace_window_server_create_window(const char* ___file___, uint32_t ___line___, const char * title, i32 w, i32 h, WindowServerWindow * parent, WindowServerWindow ** out) {
     raw___he_update_full_trace_info("window_server_create_window", ___file___, ___line___);
     Error result = raw_window_server_create_window(title, w, h, parent, out);
     raw___he_update_full_trace_info("", "", -1);
@@ -3012,28 +3247,28 @@ inline Error full_trace_window_server_window_get_mode(const char* ___file___, ui
     return result;
 }
 
-inline Error full_trace_window_server_window_set_size(const char* ___file___, uint32_t ___line___, WindowServerWindow * this, int w, int h) {
+inline Error full_trace_window_server_window_set_size(const char* ___file___, uint32_t ___line___, WindowServerWindow * this, i32 w, i32 h) {
     raw___he_update_full_trace_info("window_server_window_set_size", ___file___, ___line___);
     Error result = raw_window_server_window_set_size(this, w, h);
     raw___he_update_full_trace_info("", "", -1);
     return result;
 }
 
-inline Error full_trace_window_server_window_get_size(const char* ___file___, uint32_t ___line___, WindowServerWindow * this, int * w, int * h) {
+inline Error full_trace_window_server_window_get_size(const char* ___file___, uint32_t ___line___, WindowServerWindow * this, i32 * w, i32 * h) {
     raw___he_update_full_trace_info("window_server_window_get_size", ___file___, ___line___);
     Error result = raw_window_server_window_get_size(this, w, h);
     raw___he_update_full_trace_info("", "", -1);
     return result;
 }
 
-inline Error full_trace_window_server_window_set_position(const char* ___file___, uint32_t ___line___, WindowServerWindow * this, int x, int y) {
+inline Error full_trace_window_server_window_set_position(const char* ___file___, uint32_t ___line___, WindowServerWindow * this, i32 x, i32 y) {
     raw___he_update_full_trace_info("window_server_window_set_position", ___file___, ___line___);
     Error result = raw_window_server_window_set_position(this, x, y);
     raw___he_update_full_trace_info("", "", -1);
     return result;
 }
 
-inline Error full_trace_window_server_window_get_position(const char* ___file___, uint32_t ___line___, WindowServerWindow * this, int * x, int * y) {
+inline Error full_trace_window_server_window_get_position(const char* ___file___, uint32_t ___line___, WindowServerWindow * this, i32 * x, i32 * y) {
     raw___he_update_full_trace_info("window_server_window_get_position", ___file___, ___line___);
     Error result = raw_window_server_window_get_position(this, x, y);
     raw___he_update_full_trace_info("", "", -1);
@@ -3043,6 +3278,41 @@ inline Error full_trace_window_server_window_get_position(const char* ___file___
 inline Error full_trace_window_server_window_set_fullscreen_display(const char* ___file___, uint32_t ___line___, WindowServerWindow * this, WindowServerDisplay * fullscreen) {
     raw___he_update_full_trace_info("window_server_window_set_fullscreen_display", ___file___, ___line___);
     Error result = raw_window_server_window_set_fullscreen_display(this, fullscreen);
+    raw___he_update_full_trace_info("", "", -1);
+    return result;
+}
+
+inline Error full_trace_render_context_create_surface(const char* ___file___, uint32_t ___line___, WindowServerWindow * window, RenderContextSurface ** out) {
+    raw___he_update_full_trace_info("render_context_create_surface", ___file___, ___line___);
+    Error result = raw_render_context_create_surface(window, out);
+    raw___he_update_full_trace_info("", "", -1);
+    return result;
+}
+
+inline Error full_trace_render_context_destroy_surface(const char* ___file___, uint32_t ___line___, RenderContextSurface * surface) {
+    raw___he_update_full_trace_info("render_context_destroy_surface", ___file___, ___line___);
+    Error result = raw_render_context_destroy_surface(surface);
+    raw___he_update_full_trace_info("", "", -1);
+    return result;
+}
+
+inline Error full_trace_render_context_surface_make_current(const char* ___file___, uint32_t ___line___, RenderContextSurface * surface) {
+    raw___he_update_full_trace_info("render_context_surface_make_current", ___file___, ___line___);
+    Error result = raw_render_context_surface_make_current(surface);
+    raw___he_update_full_trace_info("", "", -1);
+    return result;
+}
+
+inline Error full_trace_render_context_surface_present(const char* ___file___, uint32_t ___line___, RenderContextSurface * surface) {
+    raw___he_update_full_trace_info("render_context_surface_present", ___file___, ___line___);
+    Error result = raw_render_context_surface_present(surface);
+    raw___he_update_full_trace_info("", "", -1);
+    return result;
+}
+
+inline fptr full_trace_render_context_get_proc_addr(const char* ___file___, uint32_t ___line___, const char * proc) {
+    raw___he_update_full_trace_info("render_context_get_proc_addr", ___file___, ___line___);
+    fptr result = raw_render_context_get_proc_addr(proc);
     raw___he_update_full_trace_info("", "", -1);
     return result;
 }
@@ -3135,6 +3405,11 @@ inline Error full_trace_window_server_window_set_fullscreen_display(const char* 
 #define window_server_backend_new() full_trace_window_server_backend_new(__FILE__, __LINE__)
 #define window_server_backend_set_function(backend, name, function) full_trace_window_server_backend_set_function(__FILE__, __LINE__, backend, name, function)
 #define window_server_backend_get_function(backend, name, function) full_trace_window_server_backend_get_function(__FILE__, __LINE__, backend, name, function)
+#define render_context_register_backend(render_server_name, window_server_name, backend) full_trace_render_context_register_backend(__FILE__, __LINE__, render_server_name, window_server_name, backend)
+#define render_context_load_backend(render_server_name, window_server_name) full_trace_render_context_load_backend(__FILE__, __LINE__, render_server_name, window_server_name)
+#define render_context_backend_new() full_trace_render_context_backend_new(__FILE__, __LINE__)
+#define render_context_backend_set_function(backend, name, function) full_trace_render_context_backend_set_function(__FILE__, __LINE__, backend, name, function)
+#define render_context_backend_get_function(backend, name, function) full_trace_render_context_backend_get_function(__FILE__, __LINE__, backend, name, function)
 #define window_server_create_window(title, w, h, parent, out) full_trace_window_server_create_window(__FILE__, __LINE__, title, w, h, parent, out)
 #define window_server_destroy_window(this) full_trace_window_server_destroy_window(__FILE__, __LINE__, this)
 #define window_server_window_set_title(this, title) full_trace_window_server_window_set_title(__FILE__, __LINE__, this, title)
@@ -3146,6 +3421,11 @@ inline Error full_trace_window_server_window_set_fullscreen_display(const char* 
 #define window_server_window_set_position(this, x, y) full_trace_window_server_window_set_position(__FILE__, __LINE__, this, x, y)
 #define window_server_window_get_position(this, x, y) full_trace_window_server_window_get_position(__FILE__, __LINE__, this, x, y)
 #define window_server_window_set_fullscreen_display(this, fullscreen) full_trace_window_server_window_set_fullscreen_display(__FILE__, __LINE__, this, fullscreen)
+#define render_context_create_surface(window, out) full_trace_render_context_create_surface(__FILE__, __LINE__, window, out)
+#define render_context_destroy_surface(surface) full_trace_render_context_destroy_surface(__FILE__, __LINE__, surface)
+#define render_context_surface_make_current(surface) full_trace_render_context_surface_make_current(__FILE__, __LINE__, surface)
+#define render_context_surface_present(surface) full_trace_render_context_surface_present(__FILE__, __LINE__, surface)
+#define render_context_get_proc_addr(proc) full_trace_render_context_get_proc_addr(__FILE__, __LINE__, proc)
 
 #endif
 

@@ -2,6 +2,8 @@
 #include "platform/memory.h"
 #include "platform/dylib.h"
 #include "log.h"
+#include "servers/render_context/render_context.h"
+#include "servers/window_server/window_server.h"
 #include <stdlib.h>
 #include <string.h>
 
@@ -40,6 +42,25 @@ GameFunctions load_game(void) {
     }
 
     runtime_init(runtime_proc_loader);
+
+    void (*window_server_init)(WindowServerBackend* backend) =
+            dylib_sym(handle, "___hate_engine_runtime_init_window_server");
+    if (!window_server_init) {
+        dylib_close(handle);
+        LOG_FATAL("Failed to load game: %s", " ");
+    }
+
+    window_server_init(&WindowServer);
+
+    //
+    void (*render_context_init)(RenderContextBackend* backend) =
+            dylib_sym(handle, "___hate_engine_runtime_init_render_context");
+    if (!render_context_init) {
+        dylib_close(handle);
+        LOG_FATAL("Failed to load game: %s", " ");
+    }
+
+    render_context_init(&RenderContext);
 
     // TODO: Добавить функцию _settings, которая будет вызываться перед инициализацией серверов
 

@@ -4,31 +4,31 @@
 #include <types/vector.h>
 
 /* ==> Backends <== */
-#include "sdl3_backend/mod.h"
+#include "sdl3/window_server_sdl3.h"
 /* ================ */
 
 WindowServerBackend WindowServer;
 
-struct BackendPair {
+struct WindowServerBackendPair {
     const char* name;
     WindowServerBackend* backend;
 };
 
 
-vector_template_def(BackendPair, struct BackendPair);
-vector_template_impl(BackendPair, struct BackendPair);
+vector_template_def(WindowServerBackendPair, struct WindowServerBackendPair);
+vector_template_impl(WindowServerBackendPair, struct WindowServerBackendPair);
 
-static vec_BackendPair registred_backends;
+static vec_WindowServerBackendPair registred_backends;
 
 void window_server_init(void) {
-    registred_backends = vec_BackendPair_init();
+    registred_backends = vec_WindowServerBackendPair_init();
 
     // Register default backend
     window_server_sdl3_backend_register();
 }
 
 Error window_server_register_backend(const char* name, WindowServerBackend* backend) {
-    ERROR_ARGS_CHECK_2(name, backend)
+    ERROR_ARGS_CHECK_2(name, backend);
 
     for (size_t i = 0; i < registred_backends.size; i++) {
         if (strcmp(registred_backends.data[i].name, name) == 0) {
@@ -37,13 +37,24 @@ Error window_server_register_backend(const char* name, WindowServerBackend* back
         }
     }
 
-    vec_BackendPair_push_back(&registred_backends, (struct BackendPair) {name, backend});
+    vec_WindowServerBackendPair_push_back(
+            &registred_backends, (struct WindowServerBackendPair) {name, backend}
+    );
 
     return ERROR_SUCCESS;
 }
 
 Error window_server_load_backend(const char* name) {
-    return ERROR_SUCCESS;
+    ERROR_ARGS_CHECK_1(name);
+
+    for (size_t i = 0; i < registred_backends.size; i++) {
+        if (strcmp(registred_backends.data[i].name, name) == 0) {
+            WindowServer = *registred_backends.data[i].backend;
+            return ERROR_SUCCESS;
+        }
+    }
+
+    return ERROR_NOT_FOUND;
 }
 
 
@@ -63,38 +74,14 @@ WindowServerBackend* window_server_backend_new(void) {
 Error window_server_backend_set_function(
         WindowServerBackend* backend, const char* name, void (*function)(void)
 ) {
-    if (!backend) {
-        LOG_ERROR("Backend is NULL");
-        return ERROR_INVALID_ARGUMENT;
-    }
-    if (!name) {
-        LOG_ERROR("Function name is NULL");
-        return ERROR_INVALID_ARGUMENT;
-    }
-    if (!function) {
-        LOG_ERROR("Function pointer is NULL");
-        return ERROR_INVALID_ARGUMENT;
-    }
-
+    ERROR_ARGS_CHECK_3(backend, name, function);
     return backend_set_get(backend, name, (void (**)(void)) function, 1);
 }
 
 Error window_server_backend_get_function(
         WindowServerBackend* backend, const char* name, void (**function)(void)
 ) {
-    if (!backend) {
-        LOG_ERROR("Backend is NULL");
-        return ERROR_INVALID_ARGUMENT;
-    }
-    if (!name) {
-        LOG_ERROR("Function name is NULL");
-        return ERROR_INVALID_ARGUMENT;
-    }
-    if (!function) {
-        LOG_ERROR("Function pointer is NULL");
-        return ERROR_INVALID_ARGUMENT;
-    }
-
+    ERROR_ARGS_CHECK_3(backend, name, function);
     return backend_set_get(backend, name, function, 0);
 }
 
@@ -108,16 +95,24 @@ static Error backend_set_get(
         fn_t function;
     };
 
+    // TODO: generate with API Generator
     const struct fn_pair pairs[] = {
+            {"_init", (fn_t) &backend->_init},
+            {"_quit", (fn_t) &backend->_quit},
             {"create_window", (fn_t) &backend->create_window},
             {"destroy_window", (fn_t) &backend->destroy_window},
             {"window_set_title", (fn_t) &backend->window_set_title},
             {"window_get_title", (fn_t) &backend->window_get_title},
+            {"window_set_mode", (fn_t) &backend->window_set_mode},
+            {"window_get_mode", (fn_t) &backend->window_get_mode},
             {"window_set_size", (fn_t) &backend->window_set_size},
             {"window_get_size", (fn_t) &backend->window_get_size},
+            {"window_set_position", (fn_t) &backend->window_set_position},
+            {"window_get_position", (fn_t) &backend->window_get_position},
+            {"window_set_fullscreen_display", (fn_t) &backend->window_set_fullscreen_display},
     };
 
-    for (int i = 0; i < sizeof(pairs) / sizeof(pairs[0]); i++) {
+    for (usize i = 0; i < sizeof(pairs) / sizeof(pairs[0]); i++) {
         if (!strcmp(name, pairs[i].name)) {
             if (is_set)
                 *pairs[i].function = (void (*)(void)) fn;

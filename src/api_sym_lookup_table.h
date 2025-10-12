@@ -4,21 +4,22 @@
 #define HE_MEM_NO_MACRO
 //#include <extra/full_trace.h>
 
-#include "object/node/canvas_item/control/viewport/viewport.h"
-#include "platform/memory.h"
-#include "math/vec2.h"
-#include "servers/window_server/window_server.h"
-#include "object/node/canvas_item/control/control.h"
-#include "types/uid.h"
-#include "object/object.h"
-#include "log.h"
-#include "vfs/vfs.h"
 #include "object/node/node.h"
-#include "object/node/node3d/node3d.h"
-#include "object/node/window/window.h"
-#include "math/vec3.h"
+#include "object/node/canvas_item/control/viewport/viewport.h"
+#include "servers/window_server/window_server.h"
 #include "object/node/canvas_item/canvas_item.h"
+#include "math/vec2.h"
+#include "log.h"
+#include "object/node/window/window.h"
+#include "object/node/canvas_item/control/control.h"
+#include "object/object.h"
+#include "platform/memory.h"
+#include "types/uid.h"
+#include "math/vec3.h"
+#include "vfs/vfs.h"
 #include "math/mat4.h"
+#include "object/node/node3d/node3d.h"
+#include "servers/render_context/render_context.h"
 
 
 typedef struct {
@@ -113,7 +114,12 @@ APIFunctionLookupTable api_function_lookup_table[] = {
     {"window_server_load_backend", (void*)window_server_load_backend},
     {"window_server_backend_new", (void*)window_server_backend_new},
     {"window_server_backend_set_function", (void*)window_server_backend_set_function},
-    {"window_server_backend_get_function", (void*)window_server_backend_get_function}
+    {"window_server_backend_get_function", (void*)window_server_backend_get_function},
+    {"render_context_register_backend", (void*)render_context_register_backend},
+    {"render_context_load_backend", (void*)render_context_load_backend},
+    {"render_context_backend_new", (void*)render_context_backend_new},
+    {"render_context_backend_set_function", (void*)render_context_backend_set_function},
+    {"render_context_backend_get_function", (void*)render_context_backend_get_function}
 };
 
 // clang-format on

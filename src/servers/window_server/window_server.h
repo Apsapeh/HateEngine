@@ -1,7 +1,6 @@
 #pragma once
 
 #include <error.h>
-
 #include <types/types.h>
 
 /*
@@ -57,7 +56,7 @@ API ENUM {
  *
  * @api
  */
-typedef char WindowServerWindowMode;
+typedef u8 WindowServerWindowMode;
 
 /**
  * @brief
@@ -74,12 +73,6 @@ typedef struct WindowServerWindow WindowServerWindow;
 typedef struct WindowServerDisplay WindowServerDisplay;
 
 
-// [[API Generator: server]]
-/*
-{fn_prefix: "window_server_", init_method: "___hate_engine_runtime_init_window_server"}
- */
-
-
 /**
  * @api server
  * @api_config {
@@ -88,8 +81,11 @@ typedef struct WindowServerDisplay WindowServerDisplay;
  * }
  */
 typedef struct {
+    Error (*_init)(void);
+    Error (*_quit)(void);
+
     Error (*create_window)(
-            const char* title, int w, int h, WindowServerWindow* parent, WindowServerWindow** out
+            const char* title, i32 w, i32 h, WindowServerWindow* parent, WindowServerWindow** out
     );
     Error (*destroy_window)(WindowServerWindow* this);
 
@@ -103,26 +99,15 @@ typedef struct {
     Error (*window_set_mode)(WindowServerWindow* this, WindowServerWindowMode mode);
     Error (*window_get_mode)(WindowServerWindow* this, WindowServerWindowMode* out);
 
-    Error (*window_set_size)(WindowServerWindow* this, int w, int h);
-    Error (*window_get_size)(WindowServerWindow* this, int* w, int* h);
+    Error (*window_set_size)(WindowServerWindow* this, i32 w, i32 h);
+    Error (*window_get_size)(WindowServerWindow* this, i32* w, i32* h);
 
-    Error (*window_set_position)(WindowServerWindow* this, int x, int y);
-    Error (*window_get_position)(WindowServerWindow* this, int* x, int* y);
+    Error (*window_set_position)(WindowServerWindow* this, i32 x, i32 y);
+    Error (*window_get_position)(WindowServerWindow* this, i32* x, i32* y);
 
     Error (*window_set_fullscreen_display)(WindowServerWindow* this, WindowServerDisplay* fullscreen);
 } WindowServerBackend;
 
-/*
-
-    тип 'server' будет генерировать:
-
-    extern функции-переменные
-
-    реализации функций-переменных
-
-    init метод для инициализации функций-переменных
-
- */
 
 // Static global WindowServer
 extern WindowServerBackend WindowServer;

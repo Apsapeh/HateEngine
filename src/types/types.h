@@ -1,5 +1,6 @@
 #pragma once
 
+#include <stddef.h>
 #include <stdint.h>
 
 // API START
@@ -14,6 +15,8 @@ typedef int16_t i16;
 typedef int32_t i32;
 typedef int64_t i64;
 
+typedef size_t usize;
+
 typedef float f32;
 typedef double f64;
 
@@ -21,5 +24,7 @@ typedef uintptr_t uptr;
 typedef intptr_t iptr;
 
 
-typedef i8* str;
-typedef const i8* c_str;
+typedef char* str;
+typedef const char* c_str;
+
+typedef void (*fptr)(void);

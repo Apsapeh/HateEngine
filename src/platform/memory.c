@@ -68,6 +68,14 @@ void* tmalloc(size_t size) {
     return ptr;
 }
 
+/*void* tmalloc_or_fatal(usize size, const char* msg) {
+    void* ptr = tmalloc(size);
+    if (!ptr) {
+        LOG_FATAL("Allocation %zu bytes is failed with message: %s", size, msg);
+    }
+    return ptr;
+}*/
+
 void* trealloc(void* ptr, size_t size) {
 #if defined(HE_MEM_TRACK)
     init_mem_tracking();

@@ -11,6 +11,11 @@ GLOB_BLACK_LIST = (
     "extra/full_trace.h"
 )
 
+SERVER_FN_SKIP = (
+    "_init",
+    "_quit"
+)
+
 
 
 def parse(folder: str) -> ParseResult:
@@ -154,6 +159,9 @@ def parse_struct_decl(cursor: cc.Cursor, generator_mode: str, config: dict) -> P
                     pointee = field_type.get_pointee()
                     if pointee.kind == cc.TypeKind.FUNCTIONPROTO or pointee.kind == cc.TypeKind.FUNCTIONNOPROTO:
                         fn_name = child.spelling
+                        if fn_name in SERVER_FN_SKIP:
+                            continue
+                        
                         return_type = pointee.get_result().spelling
                         doc = child.raw_comment or ""
                         filename = str(child.location.file)
