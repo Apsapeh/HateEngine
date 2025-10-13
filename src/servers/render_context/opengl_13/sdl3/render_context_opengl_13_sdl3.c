@@ -32,12 +32,25 @@
         }                                                                                               \
     } while (0)
 
+    
+const static u32 INIT_FLAGS = SDL_INIT_VIDEO | SDL_INIT_EVENTS;
+static u8 is_init = 0;
 
 static Error _init(void) {
+    if (!SDL_WasInit(INIT_FLAGS)) {
+        if (!SDL_Init(INIT_FLAGS)) {
+            return ANY_ERROR;
+        }
+        is_init = 1;
+    }
+    
     return ERROR_SUCCESS;
 }
 
 static Error _quit(void) {
+    if (is_init) {
+        SDL_QuitSubSystem(INIT_FLAGS);
+    }
     return ERROR_SUCCESS;
 }
 

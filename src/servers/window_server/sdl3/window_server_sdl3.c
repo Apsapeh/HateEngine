@@ -23,7 +23,7 @@
     } while (0)
 
 
-const unsigned int INIT_FLAGS = SDL_INIT_VIDEO | SDL_INIT_EVENTS;
+const static u32 INIT_FLAGS = SDL_INIT_VIDEO | SDL_INIT_EVENTS;
 static u8 is_init = 0;
 
 static Error _init(void) {
@@ -62,7 +62,7 @@ static Error create_window(
 static Error destroy_window(WindowServerWindow* this) {
     ERROR_ARGS_CHECK_1(this);
     MAIN_THREAD_CHECK(destroy_window);
-
+    
     SDL_DestroyWindow((SDL_Window*) this);
     return ERROR_SUCCESS;
 }
@@ -72,7 +72,7 @@ static Error window_set_title(WindowServerWindow* this, const char* title) {
     ERROR_ARGS_CHECK_2(this, title);
     MAIN_THREAD_CHECK(window_set_title);
 
-    if (SDL_SetWindowTitle((SDL_Window*) this, title) != 0) {
+    if (!SDL_SetWindowTitle((SDL_Window*) this, title)) {
         LOG_ERROR("Failed to set window title. SDL Error: %s", SDL_GetError());
         return "";
     }
@@ -113,7 +113,7 @@ static Error window_set_size(WindowServerWindow* this, i32 w, i32 h) {
     ERROR_ARGS_CHECK_1(this);
     MAIN_THREAD_CHECK();
 
-    if (SDL_SetWindowSize((SDL_Window*) this, w, h) != 0) {
+    if (!SDL_SetWindowSize((SDL_Window*) this, w, h)) {
         LOG_ERROR("Failed to set window size. SDL Error: %s", SDL_GetError());
         return ANY_ERROR;
     }
@@ -124,7 +124,7 @@ static Error window_get_size(WindowServerWindow* this, i32* out_w, i32* out_h) {
     ERROR_ARGS_CHECK_3(this, out_w, out_h);
     MAIN_THREAD_CHECK();
 
-    if (SDL_GetWindowSize((SDL_Window*) this, out_w, out_h) != 0) {
+    if (!SDL_GetWindowSize((SDL_Window*) this, out_w, out_h)) {
         LOG_ERROR("Failed to get window size. SDL Error: %s", SDL_GetError());
         return ANY_ERROR;
     }
@@ -136,7 +136,7 @@ static Error window_set_position(WindowServerWindow* this, i32 x, i32 y) {
     ERROR_ARGS_CHECK_3(this, x, y);
     MAIN_THREAD_CHECK();
 
-    if (SDL_SetWindowPosition((SDL_Window*) this, x, y) != 0) {
+    if (!SDL_SetWindowPosition((SDL_Window*) this, x, y)) {
         LOG_ERROR("Failed to set window position. SDL Error: %s", SDL_GetError());
         return ANY_ERROR;
     }
@@ -147,7 +147,7 @@ static Error window_get_position(WindowServerWindow* this, i32* out_x, i32* out_
     ERROR_ARGS_CHECK_3(this, out_x, out_y);
     MAIN_THREAD_CHECK();
 
-    if (SDL_GetWindowPosition((SDL_Window*) this, out_x, out_y) != 0) {
+    if (!SDL_GetWindowPosition((SDL_Window*) this, out_x, out_y)) {
         LOG_ERROR("Failed to get window position. SDL Error: %s", SDL_GetError());
         return ANY_ERROR;
     }
