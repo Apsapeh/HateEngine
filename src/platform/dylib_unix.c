@@ -1,4 +1,6 @@
-#if defined(__unix__) || defined(__APPLE__)
+#include "platform.h"
+
+#ifdef PLATFORM_UNIX
 
 #include "dylib.h"
 #include <dlfcn.h>

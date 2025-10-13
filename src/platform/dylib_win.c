@@ -1,4 +1,6 @@
-#if defined(_WIN32)
+#include "platform.h"
+
+#ifdef PLATFORM_WINDOWS
 
 #include "dylib.h"
 #include <windows.h>
@@ -49,5 +51,5 @@ char* dylib_error(void) {
 }
 
 #else
-char c99_dummy = 0;
+static char c99_dummy = 0;
 #endif
