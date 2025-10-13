@@ -117,8 +117,18 @@ def parse_function_decl(cursor: cc.Cursor, doc: str) -> Function:
     # Парсим параметры
     for arg in cursor.get_arguments():
         arg_type = arg.type.spelling
-        awrg_name = arg.spelling or ""
-        args.append(FunctionArg(arg_type, awrg_name))
+        arg_name = arg.spelling or ""
+        name_i = 0
+        used_names = set(arg_name)
+        if arg_name == "":
+            while True:
+                arg_name = f"arg{name_i}"
+                name_i += 1
+
+                if arg_name not in used_names:
+                    break
+            used_names.add(arg_name)
+        args.append(FunctionArg(arg_type, arg_name))
 
     return Function(func_name, return_type, args, str(cursor.location.file), int(cursor.location.line), doc)
 
@@ -170,10 +180,22 @@ def parse_struct_decl(cursor: cc.Cursor, generator_mode: str, config: dict) -> P
                         
                         
                         # Получаем аргументы
+                        name_i = 0
+                        used_names = set()
                         for arg in child.get_children():
                             if arg.kind != cc.CursorKind.PARM_DECL:
                                 continue
-                            args.append(FunctionArg(arg.type.spelling, arg.spelling))
+
+                            name = arg.spelling
+                            if name == "":
+                                while True:
+                                    name = f"arg{name_i}"
+                                    name_i += 1
+
+                                    if name not in used_names:
+                                        break
+                                used_names.add(name)
+                            args.append(FunctionArg(arg.type.spelling, name))
 
                         functions.append(Function(fn_name, return_type, args, filename, line, doc))
 
@@ -197,7 +219,10 @@ def parse_typedef_decl(cursor: cc.Cursor) -> ParseResult:
             return result
         
         if cursor.underlying_typedef_type.spelling.startswith("struct"):
-            result.add_struct(Struct(cursor.spelling, str(cursor.location.file), int(cursor.location.line), cursor.raw_comment))
+            postfix = ""
+            if cursor.underlying_typedef_type.spelling.endswith("*"):
+                postfix = " *"
+            result.add_struct(Struct(cursor.spelling + postfix, str(cursor.location.file), int(cursor.location.line), cursor.raw_comment))
         else:
             result.add_typedef(Typedef(cursor.spelling, cursor.underlying_typedef_type.spelling, str(cursor.location.file), int(cursor.location.line), cursor.raw_comment))
     else:

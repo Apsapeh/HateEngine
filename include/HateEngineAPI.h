@@ -101,10 +101,10 @@ typedef c_str Error;
 
 /**
  * DateTime handler for get UTC and local date and time
- * 
+ *
  * @api
  */
-typedef struct datetime_handle datetime_handle;
+typedef struct datetime_handle * datetime_handle;
 
 /**
  * @api
@@ -362,7 +362,7 @@ extern datetime_handle (*raw_datetime_new)(void);
  *
  * @api
  */
-extern void (*raw_datetime_free)(datetime_handle );
+extern void (*raw_datetime_free)(datetime_handle arg0);
 
 /**
  * @brief Update existed time instance
@@ -376,91 +376,91 @@ extern void (*raw_datetime_update)(datetime_handle handler);
  *
  * @api
  */
-extern u16 (*raw_datetime_get_year)(datetime_handle );
+extern u16 (*raw_datetime_get_year)(datetime_handle arg0);
 
 /**
  * @brief get local month
  *
  * @api
  */
-extern u8 (*raw_datetime_get_month)(datetime_handle );
+extern u8 (*raw_datetime_get_month)(datetime_handle arg0);
 
 /**
  * @brief get local day
  *
  * @api
  */
-extern u8 (*raw_datetime_get_day)(datetime_handle );
+extern u8 (*raw_datetime_get_day)(datetime_handle arg0);
 
 /**
  * @brief get local hour
  *
  * @api
  */
-extern u8 (*raw_datetime_get_hour)(datetime_handle );
+extern u8 (*raw_datetime_get_hour)(datetime_handle arg0);
 
 /**
  * @brief get local minute
  *
  * @api
  */
-extern u8 (*raw_datetime_get_minute)(datetime_handle );
+extern u8 (*raw_datetime_get_minute)(datetime_handle arg0);
 
 /**
  * @brief get local second
  *
  * @api
  */
-extern u8 (*raw_datetime_get_second)(datetime_handle );
+extern u8 (*raw_datetime_get_second)(datetime_handle arg0);
 
 /**
  * @brief get local nanosecond
  *
  * @api
  */
-extern u32 (*raw_datetime_get_nanosecond)(datetime_handle );
+extern u32 (*raw_datetime_get_nanosecond)(datetime_handle arg0);
 
 /**
  * @brief get UTC year
  *
  * @api
  */
-extern u16 (*raw_datetime_get_utc_year)(datetime_handle );
+extern u16 (*raw_datetime_get_utc_year)(datetime_handle arg0);
 
 /**
  * @brief get UTC month
  *
  * @api
  */
-extern u8 (*raw_datetime_get_utc_month)(datetime_handle );
+extern u8 (*raw_datetime_get_utc_month)(datetime_handle arg0);
 
 /**
  * @brief get UTC day
  *
  * @api
  */
-extern u8 (*raw_datetime_get_utc_day)(datetime_handle );
+extern u8 (*raw_datetime_get_utc_day)(datetime_handle arg0);
 
 /**
  * @brief get UTC hour
  *
  * @api
  */
-extern u8 (*raw_datetime_get_utc_hour)(datetime_handle );
+extern u8 (*raw_datetime_get_utc_hour)(datetime_handle arg0);
 
 /**
  * @brief get UTC minute
  *
  * @api
  */
-extern u8 (*raw_datetime_get_utc_minute)(datetime_handle );
+extern u8 (*raw_datetime_get_utc_minute)(datetime_handle arg0);
 
 /**
  * @brief get UTC second
  *
  * @api
  */
-extern u8 (*raw_datetime_get_utc_second)(datetime_handle );
+extern u8 (*raw_datetime_get_utc_second)(datetime_handle arg0);
 
 /**
  * @brief Free object by type
@@ -1344,7 +1344,7 @@ extern datetime_handle (*datetime_new)(void);
  *
  * @api
  */
-extern void (*datetime_free)(datetime_handle );
+extern void (*datetime_free)(datetime_handle arg0);
 
 /**
  * @brief Update existed time instance
@@ -1358,91 +1358,91 @@ extern void (*datetime_update)(datetime_handle handler);
  *
  * @api
  */
-extern u16 (*datetime_get_year)(datetime_handle );
+extern u16 (*datetime_get_year)(datetime_handle arg0);
 
 /**
  * @brief get local month
  *
  * @api
  */
-extern u8 (*datetime_get_month)(datetime_handle );
+extern u8 (*datetime_get_month)(datetime_handle arg0);
 
 /**
  * @brief get local day
  *
  * @api
  */
-extern u8 (*datetime_get_day)(datetime_handle );
+extern u8 (*datetime_get_day)(datetime_handle arg0);
 
 /**
  * @brief get local hour
  *
  * @api
  */
-extern u8 (*datetime_get_hour)(datetime_handle );
+extern u8 (*datetime_get_hour)(datetime_handle arg0);
 
 /**
  * @brief get local minute
  *
  * @api
  */
-extern u8 (*datetime_get_minute)(datetime_handle );
+extern u8 (*datetime_get_minute)(datetime_handle arg0);
 
 /**
  * @brief get local second
  *
  * @api
  */
-extern u8 (*datetime_get_second)(datetime_handle );
+extern u8 (*datetime_get_second)(datetime_handle arg0);
 
 /**
  * @brief get local nanosecond
  *
  * @api
  */
-extern u32 (*datetime_get_nanosecond)(datetime_handle );
+extern u32 (*datetime_get_nanosecond)(datetime_handle arg0);
 
 /**
  * @brief get UTC year
  *
  * @api
  */
-extern u16 (*datetime_get_utc_year)(datetime_handle );
+extern u16 (*datetime_get_utc_year)(datetime_handle arg0);
 
 /**
  * @brief get UTC month
  *
  * @api
  */
-extern u8 (*datetime_get_utc_month)(datetime_handle );
+extern u8 (*datetime_get_utc_month)(datetime_handle arg0);
 
 /**
  * @brief get UTC day
  *
  * @api
  */
-extern u8 (*datetime_get_utc_day)(datetime_handle );
+extern u8 (*datetime_get_utc_day)(datetime_handle arg0);
 
 /**
  * @brief get UTC hour
  *
  * @api
  */
-extern u8 (*datetime_get_utc_hour)(datetime_handle );
+extern u8 (*datetime_get_utc_hour)(datetime_handle arg0);
 
 /**
  * @brief get UTC minute
  *
  * @api
  */
-extern u8 (*datetime_get_utc_minute)(datetime_handle );
+extern u8 (*datetime_get_utc_minute)(datetime_handle arg0);
 
 /**
  * @brief get UTC second
  *
  * @api
  */
-extern u8 (*datetime_get_utc_second)(datetime_handle );
+extern u8 (*datetime_get_utc_second)(datetime_handle arg0);
 
 /**
  * @brief Free object by type
@@ -2269,21 +2269,21 @@ extern fptr (*render_context_get_proc_addr)(const char * proc);
     void (*raw_tfree)(void * ptr);
     u64 (*raw_get_allocated_memory)(void);
     datetime_handle (*raw_datetime_new)(void);
-    void (*raw_datetime_free)(datetime_handle );
+    void (*raw_datetime_free)(datetime_handle arg0);
     void (*raw_datetime_update)(datetime_handle handler);
-    u16 (*raw_datetime_get_year)(datetime_handle );
-    u8 (*raw_datetime_get_month)(datetime_handle );
-    u8 (*raw_datetime_get_day)(datetime_handle );
-    u8 (*raw_datetime_get_hour)(datetime_handle );
-    u8 (*raw_datetime_get_minute)(datetime_handle );
-    u8 (*raw_datetime_get_second)(datetime_handle );
-    u32 (*raw_datetime_get_nanosecond)(datetime_handle );
-    u16 (*raw_datetime_get_utc_year)(datetime_handle );
-    u8 (*raw_datetime_get_utc_month)(datetime_handle );
-    u8 (*raw_datetime_get_utc_day)(datetime_handle );
-    u8 (*raw_datetime_get_utc_hour)(datetime_handle );
-    u8 (*raw_datetime_get_utc_minute)(datetime_handle );
-    u8 (*raw_datetime_get_utc_second)(datetime_handle );
+    u16 (*raw_datetime_get_year)(datetime_handle arg0);
+    u8 (*raw_datetime_get_month)(datetime_handle arg0);
+    u8 (*raw_datetime_get_day)(datetime_handle arg0);
+    u8 (*raw_datetime_get_hour)(datetime_handle arg0);
+    u8 (*raw_datetime_get_minute)(datetime_handle arg0);
+    u8 (*raw_datetime_get_second)(datetime_handle arg0);
+    u32 (*raw_datetime_get_nanosecond)(datetime_handle arg0);
+    u16 (*raw_datetime_get_utc_year)(datetime_handle arg0);
+    u8 (*raw_datetime_get_utc_month)(datetime_handle arg0);
+    u8 (*raw_datetime_get_utc_day)(datetime_handle arg0);
+    u8 (*raw_datetime_get_utc_hour)(datetime_handle arg0);
+    u8 (*raw_datetime_get_utc_minute)(datetime_handle arg0);
+    u8 (*raw_datetime_get_utc_second)(datetime_handle arg0);
     void (*raw_auto_free)(Object * object);
     Node * (*raw_node_new)(const char * name);
     Node * (*raw_from_node)(Node * node);
@@ -2395,21 +2395,21 @@ extern fptr (*render_context_get_proc_addr)(const char * proc);
     void (*tfree)(void * ptr);
     u64 (*get_allocated_memory)(void);
     datetime_handle (*datetime_new)(void);
-    void (*datetime_free)(datetime_handle );
+    void (*datetime_free)(datetime_handle arg0);
     void (*datetime_update)(datetime_handle handler);
-    u16 (*datetime_get_year)(datetime_handle );
-    u8 (*datetime_get_month)(datetime_handle );
-    u8 (*datetime_get_day)(datetime_handle );
-    u8 (*datetime_get_hour)(datetime_handle );
-    u8 (*datetime_get_minute)(datetime_handle );
-    u8 (*datetime_get_second)(datetime_handle );
-    u32 (*datetime_get_nanosecond)(datetime_handle );
-    u16 (*datetime_get_utc_year)(datetime_handle );
-    u8 (*datetime_get_utc_month)(datetime_handle );
-    u8 (*datetime_get_utc_day)(datetime_handle );
-    u8 (*datetime_get_utc_hour)(datetime_handle );
-    u8 (*datetime_get_utc_minute)(datetime_handle );
-    u8 (*datetime_get_utc_second)(datetime_handle );
+    u16 (*datetime_get_year)(datetime_handle arg0);
+    u8 (*datetime_get_month)(datetime_handle arg0);
+    u8 (*datetime_get_day)(datetime_handle arg0);
+    u8 (*datetime_get_hour)(datetime_handle arg0);
+    u8 (*datetime_get_minute)(datetime_handle arg0);
+    u8 (*datetime_get_second)(datetime_handle arg0);
+    u32 (*datetime_get_nanosecond)(datetime_handle arg0);
+    u16 (*datetime_get_utc_year)(datetime_handle arg0);
+    u8 (*datetime_get_utc_month)(datetime_handle arg0);
+    u8 (*datetime_get_utc_day)(datetime_handle arg0);
+    u8 (*datetime_get_utc_hour)(datetime_handle arg0);
+    u8 (*datetime_get_utc_minute)(datetime_handle arg0);
+    u8 (*datetime_get_utc_second)(datetime_handle arg0);
     void (*auto_free)(Object * object);
     Node * (*node_new)(const char * name);
     Node * (*from_node)(Node * node);
@@ -2943,9 +2943,9 @@ inline datetime_handle full_trace_datetime_new(const char* ___file___, uint32_t 
     return result;
 }
 
-inline void full_trace_datetime_free(const char* ___file___, uint32_t ___line___, datetime_handle ) {
+inline void full_trace_datetime_free(const char* ___file___, uint32_t ___line___, datetime_handle arg0) {
     raw___he_update_full_trace_info("datetime_free", ___file___, ___line___);
-    raw_datetime_free();
+    raw_datetime_free(arg0);
     raw___he_update_full_trace_info("", "", -1);
 }
 
@@ -2955,93 +2955,93 @@ inline void full_trace_datetime_update(const char* ___file___, uint32_t ___line_
     raw___he_update_full_trace_info("", "", -1);
 }
 
-inline u16 full_trace_datetime_get_year(const char* ___file___, uint32_t ___line___, datetime_handle ) {
+inline u16 full_trace_datetime_get_year(const char* ___file___, uint32_t ___line___, datetime_handle arg0) {
     raw___he_update_full_trace_info("datetime_get_year", ___file___, ___line___);
-    u16 result = raw_datetime_get_year();
+    u16 result = raw_datetime_get_year(arg0);
     raw___he_update_full_trace_info("", "", -1);
     return result;
 }
 
-inline u8 full_trace_datetime_get_month(const char* ___file___, uint32_t ___line___, datetime_handle ) {
+inline u8 full_trace_datetime_get_month(const char* ___file___, uint32_t ___line___, datetime_handle arg0) {
     raw___he_update_full_trace_info("datetime_get_month", ___file___, ___line___);
-    u8 result = raw_datetime_get_month();
+    u8 result = raw_datetime_get_month(arg0);
     raw___he_update_full_trace_info("", "", -1);
     return result;
 }
 
-inline u8 full_trace_datetime_get_day(const char* ___file___, uint32_t ___line___, datetime_handle ) {
+inline u8 full_trace_datetime_get_day(const char* ___file___, uint32_t ___line___, datetime_handle arg0) {
     raw___he_update_full_trace_info("datetime_get_day", ___file___, ___line___);
-    u8 result = raw_datetime_get_day();
+    u8 result = raw_datetime_get_day(arg0);
     raw___he_update_full_trace_info("", "", -1);
     return result;
 }
 
-inline u8 full_trace_datetime_get_hour(const char* ___file___, uint32_t ___line___, datetime_handle ) {
+inline u8 full_trace_datetime_get_hour(const char* ___file___, uint32_t ___line___, datetime_handle arg0) {
     raw___he_update_full_trace_info("datetime_get_hour", ___file___, ___line___);
-    u8 result = raw_datetime_get_hour();
+    u8 result = raw_datetime_get_hour(arg0);
     raw___he_update_full_trace_info("", "", -1);
     return result;
 }
 
-inline u8 full_trace_datetime_get_minute(const char* ___file___, uint32_t ___line___, datetime_handle ) {
+inline u8 full_trace_datetime_get_minute(const char* ___file___, uint32_t ___line___, datetime_handle arg0) {
     raw___he_update_full_trace_info("datetime_get_minute", ___file___, ___line___);
-    u8 result = raw_datetime_get_minute();
+    u8 result = raw_datetime_get_minute(arg0);
     raw___he_update_full_trace_info("", "", -1);
     return result;
 }
 
-inline u8 full_trace_datetime_get_second(const char* ___file___, uint32_t ___line___, datetime_handle ) {
+inline u8 full_trace_datetime_get_second(const char* ___file___, uint32_t ___line___, datetime_handle arg0) {
     raw___he_update_full_trace_info("datetime_get_second", ___file___, ___line___);
-    u8 result = raw_datetime_get_second();
+    u8 result = raw_datetime_get_second(arg0);
     raw___he_update_full_trace_info("", "", -1);
     return result;
 }
 
-inline u32 full_trace_datetime_get_nanosecond(const char* ___file___, uint32_t ___line___, datetime_handle ) {
+inline u32 full_trace_datetime_get_nanosecond(const char* ___file___, uint32_t ___line___, datetime_handle arg0) {
     raw___he_update_full_trace_info("datetime_get_nanosecond", ___file___, ___line___);
-    u32 result = raw_datetime_get_nanosecond();
+    u32 result = raw_datetime_get_nanosecond(arg0);
     raw___he_update_full_trace_info("", "", -1);
     return result;
 }
 
-inline u16 full_trace_datetime_get_utc_year(const char* ___file___, uint32_t ___line___, datetime_handle ) {
+inline u16 full_trace_datetime_get_utc_year(const char* ___file___, uint32_t ___line___, datetime_handle arg0) {
     raw___he_update_full_trace_info("datetime_get_utc_year", ___file___, ___line___);
-    u16 result = raw_datetime_get_utc_year();
+    u16 result = raw_datetime_get_utc_year(arg0);
     raw___he_update_full_trace_info("", "", -1);
     return result;
 }
 
-inline u8 full_trace_datetime_get_utc_month(const char* ___file___, uint32_t ___line___, datetime_handle ) {
+inline u8 full_trace_datetime_get_utc_month(const char* ___file___, uint32_t ___line___, datetime_handle arg0) {
     raw___he_update_full_trace_info("datetime_get_utc_month", ___file___, ___line___);
-    u8 result = raw_datetime_get_utc_month();
+    u8 result = raw_datetime_get_utc_month(arg0);
     raw___he_update_full_trace_info("", "", -1);
     return result;
 }
 
-inline u8 full_trace_datetime_get_utc_day(const char* ___file___, uint32_t ___line___, datetime_handle ) {
+inline u8 full_trace_datetime_get_utc_day(const char* ___file___, uint32_t ___line___, datetime_handle arg0) {
     raw___he_update_full_trace_info("datetime_get_utc_day", ___file___, ___line___);
-    u8 result = raw_datetime_get_utc_day();
+    u8 result = raw_datetime_get_utc_day(arg0);
     raw___he_update_full_trace_info("", "", -1);
     return result;
 }
 
-inline u8 full_trace_datetime_get_utc_hour(const char* ___file___, uint32_t ___line___, datetime_handle ) {
+inline u8 full_trace_datetime_get_utc_hour(const char* ___file___, uint32_t ___line___, datetime_handle arg0) {
     raw___he_update_full_trace_info("datetime_get_utc_hour", ___file___, ___line___);
-    u8 result = raw_datetime_get_utc_hour();
+    u8 result = raw_datetime_get_utc_hour(arg0);
     raw___he_update_full_trace_info("", "", -1);
     return result;
 }
 
-inline u8 full_trace_datetime_get_utc_minute(const char* ___file___, uint32_t ___line___, datetime_handle ) {
+inline u8 full_trace_datetime_get_utc_minute(const char* ___file___, uint32_t ___line___, datetime_handle arg0) {
     raw___he_update_full_trace_info("datetime_get_utc_minute", ___file___, ___line___);
-    u8 result = raw_datetime_get_utc_minute();
+    u8 result = raw_datetime_get_utc_minute(arg0);
     raw___he_update_full_trace_info("", "", -1);
     return result;
 }
 
-inline u8 full_trace_datetime_get_utc_second(const char* ___file___, uint32_t ___line___, datetime_handle ) {
+inline u8 full_trace_datetime_get_utc_second(const char* ___file___, uint32_t ___line___, datetime_handle arg0) {
     raw___he_update_full_trace_info("datetime_get_utc_second", ___file___, ___line___);
-    u8 result = raw_datetime_get_utc_second();
+    u8 result = raw_datetime_get_utc_second(arg0);
     raw___he_update_full_trace_info("", "", -1);
     return result;
 }
@@ -3755,21 +3755,21 @@ inline fptr full_trace_render_context_get_proc_addr(const char* ___file___, uint
 #define tfree(ptr) full_trace_tfree(__FILE__, __LINE__, ptr)
 #define get_allocated_memory() full_trace_get_allocated_memory(__FILE__, __LINE__)
 #define datetime_new() full_trace_datetime_new(__FILE__, __LINE__)
-#define datetime_free() full_trace_datetime_free(__FILE__, __LINE__, )
+#define datetime_free(arg0) full_trace_datetime_free(__FILE__, __LINE__, arg0)
 #define datetime_update(handler) full_trace_datetime_update(__FILE__, __LINE__, handler)
-#define datetime_get_year() full_trace_datetime_get_year(__FILE__, __LINE__, )
-#define datetime_get_month() full_trace_datetime_get_month(__FILE__, __LINE__, )
-#define datetime_get_day() full_trace_datetime_get_day(__FILE__, __LINE__, )
-#define datetime_get_hour() full_trace_datetime_get_hour(__FILE__, __LINE__, )
-#define datetime_get_minute() full_trace_datetime_get_minute(__FILE__, __LINE__, )
-#define datetime_get_second() full_trace_datetime_get_second(__FILE__, __LINE__, )
-#define datetime_get_nanosecond() full_trace_datetime_get_nanosecond(__FILE__, __LINE__, )
-#define datetime_get_utc_year() full_trace_datetime_get_utc_year(__FILE__, __LINE__, )
-#define datetime_get_utc_month() full_trace_datetime_get_utc_month(__FILE__, __LINE__, )
-#define datetime_get_utc_day() full_trace_datetime_get_utc_day(__FILE__, __LINE__, )
-#define datetime_get_utc_hour() full_trace_datetime_get_utc_hour(__FILE__, __LINE__, )
-#define datetime_get_utc_minute() full_trace_datetime_get_utc_minute(__FILE__, __LINE__, )
-#define datetime_get_utc_second() full_trace_datetime_get_utc_second(__FILE__, __LINE__, )
+#define datetime_get_year(arg0) full_trace_datetime_get_year(__FILE__, __LINE__, arg0)
+#define datetime_get_month(arg0) full_trace_datetime_get_month(__FILE__, __LINE__, arg0)
+#define datetime_get_day(arg0) full_trace_datetime_get_day(__FILE__, __LINE__, arg0)
+#define datetime_get_hour(arg0) full_trace_datetime_get_hour(__FILE__, __LINE__, arg0)
+#define datetime_get_minute(arg0) full_trace_datetime_get_minute(__FILE__, __LINE__, arg0)
+#define datetime_get_second(arg0) full_trace_datetime_get_second(__FILE__, __LINE__, arg0)
+#define datetime_get_nanosecond(arg0) full_trace_datetime_get_nanosecond(__FILE__, __LINE__, arg0)
+#define datetime_get_utc_year(arg0) full_trace_datetime_get_utc_year(__FILE__, __LINE__, arg0)
+#define datetime_get_utc_month(arg0) full_trace_datetime_get_utc_month(__FILE__, __LINE__, arg0)
+#define datetime_get_utc_day(arg0) full_trace_datetime_get_utc_day(__FILE__, __LINE__, arg0)
+#define datetime_get_utc_hour(arg0) full_trace_datetime_get_utc_hour(__FILE__, __LINE__, arg0)
+#define datetime_get_utc_minute(arg0) full_trace_datetime_get_utc_minute(__FILE__, __LINE__, arg0)
+#define datetime_get_utc_second(arg0) full_trace_datetime_get_utc_second(__FILE__, __LINE__, arg0)
 #define auto_free(object) full_trace_auto_free(__FILE__, __LINE__, object)
 #define node_new(name) full_trace_node_new(__FILE__, __LINE__, name)
 #define from_node(node) full_trace_from_node(__FILE__, __LINE__, node)

@@ -4,22 +4,23 @@
 #define HE_MEM_NO_MACRO
 //#include <extra/full_trace.h>
 
-#include "platform/memory.h"
-#include "types/uid.h"
-#include "math/vec2.h"
-#include "object/node/canvas_item/control/viewport/viewport.h"
-#include "math/mat4.h"
-#include "object/node/node3d/node3d.h"
-#include "object/node/node.h"
-#include "object/node/canvas_item/canvas_item.h"
-#include "log.h"
-#include "object/node/canvas_item/control/control.h"
-#include "object/node/window/window.h"
-#include "math/vec3.h"
-#include "vfs/vfs.h"
 #include "object/object.h"
-#include "servers/render_context/render_context.h"
+#include "object/node/canvas_item/control/control.h"
+#include "math/vec2.h"
+#include "platform/memory.h"
+#include "object/node/window/window.h"
+#include "log.h"
 #include "servers/window_server/window_server.h"
+#include "servers/render_context/render_context.h"
+#include "object/node/node3d/node3d.h"
+#include "vfs/vfs.h"
+#include "math/mat4.h"
+#include "object/node/canvas_item/canvas_item.h"
+#include "platform/datetime.h"
+#include "object/node/node.h"
+#include "types/uid.h"
+#include "math/vec3.h"
+#include "object/node/canvas_item/control/viewport/viewport.h"
 
 
 typedef struct {
@@ -34,6 +35,22 @@ APIFunctionLookupTable api_function_lookup_table[] = {
     {"trealloc", (void*)trealloc},
     {"tfree", (void*)tfree},
     {"get_allocated_memory", (void*)get_allocated_memory},
+    {"datetime_new", (void*)datetime_new},
+    {"datetime_free", (void*)datetime_free},
+    {"datetime_update", (void*)datetime_update},
+    {"datetime_get_year", (void*)datetime_get_year},
+    {"datetime_get_month", (void*)datetime_get_month},
+    {"datetime_get_day", (void*)datetime_get_day},
+    {"datetime_get_hour", (void*)datetime_get_hour},
+    {"datetime_get_minute", (void*)datetime_get_minute},
+    {"datetime_get_second", (void*)datetime_get_second},
+    {"datetime_get_nanosecond", (void*)datetime_get_nanosecond},
+    {"datetime_get_utc_year", (void*)datetime_get_utc_year},
+    {"datetime_get_utc_month", (void*)datetime_get_utc_month},
+    {"datetime_get_utc_day", (void*)datetime_get_utc_day},
+    {"datetime_get_utc_hour", (void*)datetime_get_utc_hour},
+    {"datetime_get_utc_minute", (void*)datetime_get_utc_minute},
+    {"datetime_get_utc_second", (void*)datetime_get_utc_second},
     {"auto_free", (void*)auto_free},
     {"node_new", (void*)node_new},
     {"from_node", (void*)from_node},

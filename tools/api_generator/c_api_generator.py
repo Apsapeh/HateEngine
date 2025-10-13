@@ -68,7 +68,10 @@ def run(data: ParseResult):
     for struct in data.structs:
         if struct.doc != "":
             types += f"{struct.doc}\n"
-        types += f"typedef struct {struct.name} {struct.name};\n\n"
+        name = struct.name
+        if name.endswith(" *"):
+            name = name[:-2]
+        types += f"typedef struct {struct.name} {name};\n\n"
         pass
 
     for forward_struct in data.forward_structs:
@@ -223,6 +226,7 @@ def full_trace_impl_generator(return_type, name, args) -> str:
             functions += ", "
     functions += ") {\n"
     functions += f"    raw___he_update_full_trace_info(\"{name}\", ___file___, ___line___);\n";
+
 
     func_call = f"raw_{name}({', '.join([f'{arg.name}' for arg in args])});"
     if return_type == "void":

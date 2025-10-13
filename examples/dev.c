@@ -1,6 +1,6 @@
 #include <math.h>
 #define HEAPI_LOAD_IMPL
-//#define HEAPI_FULL_TRACE
+#define HEAPI_FULL_TRACE
 #include <HateEngineAPI.h>
 
 #include <stdio.h>
@@ -14,8 +14,8 @@ RenderContextSurface* surface2;
 void _ready(void) {
     vfs_mount_rfs("/");
     
-    printf("wscw: %p\n", window_server_create_window);
-    printf("wswss: %p\n", window_server_window_set_size);
+    printf("wscw: %p\n", raw_window_server_create_window);
+    printf("wswss: %p\n", raw_window_server_window_set_size);
     if (window_server_create_window("Hello", 800, 600, NULL, &win)) {
         printf("СМЭРТЬ\n");
         exit(1);
