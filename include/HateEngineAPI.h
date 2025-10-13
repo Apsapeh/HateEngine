@@ -5,7 +5,6 @@
 #include <stdint.h>
 #include <stdbool.h>
 
-
 typedef uint8_t u8;
 typedef uint16_t u16;
 typedef uint32_t u32;
@@ -24,11 +23,15 @@ typedef double f64;
 typedef uintptr_t uptr;
 typedef intptr_t iptr;
 
+typedef u8 boolean;
+#define true 1
+#define false 0
 
 typedef char* str;
 typedef const char* c_str;
 
-typedef void (*fptr) (void);
+typedef void (*fptr)(void);
+typedef void* ptr;
 
 
 typedef c_str Error;
@@ -237,7 +240,7 @@ typedef char FSSeekFrom;
  *
  * @api
  */
-typedef uint64_t UID;
+typedef u64 UID;
 
 /**
  * 'd' - disabled
@@ -308,7 +311,7 @@ extern void (*raw___he_update_full_trace_info)(const char * func, const char * f
  *
  * @api
  */
-extern void * (*raw_tmalloc)(usize size);
+extern void * (*raw_tmalloc)(u64 size);
 
 /**
  * @brief Realloc with tracking if compiled with HE_MEM_TRACK
@@ -319,7 +322,7 @@ extern void * (*raw_tmalloc)(usize size);
  *
  * @api
  */
-extern void * (*raw_trealloc)(void * ptr, int size);
+extern void * (*raw_trealloc)(void * ptr, u64 size);
 
 /**
  * @brief Free with tracking if compiled with HE_MEM_TRACK
@@ -337,7 +340,7 @@ extern void (*raw_tfree)(void * ptr);
  *
  * @api
  */
-extern int (*raw_get_allocated_memory)(void);
+extern u64 (*raw_get_allocated_memory)(void);
 
 /**
  * @brief Free object by type
@@ -387,7 +390,7 @@ extern void (*raw_node_add_child)(Node * node, Node * child);
  *
  * @api
  */
-extern int (*raw_node_remove_child)(Node * node, Node * child);
+extern boolean (*raw_node_remove_child)(Node * node, Node * child);
 
 /**
  * @brief Remove and free a child node by name from a parent node
@@ -399,7 +402,7 @@ extern int (*raw_node_remove_child)(Node * node, Node * child);
  *
  * @api
  */
-extern int (*raw_node_remove_child_by_name)(Node * node, const char * name);
+extern boolean (*raw_node_remove_child_by_name)(Node * node, const char * name);
 
 /**
  * @brief Remove and free a child node by uid from a parent node
@@ -411,12 +414,12 @@ extern int (*raw_node_remove_child_by_name)(Node * node, const char * name);
  *
  * @api
  */
-extern int (*raw_node_remove_child_by_uid)(Node * node, UID uid);
+extern boolean (*raw_node_remove_child_by_uid)(Node * node, UID uid);
 
 /**
  * @api
  */
-extern int (*raw_node_remove_all_children)(Node * node);
+extern boolean (*raw_node_remove_all_children)(Node * node);
 
 /**
  * @brief Get a child node by name
@@ -449,7 +452,7 @@ extern Node3D * (*raw_node3d_new)(const char * name);
  *
  * @api
  */
-extern Window * (*raw_window_new)(const char * name, const char * title, int w, int h);
+extern Window * (*raw_window_new)(const char * name, const char * title, i32 w, i32 h);
 
 /**
  * @brief
@@ -809,7 +812,7 @@ extern UID (*raw_uid_new)(void);
  *
  * @api
  */
-extern int (*raw_vfs_mount_res)(const char * path, const char * mount_point);
+extern boolean (*raw_vfs_mount_res)(const char * path, const char * mount_point);
 
 /**
  * @brief Unmount Resource File from Virtual File System
@@ -820,7 +823,7 @@ extern int (*raw_vfs_mount_res)(const char * path, const char * mount_point);
  *
  * @api
  */
-extern int (*raw_vfs_unmount_res)(const char * mount_point);
+extern boolean (*raw_vfs_unmount_res)(const char * mount_point);
 
 /**
  * @brief Mount Real File System to Virtual File System Res
@@ -830,7 +833,7 @@ extern int (*raw_vfs_unmount_res)(const char * mount_point);
  *
  * @api
  */
-extern int (*raw_vfs_mount_rfs)(const char * mount_point);
+extern boolean (*raw_vfs_mount_rfs)(const char * mount_point);
 
 /**
  * @brief Mount Real File System to Virtual File System Res only with allowed files in whitelist
@@ -840,7 +843,7 @@ extern int (*raw_vfs_mount_rfs)(const char * mount_point);
  *
  * @api
  */
-extern int (*raw_vfs_mount_rfs_whitelist)(const char ** whitelist, int count, const char * mount_point);
+extern boolean (*raw_vfs_mount_rfs_whitelist)(const char ** whitelist, u64 count, const char * mount_point);
 
 /**
  * @brief Unmount Real File System from Virtual File System Res
@@ -850,7 +853,7 @@ extern int (*raw_vfs_mount_rfs_whitelist)(const char ** whitelist, int count, co
  *
  * @api
  */
-extern int (*raw_vfs_unmount_rfs)(void);
+extern boolean (*raw_vfs_unmount_rfs)(void);
 
 /**
  * @brief Check if file exists
@@ -861,7 +864,7 @@ extern int (*raw_vfs_unmount_rfs)(void);
  *
  * @api
  */
-extern int (*raw_vfs_res_path_exists)(const char * path);
+extern boolean (*raw_vfs_res_path_exists)(const char * path);
 
 /**
  * @brief Check if file exists in User scope
@@ -873,7 +876,7 @@ extern int (*raw_vfs_res_path_exists)(const char * path);
  *
  * @api
  */
-extern int (*raw_vfs_usr_path_exists)(const char * path, int prefer_res);
+extern boolean (*raw_vfs_usr_path_exists)(const char * path, boolean prefer_res);
 
 /**
  * @brief Allocate memory and read file from Reosource scope
@@ -885,7 +888,7 @@ extern int (*raw_vfs_usr_path_exists)(const char * path, int prefer_res);
  *
  * @api
  */
-extern void * (*raw_vfs_res_read_file)(const char * path, int * size);
+extern void * (*raw_vfs_res_read_file)(const char * path, u64 * size);
 
 /**
  * @brief Open file stream from Resource scope
@@ -908,7 +911,7 @@ extern FileStream * (*raw_vfs_res_stream_open)(const char * path);
  *
  * @api
  */
-extern void * (*raw_vfs_usr_read_file)(const char * path, int * size, int prefer_res);
+extern void * (*raw_vfs_usr_read_file)(const char * path, u64 * size, boolean prefer_res);
 
 /**
  * @brief Write file to User scope
@@ -921,7 +924,7 @@ extern void * (*raw_vfs_usr_read_file)(const char * path, int * size, int prefer
  *
  * @api
  */
-extern int (*raw_vfs_usr_write_file)(const char * path, const void * data, int size);
+extern boolean (*raw_vfs_usr_write_file)(const char * path, const void * data, u64 size);
 
 /**
  * @brief Open file stream from User scope
@@ -932,17 +935,17 @@ extern int (*raw_vfs_usr_write_file)(const char * path, const void * data, int s
  *
  * @api
  */
-extern FileStream * (*raw_vfs_usr_stream_open)(const char * path, int prefer_res);
+extern FileStream * (*raw_vfs_usr_stream_open)(const char * path, boolean prefer_res);
 
 /**
  * @brief Get file stream size in bytes
  *
  * @param path
- * @return size_t
+ * @return u64
  *
  * @api
  */
-extern int (*raw_vfs_stream_size)(FileStream * stream);
+extern u64 (*raw_vfs_stream_size)(FileStream * stream);
 
 /**
  * @brief Read from file stream n bytes to buffer
@@ -950,11 +953,11 @@ extern int (*raw_vfs_stream_size)(FileStream * stream);
  * @param stream
  * @param buffer
  * @param size
- * @return size_t
+ * @return u64
  *
  * @api
  */
-extern int (*raw_vfs_stream_read_n)(FileStream * stream, void * buffer, int size);
+extern u64 (*raw_vfs_stream_read_n)(FileStream * stream, void * buffer, u64 size);
 
 /**
  * @brief Allocate buffer and read all file to it
@@ -966,7 +969,7 @@ extern int (*raw_vfs_stream_read_n)(FileStream * stream, void * buffer, int size
  *
  * @api
  */
-extern void * (*raw_vfs_stream_read_all)(FileStream * stream, int * size);
+extern void * (*raw_vfs_stream_read_all)(FileStream * stream, u64 * size);
 
 /**
  * @brief Write to file stream n bytes from buffer
@@ -976,11 +979,11 @@ extern void * (*raw_vfs_stream_read_all)(FileStream * stream, int * size);
  * @param buffer
  * @param size
  *
- * @return size_t Number of bytes written. 0 if fail
+ * @return u64 Number of bytes written. 0 if fail
  *
  * @api
  */
-extern int (*raw_vfs_stream_write)(FileStream * stream, void * buffer, int size);
+extern u64 (*raw_vfs_stream_write)(FileStream * stream, void * buffer, u64 size);
 
 /**
  * @brief Seek file stream
@@ -993,18 +996,18 @@ extern int (*raw_vfs_stream_write)(FileStream * stream, void * buffer, int size)
  *
  * @api
  */
-extern int (*raw_vfs_stream_seek)(FileStream * stream, FSSeekFrom whence, int offset);
+extern boolean (*raw_vfs_stream_seek)(FileStream * stream, FSSeekFrom whence, u64 offset);
 
 /**
  * @brief Get file stream current position
  *
  * @param stream
  * @param success Can be NULL
- * @return size_t
+ * @return u64
  *
  * @api
  */
-extern int (*raw_vfs_stream_tell)(FileStream * stream, int * success);
+extern u64 (*raw_vfs_stream_tell)(FileStream * stream, boolean * success);
 
 /**
  * @brief Flush file stream
@@ -1014,7 +1017,7 @@ extern int (*raw_vfs_stream_tell)(FileStream * stream, int * success);
  * @return false if fail
  * @api
  */
-extern int (*raw_vfs_stream_flush)(FileStream * stream);
+extern boolean (*raw_vfs_stream_flush)(FileStream * stream);
 
 /**
  * @brief Close file stream
@@ -1072,8 +1075,10 @@ extern Error (*raw_window_server_backend_get_function)(WindowServerBackend * bac
 
 /**
  * @brief Register a backend
- * @return "InvalidArgument" if render_server_name is NULL or window_server_name is NULL or backend is NULL
- * @return "AlreadyExists" if a backend with the same render_server_name and window_server_name is already registered
+ * @return "InvalidArgument" if render_server_name is NULL or window_server_name is NULL or backend is
+ * NULL
+ * @return "AlreadyExists" if a backend with the same render_server_name and window_server_name is
+ * already registered
  *
  * @api
  */
@@ -1175,7 +1180,7 @@ extern void (*__he_update_full_trace_info)(const char * func, const char * file,
  *
  * @api
  */
-extern void * (*tmalloc)(usize size);
+extern void * (*tmalloc)(u64 size);
 
 /**
  * @brief Realloc with tracking if compiled with HE_MEM_TRACK
@@ -1186,7 +1191,7 @@ extern void * (*tmalloc)(usize size);
  *
  * @api
  */
-extern void * (*trealloc)(void * ptr, int size);
+extern void * (*trealloc)(void * ptr, u64 size);
 
 /**
  * @brief Free with tracking if compiled with HE_MEM_TRACK
@@ -1204,7 +1209,7 @@ extern void (*tfree)(void * ptr);
  *
  * @api
  */
-extern int (*get_allocated_memory)(void);
+extern u64 (*get_allocated_memory)(void);
 
 /**
  * @brief Free object by type
@@ -1254,7 +1259,7 @@ extern void (*node_add_child)(Node * node, Node * child);
  *
  * @api
  */
-extern int (*node_remove_child)(Node * node, Node * child);
+extern boolean (*node_remove_child)(Node * node, Node * child);
 
 /**
  * @brief Remove and free a child node by name from a parent node
@@ -1266,7 +1271,7 @@ extern int (*node_remove_child)(Node * node, Node * child);
  *
  * @api
  */
-extern int (*node_remove_child_by_name)(Node * node, const char * name);
+extern boolean (*node_remove_child_by_name)(Node * node, const char * name);
 
 /**
  * @brief Remove and free a child node by uid from a parent node
@@ -1278,12 +1283,12 @@ extern int (*node_remove_child_by_name)(Node * node, const char * name);
  *
  * @api
  */
-extern int (*node_remove_child_by_uid)(Node * node, UID uid);
+extern boolean (*node_remove_child_by_uid)(Node * node, UID uid);
 
 /**
  * @api
  */
-extern int (*node_remove_all_children)(Node * node);
+extern boolean (*node_remove_all_children)(Node * node);
 
 /**
  * @brief Get a child node by name
@@ -1316,7 +1321,7 @@ extern Node3D * (*node3d_new)(const char * name);
  *
  * @api
  */
-extern Window * (*window_new)(const char * name, const char * title, int w, int h);
+extern Window * (*window_new)(const char * name, const char * title, i32 w, i32 h);
 
 /**
  * @brief
@@ -1676,7 +1681,7 @@ extern UID (*uid_new)(void);
  *
  * @api
  */
-extern int (*vfs_mount_res)(const char * path, const char * mount_point);
+extern boolean (*vfs_mount_res)(const char * path, const char * mount_point);
 
 /**
  * @brief Unmount Resource File from Virtual File System
@@ -1687,7 +1692,7 @@ extern int (*vfs_mount_res)(const char * path, const char * mount_point);
  *
  * @api
  */
-extern int (*vfs_unmount_res)(const char * mount_point);
+extern boolean (*vfs_unmount_res)(const char * mount_point);
 
 /**
  * @brief Mount Real File System to Virtual File System Res
@@ -1697,7 +1702,7 @@ extern int (*vfs_unmount_res)(const char * mount_point);
  *
  * @api
  */
-extern int (*vfs_mount_rfs)(const char * mount_point);
+extern boolean (*vfs_mount_rfs)(const char * mount_point);
 
 /**
  * @brief Mount Real File System to Virtual File System Res only with allowed files in whitelist
@@ -1707,7 +1712,7 @@ extern int (*vfs_mount_rfs)(const char * mount_point);
  *
  * @api
  */
-extern int (*vfs_mount_rfs_whitelist)(const char ** whitelist, int count, const char * mount_point);
+extern boolean (*vfs_mount_rfs_whitelist)(const char ** whitelist, u64 count, const char * mount_point);
 
 /**
  * @brief Unmount Real File System from Virtual File System Res
@@ -1717,7 +1722,7 @@ extern int (*vfs_mount_rfs_whitelist)(const char ** whitelist, int count, const 
  *
  * @api
  */
-extern int (*vfs_unmount_rfs)(void);
+extern boolean (*vfs_unmount_rfs)(void);
 
 /**
  * @brief Check if file exists
@@ -1728,7 +1733,7 @@ extern int (*vfs_unmount_rfs)(void);
  *
  * @api
  */
-extern int (*vfs_res_path_exists)(const char * path);
+extern boolean (*vfs_res_path_exists)(const char * path);
 
 /**
  * @brief Check if file exists in User scope
@@ -1740,7 +1745,7 @@ extern int (*vfs_res_path_exists)(const char * path);
  *
  * @api
  */
-extern int (*vfs_usr_path_exists)(const char * path, int prefer_res);
+extern boolean (*vfs_usr_path_exists)(const char * path, boolean prefer_res);
 
 /**
  * @brief Allocate memory and read file from Reosource scope
@@ -1752,7 +1757,7 @@ extern int (*vfs_usr_path_exists)(const char * path, int prefer_res);
  *
  * @api
  */
-extern void * (*vfs_res_read_file)(const char * path, int * size);
+extern void * (*vfs_res_read_file)(const char * path, u64 * size);
 
 /**
  * @brief Open file stream from Resource scope
@@ -1775,7 +1780,7 @@ extern FileStream * (*vfs_res_stream_open)(const char * path);
  *
  * @api
  */
-extern void * (*vfs_usr_read_file)(const char * path, int * size, int prefer_res);
+extern void * (*vfs_usr_read_file)(const char * path, u64 * size, boolean prefer_res);
 
 /**
  * @brief Write file to User scope
@@ -1788,7 +1793,7 @@ extern void * (*vfs_usr_read_file)(const char * path, int * size, int prefer_res
  *
  * @api
  */
-extern int (*vfs_usr_write_file)(const char * path, const void * data, int size);
+extern boolean (*vfs_usr_write_file)(const char * path, const void * data, u64 size);
 
 /**
  * @brief Open file stream from User scope
@@ -1799,17 +1804,17 @@ extern int (*vfs_usr_write_file)(const char * path, const void * data, int size)
  *
  * @api
  */
-extern FileStream * (*vfs_usr_stream_open)(const char * path, int prefer_res);
+extern FileStream * (*vfs_usr_stream_open)(const char * path, boolean prefer_res);
 
 /**
  * @brief Get file stream size in bytes
  *
  * @param path
- * @return size_t
+ * @return u64
  *
  * @api
  */
-extern int (*vfs_stream_size)(FileStream * stream);
+extern u64 (*vfs_stream_size)(FileStream * stream);
 
 /**
  * @brief Read from file stream n bytes to buffer
@@ -1817,11 +1822,11 @@ extern int (*vfs_stream_size)(FileStream * stream);
  * @param stream
  * @param buffer
  * @param size
- * @return size_t
+ * @return u64
  *
  * @api
  */
-extern int (*vfs_stream_read_n)(FileStream * stream, void * buffer, int size);
+extern u64 (*vfs_stream_read_n)(FileStream * stream, void * buffer, u64 size);
 
 /**
  * @brief Allocate buffer and read all file to it
@@ -1833,7 +1838,7 @@ extern int (*vfs_stream_read_n)(FileStream * stream, void * buffer, int size);
  *
  * @api
  */
-extern void * (*vfs_stream_read_all)(FileStream * stream, int * size);
+extern void * (*vfs_stream_read_all)(FileStream * stream, u64 * size);
 
 /**
  * @brief Write to file stream n bytes from buffer
@@ -1843,11 +1848,11 @@ extern void * (*vfs_stream_read_all)(FileStream * stream, int * size);
  * @param buffer
  * @param size
  *
- * @return size_t Number of bytes written. 0 if fail
+ * @return u64 Number of bytes written. 0 if fail
  *
  * @api
  */
-extern int (*vfs_stream_write)(FileStream * stream, void * buffer, int size);
+extern u64 (*vfs_stream_write)(FileStream * stream, void * buffer, u64 size);
 
 /**
  * @brief Seek file stream
@@ -1860,18 +1865,18 @@ extern int (*vfs_stream_write)(FileStream * stream, void * buffer, int size);
  *
  * @api
  */
-extern int (*vfs_stream_seek)(FileStream * stream, FSSeekFrom whence, int offset);
+extern boolean (*vfs_stream_seek)(FileStream * stream, FSSeekFrom whence, u64 offset);
 
 /**
  * @brief Get file stream current position
  *
  * @param stream
  * @param success Can be NULL
- * @return size_t
+ * @return u64
  *
  * @api
  */
-extern int (*vfs_stream_tell)(FileStream * stream, int * success);
+extern u64 (*vfs_stream_tell)(FileStream * stream, boolean * success);
 
 /**
  * @brief Flush file stream
@@ -1881,7 +1886,7 @@ extern int (*vfs_stream_tell)(FileStream * stream, int * success);
  * @return false if fail
  * @api
  */
-extern int (*vfs_stream_flush)(FileStream * stream);
+extern boolean (*vfs_stream_flush)(FileStream * stream);
 
 /**
  * @brief Close file stream
@@ -1939,8 +1944,10 @@ extern Error (*window_server_backend_get_function)(WindowServerBackend * backend
 
 /**
  * @brief Register a backend
- * @return "InvalidArgument" if render_server_name is NULL or window_server_name is NULL or backend is NULL
- * @return "AlreadyExists" if a backend with the same render_server_name and window_server_name is already registered
+ * @return "InvalidArgument" if render_server_name is NULL or window_server_name is NULL or backend is
+ * NULL
+ * @return "AlreadyExists" if a backend with the same render_server_name and window_server_name is
+ * already registered
  *
  * @api
  */
@@ -2024,24 +2031,24 @@ extern fptr (*render_context_get_proc_addr)(const char * proc);
 
 #if defined(HEAPI_LOAD_IMPL)
         void (*raw___he_update_full_trace_info)(const char * func, const char * file, i32 line);
-    void * (*raw_tmalloc)(usize size);
-    void * (*raw_trealloc)(void * ptr, int size);
+    void * (*raw_tmalloc)(u64 size);
+    void * (*raw_trealloc)(void * ptr, u64 size);
     void (*raw_tfree)(void * ptr);
-    int (*raw_get_allocated_memory)(void);
+    u64 (*raw_get_allocated_memory)(void);
     void (*raw_auto_free)(Object * object);
     Node * (*raw_node_new)(const char * name);
     Node * (*raw_from_node)(Node * node);
     void (*raw_node_set_name)(Node * node, const char * name);
     const char * (*raw_node_get_name)(Node * node);
     void (*raw_node_add_child)(Node * node, Node * child);
-    int (*raw_node_remove_child)(Node * node, Node * child);
-    int (*raw_node_remove_child_by_name)(Node * node, const char * name);
-    int (*raw_node_remove_child_by_uid)(Node * node, UID uid);
-    int (*raw_node_remove_all_children)(Node * node);
+    boolean (*raw_node_remove_child)(Node * node, Node * child);
+    boolean (*raw_node_remove_child_by_name)(Node * node, const char * name);
+    boolean (*raw_node_remove_child_by_uid)(Node * node, UID uid);
+    boolean (*raw_node_remove_all_children)(Node * node);
     Node * (*raw_node_get_child_by_name)(Node * node, const char * name);
     Node * (*raw_node_get_child_by_uid)(Node * node, UID uid);
     Node3D * (*raw_node3d_new)(const char * name);
-    Window * (*raw_window_new)(const char * name, const char * title, int w, int h);
+    Window * (*raw_window_new)(const char * name, const char * title, i32 w, i32 h);
     void (*raw_window_set_title)(Window * this, const char * title);
     const char * (*raw_window_get_title)(const Window * this);
     CanvasItem * (*raw_canvas_item_new)(const char * name);
@@ -2084,25 +2091,25 @@ extern fptr (*render_context_get_proc_addr)(const char * proc);
     void (*raw_vec3_scale_in)(Vec3 *const to, const float factor);
     void (*raw_vec3_normalize_in)(Vec3 *const a);
     UID (*raw_uid_new)(void);
-    int (*raw_vfs_mount_res)(const char * path, const char * mount_point);
-    int (*raw_vfs_unmount_res)(const char * mount_point);
-    int (*raw_vfs_mount_rfs)(const char * mount_point);
-    int (*raw_vfs_mount_rfs_whitelist)(const char ** whitelist, int count, const char * mount_point);
-    int (*raw_vfs_unmount_rfs)(void);
-    int (*raw_vfs_res_path_exists)(const char * path);
-    int (*raw_vfs_usr_path_exists)(const char * path, int prefer_res);
-    void * (*raw_vfs_res_read_file)(const char * path, int * size);
+    boolean (*raw_vfs_mount_res)(const char * path, const char * mount_point);
+    boolean (*raw_vfs_unmount_res)(const char * mount_point);
+    boolean (*raw_vfs_mount_rfs)(const char * mount_point);
+    boolean (*raw_vfs_mount_rfs_whitelist)(const char ** whitelist, u64 count, const char * mount_point);
+    boolean (*raw_vfs_unmount_rfs)(void);
+    boolean (*raw_vfs_res_path_exists)(const char * path);
+    boolean (*raw_vfs_usr_path_exists)(const char * path, boolean prefer_res);
+    void * (*raw_vfs_res_read_file)(const char * path, u64 * size);
     FileStream * (*raw_vfs_res_stream_open)(const char * path);
-    void * (*raw_vfs_usr_read_file)(const char * path, int * size, int prefer_res);
-    int (*raw_vfs_usr_write_file)(const char * path, const void * data, int size);
-    FileStream * (*raw_vfs_usr_stream_open)(const char * path, int prefer_res);
-    int (*raw_vfs_stream_size)(FileStream * stream);
-    int (*raw_vfs_stream_read_n)(FileStream * stream, void * buffer, int size);
-    void * (*raw_vfs_stream_read_all)(FileStream * stream, int * size);
-    int (*raw_vfs_stream_write)(FileStream * stream, void * buffer, int size);
-    int (*raw_vfs_stream_seek)(FileStream * stream, FSSeekFrom whence, int offset);
-    int (*raw_vfs_stream_tell)(FileStream * stream, int * success);
-    int (*raw_vfs_stream_flush)(FileStream * stream);
+    void * (*raw_vfs_usr_read_file)(const char * path, u64 * size, boolean prefer_res);
+    boolean (*raw_vfs_usr_write_file)(const char * path, const void * data, u64 size);
+    FileStream * (*raw_vfs_usr_stream_open)(const char * path, boolean prefer_res);
+    u64 (*raw_vfs_stream_size)(FileStream * stream);
+    u64 (*raw_vfs_stream_read_n)(FileStream * stream, void * buffer, u64 size);
+    void * (*raw_vfs_stream_read_all)(FileStream * stream, u64 * size);
+    u64 (*raw_vfs_stream_write)(FileStream * stream, void * buffer, u64 size);
+    boolean (*raw_vfs_stream_seek)(FileStream * stream, FSSeekFrom whence, u64 offset);
+    u64 (*raw_vfs_stream_tell)(FileStream * stream, boolean * success);
+    boolean (*raw_vfs_stream_flush)(FileStream * stream);
     void (*raw_vfs_stream_close)(FileStream * stream);
     Error (*raw_window_server_register_backend)(const char * name, WindowServerBackend * backend);
     Error (*raw_window_server_load_backend)(const char * name);
@@ -2134,24 +2141,24 @@ extern fptr (*render_context_get_proc_addr)(const char * proc);
 
     #if !defined(HEAPI_FULL_TRACE)
             void (*__he_update_full_trace_info)(const char * func, const char * file, i32 line);
-    void * (*tmalloc)(usize size);
-    void * (*trealloc)(void * ptr, int size);
+    void * (*tmalloc)(u64 size);
+    void * (*trealloc)(void * ptr, u64 size);
     void (*tfree)(void * ptr);
-    int (*get_allocated_memory)(void);
+    u64 (*get_allocated_memory)(void);
     void (*auto_free)(Object * object);
     Node * (*node_new)(const char * name);
     Node * (*from_node)(Node * node);
     void (*node_set_name)(Node * node, const char * name);
     const char * (*node_get_name)(Node * node);
     void (*node_add_child)(Node * node, Node * child);
-    int (*node_remove_child)(Node * node, Node * child);
-    int (*node_remove_child_by_name)(Node * node, const char * name);
-    int (*node_remove_child_by_uid)(Node * node, UID uid);
-    int (*node_remove_all_children)(Node * node);
+    boolean (*node_remove_child)(Node * node, Node * child);
+    boolean (*node_remove_child_by_name)(Node * node, const char * name);
+    boolean (*node_remove_child_by_uid)(Node * node, UID uid);
+    boolean (*node_remove_all_children)(Node * node);
     Node * (*node_get_child_by_name)(Node * node, const char * name);
     Node * (*node_get_child_by_uid)(Node * node, UID uid);
     Node3D * (*node3d_new)(const char * name);
-    Window * (*window_new)(const char * name, const char * title, int w, int h);
+    Window * (*window_new)(const char * name, const char * title, i32 w, i32 h);
     void (*window_set_title)(Window * this, const char * title);
     const char * (*window_get_title)(const Window * this);
     CanvasItem * (*canvas_item_new)(const char * name);
@@ -2194,25 +2201,25 @@ extern fptr (*render_context_get_proc_addr)(const char * proc);
     void (*vec3_scale_in)(Vec3 *const to, const float factor);
     void (*vec3_normalize_in)(Vec3 *const a);
     UID (*uid_new)(void);
-    int (*vfs_mount_res)(const char * path, const char * mount_point);
-    int (*vfs_unmount_res)(const char * mount_point);
-    int (*vfs_mount_rfs)(const char * mount_point);
-    int (*vfs_mount_rfs_whitelist)(const char ** whitelist, int count, const char * mount_point);
-    int (*vfs_unmount_rfs)(void);
-    int (*vfs_res_path_exists)(const char * path);
-    int (*vfs_usr_path_exists)(const char * path, int prefer_res);
-    void * (*vfs_res_read_file)(const char * path, int * size);
+    boolean (*vfs_mount_res)(const char * path, const char * mount_point);
+    boolean (*vfs_unmount_res)(const char * mount_point);
+    boolean (*vfs_mount_rfs)(const char * mount_point);
+    boolean (*vfs_mount_rfs_whitelist)(const char ** whitelist, u64 count, const char * mount_point);
+    boolean (*vfs_unmount_rfs)(void);
+    boolean (*vfs_res_path_exists)(const char * path);
+    boolean (*vfs_usr_path_exists)(const char * path, boolean prefer_res);
+    void * (*vfs_res_read_file)(const char * path, u64 * size);
     FileStream * (*vfs_res_stream_open)(const char * path);
-    void * (*vfs_usr_read_file)(const char * path, int * size, int prefer_res);
-    int (*vfs_usr_write_file)(const char * path, const void * data, int size);
-    FileStream * (*vfs_usr_stream_open)(const char * path, int prefer_res);
-    int (*vfs_stream_size)(FileStream * stream);
-    int (*vfs_stream_read_n)(FileStream * stream, void * buffer, int size);
-    void * (*vfs_stream_read_all)(FileStream * stream, int * size);
-    int (*vfs_stream_write)(FileStream * stream, void * buffer, int size);
-    int (*vfs_stream_seek)(FileStream * stream, FSSeekFrom whence, int offset);
-    int (*vfs_stream_tell)(FileStream * stream, int * success);
-    int (*vfs_stream_flush)(FileStream * stream);
+    void * (*vfs_usr_read_file)(const char * path, u64 * size, boolean prefer_res);
+    boolean (*vfs_usr_write_file)(const char * path, const void * data, u64 size);
+    FileStream * (*vfs_usr_stream_open)(const char * path, boolean prefer_res);
+    u64 (*vfs_stream_size)(FileStream * stream);
+    u64 (*vfs_stream_read_n)(FileStream * stream, void * buffer, u64 size);
+    void * (*vfs_stream_read_all)(FileStream * stream, u64 * size);
+    u64 (*vfs_stream_write)(FileStream * stream, void * buffer, u64 size);
+    boolean (*vfs_stream_seek)(FileStream * stream, FSSeekFrom whence, u64 offset);
+    u64 (*vfs_stream_tell)(FileStream * stream, boolean * success);
+    boolean (*vfs_stream_flush)(FileStream * stream);
     void (*vfs_stream_close)(FileStream * stream);
     Error (*window_server_register_backend)(const char * name, WindowServerBackend * backend);
     Error (*window_server_load_backend)(const char * name);
@@ -2245,24 +2252,24 @@ extern fptr (*render_context_get_proc_addr)(const char * proc);
 
     void ___hate_engine_runtime_init(void* (*proc_addr)(const char* name)) {
                 raw___he_update_full_trace_info = (void (*)(const char *, const char *, i32))proc_addr("__he_update_full_trace_info");
-        raw_tmalloc = (void * (*)(usize))proc_addr("tmalloc");
-        raw_trealloc = (void * (*)(void *, int))proc_addr("trealloc");
+        raw_tmalloc = (void * (*)(u64))proc_addr("tmalloc");
+        raw_trealloc = (void * (*)(void *, u64))proc_addr("trealloc");
         raw_tfree = (void (*)(void *))proc_addr("tfree");
-        raw_get_allocated_memory = (int (*)(void))proc_addr("get_allocated_memory");
+        raw_get_allocated_memory = (u64 (*)(void))proc_addr("get_allocated_memory");
         raw_auto_free = (void (*)(Object *))proc_addr("auto_free");
         raw_node_new = (Node * (*)(const char *))proc_addr("node_new");
         raw_from_node = (Node * (*)(Node *))proc_addr("from_node");
         raw_node_set_name = (void (*)(Node *, const char *))proc_addr("node_set_name");
         raw_node_get_name = (const char * (*)(Node *))proc_addr("node_get_name");
         raw_node_add_child = (void (*)(Node *, Node *))proc_addr("node_add_child");
-        raw_node_remove_child = (int (*)(Node *, Node *))proc_addr("node_remove_child");
-        raw_node_remove_child_by_name = (int (*)(Node *, const char *))proc_addr("node_remove_child_by_name");
-        raw_node_remove_child_by_uid = (int (*)(Node *, UID))proc_addr("node_remove_child_by_uid");
-        raw_node_remove_all_children = (int (*)(Node *))proc_addr("node_remove_all_children");
+        raw_node_remove_child = (boolean (*)(Node *, Node *))proc_addr("node_remove_child");
+        raw_node_remove_child_by_name = (boolean (*)(Node *, const char *))proc_addr("node_remove_child_by_name");
+        raw_node_remove_child_by_uid = (boolean (*)(Node *, UID))proc_addr("node_remove_child_by_uid");
+        raw_node_remove_all_children = (boolean (*)(Node *))proc_addr("node_remove_all_children");
         raw_node_get_child_by_name = (Node * (*)(Node *, const char *))proc_addr("node_get_child_by_name");
         raw_node_get_child_by_uid = (Node * (*)(Node *, UID))proc_addr("node_get_child_by_uid");
         raw_node3d_new = (Node3D * (*)(const char *))proc_addr("node3d_new");
-        raw_window_new = (Window * (*)(const char *, const char *, int, int))proc_addr("window_new");
+        raw_window_new = (Window * (*)(const char *, const char *, i32, i32))proc_addr("window_new");
         raw_window_set_title = (void (*)(Window *, const char *))proc_addr("window_set_title");
         raw_window_get_title = (const char * (*)(const Window *))proc_addr("window_get_title");
         raw_canvas_item_new = (CanvasItem * (*)(const char *))proc_addr("canvas_item_new");
@@ -2305,25 +2312,25 @@ extern fptr (*render_context_get_proc_addr)(const char * proc);
         raw_vec3_scale_in = (void (*)(Vec3 *const, const float))proc_addr("vec3_scale_in");
         raw_vec3_normalize_in = (void (*)(Vec3 *const))proc_addr("vec3_normalize_in");
         raw_uid_new = (UID (*)(void))proc_addr("uid_new");
-        raw_vfs_mount_res = (int (*)(const char *, const char *))proc_addr("vfs_mount_res");
-        raw_vfs_unmount_res = (int (*)(const char *))proc_addr("vfs_unmount_res");
-        raw_vfs_mount_rfs = (int (*)(const char *))proc_addr("vfs_mount_rfs");
-        raw_vfs_mount_rfs_whitelist = (int (*)(const char **, int, const char *))proc_addr("vfs_mount_rfs_whitelist");
-        raw_vfs_unmount_rfs = (int (*)(void))proc_addr("vfs_unmount_rfs");
-        raw_vfs_res_path_exists = (int (*)(const char *))proc_addr("vfs_res_path_exists");
-        raw_vfs_usr_path_exists = (int (*)(const char *, int))proc_addr("vfs_usr_path_exists");
-        raw_vfs_res_read_file = (void * (*)(const char *, int *))proc_addr("vfs_res_read_file");
+        raw_vfs_mount_res = (boolean (*)(const char *, const char *))proc_addr("vfs_mount_res");
+        raw_vfs_unmount_res = (boolean (*)(const char *))proc_addr("vfs_unmount_res");
+        raw_vfs_mount_rfs = (boolean (*)(const char *))proc_addr("vfs_mount_rfs");
+        raw_vfs_mount_rfs_whitelist = (boolean (*)(const char **, u64, const char *))proc_addr("vfs_mount_rfs_whitelist");
+        raw_vfs_unmount_rfs = (boolean (*)(void))proc_addr("vfs_unmount_rfs");
+        raw_vfs_res_path_exists = (boolean (*)(const char *))proc_addr("vfs_res_path_exists");
+        raw_vfs_usr_path_exists = (boolean (*)(const char *, boolean))proc_addr("vfs_usr_path_exists");
+        raw_vfs_res_read_file = (void * (*)(const char *, u64 *))proc_addr("vfs_res_read_file");
         raw_vfs_res_stream_open = (FileStream * (*)(const char *))proc_addr("vfs_res_stream_open");
-        raw_vfs_usr_read_file = (void * (*)(const char *, int *, int))proc_addr("vfs_usr_read_file");
-        raw_vfs_usr_write_file = (int (*)(const char *, const void *, int))proc_addr("vfs_usr_write_file");
-        raw_vfs_usr_stream_open = (FileStream * (*)(const char *, int))proc_addr("vfs_usr_stream_open");
-        raw_vfs_stream_size = (int (*)(FileStream *))proc_addr("vfs_stream_size");
-        raw_vfs_stream_read_n = (int (*)(FileStream *, void *, int))proc_addr("vfs_stream_read_n");
-        raw_vfs_stream_read_all = (void * (*)(FileStream *, int *))proc_addr("vfs_stream_read_all");
-        raw_vfs_stream_write = (int (*)(FileStream *, void *, int))proc_addr("vfs_stream_write");
-        raw_vfs_stream_seek = (int (*)(FileStream *, FSSeekFrom, int))proc_addr("vfs_stream_seek");
-        raw_vfs_stream_tell = (int (*)(FileStream *, int *))proc_addr("vfs_stream_tell");
-        raw_vfs_stream_flush = (int (*)(FileStream *))proc_addr("vfs_stream_flush");
+        raw_vfs_usr_read_file = (void * (*)(const char *, u64 *, boolean))proc_addr("vfs_usr_read_file");
+        raw_vfs_usr_write_file = (boolean (*)(const char *, const void *, u64))proc_addr("vfs_usr_write_file");
+        raw_vfs_usr_stream_open = (FileStream * (*)(const char *, boolean))proc_addr("vfs_usr_stream_open");
+        raw_vfs_stream_size = (u64 (*)(FileStream *))proc_addr("vfs_stream_size");
+        raw_vfs_stream_read_n = (u64 (*)(FileStream *, void *, u64))proc_addr("vfs_stream_read_n");
+        raw_vfs_stream_read_all = (void * (*)(FileStream *, u64 *))proc_addr("vfs_stream_read_all");
+        raw_vfs_stream_write = (u64 (*)(FileStream *, void *, u64))proc_addr("vfs_stream_write");
+        raw_vfs_stream_seek = (boolean (*)(FileStream *, FSSeekFrom, u64))proc_addr("vfs_stream_seek");
+        raw_vfs_stream_tell = (u64 (*)(FileStream *, boolean *))proc_addr("vfs_stream_tell");
+        raw_vfs_stream_flush = (boolean (*)(FileStream *))proc_addr("vfs_stream_flush");
         raw_vfs_stream_close = (void (*)(FileStream *))proc_addr("vfs_stream_close");
         raw_window_server_register_backend = (Error (*)(const char *, WindowServerBackend *))proc_addr("window_server_register_backend");
         raw_window_server_load_backend = (Error (*)(const char *))proc_addr("window_server_load_backend");
@@ -2480,24 +2487,24 @@ extern fptr (*render_context_get_proc_addr)(const char * proc);
 #endif
 
 #if defined(HEAPI_FULL_TRACE)
-void * full_trace_tmalloc(const char* ___file___, uint32_t ___line___, usize);
-void * full_trace_trealloc(const char* ___file___, uint32_t ___line___, void *, int);
+void * full_trace_tmalloc(const char* ___file___, uint32_t ___line___, u64);
+void * full_trace_trealloc(const char* ___file___, uint32_t ___line___, void *, u64);
 void full_trace_tfree(const char* ___file___, uint32_t ___line___, void *);
-int full_trace_get_allocated_memory(const char* ___file___, uint32_t ___line___);
+u64 full_trace_get_allocated_memory(const char* ___file___, uint32_t ___line___);
 void full_trace_auto_free(const char* ___file___, uint32_t ___line___, Object *);
 Node * full_trace_node_new(const char* ___file___, uint32_t ___line___, const char *);
 Node * full_trace_from_node(const char* ___file___, uint32_t ___line___, Node *);
 void full_trace_node_set_name(const char* ___file___, uint32_t ___line___, Node *, const char *);
 const char * full_trace_node_get_name(const char* ___file___, uint32_t ___line___, Node *);
 void full_trace_node_add_child(const char* ___file___, uint32_t ___line___, Node *, Node *);
-int full_trace_node_remove_child(const char* ___file___, uint32_t ___line___, Node *, Node *);
-int full_trace_node_remove_child_by_name(const char* ___file___, uint32_t ___line___, Node *, const char *);
-int full_trace_node_remove_child_by_uid(const char* ___file___, uint32_t ___line___, Node *, UID);
-int full_trace_node_remove_all_children(const char* ___file___, uint32_t ___line___, Node *);
+boolean full_trace_node_remove_child(const char* ___file___, uint32_t ___line___, Node *, Node *);
+boolean full_trace_node_remove_child_by_name(const char* ___file___, uint32_t ___line___, Node *, const char *);
+boolean full_trace_node_remove_child_by_uid(const char* ___file___, uint32_t ___line___, Node *, UID);
+boolean full_trace_node_remove_all_children(const char* ___file___, uint32_t ___line___, Node *);
 Node * full_trace_node_get_child_by_name(const char* ___file___, uint32_t ___line___, Node *, const char *);
 Node * full_trace_node_get_child_by_uid(const char* ___file___, uint32_t ___line___, Node *, UID);
 Node3D * full_trace_node3d_new(const char* ___file___, uint32_t ___line___, const char *);
-Window * full_trace_window_new(const char* ___file___, uint32_t ___line___, const char *, const char *, int, int);
+Window * full_trace_window_new(const char* ___file___, uint32_t ___line___, const char *, const char *, i32, i32);
 void full_trace_window_set_title(const char* ___file___, uint32_t ___line___, Window *, const char *);
 const char * full_trace_window_get_title(const char* ___file___, uint32_t ___line___, const Window *);
 CanvasItem * full_trace_canvas_item_new(const char* ___file___, uint32_t ___line___, const char *);
@@ -2540,25 +2547,25 @@ void full_trace_vec3_sub_in(const char* ___file___, uint32_t ___line___, Vec3 *c
 void full_trace_vec3_scale_in(const char* ___file___, uint32_t ___line___, Vec3 *const, const float);
 void full_trace_vec3_normalize_in(const char* ___file___, uint32_t ___line___, Vec3 *const);
 UID full_trace_uid_new(const char* ___file___, uint32_t ___line___);
-int full_trace_vfs_mount_res(const char* ___file___, uint32_t ___line___, const char *, const char *);
-int full_trace_vfs_unmount_res(const char* ___file___, uint32_t ___line___, const char *);
-int full_trace_vfs_mount_rfs(const char* ___file___, uint32_t ___line___, const char *);
-int full_trace_vfs_mount_rfs_whitelist(const char* ___file___, uint32_t ___line___, const char **, int, const char *);
-int full_trace_vfs_unmount_rfs(const char* ___file___, uint32_t ___line___);
-int full_trace_vfs_res_path_exists(const char* ___file___, uint32_t ___line___, const char *);
-int full_trace_vfs_usr_path_exists(const char* ___file___, uint32_t ___line___, const char *, int);
-void * full_trace_vfs_res_read_file(const char* ___file___, uint32_t ___line___, const char *, int *);
+boolean full_trace_vfs_mount_res(const char* ___file___, uint32_t ___line___, const char *, const char *);
+boolean full_trace_vfs_unmount_res(const char* ___file___, uint32_t ___line___, const char *);
+boolean full_trace_vfs_mount_rfs(const char* ___file___, uint32_t ___line___, const char *);
+boolean full_trace_vfs_mount_rfs_whitelist(const char* ___file___, uint32_t ___line___, const char **, u64, const char *);
+boolean full_trace_vfs_unmount_rfs(const char* ___file___, uint32_t ___line___);
+boolean full_trace_vfs_res_path_exists(const char* ___file___, uint32_t ___line___, const char *);
+boolean full_trace_vfs_usr_path_exists(const char* ___file___, uint32_t ___line___, const char *, boolean);
+void * full_trace_vfs_res_read_file(const char* ___file___, uint32_t ___line___, const char *, u64 *);
 FileStream * full_trace_vfs_res_stream_open(const char* ___file___, uint32_t ___line___, const char *);
-void * full_trace_vfs_usr_read_file(const char* ___file___, uint32_t ___line___, const char *, int *, int);
-int full_trace_vfs_usr_write_file(const char* ___file___, uint32_t ___line___, const char *, const void *, int);
-FileStream * full_trace_vfs_usr_stream_open(const char* ___file___, uint32_t ___line___, const char *, int);
-int full_trace_vfs_stream_size(const char* ___file___, uint32_t ___line___, FileStream *);
-int full_trace_vfs_stream_read_n(const char* ___file___, uint32_t ___line___, FileStream *, void *, int);
-void * full_trace_vfs_stream_read_all(const char* ___file___, uint32_t ___line___, FileStream *, int *);
-int full_trace_vfs_stream_write(const char* ___file___, uint32_t ___line___, FileStream *, void *, int);
-int full_trace_vfs_stream_seek(const char* ___file___, uint32_t ___line___, FileStream *, FSSeekFrom, int);
-int full_trace_vfs_stream_tell(const char* ___file___, uint32_t ___line___, FileStream *, int *);
-int full_trace_vfs_stream_flush(const char* ___file___, uint32_t ___line___, FileStream *);
+void * full_trace_vfs_usr_read_file(const char* ___file___, uint32_t ___line___, const char *, u64 *, boolean);
+boolean full_trace_vfs_usr_write_file(const char* ___file___, uint32_t ___line___, const char *, const void *, u64);
+FileStream * full_trace_vfs_usr_stream_open(const char* ___file___, uint32_t ___line___, const char *, boolean);
+u64 full_trace_vfs_stream_size(const char* ___file___, uint32_t ___line___, FileStream *);
+u64 full_trace_vfs_stream_read_n(const char* ___file___, uint32_t ___line___, FileStream *, void *, u64);
+void * full_trace_vfs_stream_read_all(const char* ___file___, uint32_t ___line___, FileStream *, u64 *);
+u64 full_trace_vfs_stream_write(const char* ___file___, uint32_t ___line___, FileStream *, void *, u64);
+boolean full_trace_vfs_stream_seek(const char* ___file___, uint32_t ___line___, FileStream *, FSSeekFrom, u64);
+u64 full_trace_vfs_stream_tell(const char* ___file___, uint32_t ___line___, FileStream *, boolean *);
+boolean full_trace_vfs_stream_flush(const char* ___file___, uint32_t ___line___, FileStream *);
 void full_trace_vfs_stream_close(const char* ___file___, uint32_t ___line___, FileStream *);
 Error full_trace_window_server_register_backend(const char* ___file___, uint32_t ___line___, const char *, WindowServerBackend *);
 Error full_trace_window_server_load_backend(const char* ___file___, uint32_t ___line___, const char *);
@@ -2589,14 +2596,14 @@ fptr full_trace_render_context_get_proc_addr(const char* ___file___, uint32_t __
 
 
 #if defined(HEAPI_LOAD_IMPL)
-    inline void * full_trace_tmalloc(const char* ___file___, uint32_t ___line___, usize size) {
+    inline void * full_trace_tmalloc(const char* ___file___, uint32_t ___line___, u64 size) {
     raw___he_update_full_trace_info("tmalloc", ___file___, ___line___);
     void * result = raw_tmalloc(size);
     raw___he_update_full_trace_info("", "", -1);
     return result;
 }
 
-inline void * full_trace_trealloc(const char* ___file___, uint32_t ___line___, void * ptr, int size) {
+inline void * full_trace_trealloc(const char* ___file___, uint32_t ___line___, void * ptr, u64 size) {
     raw___he_update_full_trace_info("trealloc", ___file___, ___line___);
     void * result = raw_trealloc(ptr, size);
     raw___he_update_full_trace_info("", "", -1);
@@ -2609,9 +2616,9 @@ inline void full_trace_tfree(const char* ___file___, uint32_t ___line___, void *
     raw___he_update_full_trace_info("", "", -1);
 }
 
-inline int full_trace_get_allocated_memory(const char* ___file___, uint32_t ___line___) {
+inline u64 full_trace_get_allocated_memory(const char* ___file___, uint32_t ___line___) {
     raw___he_update_full_trace_info("get_allocated_memory", ___file___, ___line___);
-    int result = raw_get_allocated_memory();
+    u64 result = raw_get_allocated_memory();
     raw___he_update_full_trace_info("", "", -1);
     return result;
 }
@@ -2655,30 +2662,30 @@ inline void full_trace_node_add_child(const char* ___file___, uint32_t ___line__
     raw___he_update_full_trace_info("", "", -1);
 }
 
-inline int full_trace_node_remove_child(const char* ___file___, uint32_t ___line___, Node * node, Node * child) {
+inline boolean full_trace_node_remove_child(const char* ___file___, uint32_t ___line___, Node * node, Node * child) {
     raw___he_update_full_trace_info("node_remove_child", ___file___, ___line___);
-    int result = raw_node_remove_child(node, child);
+    boolean result = raw_node_remove_child(node, child);
     raw___he_update_full_trace_info("", "", -1);
     return result;
 }
 
-inline int full_trace_node_remove_child_by_name(const char* ___file___, uint32_t ___line___, Node * node, const char * name) {
+inline boolean full_trace_node_remove_child_by_name(const char* ___file___, uint32_t ___line___, Node * node, const char * name) {
     raw___he_update_full_trace_info("node_remove_child_by_name", ___file___, ___line___);
-    int result = raw_node_remove_child_by_name(node, name);
+    boolean result = raw_node_remove_child_by_name(node, name);
     raw___he_update_full_trace_info("", "", -1);
     return result;
 }
 
-inline int full_trace_node_remove_child_by_uid(const char* ___file___, uint32_t ___line___, Node * node, UID uid) {
+inline boolean full_trace_node_remove_child_by_uid(const char* ___file___, uint32_t ___line___, Node * node, UID uid) {
     raw___he_update_full_trace_info("node_remove_child_by_uid", ___file___, ___line___);
-    int result = raw_node_remove_child_by_uid(node, uid);
+    boolean result = raw_node_remove_child_by_uid(node, uid);
     raw___he_update_full_trace_info("", "", -1);
     return result;
 }
 
-inline int full_trace_node_remove_all_children(const char* ___file___, uint32_t ___line___, Node * node) {
+inline boolean full_trace_node_remove_all_children(const char* ___file___, uint32_t ___line___, Node * node) {
     raw___he_update_full_trace_info("node_remove_all_children", ___file___, ___line___);
-    int result = raw_node_remove_all_children(node);
+    boolean result = raw_node_remove_all_children(node);
     raw___he_update_full_trace_info("", "", -1);
     return result;
 }
@@ -2704,7 +2711,7 @@ inline Node3D * full_trace_node3d_new(const char* ___file___, uint32_t ___line__
     return result;
 }
 
-inline Window * full_trace_window_new(const char* ___file___, uint32_t ___line___, const char * name, const char * title, int w, int h) {
+inline Window * full_trace_window_new(const char* ___file___, uint32_t ___line___, const char * name, const char * title, i32 w, i32 h) {
     raw___he_update_full_trace_info("window_new", ___file___, ___line___);
     Window * result = raw_window_new(name, title, w, h);
     raw___he_update_full_trace_info("", "", -1);
@@ -2996,56 +3003,56 @@ inline UID full_trace_uid_new(const char* ___file___, uint32_t ___line___) {
     return result;
 }
 
-inline int full_trace_vfs_mount_res(const char* ___file___, uint32_t ___line___, const char * path, const char * mount_point) {
+inline boolean full_trace_vfs_mount_res(const char* ___file___, uint32_t ___line___, const char * path, const char * mount_point) {
     raw___he_update_full_trace_info("vfs_mount_res", ___file___, ___line___);
-    int result = raw_vfs_mount_res(path, mount_point);
+    boolean result = raw_vfs_mount_res(path, mount_point);
     raw___he_update_full_trace_info("", "", -1);
     return result;
 }
 
-inline int full_trace_vfs_unmount_res(const char* ___file___, uint32_t ___line___, const char * mount_point) {
+inline boolean full_trace_vfs_unmount_res(const char* ___file___, uint32_t ___line___, const char * mount_point) {
     raw___he_update_full_trace_info("vfs_unmount_res", ___file___, ___line___);
-    int result = raw_vfs_unmount_res(mount_point);
+    boolean result = raw_vfs_unmount_res(mount_point);
     raw___he_update_full_trace_info("", "", -1);
     return result;
 }
 
-inline int full_trace_vfs_mount_rfs(const char* ___file___, uint32_t ___line___, const char * mount_point) {
+inline boolean full_trace_vfs_mount_rfs(const char* ___file___, uint32_t ___line___, const char * mount_point) {
     raw___he_update_full_trace_info("vfs_mount_rfs", ___file___, ___line___);
-    int result = raw_vfs_mount_rfs(mount_point);
+    boolean result = raw_vfs_mount_rfs(mount_point);
     raw___he_update_full_trace_info("", "", -1);
     return result;
 }
 
-inline int full_trace_vfs_mount_rfs_whitelist(const char* ___file___, uint32_t ___line___, const char ** whitelist, int count, const char * mount_point) {
+inline boolean full_trace_vfs_mount_rfs_whitelist(const char* ___file___, uint32_t ___line___, const char ** whitelist, u64 count, const char * mount_point) {
     raw___he_update_full_trace_info("vfs_mount_rfs_whitelist", ___file___, ___line___);
-    int result = raw_vfs_mount_rfs_whitelist(whitelist, count, mount_point);
+    boolean result = raw_vfs_mount_rfs_whitelist(whitelist, count, mount_point);
     raw___he_update_full_trace_info("", "", -1);
     return result;
 }
 
-inline int full_trace_vfs_unmount_rfs(const char* ___file___, uint32_t ___line___) {
+inline boolean full_trace_vfs_unmount_rfs(const char* ___file___, uint32_t ___line___) {
     raw___he_update_full_trace_info("vfs_unmount_rfs", ___file___, ___line___);
-    int result = raw_vfs_unmount_rfs();
+    boolean result = raw_vfs_unmount_rfs();
     raw___he_update_full_trace_info("", "", -1);
     return result;
 }
 
-inline int full_trace_vfs_res_path_exists(const char* ___file___, uint32_t ___line___, const char * path) {
+inline boolean full_trace_vfs_res_path_exists(const char* ___file___, uint32_t ___line___, const char * path) {
     raw___he_update_full_trace_info("vfs_res_path_exists", ___file___, ___line___);
-    int result = raw_vfs_res_path_exists(path);
+    boolean result = raw_vfs_res_path_exists(path);
     raw___he_update_full_trace_info("", "", -1);
     return result;
 }
 
-inline int full_trace_vfs_usr_path_exists(const char* ___file___, uint32_t ___line___, const char * path, int prefer_res) {
+inline boolean full_trace_vfs_usr_path_exists(const char* ___file___, uint32_t ___line___, const char * path, boolean prefer_res) {
     raw___he_update_full_trace_info("vfs_usr_path_exists", ___file___, ___line___);
-    int result = raw_vfs_usr_path_exists(path, prefer_res);
+    boolean result = raw_vfs_usr_path_exists(path, prefer_res);
     raw___he_update_full_trace_info("", "", -1);
     return result;
 }
 
-inline void * full_trace_vfs_res_read_file(const char* ___file___, uint32_t ___line___, const char * path, int * size) {
+inline void * full_trace_vfs_res_read_file(const char* ___file___, uint32_t ___line___, const char * path, u64 * size) {
     raw___he_update_full_trace_info("vfs_res_read_file", ___file___, ___line___);
     void * result = raw_vfs_res_read_file(path, size);
     raw___he_update_full_trace_info("", "", -1);
@@ -3059,72 +3066,72 @@ inline FileStream * full_trace_vfs_res_stream_open(const char* ___file___, uint3
     return result;
 }
 
-inline void * full_trace_vfs_usr_read_file(const char* ___file___, uint32_t ___line___, const char * path, int * size, int prefer_res) {
+inline void * full_trace_vfs_usr_read_file(const char* ___file___, uint32_t ___line___, const char * path, u64 * size, boolean prefer_res) {
     raw___he_update_full_trace_info("vfs_usr_read_file", ___file___, ___line___);
     void * result = raw_vfs_usr_read_file(path, size, prefer_res);
     raw___he_update_full_trace_info("", "", -1);
     return result;
 }
 
-inline int full_trace_vfs_usr_write_file(const char* ___file___, uint32_t ___line___, const char * path, const void * data, int size) {
+inline boolean full_trace_vfs_usr_write_file(const char* ___file___, uint32_t ___line___, const char * path, const void * data, u64 size) {
     raw___he_update_full_trace_info("vfs_usr_write_file", ___file___, ___line___);
-    int result = raw_vfs_usr_write_file(path, data, size);
+    boolean result = raw_vfs_usr_write_file(path, data, size);
     raw___he_update_full_trace_info("", "", -1);
     return result;
 }
 
-inline FileStream * full_trace_vfs_usr_stream_open(const char* ___file___, uint32_t ___line___, const char * path, int prefer_res) {
+inline FileStream * full_trace_vfs_usr_stream_open(const char* ___file___, uint32_t ___line___, const char * path, boolean prefer_res) {
     raw___he_update_full_trace_info("vfs_usr_stream_open", ___file___, ___line___);
     FileStream * result = raw_vfs_usr_stream_open(path, prefer_res);
     raw___he_update_full_trace_info("", "", -1);
     return result;
 }
 
-inline int full_trace_vfs_stream_size(const char* ___file___, uint32_t ___line___, FileStream * stream) {
+inline u64 full_trace_vfs_stream_size(const char* ___file___, uint32_t ___line___, FileStream * stream) {
     raw___he_update_full_trace_info("vfs_stream_size", ___file___, ___line___);
-    int result = raw_vfs_stream_size(stream);
+    u64 result = raw_vfs_stream_size(stream);
     raw___he_update_full_trace_info("", "", -1);
     return result;
 }
 
-inline int full_trace_vfs_stream_read_n(const char* ___file___, uint32_t ___line___, FileStream * stream, void * buffer, int size) {
+inline u64 full_trace_vfs_stream_read_n(const char* ___file___, uint32_t ___line___, FileStream * stream, void * buffer, u64 size) {
     raw___he_update_full_trace_info("vfs_stream_read_n", ___file___, ___line___);
-    int result = raw_vfs_stream_read_n(stream, buffer, size);
+    u64 result = raw_vfs_stream_read_n(stream, buffer, size);
     raw___he_update_full_trace_info("", "", -1);
     return result;
 }
 
-inline void * full_trace_vfs_stream_read_all(const char* ___file___, uint32_t ___line___, FileStream * stream, int * size) {
+inline void * full_trace_vfs_stream_read_all(const char* ___file___, uint32_t ___line___, FileStream * stream, u64 * size) {
     raw___he_update_full_trace_info("vfs_stream_read_all", ___file___, ___line___);
     void * result = raw_vfs_stream_read_all(stream, size);
     raw___he_update_full_trace_info("", "", -1);
     return result;
 }
 
-inline int full_trace_vfs_stream_write(const char* ___file___, uint32_t ___line___, FileStream * stream, void * buffer, int size) {
+inline u64 full_trace_vfs_stream_write(const char* ___file___, uint32_t ___line___, FileStream * stream, void * buffer, u64 size) {
     raw___he_update_full_trace_info("vfs_stream_write", ___file___, ___line___);
-    int result = raw_vfs_stream_write(stream, buffer, size);
+    u64 result = raw_vfs_stream_write(stream, buffer, size);
     raw___he_update_full_trace_info("", "", -1);
     return result;
 }
 
-inline int full_trace_vfs_stream_seek(const char* ___file___, uint32_t ___line___, FileStream * stream, FSSeekFrom whence, int offset) {
+inline boolean full_trace_vfs_stream_seek(const char* ___file___, uint32_t ___line___, FileStream * stream, FSSeekFrom whence, u64 offset) {
     raw___he_update_full_trace_info("vfs_stream_seek", ___file___, ___line___);
-    int result = raw_vfs_stream_seek(stream, whence, offset);
+    boolean result = raw_vfs_stream_seek(stream, whence, offset);
     raw___he_update_full_trace_info("", "", -1);
     return result;
 }
 
-inline int full_trace_vfs_stream_tell(const char* ___file___, uint32_t ___line___, FileStream * stream, int * success) {
+inline u64 full_trace_vfs_stream_tell(const char* ___file___, uint32_t ___line___, FileStream * stream, boolean * success) {
     raw___he_update_full_trace_info("vfs_stream_tell", ___file___, ___line___);
-    int result = raw_vfs_stream_tell(stream, success);
+    u64 result = raw_vfs_stream_tell(stream, success);
     raw___he_update_full_trace_info("", "", -1);
     return result;
 }
 
-inline int full_trace_vfs_stream_flush(const char* ___file___, uint32_t ___line___, FileStream * stream) {
+inline boolean full_trace_vfs_stream_flush(const char* ___file___, uint32_t ___line___, FileStream * stream) {
     raw___he_update_full_trace_info("vfs_stream_flush", ___file___, ___line___);
-    int result = raw_vfs_stream_flush(stream);
+    boolean result = raw_vfs_stream_flush(stream);
     raw___he_update_full_trace_info("", "", -1);
     return result;
 }

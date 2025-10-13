@@ -44,6 +44,9 @@ int main(int argc, char** argv) {
     SDL_Event event;
     while (1) {
         while (SDL_PollEvent(&event)) {
+            if (event.type == SDL_EVENT_QUIT) {
+                return 0;
+            }
         };
         game_functions._process(0.166);
         SDL_DelayNS(16660000);

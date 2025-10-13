@@ -1,9 +1,7 @@
 #if defined(HE_FS_SDL3)
 #include "fs.h"
 #include <SDL3/SDL.h>
-#include <stdbool.h>
 #include <string.h>
-#include <stdint.h>
 
 #include "platform/memory.h"
 #include "log.h"
@@ -30,7 +28,7 @@ const char* fs_get_user_dir(void) {
     return pref_path;
 }
 
-bool fs_exists(const char* path) {
+boolean fs_exists(const char* path) {
     if (path == NULL) {
         return false;
     }
@@ -44,7 +42,7 @@ bool fs_exists(const char* path) {
     return false;
 }
 
-bool fs_is_dir(const char* path) {
+boolean fs_is_dir(const char* path) {
     if (path == NULL) {
         return false;
     }
@@ -58,7 +56,7 @@ bool fs_is_dir(const char* path) {
     return false;
 }
 
-size_t fs_get_file_size(const char* path, bool* success) {
+u64 fs_get_file_size(const char* path, boolean* success) {
     if (path == NULL) {
         if (success)
             *success = false;
@@ -70,7 +68,7 @@ size_t fs_get_file_size(const char* path, bool* success) {
         if (info.type == SDL_PATHTYPE_FILE) {
             if (success)
                 *success = true;
-            return (size_t) info.size;
+            return (u64) info.size;
         } else {
             LOG_ERROR("Path '%s' is not a file", path);
         }
@@ -102,7 +100,7 @@ FSFileStream* fs_stream_open(const char* path, const char* mode) {
     return (FSFileStream*) stream;
 }
 
-size_t fs_stream_size(FSFileStream* stream, bool* success) {
+u64 fs_stream_size(FSFileStream* stream, boolean* success) {
     if (stream == NULL) {
         if (success)
             *success = false;
@@ -119,37 +117,37 @@ size_t fs_stream_size(FSFileStream* stream, bool* success) {
 
     if (success)
         *success = true;
-    return (size_t) size;
+    return (u64) size;
 }
 
-size_t fs_stream_read_n(FSFileStream* stream, void* buffer, size_t size) {
+u64 fs_stream_read_n(FSFileStream* stream, void* buffer, u64 size) {
     if (stream == NULL || buffer == NULL) {
         return 0;
     }
 
-    size_t bytes_read = SDL_ReadIO(stream->io_stream, buffer, size);
+    u64 bytes_read = SDL_ReadIO(stream->io_stream, buffer, size);
     if (bytes_read == 0) {
         LOG_ERROR("Failed to read from file '%s'. SDL Error: %s", stream->path, SDL_GetError());
     }
     return bytes_read;
 }
 
-void* fs_stream_read_all(FSFileStream* stream, size_t* size) {
+void* fs_stream_read_all(FSFileStream* stream, u64* size) {
     if (stream == NULL || stream == NULL) {
         if (size)
             *size = 0;
         return NULL;
     }
 
-    bool success = false;
-    size_t curr_pos = fs_stream_tell(stream, &success);
+    boolean success = false;
+    u64 curr_pos = fs_stream_tell(stream, &success);
     if (!success) {
         if (size)
             *size = 0;
         return NULL;
     }
 
-    size_t eof = fs_stream_seek(stream, FS_SEEK_FROM_END, 0);
+    u64 eof = fs_stream_seek(stream, FS_SEEK_FROM_END, 0);
     if (eof == 0) {
         if (size)
             *size = 0;
@@ -157,7 +155,7 @@ void* fs_stream_read_all(FSFileStream* stream, size_t* size) {
     }
 
     fs_stream_seek(stream, FS_SEEK_FROM_START, curr_pos);
-    size_t file_size = eof - curr_pos;
+    u64 file_size = eof - curr_pos;
 
     if (file_size == 0) {
         if (size)
@@ -174,19 +172,19 @@ void* fs_stream_read_all(FSFileStream* stream, size_t* size) {
 }
 
 
-size_t fs_stream_write(FSFileStream* stream, void* buffer, size_t size) {
+u64 fs_stream_write(FSFileStream* stream, void* buffer, u64 size) {
     if (stream == NULL || buffer == NULL) {
         return 0;
     }
 
-    size_t bytes_written = SDL_WriteIO(stream->io_stream, buffer, size);
+    u64 bytes_written = SDL_WriteIO(stream->io_stream, buffer, size);
     if (bytes_written == 0) {
         LOG_ERROR("Failed to write to file '%s'. SDL Error: %s", stream->path, SDL_GetError());
     }
     return bytes_written;
 }
 
-size_t fs_stream_seek(FSFileStream* stream, FSSeekFrom from, size_t offset) {
+u64 fs_stream_seek(FSFileStream* stream, FSSeekFrom from, u64 offset) {
     if (stream == NULL) {
         return false;
     }
@@ -213,7 +211,7 @@ size_t fs_stream_seek(FSFileStream* stream, FSSeekFrom from, size_t offset) {
     return result;
 }
 
-size_t fs_stream_tell(FSFileStream* stream, bool* success) {
+u64 fs_stream_tell(FSFileStream* stream, boolean* success) {
     if (stream == NULL) {
         if (success)
             *success = false;
@@ -230,27 +228,27 @@ size_t fs_stream_tell(FSFileStream* stream, bool* success) {
 
     if (success)
         *success = true;
-    return (size_t) position;
+    return (u64) position;
 }
 
-bool fs_stream_flush(FSFileStream* stream) {
+boolean fs_stream_flush(FSFileStream* stream) {
     if (stream == NULL || stream) {
         return false;
     }
 
-    bool result = SDL_FlushIO(stream->io_stream);
+    boolean result = SDL_FlushIO(stream->io_stream);
     if (!result) {
         LOG_ERROR("Failed to flush file '%s'. SDL Error: %s", stream->path, SDL_GetError());
     }
     return result;
 }
 
-bool fs_stream_close(FSFileStream* stream) {
+boolean fs_stream_close(FSFileStream* stream) {
     if (stream == NULL) {
         return false;
     }
 
-    bool result = SDL_CloseIO(stream->io_stream);
+    boolean result = SDL_CloseIO(stream->io_stream);
     if (!result) {
         LOG_ERROR("Failed to close file '%s'. SDL Error: %s", stream->path, SDL_GetError());
     }

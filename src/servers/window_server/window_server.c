@@ -30,7 +30,7 @@ void window_server_init(void) {
 Error window_server_register_backend(const char* name, WindowServerBackend* backend) {
     ERROR_ARGS_CHECK_2(name, backend);
 
-    for (size_t i = 0; i < registred_backends.size; i++) {
+    for (usize i = 0; i < registred_backends.size; i++) {
         if (strcmp(registred_backends.data[i].name, name) == 0) {
             LOG_ERROR("Backend with name '%s' already registered", name);
             return ERROR_ALREADY_EXISTS;
@@ -47,7 +47,7 @@ Error window_server_register_backend(const char* name, WindowServerBackend* back
 Error window_server_load_backend(const char* name) {
     ERROR_ARGS_CHECK_1(name);
 
-    for (size_t i = 0; i < registred_backends.size; i++) {
+    for (usize i = 0; i < registred_backends.size; i++) {
         if (strcmp(registred_backends.data[i].name, name) == 0) {
             WindowServer = *registred_backends.data[i].backend;
             return ERROR_SUCCESS;

@@ -12,12 +12,12 @@
 
 struct mem_pair {
     void* ptr;
-    size_t size;
+    usize size;
     const char* file;
-    int line;
+    i32 line;
     const char* user_func;
     const char* user_file;
-    int user_line;
+    i32 user_line;
 };
 
 vector_template_def(mem_pair, struct mem_pair);
@@ -26,10 +26,10 @@ vector_template_impl(mem_pair, struct mem_pair);
 static vec_mem_pair allocated_mem = {0, 0, NULL, NULL};
 
 void mem_atexit(void) {
-    size_t used = get_allocated_memory();
+    u64 used = get_allocated_memory();
     LOG_ERROR("UNALLOCATED MEM SIZE: %zu bytes", used);
 
-    for (size_t i = 0; i < allocated_mem.size; i++) {
+    for (usize i = 0; i < allocated_mem.size; i++) {
         struct mem_pair pair = allocated_mem.data[i];
         if (pair.user_line != -1) {
             LOG_ERROR(
@@ -50,7 +50,7 @@ void init_mem_tracking(void) {
 }
 #endif
 
-void* tmalloc(size_t size) {
+void* tmalloc(u64 size) {
     void* ptr = malloc(size);
 #if defined(HE_MEM_TRACK)
     init_mem_tracking();
@@ -62,7 +62,7 @@ void* tmalloc(size_t size) {
                             full_trace_mod_level_file,
                             full_trace_mod_level_line};
     vec_mem_pair_push_back(&allocated_mem, pair);
-    size_t used = get_allocated_memory();
+    u64 used = get_allocated_memory();
     printf("USED MEM: %zu\n", used);
 #endif
     return ptr;
@@ -76,14 +76,14 @@ void* tmalloc(size_t size) {
     return ptr;
 }*/
 
-void* trealloc(void* ptr, size_t size) {
+void* trealloc(void* ptr, u64 size) {
 #if defined(HE_MEM_TRACK)
     init_mem_tracking();
     if (ptr == NULL) {
         return tmalloc(size);
     } else {
         void* new_ptr = realloc(ptr, size);
-        for (size_t i = 0; i < allocated_mem.size; i++) {
+        for (usize i = 0; i < allocated_mem.size; i++) {
             if (allocated_mem.data[i].ptr == ptr) {
                 allocated_mem.data[i].ptr = ptr;
                 allocated_mem.data[i].size = size;
@@ -100,7 +100,7 @@ void* trealloc(void* ptr, size_t size) {
 void tfree(void* ptr) {
 #if defined(HE_MEM_TRACK)
     init_mem_tracking();
-    for (size_t i = 0; i < allocated_mem.size; i++) {
+    for (usize i = 0; i < allocated_mem.size; i++) {
         if (allocated_mem.data[i].ptr == ptr) {
             vec_mem_pair_erase(&allocated_mem, i);
             break;
@@ -110,7 +110,7 @@ void tfree(void* ptr) {
     free(ptr);
 }
 
-void* trace_tmalloc(const char* ___file__, int __line__, size_t size) {
+void* trace_tmalloc(const char* ___file__, i32 __line__, u64 size) {
     void* ptr = malloc(size);
 #if defined(HE_MEM_TRACK) && defined(HE_MEM_TRACK_TRACE)
     init_mem_tracking();
@@ -124,20 +124,20 @@ void* trace_tmalloc(const char* ___file__, int __line__, size_t size) {
             full_trace_mod_level_line
     };
     vec_mem_pair_push_back(&allocated_mem, pair);
-    size_t used = get_allocated_memory();
+    usize used = get_allocated_memory();
     printf("USED MEM: %zu\n", used);
 #endif
     return ptr;
 }
 
-void* trace_trealloc(const char* ___file__, int __line__, void* ptr, size_t size) {
+void* trace_trealloc(const char* ___file__, i32 __line__, void* ptr, u64 size) {
 #if defined(HE_MEM_TRACK) && defined(HE_MEM_TRACK_TRACE)
     init_mem_tracking();
     if (ptr == NULL) {
         return trace_tmalloc(___file__, __line__, size);
     } else {
         void* new_ptr = realloc(ptr, size);
-        for (size_t i = 0; i < allocated_mem.size; i++) {
+        for (usize i = 0; i < allocated_mem.size; i++) {
             if (allocated_mem.data[i].ptr == ptr) {
                 allocated_mem.data[i].ptr = new_ptr;
                 allocated_mem.data[i].size = size;
@@ -148,16 +148,16 @@ void* trace_trealloc(const char* ___file__, int __line__, void* ptr, size_t size
         }
         return new_ptr;
     }
-#else
+#else !
     return realloc(ptr, size);
 #endif
 }
 
 
-size_t get_allocated_memory(void) {
+u64 get_allocated_memory(void) {
 #if defined(HE_MEM_TRACK)
-    size_t total = 0;
-    for (size_t i = 0; i < allocated_mem.size; i++) {
+    u64 total = 0;
+    for (usize i = 0; i < allocated_mem.size; i++) {
         total += allocated_mem.data[i].size;
     }
     return total;

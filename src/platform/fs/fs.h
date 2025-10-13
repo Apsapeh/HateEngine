@@ -1,7 +1,7 @@
 #pragma once
 
 #include <stddef.h>
-#include <stdbool.h>
+#include <types/types.h>
 
 typedef struct FSFileStream FSFileStream;
 
@@ -54,7 +54,7 @@ const char* fs_get_user_dir(void);
  * @return true if exists
  * @return false if not exists
  */
-bool fs_exists(const char* path);
+boolean fs_exists(const char* path);
 
 /**
  * @brief Check if path is a directory
@@ -63,7 +63,7 @@ bool fs_exists(const char* path);
  * @return true if directory
  * @return false if not directory
  */
-bool fs_is_dir(const char* path);
+boolean fs_is_dir(const char* path);
 
 
 /**
@@ -71,9 +71,9 @@ bool fs_is_dir(const char* path);
  *
  * @param path
  * @param success true if success, else false. Can be NULL
- * @return size_t Can bo 0 if failed, check success parameter
+ * @return u64 Can bo 0 if failed, check success parameter
  */
-size_t fs_get_file_size(const char* path, bool* success);
+u64 fs_get_file_size(const char* path, boolean* success);
 
 /**
  * @brief Open file stream
@@ -89,9 +89,9 @@ FSFileStream* fs_stream_open(const char* path, const char* mode);
  *
  * @param stream
  * @param success Can be NULL
- * @return size_t
+ * @return u64
  */
-size_t fs_stream_size(FSFileStream* stream, bool* success);
+u64 fs_stream_size(FSFileStream* stream, boolean* success);
 
 /**
  * @brief Read from file stream n bytes to buffer
@@ -99,9 +99,9 @@ size_t fs_stream_size(FSFileStream* stream, bool* success);
  * @param stream
  * @param buffer
  * @param size
- * @return size_t
+ * @return u64
  */
-size_t fs_stream_read_n(FSFileStream* stream, void* buffer, size_t size);
+u64 fs_stream_read_n(FSFileStream* stream, void* buffer, u64 size);
 
 /**
  * @brief Allocate buffer and read all file to it
@@ -111,7 +111,7 @@ size_t fs_stream_read_n(FSFileStream* stream, void* buffer, size_t size);
  * @param size
  * @return void*
  */
-void* fs_stream_read_all(FSFileStream* stream, size_t* size);
+void* fs_stream_read_all(FSFileStream* stream, u64* size);
 
 /**
  * @brief Write to file stream n bytes from buffer
@@ -120,9 +120,9 @@ void* fs_stream_read_all(FSFileStream* stream, size_t* size);
  * @param buffer
  * @param size
  *
- * @return size_t Number of bytes written. 0 if fail
+ * @return u64 Number of bytes written. 0 if fail
  */
-size_t fs_stream_write(FSFileStream* stream, void* buffer, size_t size);
+u64 fs_stream_write(FSFileStream* stream, void* buffer, u64 size);
 
 /**
  * @brief Seek in file stream
@@ -132,16 +132,16 @@ size_t fs_stream_write(FSFileStream* stream, void* buffer, size_t size);
  * @param offset
  * @return final offset
  */
-size_t fs_stream_seek(FSFileStream* stream, FSSeekFrom from, size_t offset);
+u64 fs_stream_seek(FSFileStream* stream, FSSeekFrom from, u64 offset);
 
 /**
  * @brief Get current position in file stream
  *
  * @param stream
  * @param success Can be NULL
- * @return size_t
+ * @return u64
  */
-size_t fs_stream_tell(FSFileStream* stream, bool* success);
+u64 fs_stream_tell(FSFileStream* stream, boolean* success);
 
 /**
  * @brief Flush any buffered data to the stream
@@ -150,7 +150,7 @@ size_t fs_stream_tell(FSFileStream* stream, bool* success);
  * @return true if success
  * @return false if fail
  */
-bool fs_stream_flush(FSFileStream* stream);
+boolean fs_stream_flush(FSFileStream* stream);
 
 /**
  * @brief Close file stream
@@ -159,4 +159,4 @@ bool fs_stream_flush(FSFileStream* stream);
  * @return true if success
  * @return false if fail
  */
-bool fs_stream_close(FSFileStream* stream);
+boolean fs_stream_close(FSFileStream* stream);

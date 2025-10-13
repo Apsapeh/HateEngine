@@ -1,9 +1,9 @@
 #pragma once
-#include <stdint.h>
+#include <types/types.h>
 
-const uint8_t HEFS_MAGIC[4] = {'H', 'E', 'F', 'S'};
+const u8 HEFS_MAGIC[4] = {'H', 'E', 'F', 'S'};
 
-const uint32_t HEFS_CURRENT_VERSION = 0x1000;
+const u32 HEFS_CURRENT_VERSION = 0x1000;
 
 /*
  * ru:
@@ -30,14 +30,14 @@ enum HEFSFileFlags {
 };
 
 struct HEFSFile_HeaderSpec_v1 {
-    uint8_t magic[4];
-    uint32_t version;
-    uint32_t flags;
+    u8 magic[4];
+    u32 version;
+    u32 flags;
 };
 
 struct HEFSFile_TreeNodeSpec_v1 {
-    uint8_t flags;
-    char* filename; // null terminated
-    uint64_t data_offset;
-    uint64_t data_size;
+    u8 flags;
+    str filename; // null terminated
+    u64 data_offset;
+    u64 data_size;
 };

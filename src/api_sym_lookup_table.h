@@ -4,22 +4,22 @@
 #define HE_MEM_NO_MACRO
 //#include <extra/full_trace.h>
 
-#include "object/node/node.h"
-#include "object/node/canvas_item/control/viewport/viewport.h"
-#include "servers/window_server/window_server.h"
-#include "object/node/canvas_item/canvas_item.h"
-#include "math/vec2.h"
-#include "log.h"
-#include "object/node/window/window.h"
-#include "object/node/canvas_item/control/control.h"
-#include "object/object.h"
 #include "platform/memory.h"
 #include "types/uid.h"
-#include "math/vec3.h"
-#include "vfs/vfs.h"
+#include "math/vec2.h"
+#include "object/node/canvas_item/control/viewport/viewport.h"
 #include "math/mat4.h"
 #include "object/node/node3d/node3d.h"
+#include "object/node/node.h"
+#include "object/node/canvas_item/canvas_item.h"
+#include "log.h"
+#include "object/node/canvas_item/control/control.h"
+#include "object/node/window/window.h"
+#include "math/vec3.h"
+#include "vfs/vfs.h"
+#include "object/object.h"
 #include "servers/render_context/render_context.h"
+#include "servers/window_server/window_server.h"
 
 
 typedef struct {

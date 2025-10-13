@@ -33,7 +33,7 @@ Error render_context_register_backend(
 ) {
     ERROR_ARGS_CHECK_3(render_server_name, window_server_name, backend);
 
-    for (size_t i = 0; i < registred_backends.size; i++) {
+    for (usize i = 0; i < registred_backends.size; i++) {
         if (strcmp(registred_backends.data[i].render_server_name, render_server_name) == 0 &&
             strcmp(registred_backends.data[i].window_server_name, window_server_name) == 0) {
             LOG_ERROR(
@@ -55,7 +55,7 @@ Error render_context_register_backend(
 Error render_context_load_backend(const char* render_server_name, const char* window_server_name) {
     ERROR_ARGS_CHECK_2(render_server_name, window_server_name);
 
-    for (size_t i = 0; i < registred_backends.size; i++) {
+    for (usize i = 0; i < registred_backends.size; i++) {
         if (strcmp(registred_backends.data[i].render_server_name, render_server_name) == 0 &&
             strcmp(registred_backends.data[i].window_server_name, window_server_name) == 0) {
 

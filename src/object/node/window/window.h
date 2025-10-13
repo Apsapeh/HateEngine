@@ -23,7 +23,7 @@ void window_free(Window* this);
  *
  * @api
  */
-Window* window_new(const char* name, const char* title, int w, int h);
+Window* window_new(const char* name, const char* title, i32 w, i32 h);
 
 
 /**

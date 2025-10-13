@@ -20,17 +20,17 @@ void vfs_init(void) {
     rfs_mnt.path = NULL;
 }
 
-bool vfs_mount_res(const char* path, const char* mount_point) {
+boolean vfs_mount_res(const char* path, const char* mount_point) {
     // TODO: impl
     return true;
 }
 
-bool vfs_unmount_res(const char* mount_point) {
+boolean vfs_unmount_res(const char* mount_point) {
     // TODO: impl
     return true;
 }
 
-bool vfs_mount_rfs(const char* mount_point) {
+boolean vfs_mount_rfs(const char* mount_point) {
     if (mount_point == NULL) {
         LOG_ERROR("Mount point cannot be null");
         return false;
@@ -66,7 +66,7 @@ bool vfs_mount_rfs(const char* mount_point) {
     return true;
 }
 
-bool vfs_mount_rfs_whitelist(const char** whitelist, size_t count, const char* mount_point) {
+boolean vfs_mount_rfs_whitelist(const char** whitelist, u64 count, const char* mount_point) {
     if (mount_point == NULL) {
         LOG_ERROR("Mount point cannot be null");
         return false;
@@ -88,7 +88,7 @@ bool vfs_mount_rfs_whitelist(const char** whitelist, size_t count, const char* m
 
     rfs_mnt.whitelist = tmalloc((count + 1) * sizeof(const char*));
     // Deep copy
-    for (size_t i = 0; i < count; i++) {
+    for (usize i = 0; i < count; i++) {
         rfs_mnt.whitelist[i] = tmalloc(strlen(whitelist[i]) + 1);
         strcpy(rfs_mnt.whitelist[i], whitelist[i]);
     }
@@ -96,7 +96,7 @@ bool vfs_mount_rfs_whitelist(const char** whitelist, size_t count, const char* m
     return true;
 }
 
-bool vfs_unmount_rfs(void) {
+boolean vfs_unmount_rfs(void) {
     if (rfs_mnt.path != NULL) {
         tfree(rfs_mnt.path);
         tfree(rfs_mnt.mount_point);
@@ -112,12 +112,12 @@ bool vfs_unmount_rfs(void) {
     return false;
 }
 
-bool vfs_res_path_exists(const char* path) {
+boolean vfs_res_path_exists(const char* path) {
     // TODO: impl
     return false;
 }
 
-bool vfs_usr_path_exists(const char* path, bool prefer_res) {
+boolean vfs_usr_path_exists(const char* path, boolean prefer_res) {
     // TODO: impl
     return false;
 }
@@ -126,7 +126,7 @@ bool vfs_usr_path_exists(const char* path, bool prefer_res) {
 static void free_split_path(char** parts) {
     if (!parts)
         return;
-    for (size_t i = 0; parts[i] != NULL; ++i) {
+    for (usize i = 0; parts[i] != NULL; ++i) {
         tfree(parts[i]);
     }
     tfree(parts);
@@ -142,8 +142,8 @@ static char** split_path(const char* path) {
         return NULL;
     }
 
-    size_t capacity = 8;
-    size_t count = 0;
+    usize capacity = 8;
+    usize count = 0;
     char** stack = tmalloc(capacity * sizeof(char*));
     if (!stack)
         return NULL;
@@ -160,7 +160,7 @@ static char** split_path(const char* path) {
         while (*end && *end != '/')
             ++end;
 
-        size_t len = (size_t) (end - start);
+        usize len = (usize) (end - start);
         if (len == 0) {
             start = end;
             continue;
@@ -206,8 +206,8 @@ static char** split_path(const char* path) {
     return stack;
 }
 
-static bool vfs_path_starts_with(const char* path, const char* mount_point) {
-    size_t mp_len = strlen(mount_point);
+static boolean vfs_path_starts_with(const char* path, const char* mount_point) {
+    usize mp_len = strlen(mount_point);
     if (strncmp(path, mount_point, mp_len) != 0)
         return false;
 
@@ -224,7 +224,7 @@ static bool vfs_path_starts_with(const char* path, const char* mount_point) {
 }
 
 static struct VFSResFile* vfs_res_find_file(const char* path) {
-    for (size_t mnt_i = mnts.size; mnt_i > 0; mnt_i--) {
+    for (usize mnt_i = mnts.size; mnt_i > 0; mnt_i--) {
         struct VFSMnt* mnt = &mnts.data[mnt_i - 1];
         struct VFSResFile* current_dir = &mnt->root;
 
@@ -236,8 +236,8 @@ static struct VFSResFile* vfs_res_find_file(const char* path) {
             continue;
 
         for (char** part = parts; *part != NULL; part++) {
-            bool dir_found = false;
-            for (size_t i = 0; i < current_dir->info.dir.count; i++) {
+            boolean dir_found = false;
+            for (usize i = 0; i < current_dir->info.dir.count; i++) {
                 struct VFSResFile* file = &current_dir->info.dir.files[i];
                 if (strcmp(file->name, *part) == 0) {
                     // If file found
@@ -266,7 +266,7 @@ static struct VFSResFile* vfs_res_find_file(const char* path) {
 }
 
 
-void* vfs_res_read_file(const char* path, size_t* size) {
+void* vfs_res_read_file(const char* path, u64* size) {
     // Check path
     char** _parts = split_path(path);
     if (!_parts) {
@@ -286,7 +286,7 @@ void* vfs_res_read_file(const char* path, size_t* size) {
 
     if (rfs_mnt.path != NULL) {
         // TODO: Add whitelist impl
-        size_t parts_len = 0;
+        usize parts_len = 0;
         for (char** part = _parts; *part != NULL; part++)
             parts_len += strlen(*part) + 1;
 
@@ -332,13 +332,13 @@ FileStream* vfs_res_stream_open(const char* path) {
 
     if (rfs_mnt.path != NULL && vfs_path_starts_with(path, rfs_mnt.mount_point)) {
         char** mnt_parts = split_path(rfs_mnt.mount_point);
-        size_t mnt_parts_len = 0;
+        usize mnt_parts_len = 0;
         for (char** part = mnt_parts; *part != NULL; part++)
             mnt_parts_len++;
         free_split_path(mnt_parts);
 
         // TODO: Add whitelist impl
-        size_t parts_len = 0;
+        usize parts_len = 0;
         for (char** part = _parts + mnt_parts_len; *part != NULL; part++)
             parts_len += strlen(*part) + 1;
 
@@ -368,51 +368,51 @@ FileStream* vfs_res_stream_open(const char* path) {
 }
 
 
-void* vfs_usr_read_file(const char* path, size_t* size, bool prefer_res) {
+void* vfs_usr_read_file(const char* path, u64* size, boolean prefer_res) {
     LOG_FATAL("NOT IMPLEMENTED");
 }
 
-bool vfs_usr_write_file(const char* path, const void* data, size_t size) {
-    LOG_FATAL("NOT IMPLEMENTED");
-}
-
-
-FileStream* vfs_usr_stream_open(const char* path, bool prefer_res) {
+boolean vfs_usr_write_file(const char* path, const void* data, u64 size) {
     LOG_FATAL("NOT IMPLEMENTED");
 }
 
 
-size_t vfs_stream_size(FileStream* stream) {
+FileStream* vfs_usr_stream_open(const char* path, boolean prefer_res) {
     LOG_FATAL("NOT IMPLEMENTED");
 }
 
 
-size_t vfs_stream_read_n(FileStream* stream, void* buffer, size_t size) {
+u64 vfs_stream_size(FileStream* stream) {
     LOG_FATAL("NOT IMPLEMENTED");
 }
 
 
-void* vfs_stream_read_all(FileStream* stream, size_t* size) {
+u64 vfs_stream_read_n(FileStream* stream, void* buffer, u64 size) {
     LOG_FATAL("NOT IMPLEMENTED");
 }
 
 
-size_t vfs_stream_write(FileStream* stream, void* buffer, size_t size) {
+void* vfs_stream_read_all(FileStream* stream, u64* size) {
     LOG_FATAL("NOT IMPLEMENTED");
 }
 
 
-bool vfs_stream_seek(FileStream* stream, FSSeekFrom whence, size_t offset) {
+u64 vfs_stream_write(FileStream* stream, void* buffer, u64 size) {
     LOG_FATAL("NOT IMPLEMENTED");
 }
 
 
-size_t vfs_stream_tell(FileStream* stream, bool* success) {
+boolean vfs_stream_seek(FileStream* stream, FSSeekFrom whence, u64 offset) {
     LOG_FATAL("NOT IMPLEMENTED");
 }
 
 
-bool vfs_stream_flush(FileStream* stream) {
+u64 vfs_stream_tell(FileStream* stream, boolean* success) {
+    LOG_FATAL("NOT IMPLEMENTED");
+}
+
+
+boolean vfs_stream_flush(FileStream* stream) {
     LOG_FATAL("NOT IMPLEMENTED");
 }
 

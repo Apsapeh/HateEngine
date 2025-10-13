@@ -94,7 +94,8 @@ GameFunctions load_game(void) {
 #include <api_sym_lookup_table.h>
 
 void* runtime_proc_loader(const char* name) {
-    for (int i = 0; i < sizeof(api_function_lookup_table) / sizeof(api_function_lookup_table[0]); i++) {
+    for (usize i = 0; i < sizeof(api_function_lookup_table) / sizeof(api_function_lookup_table[0]);
+         i++) {
         if (strcmp(api_function_lookup_table[i].name, name) == 0) {
             return api_function_lookup_table[i].ptr;
         }

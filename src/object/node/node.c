@@ -34,7 +34,7 @@ void node_set_name(Node* this, const char* name) {
         tfree(this->name);
     }
 
-    size_t len = strlen(name) + 1;
+    usize len = strlen(name) + 1;
     this->name = tmalloc(len);
     memcpy(this->name, name, len);
 }
@@ -47,11 +47,11 @@ void node_add_child(Node* node, Node* child) {
     vec_ptr_push_back(&node->children, child);
 }
 
-bool node_remove_child(Node* node, Node* child) {
+boolean node_remove_child(Node* node, Node* child) {
     // vec_ptr_remove(&node->children, child);
-    const size_t size = node->children.size;
+    const usize size = node->children.size;
     Node** ptr = (Node**) node->children.data;
-    for (size_t i = 0; i < size; i++) {
+    for (usize i = 0; i < size; i++) {
         if (ptr[i] == child) {
             auto_free((Object*) ptr[i]);
             vec_ptr_erase(&node->children, i);
@@ -61,10 +61,10 @@ bool node_remove_child(Node* node, Node* child) {
     return false;
 }
 
-bool node_remove_child_by_name(Node* node, const char* name) {
-    const size_t size = node->children.size;
+boolean node_remove_child_by_name(Node* node, const char* name) {
+    const usize size = node->children.size;
     Node** ptr = (Node**) node->children.data;
-    for (size_t i = 0; i < size; i++) {
+    for (usize i = 0; i < size; i++) {
         if (strcmp(ptr[i]->name, name) == 0) {
             auto_free((Object*) ptr[i]);
             vec_ptr_erase(&node->children, i);
@@ -74,10 +74,10 @@ bool node_remove_child_by_name(Node* node, const char* name) {
     return false;
 }
 
-bool node_remove_child_by_uid(Node* node, UID uid) {
-    const size_t size = node->children.size;
+boolean node_remove_child_by_uid(Node* node, UID uid) {
+    const usize size = node->children.size;
     Object** ptr = (Object**) node->children.data;
-    for (size_t i = 0; i < size; i++) {
+    for (usize i = 0; i < size; i++) {
         if (ptr[i]->uid == uid) {
             auto_free(ptr[i]);
             vec_ptr_erase(&node->children, i);
@@ -87,10 +87,10 @@ bool node_remove_child_by_uid(Node* node, UID uid) {
     return false;
 }
 
-bool node_remove_all_children(Node* node) {
-    const size_t size = node->children.size;
+boolean node_remove_all_children(Node* node) {
+    const usize size = node->children.size;
     Object** ptr = (Object**) node->children.data;
-    for (size_t i = 0; i < size; i++) {
+    for (usize i = 0; i < size; i++) {
         auto_free(ptr[i]);
     }
     vec_ptr_clear(&node->children);
@@ -98,9 +98,9 @@ bool node_remove_all_children(Node* node) {
 }
 
 Node* node_get_child_by_name(Node* node, const char* name) {
-    const size_t size = node->children.size;
+    const usize size = node->children.size;
     Node** ptr = (Node**) node->children.data;
-    for (size_t i = 0; i < size; i++) {
+    for (usize i = 0; i < size; i++) {
         if (strcmp(ptr[i]->name, name) == 0) {
             return ptr[i];
         }
@@ -109,9 +109,9 @@ Node* node_get_child_by_name(Node* node, const char* name) {
 }
 
 Node* node_get_child_by_uid(Node* node, UID uid) {
-    const size_t size = node->children.size;
+    const usize size = node->children.size;
     Object** ptr = (Object**) node->children.data;
-    for (size_t i = 0; i < size; i++) {
+    for (usize i = 0; i < size; i++) {
         if (ptr[i]->uid == uid) {
             return (Node*) ptr[i];
         }

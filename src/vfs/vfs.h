@@ -1,8 +1,8 @@
 #pragma once
 
-#include <stdbool.h>
 #include <stddef.h>
 #include "platform/fs/fs.h"
+#include "types/types.h"
 #define VECTOR_NOSTD
 
 // Virtual File Systtem
@@ -14,12 +14,12 @@ struct VFSResFile {
     char* name;
     union {
         struct {
-            size_t size; // in bytes
-            size_t offset; // relative to the start of the real resource file
+            usize size; // in bytes
+            usize offset; // relative to the start of the real resource file
         } file;
         struct {
             struct VFSResFile* files;
-            size_t count;
+            usize count;
         } dir;
     } info;
 };
@@ -51,8 +51,8 @@ enum VFSStreamType { VFSStreamTypeRFS, VFSStreamTypeResourceFile };
 typedef struct FileStream {
     struct FSFileStream* stream;
     enum VFSStreamType type;
-    bool is_res_scope; // true if it's a res scope, false if it's a usr scope. Used for readonly
-                       // guarantee
+    boolean is_res_scope; // true if it's a res scope, false if it's a usr scope. Used for readonly
+                          // guarantee
 } FileStream;
 
 
@@ -70,7 +70,7 @@ void vfs_init(void);
  *
  * @api
  */
-bool vfs_mount_res(const char* path, const char* mount_point);
+boolean vfs_mount_res(const char* path, const char* mount_point);
 
 /**
  * @brief Unmount Resource File from Virtual File System
@@ -81,7 +81,7 @@ bool vfs_mount_res(const char* path, const char* mount_point);
  *
  * @api
  */
-bool vfs_unmount_res(const char* mount_point);
+boolean vfs_unmount_res(const char* mount_point);
 
 /**
  * @brief Mount Real File System to Virtual File System Res
@@ -91,7 +91,7 @@ bool vfs_unmount_res(const char* mount_point);
  *
  * @api
  */
-bool vfs_mount_rfs(const char* mount_point);
+boolean vfs_mount_rfs(const char* mount_point);
 
 /**
  * @brief Mount Real File System to Virtual File System Res only with allowed files in whitelist
@@ -101,7 +101,7 @@ bool vfs_mount_rfs(const char* mount_point);
  *
  * @api
  */
-bool vfs_mount_rfs_whitelist(const char** whitelist, size_t count, const char* mount_point);
+boolean vfs_mount_rfs_whitelist(const char** whitelist, u64 count, const char* mount_point);
 
 /**
  * @brief Unmount Real File System from Virtual File System Res
@@ -111,7 +111,7 @@ bool vfs_mount_rfs_whitelist(const char** whitelist, size_t count, const char* m
  *
  * @api
  */
-bool vfs_unmount_rfs(void);
+boolean vfs_unmount_rfs(void);
 
 /**
  * @brief Check if file exists
@@ -122,7 +122,7 @@ bool vfs_unmount_rfs(void);
  *
  * @api
  */
-bool vfs_res_path_exists(const char* path);
+boolean vfs_res_path_exists(const char* path);
 
 /**
  * @brief Check if file exists in User scope
@@ -134,7 +134,7 @@ bool vfs_res_path_exists(const char* path);
  *
  * @api
  */
-bool vfs_usr_path_exists(const char* path, bool prefer_res);
+boolean vfs_usr_path_exists(const char* path, boolean prefer_res);
 
 
 /* ================================> File Access <================================ */
@@ -149,7 +149,7 @@ bool vfs_usr_path_exists(const char* path, bool prefer_res);
  *
  * @api
  */
-void* vfs_res_read_file(const char* path, size_t* size);
+void* vfs_res_read_file(const char* path, u64* size);
 
 /**
  * @brief Open file stream from Resource scope
@@ -172,7 +172,7 @@ FileStream* vfs_res_stream_open(const char* path);
  *
  * @api
  */
-void* vfs_usr_read_file(const char* path, size_t* size, bool prefer_res);
+void* vfs_usr_read_file(const char* path, u64* size, boolean prefer_res);
 
 /**
  * @brief Write file to User scope
@@ -185,7 +185,7 @@ void* vfs_usr_read_file(const char* path, size_t* size, bool prefer_res);
  *
  * @api
  */
-bool vfs_usr_write_file(const char* path, const void* data, size_t size);
+boolean vfs_usr_write_file(const char* path, const void* data, u64 size);
 
 /**
  * @brief Open file stream from User scope
@@ -196,18 +196,18 @@ bool vfs_usr_write_file(const char* path, const void* data, size_t size);
  *
  * @api
  */
-FileStream* vfs_usr_stream_open(const char* path, bool prefer_res);
+FileStream* vfs_usr_stream_open(const char* path, boolean prefer_res);
 
 
 /**
  * @brief Get file stream size in bytes
  *
  * @param path
- * @return size_t
+ * @return u64
  *
  * @api
  */
-size_t vfs_stream_size(FileStream* stream);
+u64 vfs_stream_size(FileStream* stream);
 
 /**
  * @brief Read from file stream n bytes to buffer
@@ -215,11 +215,11 @@ size_t vfs_stream_size(FileStream* stream);
  * @param stream
  * @param buffer
  * @param size
- * @return size_t
+ * @return u64
  *
  * @api
  */
-size_t vfs_stream_read_n(FileStream* stream, void* buffer, size_t size);
+u64 vfs_stream_read_n(FileStream* stream, void* buffer, u64 size);
 
 /**
  * @brief Allocate buffer and read all file to it
@@ -231,7 +231,7 @@ size_t vfs_stream_read_n(FileStream* stream, void* buffer, size_t size);
  *
  * @api
  */
-void* vfs_stream_read_all(FileStream* stream, size_t* size);
+void* vfs_stream_read_all(FileStream* stream, u64* size);
 
 /**
  * @brief Write to file stream n bytes from buffer
@@ -241,11 +241,11 @@ void* vfs_stream_read_all(FileStream* stream, size_t* size);
  * @param buffer
  * @param size
  *
- * @return size_t Number of bytes written. 0 if fail
+ * @return u64 Number of bytes written. 0 if fail
  *
  * @api
  */
-size_t vfs_stream_write(FileStream* stream, void* buffer, size_t size);
+u64 vfs_stream_write(FileStream* stream, void* buffer, u64 size);
 
 /**
  * @brief Seek file stream
@@ -258,18 +258,18 @@ size_t vfs_stream_write(FileStream* stream, void* buffer, size_t size);
  *
  * @api
  */
-bool vfs_stream_seek(FileStream* stream, FSSeekFrom whence, size_t offset);
+boolean vfs_stream_seek(FileStream* stream, FSSeekFrom whence, u64 offset);
 
 /**
  * @brief Get file stream current position
  *
  * @param stream
  * @param success Can be NULL
- * @return size_t
+ * @return u64
  *
  * @api
  */
-size_t vfs_stream_tell(FileStream* stream, bool* success);
+u64 vfs_stream_tell(FileStream* stream, boolean* success);
 
 /**
  * @brief Flush file stream
@@ -279,7 +279,7 @@ size_t vfs_stream_tell(FileStream* stream, bool* success);
  * @return false if fail
  * @api
  */
-bool vfs_stream_flush(FileStream* stream);
+boolean vfs_stream_flush(FileStream* stream);
 
 /**
  * @brief Close file stream

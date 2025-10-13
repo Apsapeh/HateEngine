@@ -1,13 +1,13 @@
 #pragma once
 
-#include <stdint.h>
+#include <types/types.h>
 
 /**
  * @brief
  *
  * @api
  */
-typedef uint64_t UID;
+typedef u64 UID;
 
 /**
  * @brief

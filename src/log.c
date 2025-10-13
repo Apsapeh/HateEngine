@@ -6,9 +6,9 @@
 
 c_str full_trace_mod_level_func = (c_str) "";
 c_str full_trace_mod_level_file = (c_str) "";
-int full_trace_mod_level_line = -1;
+i32 full_trace_mod_level_line = -1;
 
-void __he_update_full_trace_info(const char* func, const char* file, int line) {
+void __he_update_full_trace_info(const char* func, const char* file, i32 line) {
     full_trace_mod_level_func = func;
     full_trace_mod_level_file = file;
     full_trace_mod_level_line = line;
@@ -16,7 +16,7 @@ void __he_update_full_trace_info(const char* func, const char* file, int line) {
         printf("\tCalled [%s:%d]: %s\n", file, line, func);
 }
 
-void he_log_fatal(int line, const char* file, const char* fmt, ...) {
+void he_log_fatal(i32 line, const char* file, const char* fmt, ...) {
     va_list args;
     va_start(args, fmt);
     vfprintf(stderr, fmt, args);
@@ -25,7 +25,7 @@ void he_log_fatal(int line, const char* file, const char* fmt, ...) {
     exit(1);
 }
 
-void he_log_error(int line, const char* file, const char* fmt, ...) {
+void he_log_error(i32 line, const char* file, const char* fmt, ...) {
     va_list args;
     va_start(args, fmt);
     vfprintf(stderr, fmt, args);
@@ -33,7 +33,7 @@ void he_log_error(int line, const char* file, const char* fmt, ...) {
     va_end(args);
 }
 
-void he_log_warning(int line, const char* file, const char* fmt, ...) {
+void he_log_warning(i32 line, const char* file, const char* fmt, ...) {
     va_list args;
     va_start(args, fmt);
     vfprintf(stderr, fmt, args);

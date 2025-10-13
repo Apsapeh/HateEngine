@@ -4,7 +4,6 @@
 #include <stdint.h>
 
 // API START
-
 typedef uint8_t u8;
 typedef uint16_t u16;
 typedef uint32_t u32;
@@ -23,8 +22,12 @@ typedef double f64;
 typedef uintptr_t uptr;
 typedef intptr_t iptr;
 
+typedef u8 boolean;
+#define true 1
+#define false 0
 
 typedef char* str;
 typedef const char* c_str;
 
 typedef void (*fptr)(void);
+typedef void* ptr;

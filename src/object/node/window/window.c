@@ -9,7 +9,7 @@ void window_free(Window* this) {
     node_free(&this->node);
 }
 
-Window* window_new(const char* name, const char* title, int w, int h) {
+Window* window_new(const char* name, const char* title, i32 w, i32 h) {
     Window* window = tmalloc(sizeof(Window));
     window_init(window, ObjectTypeWindow, name);
     return window;

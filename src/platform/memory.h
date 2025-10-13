@@ -10,7 +10,7 @@
  *
  * @api
  */
-void* tmalloc(usize size);
+void* tmalloc(u64 size);
 
 /**
  * @brief Realloc with tracking if compiled with HE_MEM_TRACK
@@ -21,7 +21,7 @@ void* tmalloc(usize size);
  *
  * @api
  */
-void* trealloc(void* ptr, size_t size);
+void* trealloc(void* ptr, u64 size);
 
 /**
  * @brief Free with tracking if compiled with HE_MEM_TRACK
@@ -33,9 +33,9 @@ void* trealloc(void* ptr, size_t size);
 void tfree(void* ptr);
 
 
-void* trace_tmalloc(const char* ___file__, int __line__, size_t size);
+void* trace_tmalloc(const char* ___file__, i32 __line__, u64 size);
 
-void* trace_trealloc(const char* ___file__, int __line__, void* ptr, size_t size);
+void* trace_trealloc(const char* ___file__, i32 __line__, void* ptr, u64 size);
 
 #if defined(HE_MEM_TRACK) && defined(HE_MEM_TRACK_TRACE) && !defined(HE_MEM_NO_MACRO)
 #define tmalloc(size) trace_tmalloc(__FILE__, __LINE__, size)
@@ -56,4 +56,4 @@ void* trace_trealloc(const char* ___file__, int __line__, void* ptr, size_t size
  *
  * @api
  */
-size_t get_allocated_memory(void);
+u64 get_allocated_memory(void);

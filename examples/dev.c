@@ -38,8 +38,8 @@ void _ready(void) {
     //window_server_destroy_window(win);*/
 
     printf("Used mem: %zu\n", get_allocated_memory());
-    size_t size;
-    char* data = vfs_res_read_file("/assets/text.txt", (int*)&size);
+    u64 size;
+    char* data = vfs_res_read_file("/assets/text.txt", &size);
     
     if (data) {
         printf("Data: %s\n", data);

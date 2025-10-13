@@ -1,8 +1,6 @@
 #pragma once
 
 #include <stddef.h>
-#include <stdint.h>
-#include <stdbool.h>
 #include "../object.h"
 #include "types/vector.h"
 
@@ -63,7 +61,7 @@ void node_add_child(Node* node, Node* child);
  *
  * @api
  */
-bool node_remove_child(Node* node, Node* child);
+boolean node_remove_child(Node* node, Node* child);
 
 /**
  * @brief Remove and free a child node by name from a parent node
@@ -75,7 +73,7 @@ bool node_remove_child(Node* node, Node* child);
  *
  * @api
  */
-bool node_remove_child_by_name(Node* node, const char* name);
+boolean node_remove_child_by_name(Node* node, const char* name);
 
 /**
  * @brief Remove and free a child node by uid from a parent node
@@ -87,12 +85,12 @@ bool node_remove_child_by_name(Node* node, const char* name);
  *
  * @api
  */
-bool node_remove_child_by_uid(Node* node, UID uid);
+boolean node_remove_child_by_uid(Node* node, UID uid);
 
 /**
  * @api
  */
-bool node_remove_all_children(Node* node);
+boolean node_remove_all_children(Node* node);
 
 /**
  * @brief Get a child node by name
