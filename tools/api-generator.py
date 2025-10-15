@@ -3,7 +3,7 @@
 # requires-python = ">=3.13"
 # dependencies = [
 #     #"libclang==12.0.0",
-#     "libclang==16.0.0",
+#     "libclang>=18.0.0",
 # ]
 # ///
 
