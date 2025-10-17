@@ -1,108 +1,95 @@
 #include "log.h"
 #define HE_MEM_NO_MACRO
 #include "memory.h"
-
-#include <stdio.h>
-#include <stdlib.h>
-
-#if defined(HE_MEM_TRACK)
-
-#define VECTOR_NO_TRACK
 #include <types/vector.h>
 
-struct mem_pair {
+#include <stdlib.h>
+
+#if defined(HE_MEM_TRACK_TRACE)
+struct allocationData {
     void* ptr;
     usize size;
-    const char* file;
+    c_str file;
     i32 line;
-    const char* user_func;
-    const char* user_file;
+    c_str user_func;
+    c_str user_file;
     i32 user_line;
 };
-
-vector_template_def(mem_pair, struct mem_pair);
-vector_template_impl(mem_pair, struct mem_pair);
-
-static vec_mem_pair allocated_mem = {0, 0, NULL, NULL};
-
-void mem_atexit(void) {
-    u64 used = get_allocated_memory();
-    LOG_ERROR("UNALLOCATED MEM SIZE: %zu bytes", used);
-
-    for (usize i = 0; i < allocated_mem.size; i++) {
-        struct mem_pair pair = allocated_mem.data[i];
-        if (pair.user_line != -1) {
-            LOG_ERROR(
-                    "UNALLOCATED %zu bytes AT %s:%d IN \"%s\"@%s:%d", pair.size, pair.file, pair.line,
-                    pair.user_func, pair.user_file, pair.user_line
-            );
-        } else {
-            LOG_ERROR("UNALLOCATED %zu bytes AT %s:%d", pair.size, pair.file, pair.line);
-        }
-    }
-}
-
-void init_mem_tracking(void) {
-    if (allocated_mem.data == NULL) {
-        allocated_mem = vec_mem_pair_init();
-        atexit(mem_atexit);
-    }
-}
+#elif defined(HE_MEM_TRACK)
+struct allocationData {
+    void* ptr;
+    usize size;
+    c_str user_func;
+    c_str user_file;
+    i32 user_line;
+};
 #endif
 
-void* tmalloc(u64 size) {
-    void* ptr = malloc(size);
-#if defined(HE_MEM_TRACK)
-    init_mem_tracking();
-    struct mem_pair pair = {ptr,
-                            size,
-                            "",
-                            -1,
-                            full_trace_mod_level_func,
-                            full_trace_mod_level_file,
-                            full_trace_mod_level_line};
-    vec_mem_pair_push_back(&allocated_mem, pair);
-    u64 used = get_allocated_memory();
-    printf("USED MEM: %zu\n", used);
+vector_template_def_with_properties(allocationData, struct allocationData, static);
+vector_template_impl_with_properties(
+        allocationData, struct allocationData, static, malloc, realloc, free, memmove, memcpy
+);
+
+// FIXME: Add mutex
+static vec_allocationData AllocatedMemory;
+
+static inline void* _tmalloc(usize size, c_str file, i32 line);
+static inline void* _trealloc(void* ptr, usize size, c_str file, i32 line);
+
+void memory_init(void) {
+#if defined(HE_MEM_TRACK) | defined(HE_MEM_TRACK_TRACE)
+    AllocatedMemory = vec_allocationData_init();
 #endif
-    return ptr;
 }
 
-/*void* tmalloc_or_fatal(usize size, const char* msg) {
-    void* ptr = tmalloc(size);
-    if (!ptr) {
-        LOG_FATAL("Allocation %zu bytes is failed with message: %s", size, msg);
-    }
-    return ptr;
-}*/
+void memory_exit(void) {
+#if defined(HE_MEM_TRACK) | defined(HE_MEM_TRACK_TRACE)
+    u64 used = get_allocated_memory();
+    if (used != 0) {
+        __he_update_full_trace_info("", "", -1);
+        LOG_ERROR_NO_ALLOC("Unallocated memory size: %zu bytes", used);
 
-void* trealloc(void* ptr, u64 size) {
-#if defined(HE_MEM_TRACK)
-    init_mem_tracking();
-    if (ptr == NULL) {
-        return tmalloc(size);
-    } else {
-        void* new_ptr = realloc(ptr, size);
-        for (usize i = 0; i < allocated_mem.size; i++) {
-            if (allocated_mem.data[i].ptr == ptr) {
-                allocated_mem.data[i].ptr = ptr;
-                allocated_mem.data[i].size = size;
-                break;
+        for (usize i = 0; i < AllocatedMemory.size; ++i) {
+            struct allocationData* data = &AllocatedMemory.data[i];
+
+            if (data->user_line != -1) {
+    #if defined(HE_MEM_TRACK_TRACE)
+                LOG_ERROR_NO_ALLOC(
+                        "\t%zu bytes AT %s:%d IN \"%s\"@%s:%d", data->size, data->file, data->line,
+                        data->user_func, data->user_file, data->user_line
+                );
+    #else
+                LOG_ERROR_NO_ALLOC(
+                        "\t%zu bytes IN \"%s\"@%s:%d", data->size, data->user_func, data->user_file,
+                        data->user_line
+                );
+    #endif
+            } else {
+    #if defined(HE_MEM_TRACK_TRACE)
+                LOG_ERROR_NO_ALLOC("\t%zu bytes AT %s:%d", data->size, data->file, data->line);
+    #endif
             }
         }
-        return new_ptr;
     }
-#else
-    return realloc(ptr, size);
 #endif
+
+    vec_allocationData_free(&AllocatedMemory);
+}
+
+
+void* tmalloc(u64 size) {
+    return _tmalloc((usize) size, "", -1);
+}
+
+void* trealloc(void* ptr, u64 size) {
+    return _trealloc(ptr, (usize) size, "", -1);
 }
 
 void tfree(void* ptr) {
-#if defined(HE_MEM_TRACK)
-    init_mem_tracking();
-    for (usize i = 0; i < allocated_mem.size; i++) {
-        if (allocated_mem.data[i].ptr == ptr) {
-            vec_mem_pair_erase(&allocated_mem, i);
+#if defined(HE_MEM_TRACK) | defined(HE_MEM_TRACK_TRACE)
+    for (usize i = 0; i < AllocatedMemory.size; i++) {
+        if (AllocatedMemory.data[i].ptr == ptr) {
+            vec_allocationData_erase(&AllocatedMemory, i);
             break;
         }
     }
@@ -110,58 +97,78 @@ void tfree(void* ptr) {
     free(ptr);
 }
 
-void* trace_tmalloc(const char* ___file__, i32 __line__, u64 size) {
-    void* ptr = malloc(size);
-#if defined(HE_MEM_TRACK) && defined(HE_MEM_TRACK_TRACE)
-    init_mem_tracking();
-    struct mem_pair pair = {
-            ptr,
-            size,
-            ___file__,
-            __line__,
-            full_trace_mod_level_func,
-            full_trace_mod_level_file,
-            full_trace_mod_level_line
-    };
-    vec_mem_pair_push_back(&allocated_mem, pair);
-    usize used = get_allocated_memory();
-    printf("USED MEM: %zu\n", used);
-#endif
-    return ptr;
-}
-
-void* trace_trealloc(const char* ___file__, i32 __line__, void* ptr, u64 size) {
-#if defined(HE_MEM_TRACK) && defined(HE_MEM_TRACK_TRACE)
-    init_mem_tracking();
-    if (ptr == NULL) {
-        return trace_tmalloc(___file__, __line__, size);
-    } else {
-        void* new_ptr = realloc(ptr, size);
-        for (usize i = 0; i < allocated_mem.size; i++) {
-            if (allocated_mem.data[i].ptr == ptr) {
-                allocated_mem.data[i].ptr = new_ptr;
-                allocated_mem.data[i].size = size;
-                allocated_mem.data[i].file = ___file__;
-                allocated_mem.data[i].line = __line__;
-                break;
-            }
-        }
-        return new_ptr;
-    }
-#else !
-    return realloc(ptr, size);
-#endif
-}
-
-
 u64 get_allocated_memory(void) {
-#if defined(HE_MEM_TRACK)
+#if defined(HE_MEM_TRACK) | defined(HE_MEM_TRACK_TRACE)
     u64 total = 0;
-    for (usize i = 0; i < allocated_mem.size; i++) {
-        total += allocated_mem.data[i].size;
+    for (usize i = 0; i < AllocatedMemory.size; i++) {
+        total += AllocatedMemory.data[i].size;
     }
     return total;
 #else
     return 0;
 #endif
 }
+
+
+static inline void* _tmalloc(usize size, c_str file, i32 line) {
+#if defined(HE_MEM_TRACK_TRACE)
+    void* ptr = malloc(size);
+    struct allocationData data = {ptr,
+                                  size,
+                                  file,
+                                  line,
+                                  full_trace_mod_level_func,
+                                  full_trace_mod_level_file,
+                                  full_trace_mod_level_line};
+    vec_allocationData_push_back(&AllocatedMemory, data);
+    return ptr;
+#elif defined(HE_MEM_TRACK)
+    void* ptr = malloc(size);
+    struct allocationData data = {
+            ptr, size, full_trace_mod_level_func, full_trace_mod_level_file, full_trace_mod_level_line
+    };
+    vec_allocationData_push_back(&AllocatedMemory, data);
+    return ptr;
+#else
+    return malloc(size)
+#endif
+}
+
+static inline void* _trealloc(void* ptr, usize size, c_str file, i32 line) {
+// Default behavior
+#if defined(HE_MEM_TRACK) | defined(HE_MEM_TRACK_TRACE)
+    if (ptr == NULL)
+        return _tmalloc(size, file, line);
+
+    void* new_ptr = realloc(ptr, size);
+    for (usize i = 0; i < AllocatedMemory.size; ++i) {
+        struct allocationData* data = &AllocatedMemory.data[i];
+        if (data->ptr == ptr) {
+            data->ptr = ptr;
+            data->size = size;
+            data->user_file = full_trace_mod_level_file;
+            data->user_func = full_trace_mod_level_func;
+            data->user_line = full_trace_mod_level_line;
+    #if defined(HE_MEM_TRACK_TRACE)
+            data->file = file;
+            data->line = line;
+    #endif
+            break;
+        }
+    }
+    return new_ptr;
+#else
+    return realloc(ptr, size)
+#endif
+}
+
+
+#if defined(HE_MEM_TRACK_TRACE)
+void* trace_tmalloc(const char* file, i32 line, u64 size) {
+    return _tmalloc(size, file, line);
+}
+
+void* trace_trealloc(const char* file, i32 line, void* ptr, u64 size) {
+    return _trealloc(ptr, size, file, line);
+}
+#endif
