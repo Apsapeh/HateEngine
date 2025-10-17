@@ -2,11 +2,11 @@
 
 #ifdef PLATFORM_WINDOWS
 
-#include "dylib.h"
-#include <windows.h>
-#include <stdio.h>
-#include <string.h>
-#include "platform/memory.h"
+    #include "dylib.h"
+    #include <windows.h>
+    #include <stdio.h>
+    #include <string.h>
+    #include "platform/memory.h"
 
 const char* dylib_extension = ".dll";
 

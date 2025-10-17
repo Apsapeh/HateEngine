@@ -6,16 +6,16 @@
 
 #ifdef PLATFORM_WINDOWS
 
-// datetime_windows.c
-#define _CRT_SECURE_NO_WARNINGS
-#include <windows.h>
-#include <stdlib.h>
-#include <stdint.h>
-#include <string.h>
+    // datetime_windows.c
+    #define _CRT_SECURE_NO_WARNINGS
+    #include <windows.h>
+    #include <stdlib.h>
+    #include <stdint.h>
+    #include <string.h>
 
-// Подключаем ваш заголовок; если у вас другое место - подставьте путь.
-#include "datetime.h"
-#include <types/types.h>
+    // Подключаем ваш заголовок; если у вас другое место - подставьте путь.
+    #include "datetime.h"
+    #include <types/types.h>
 
 typedef enum {
     METHOD_PRECISE_FILETIME, // GetSystemTimePreciseAsFileTime

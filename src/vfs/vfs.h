@@ -58,6 +58,8 @@ typedef struct FileStream {
 
 void vfs_init(void);
 
+void vfs_exit(void);
+
 
 /* ================================> Base <================================ */
 /**

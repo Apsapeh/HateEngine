@@ -41,6 +41,7 @@ target("HateEngineRuntime")
     
     add_defines("HE_FS_SDL3", "HE_WS_SDL3")
     add_defines("HE_MEM_TRACK", "HE_MEM_TRACK_TRACE")
+    --add_defines("HE_MEM_TRACK")
 
     if is_plat("mingw") then
         add_ldflags("-mcrtdll=msvcrt-os", {force=true})

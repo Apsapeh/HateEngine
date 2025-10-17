@@ -18,27 +18,35 @@ struct WindowServerBackendPair {
 vector_template_def(WindowServerBackendPair, struct WindowServerBackendPair);
 vector_template_impl(WindowServerBackendPair, struct WindowServerBackendPair);
 
-static vec_WindowServerBackendPair registred_backends;
+// FIXME: Add mutex
+static vec_WindowServerBackendPair RegistredBackends;
 
 void window_server_init(void) {
-    registred_backends = vec_WindowServerBackendPair_init();
+    RegistredBackends = vec_WindowServerBackendPair_init();
 
     // Register default backend
     window_server_sdl3_backend_register();
 }
 
+void window_server_exit(void) {
+    for (usize i = 0; i < RegistredBackends.size; i++)
+        window_server_backend_free(RegistredBackends.data[i].backend);
+
+    vec_WindowServerBackendPair_free(&RegistredBackends);
+}
+
 Error window_server_register_backend(const char* name, WindowServerBackend* backend) {
     ERROR_ARGS_CHECK_2(name, backend);
 
-    for (usize i = 0; i < registred_backends.size; i++) {
-        if (strcmp(registred_backends.data[i].name, name) == 0) {
+    for (usize i = 0; i < RegistredBackends.size; i++) {
+        if (strcmp(RegistredBackends.data[i].name, name) == 0) {
             LOG_ERROR("Backend with name '%s' already registered", name);
             return ERROR_ALREADY_EXISTS;
         }
     }
 
     vec_WindowServerBackendPair_push_back(
-            &registred_backends, (struct WindowServerBackendPair) {name, backend}
+            &RegistredBackends, (struct WindowServerBackendPair) {name, backend}
     );
 
     return ERROR_SUCCESS;
@@ -47,9 +55,9 @@ Error window_server_register_backend(const char* name, WindowServerBackend* back
 Error window_server_load_backend(const char* name) {
     ERROR_ARGS_CHECK_1(name);
 
-    for (usize i = 0; i < registred_backends.size; i++) {
-        if (strcmp(registred_backends.data[i].name, name) == 0) {
-            WindowServer = *registred_backends.data[i].backend;
+    for (usize i = 0; i < RegistredBackends.size; i++) {
+        if (strcmp(RegistredBackends.data[i].name, name) == 0) {
+            WindowServer = *RegistredBackends.data[i].backend;
             return ERROR_SUCCESS;
         }
     }
@@ -69,6 +77,12 @@ WindowServerBackend* window_server_backend_new(void) {
     // TODO: Add default functions
 
     return backend;
+}
+
+Error window_server_backend_free(WindowServerBackend* backend) {
+    ERROR_ARG_CHECK(backend);
+    tfree(backend);
+    return ERROR_SUCCESS;
 }
 
 Error window_server_backend_set_function(

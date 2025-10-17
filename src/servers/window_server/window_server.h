@@ -117,6 +117,8 @@ extern WindowServerBackend WindowServer;
  */
 void window_server_init(void);
 
+void window_server_exit(void);
+
 /**
  * @brief Register a backend
  * @return "InvalidArgument" if name is NULL or backend is NULL
@@ -147,6 +149,14 @@ Error window_server_load_backend(const char* name);
  * @api
  */
 WindowServerBackend* window_server_backend_new(void);
+
+/**
+ * @brieif Free a WindowServerBackend instance
+ * @return "InvalidArgument" if backned is NULL
+ *
+ * @api
+ */
+Error window_server_backend_free(WindowServerBackend* backend);
 
 /**
  * @brief Set a function pointer for a backend

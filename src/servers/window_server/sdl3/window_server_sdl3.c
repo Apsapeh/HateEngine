@@ -62,7 +62,7 @@ static Error create_window(
 static Error destroy_window(WindowServerWindow* this) {
     ERROR_ARGS_CHECK_1(this);
     MAIN_THREAD_CHECK(destroy_window);
-    
+
     SDL_DestroyWindow((SDL_Window*) this);
     return ERROR_SUCCESS;
 }

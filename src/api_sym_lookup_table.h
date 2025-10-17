@@ -4,23 +4,23 @@
 #define HE_MEM_NO_MACRO
 //#include <extra/full_trace.h>
 
+#include "servers/window_server/window_server.h"
+#include "platform/datetime.h"
 #include "object/object.h"
-#include "object/node/canvas_item/control/control.h"
-#include "math/vec2.h"
+#include "object/node/node.h"
+#include "object/node/canvas_item/control/viewport/viewport.h"
+#include "math/vec3.h"
+#include "log.h"
+#include "types/uid.h"
+#include "object/node/node3d/node3d.h"
+#include "servers/render_context/render_context.h"
+#include "math/mat4.h"
+#include "vfs/vfs.h"
 #include "platform/memory.h"
 #include "object/node/window/window.h"
-#include "log.h"
-#include "servers/window_server/window_server.h"
-#include "servers/render_context/render_context.h"
-#include "object/node/node3d/node3d.h"
-#include "vfs/vfs.h"
-#include "math/mat4.h"
 #include "object/node/canvas_item/canvas_item.h"
-#include "platform/datetime.h"
-#include "object/node/node.h"
-#include "types/uid.h"
-#include "math/vec3.h"
-#include "object/node/canvas_item/control/viewport/viewport.h"
+#include "object/node/canvas_item/control/control.h"
+#include "math/vec2.h"
 
 
 typedef struct {
@@ -31,10 +31,6 @@ typedef struct {
 
 APIFunctionLookupTable api_function_lookup_table[] = {
     {"__he_update_full_trace_info", (void*)__he_update_full_trace_info},
-    {"tmalloc", (void*)tmalloc},
-    {"trealloc", (void*)trealloc},
-    {"tfree", (void*)tfree},
-    {"get_allocated_memory", (void*)get_allocated_memory},
     {"datetime_new", (void*)datetime_new},
     {"datetime_free", (void*)datetime_free},
     {"datetime_update", (void*)datetime_update},
@@ -51,6 +47,10 @@ APIFunctionLookupTable api_function_lookup_table[] = {
     {"datetime_get_utc_hour", (void*)datetime_get_utc_hour},
     {"datetime_get_utc_minute", (void*)datetime_get_utc_minute},
     {"datetime_get_utc_second", (void*)datetime_get_utc_second},
+    {"tmalloc", (void*)tmalloc},
+    {"trealloc", (void*)trealloc},
+    {"tfree", (void*)tfree},
+    {"get_allocated_memory", (void*)get_allocated_memory},
     {"auto_free", (void*)auto_free},
     {"node_new", (void*)node_new},
     {"from_node", (void*)from_node},
@@ -130,11 +130,13 @@ APIFunctionLookupTable api_function_lookup_table[] = {
     {"window_server_register_backend", (void*)window_server_register_backend},
     {"window_server_load_backend", (void*)window_server_load_backend},
     {"window_server_backend_new", (void*)window_server_backend_new},
+    {"window_server_backend_free", (void*)window_server_backend_free},
     {"window_server_backend_set_function", (void*)window_server_backend_set_function},
     {"window_server_backend_get_function", (void*)window_server_backend_get_function},
     {"render_context_register_backend", (void*)render_context_register_backend},
     {"render_context_load_backend", (void*)render_context_load_backend},
     {"render_context_backend_new", (void*)render_context_backend_new},
+    {"render_context_backend_free", (void*)render_context_backend_free},
     {"render_context_backend_set_function", (void*)render_context_backend_set_function},
     {"render_context_backend_get_function", (void*)render_context_backend_get_function}
 };

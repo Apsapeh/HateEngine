@@ -1,7 +1,7 @@
 #include "vfs.h"
+#include "platform/memory.h"
 #include <types/vector.h>
 #include "platform/fs/fs.h"
-#include "platform/memory.h"
 #include "log.h"
 #include <stddef.h>
 #include <string.h>
@@ -18,6 +18,10 @@ static struct VFSRFSMnt rfs_mnt;
 void vfs_init(void) {
     mnts = vec_vfs_mnt_init();
     rfs_mnt.path = NULL;
+}
+
+void vfs_exit(void) {
+    vec_vfs_mnt_free(&mnts);
 }
 
 boolean vfs_mount_res(const char* path, const char* mount_point) {

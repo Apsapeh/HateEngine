@@ -2,17 +2,17 @@
 
 #ifdef PLATFORM_UNIX
 
-#include "dylib.h"
-#include <dlfcn.h>
-#include <stdio.h>
-#include <string.h>
-#include "platform/memory.h"
+    #include "dylib.h"
+    #include <dlfcn.h>
+    #include <stdio.h>
+    #include <string.h>
+    #include "platform/memory.h"
 
-#if defined(__APPLE__)
+    #if defined(__APPLE__)
 const char* dylib_extension = ".dylib";
-#else
+    #else
 const char* dylib_extension = ".so";
-#endif
+    #endif
 
 const char* PREFIX = "./";
 

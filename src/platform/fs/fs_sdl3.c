@@ -1,10 +1,10 @@
 #if defined(HE_FS_SDL3)
-#include "fs.h"
-#include <SDL3/SDL.h>
-#include <string.h>
+    #include "fs.h"
+    #include <SDL3/SDL.h>
+    #include <string.h>
 
-#include "platform/memory.h"
-#include "log.h"
+    #include "platform/memory.h"
+    #include "log.h"
 
 struct FSFileStream {
     SDL_IOStream* io_stream;

@@ -311,6 +311,119 @@ typedef u8 WindowServerWindowMode;
 extern void (*raw___he_update_full_trace_info)(const char * func, const char * file, i32 line);
 
 /**
+ * @brief Create time instance and init with current time
+ * @warning You should free datetime_handle with 'time_free'
+ *
+ * @api
+ */
+extern datetime_handle (*raw_datetime_new)(void);
+
+/**
+ * @brief free datetime_handle
+ *
+ * @api
+ */
+extern void (*raw_datetime_free)(datetime_handle handle);
+
+/**
+ * @brief Update existed time instance
+ *
+ * @api
+ */
+extern void (*raw_datetime_update)(datetime_handle handle);
+
+/**
+ * @brief get local year
+ *
+ * @api
+ */
+extern u16 (*raw_datetime_get_year)(datetime_handle handle);
+
+/**
+ * @brief get local month
+ *
+ * @api
+ */
+extern u8 (*raw_datetime_get_month)(datetime_handle handle);
+
+/**
+ * @brief get local day
+ *
+ * @api
+ */
+extern u8 (*raw_datetime_get_day)(datetime_handle handle);
+
+/**
+ * @brief get local hour
+ *
+ * @api
+ */
+extern u8 (*raw_datetime_get_hour)(datetime_handle handle);
+
+/**
+ * @brief get local minute
+ *
+ * @api
+ */
+extern u8 (*raw_datetime_get_minute)(datetime_handle handle);
+
+/**
+ * @brief get local second
+ *
+ * @api
+ */
+extern u8 (*raw_datetime_get_second)(datetime_handle handle);
+
+/**
+ * @brief get local nanosecond
+ *
+ * @api
+ */
+extern u32 (*raw_datetime_get_nanosecond)(datetime_handle handle);
+
+/**
+ * @brief get UTC year
+ *
+ * @api
+ */
+extern u16 (*raw_datetime_get_utc_year)(datetime_handle handle);
+
+/**
+ * @brief get UTC month
+ *
+ * @api
+ */
+extern u8 (*raw_datetime_get_utc_month)(datetime_handle handle);
+
+/**
+ * @brief get UTC day
+ *
+ * @api
+ */
+extern u8 (*raw_datetime_get_utc_day)(datetime_handle handle);
+
+/**
+ * @brief get UTC hour
+ *
+ * @api
+ */
+extern u8 (*raw_datetime_get_utc_hour)(datetime_handle handle);
+
+/**
+ * @brief get UTC minute
+ *
+ * @api
+ */
+extern u8 (*raw_datetime_get_utc_minute)(datetime_handle handle);
+
+/**
+ * @brief get UTC second
+ *
+ * @api
+ */
+extern u8 (*raw_datetime_get_utc_second)(datetime_handle handle);
+
+/**
  * @brief Malloc with tracking if compiled with HE_MEM_TRACK
  *
  * @param size
@@ -348,119 +461,6 @@ extern void (*raw_tfree)(void * ptr);
  * @api
  */
 extern u64 (*raw_get_allocated_memory)(void);
-
-/**
- * @brief Create time instance and init with current time
- * @warning You should free datetime_handle with 'time_free'
- *
- * @api
- */
-extern datetime_handle (*raw_datetime_new)(void);
-
-/**
- * @brief free datetime_handle
- *
- * @api
- */
-extern void (*raw_datetime_free)(datetime_handle arg0);
-
-/**
- * @brief Update existed time instance
- *
- * @api
- */
-extern void (*raw_datetime_update)(datetime_handle handler);
-
-/**
- * @brief get local year
- *
- * @api
- */
-extern u16 (*raw_datetime_get_year)(datetime_handle arg0);
-
-/**
- * @brief get local month
- *
- * @api
- */
-extern u8 (*raw_datetime_get_month)(datetime_handle arg0);
-
-/**
- * @brief get local day
- *
- * @api
- */
-extern u8 (*raw_datetime_get_day)(datetime_handle arg0);
-
-/**
- * @brief get local hour
- *
- * @api
- */
-extern u8 (*raw_datetime_get_hour)(datetime_handle arg0);
-
-/**
- * @brief get local minute
- *
- * @api
- */
-extern u8 (*raw_datetime_get_minute)(datetime_handle arg0);
-
-/**
- * @brief get local second
- *
- * @api
- */
-extern u8 (*raw_datetime_get_second)(datetime_handle arg0);
-
-/**
- * @brief get local nanosecond
- *
- * @api
- */
-extern u32 (*raw_datetime_get_nanosecond)(datetime_handle arg0);
-
-/**
- * @brief get UTC year
- *
- * @api
- */
-extern u16 (*raw_datetime_get_utc_year)(datetime_handle arg0);
-
-/**
- * @brief get UTC month
- *
- * @api
- */
-extern u8 (*raw_datetime_get_utc_month)(datetime_handle arg0);
-
-/**
- * @brief get UTC day
- *
- * @api
- */
-extern u8 (*raw_datetime_get_utc_day)(datetime_handle arg0);
-
-/**
- * @brief get UTC hour
- *
- * @api
- */
-extern u8 (*raw_datetime_get_utc_hour)(datetime_handle arg0);
-
-/**
- * @brief get UTC minute
- *
- * @api
- */
-extern u8 (*raw_datetime_get_utc_minute)(datetime_handle arg0);
-
-/**
- * @brief get UTC second
- *
- * @api
- */
-extern u8 (*raw_datetime_get_utc_second)(datetime_handle arg0);
 
 /**
  * @brief Free object by type
@@ -1176,6 +1176,14 @@ extern Error (*raw_window_server_load_backend)(const char * name);
 extern WindowServerBackend * (*raw_window_server_backend_new)(void);
 
 /**
+ * @brieif Free a WindowServerBackend instance
+ * @return "InvalidArgument" if backned is NULL
+ * 
+ * @api
+ */
+extern Error (*raw_window_server_backend_free)(WindowServerBackend * backend);
+
+/**
  * @brief Set a function pointer for a backend
  * @return "InvalidArgument" if name is NULL or func is NULL
  * @return "NotFound" if a function with the given name does not exist in the backend
@@ -1222,6 +1230,14 @@ extern Error (*raw_render_context_load_backend)(const char * render_server_name,
  * @api
  */
 extern RenderContextBackend * (*raw_render_context_backend_new)(void);
+
+/**
+ * @brieif Free a RenderContextBackend instance
+ * @return "InvalidArgument" if backned is NULL
+ * 
+ * @api
+ */
+extern Error (*raw_render_context_backend_free)(RenderContextBackend * backend);
 
 /**
  * @brief Set a function pointer for a backend
@@ -1293,6 +1309,119 @@ extern fptr (*raw_render_context_get_proc_addr)(const char * proc);
 extern void (*__he_update_full_trace_info)(const char * func, const char * file, i32 line);
 
 /**
+ * @brief Create time instance and init with current time
+ * @warning You should free datetime_handle with 'time_free'
+ *
+ * @api
+ */
+extern datetime_handle (*datetime_new)(void);
+
+/**
+ * @brief free datetime_handle
+ *
+ * @api
+ */
+extern void (*datetime_free)(datetime_handle handle);
+
+/**
+ * @brief Update existed time instance
+ *
+ * @api
+ */
+extern void (*datetime_update)(datetime_handle handle);
+
+/**
+ * @brief get local year
+ *
+ * @api
+ */
+extern u16 (*datetime_get_year)(datetime_handle handle);
+
+/**
+ * @brief get local month
+ *
+ * @api
+ */
+extern u8 (*datetime_get_month)(datetime_handle handle);
+
+/**
+ * @brief get local day
+ *
+ * @api
+ */
+extern u8 (*datetime_get_day)(datetime_handle handle);
+
+/**
+ * @brief get local hour
+ *
+ * @api
+ */
+extern u8 (*datetime_get_hour)(datetime_handle handle);
+
+/**
+ * @brief get local minute
+ *
+ * @api
+ */
+extern u8 (*datetime_get_minute)(datetime_handle handle);
+
+/**
+ * @brief get local second
+ *
+ * @api
+ */
+extern u8 (*datetime_get_second)(datetime_handle handle);
+
+/**
+ * @brief get local nanosecond
+ *
+ * @api
+ */
+extern u32 (*datetime_get_nanosecond)(datetime_handle handle);
+
+/**
+ * @brief get UTC year
+ *
+ * @api
+ */
+extern u16 (*datetime_get_utc_year)(datetime_handle handle);
+
+/**
+ * @brief get UTC month
+ *
+ * @api
+ */
+extern u8 (*datetime_get_utc_month)(datetime_handle handle);
+
+/**
+ * @brief get UTC day
+ *
+ * @api
+ */
+extern u8 (*datetime_get_utc_day)(datetime_handle handle);
+
+/**
+ * @brief get UTC hour
+ *
+ * @api
+ */
+extern u8 (*datetime_get_utc_hour)(datetime_handle handle);
+
+/**
+ * @brief get UTC minute
+ *
+ * @api
+ */
+extern u8 (*datetime_get_utc_minute)(datetime_handle handle);
+
+/**
+ * @brief get UTC second
+ *
+ * @api
+ */
+extern u8 (*datetime_get_utc_second)(datetime_handle handle);
+
+/**
  * @brief Malloc with tracking if compiled with HE_MEM_TRACK
  *
  * @param size
@@ -1330,119 +1459,6 @@ extern void (*tfree)(void * ptr);
  * @api
  */
 extern u64 (*get_allocated_memory)(void);
-
-/**
- * @brief Create time instance and init with current time
- * @warning You should free datetime_handle with 'time_free'
- *
- * @api
- */
-extern datetime_handle (*datetime_new)(void);
-
-/**
- * @brief free datetime_handle
- *
- * @api
- */
-extern void (*datetime_free)(datetime_handle arg0);
-
-/**
- * @brief Update existed time instance
- *
- * @api
- */
-extern void (*datetime_update)(datetime_handle handler);
-
-/**
- * @brief get local year
- *
- * @api
- */
-extern u16 (*datetime_get_year)(datetime_handle arg0);
-
-/**
- * @brief get local month
- *
- * @api
- */
-extern u8 (*datetime_get_month)(datetime_handle arg0);
-
-/**
- * @brief get local day
- *
- * @api
- */
-extern u8 (*datetime_get_day)(datetime_handle arg0);
-
-/**
- * @brief get local hour
- *
- * @api
- */
-extern u8 (*datetime_get_hour)(datetime_handle arg0);
-
-/**
- * @brief get local minute
- *
- * @api
- */
-extern u8 (*datetime_get_minute)(datetime_handle arg0);
-
-/**
- * @brief get local second
- *
- * @api
- */
-extern u8 (*datetime_get_second)(datetime_handle arg0);
-
-/**
- * @brief get local nanosecond
- *
- * @api
- */
-extern u32 (*datetime_get_nanosecond)(datetime_handle arg0);
-
-/**
- * @brief get UTC year
- *
- * @api
- */
-extern u16 (*datetime_get_utc_year)(datetime_handle arg0);
-
-/**
- * @brief get UTC month
- *
- * @api
- */
-extern u8 (*datetime_get_utc_month)(datetime_handle arg0);
-
-/**
- * @brief get UTC day
- *
- * @api
- */
-extern u8 (*datetime_get_utc_day)(datetime_handle arg0);
-
-/**
- * @brief get UTC hour
- *
- * @api
- */
-extern u8 (*datetime_get_utc_hour)(datetime_handle arg0);
-
-/**
- * @brief get UTC minute
- *
- * @api
- */
-extern u8 (*datetime_get_utc_minute)(datetime_handle arg0);
-
-/**
- * @brief get UTC second
- *
- * @api
- */
-extern u8 (*datetime_get_utc_second)(datetime_handle arg0);
 
 /**
  * @brief Free object by type
@@ -2158,6 +2174,14 @@ extern Error (*window_server_load_backend)(const char * name);
 extern WindowServerBackend * (*window_server_backend_new)(void);
 
 /**
+ * @brieif Free a WindowServerBackend instance
+ * @return "InvalidArgument" if backned is NULL
+ * 
+ * @api
+ */
+extern Error (*window_server_backend_free)(WindowServerBackend * backend);
+
+/**
  * @brief Set a function pointer for a backend
  * @return "InvalidArgument" if name is NULL or func is NULL
  * @return "NotFound" if a function with the given name does not exist in the backend
@@ -2204,6 +2228,14 @@ extern Error (*render_context_load_backend)(const char * render_server_name, con
  * @api
  */
 extern RenderContextBackend * (*render_context_backend_new)(void);
+
+/**
+ * @brieif Free a RenderContextBackend instance
+ * @return "InvalidArgument" if backned is NULL
+ * 
+ * @api
+ */
+extern Error (*render_context_backend_free)(RenderContextBackend * backend);
 
 /**
  * @brief Set a function pointer for a backend
@@ -2264,26 +2296,26 @@ extern fptr (*render_context_get_proc_addr)(const char * proc);
 
 #if defined(HEAPI_LOAD_IMPL)
         void (*raw___he_update_full_trace_info)(const char * func, const char * file, i32 line);
+    datetime_handle (*raw_datetime_new)(void);
+    void (*raw_datetime_free)(datetime_handle handle);
+    void (*raw_datetime_update)(datetime_handle handle);
+    u16 (*raw_datetime_get_year)(datetime_handle handle);
+    u8 (*raw_datetime_get_month)(datetime_handle handle);
+    u8 (*raw_datetime_get_day)(datetime_handle handle);
+    u8 (*raw_datetime_get_hour)(datetime_handle handle);
+    u8 (*raw_datetime_get_minute)(datetime_handle handle);
+    u8 (*raw_datetime_get_second)(datetime_handle handle);
+    u32 (*raw_datetime_get_nanosecond)(datetime_handle handle);
+    u16 (*raw_datetime_get_utc_year)(datetime_handle handle);
+    u8 (*raw_datetime_get_utc_month)(datetime_handle handle);
+    u8 (*raw_datetime_get_utc_day)(datetime_handle handle);
+    u8 (*raw_datetime_get_utc_hour)(datetime_handle handle);
+    u8 (*raw_datetime_get_utc_minute)(datetime_handle handle);
+    u8 (*raw_datetime_get_utc_second)(datetime_handle handle);
     void * (*raw_tmalloc)(u64 size);
     void * (*raw_trealloc)(void * ptr, u64 size);
     void (*raw_tfree)(void * ptr);
     u64 (*raw_get_allocated_memory)(void);
-    datetime_handle (*raw_datetime_new)(void);
-    void (*raw_datetime_free)(datetime_handle arg0);
-    void (*raw_datetime_update)(datetime_handle handler);
-    u16 (*raw_datetime_get_year)(datetime_handle arg0);
-    u8 (*raw_datetime_get_month)(datetime_handle arg0);
-    u8 (*raw_datetime_get_day)(datetime_handle arg0);
-    u8 (*raw_datetime_get_hour)(datetime_handle arg0);
-    u8 (*raw_datetime_get_minute)(datetime_handle arg0);
-    u8 (*raw_datetime_get_second)(datetime_handle arg0);
-    u32 (*raw_datetime_get_nanosecond)(datetime_handle arg0);
-    u16 (*raw_datetime_get_utc_year)(datetime_handle arg0);
-    u8 (*raw_datetime_get_utc_month)(datetime_handle arg0);
-    u8 (*raw_datetime_get_utc_day)(datetime_handle arg0);
-    u8 (*raw_datetime_get_utc_hour)(datetime_handle arg0);
-    u8 (*raw_datetime_get_utc_minute)(datetime_handle arg0);
-    u8 (*raw_datetime_get_utc_second)(datetime_handle arg0);
     void (*raw_auto_free)(Object * object);
     Node * (*raw_node_new)(const char * name);
     Node * (*raw_from_node)(Node * node);
@@ -2363,11 +2395,13 @@ extern fptr (*render_context_get_proc_addr)(const char * proc);
     Error (*raw_window_server_register_backend)(const char * name, WindowServerBackend * backend);
     Error (*raw_window_server_load_backend)(const char * name);
     WindowServerBackend * (*raw_window_server_backend_new)(void);
+    Error (*raw_window_server_backend_free)(WindowServerBackend * backend);
     Error (*raw_window_server_backend_set_function)(WindowServerBackend * backend, const char * name, void (* function) (void));
     Error (*raw_window_server_backend_get_function)(WindowServerBackend * backend, const char * name, void (** function) (void));
     Error (*raw_render_context_register_backend)(const char * render_server_name, const char * window_server_name, RenderContextBackend * backend);
     Error (*raw_render_context_load_backend)(const char * render_server_name, const char * window_server_name);
     RenderContextBackend * (*raw_render_context_backend_new)(void);
+    Error (*raw_render_context_backend_free)(RenderContextBackend * backend);
     Error (*raw_render_context_backend_set_function)(RenderContextBackend * backend, const char * name, void (* function) (void));
     Error (*raw_render_context_backend_get_function)(RenderContextBackend * backend, const char * name, void (** function) (void));
     Error (*raw_window_server_create_window)(const char * title, i32 w, i32 h, WindowServerWindow * parent, WindowServerWindow ** out);
@@ -2390,26 +2424,26 @@ extern fptr (*render_context_get_proc_addr)(const char * proc);
 
     #if !defined(HEAPI_FULL_TRACE)
             void (*__he_update_full_trace_info)(const char * func, const char * file, i32 line);
+    datetime_handle (*datetime_new)(void);
+    void (*datetime_free)(datetime_handle handle);
+    void (*datetime_update)(datetime_handle handle);
+    u16 (*datetime_get_year)(datetime_handle handle);
+    u8 (*datetime_get_month)(datetime_handle handle);
+    u8 (*datetime_get_day)(datetime_handle handle);
+    u8 (*datetime_get_hour)(datetime_handle handle);
+    u8 (*datetime_get_minute)(datetime_handle handle);
+    u8 (*datetime_get_second)(datetime_handle handle);
+    u32 (*datetime_get_nanosecond)(datetime_handle handle);
+    u16 (*datetime_get_utc_year)(datetime_handle handle);
+    u8 (*datetime_get_utc_month)(datetime_handle handle);
+    u8 (*datetime_get_utc_day)(datetime_handle handle);
+    u8 (*datetime_get_utc_hour)(datetime_handle handle);
+    u8 (*datetime_get_utc_minute)(datetime_handle handle);
+    u8 (*datetime_get_utc_second)(datetime_handle handle);
     void * (*tmalloc)(u64 size);
     void * (*trealloc)(void * ptr, u64 size);
     void (*tfree)(void * ptr);
     u64 (*get_allocated_memory)(void);
-    datetime_handle (*datetime_new)(void);
-    void (*datetime_free)(datetime_handle arg0);
-    void (*datetime_update)(datetime_handle handler);
-    u16 (*datetime_get_year)(datetime_handle arg0);
-    u8 (*datetime_get_month)(datetime_handle arg0);
-    u8 (*datetime_get_day)(datetime_handle arg0);
-    u8 (*datetime_get_hour)(datetime_handle arg0);
-    u8 (*datetime_get_minute)(datetime_handle arg0);
-    u8 (*datetime_get_second)(datetime_handle arg0);
-    u32 (*datetime_get_nanosecond)(datetime_handle arg0);
-    u16 (*datetime_get_utc_year)(datetime_handle arg0);
-    u8 (*datetime_get_utc_month)(datetime_handle arg0);
-    u8 (*datetime_get_utc_day)(datetime_handle arg0);
-    u8 (*datetime_get_utc_hour)(datetime_handle arg0);
-    u8 (*datetime_get_utc_minute)(datetime_handle arg0);
-    u8 (*datetime_get_utc_second)(datetime_handle arg0);
     void (*auto_free)(Object * object);
     Node * (*node_new)(const char * name);
     Node * (*from_node)(Node * node);
@@ -2489,11 +2523,13 @@ extern fptr (*render_context_get_proc_addr)(const char * proc);
     Error (*window_server_register_backend)(const char * name, WindowServerBackend * backend);
     Error (*window_server_load_backend)(const char * name);
     WindowServerBackend * (*window_server_backend_new)(void);
+    Error (*window_server_backend_free)(WindowServerBackend * backend);
     Error (*window_server_backend_set_function)(WindowServerBackend * backend, const char * name, void (* function) (void));
     Error (*window_server_backend_get_function)(WindowServerBackend * backend, const char * name, void (** function) (void));
     Error (*render_context_register_backend)(const char * render_server_name, const char * window_server_name, RenderContextBackend * backend);
     Error (*render_context_load_backend)(const char * render_server_name, const char * window_server_name);
     RenderContextBackend * (*render_context_backend_new)(void);
+    Error (*render_context_backend_free)(RenderContextBackend * backend);
     Error (*render_context_backend_set_function)(RenderContextBackend * backend, const char * name, void (* function) (void));
     Error (*render_context_backend_get_function)(RenderContextBackend * backend, const char * name, void (** function) (void));
     Error (*window_server_create_window)(const char * title, i32 w, i32 h, WindowServerWindow * parent, WindowServerWindow ** out);
@@ -2517,10 +2553,6 @@ extern fptr (*render_context_get_proc_addr)(const char * proc);
 
     void ___hate_engine_runtime_init(void* (*proc_addr)(const char* name)) {
                 raw___he_update_full_trace_info = (void (*)(const char *, const char *, i32))proc_addr("__he_update_full_trace_info");
-        raw_tmalloc = (void * (*)(u64))proc_addr("tmalloc");
-        raw_trealloc = (void * (*)(void *, u64))proc_addr("trealloc");
-        raw_tfree = (void (*)(void *))proc_addr("tfree");
-        raw_get_allocated_memory = (u64 (*)(void))proc_addr("get_allocated_memory");
         raw_datetime_new = (datetime_handle (*)(void))proc_addr("datetime_new");
         raw_datetime_free = (void (*)(datetime_handle))proc_addr("datetime_free");
         raw_datetime_update = (void (*)(datetime_handle))proc_addr("datetime_update");
@@ -2537,6 +2569,10 @@ extern fptr (*render_context_get_proc_addr)(const char * proc);
         raw_datetime_get_utc_hour = (u8 (*)(datetime_handle))proc_addr("datetime_get_utc_hour");
         raw_datetime_get_utc_minute = (u8 (*)(datetime_handle))proc_addr("datetime_get_utc_minute");
         raw_datetime_get_utc_second = (u8 (*)(datetime_handle))proc_addr("datetime_get_utc_second");
+        raw_tmalloc = (void * (*)(u64))proc_addr("tmalloc");
+        raw_trealloc = (void * (*)(void *, u64))proc_addr("trealloc");
+        raw_tfree = (void (*)(void *))proc_addr("tfree");
+        raw_get_allocated_memory = (u64 (*)(void))proc_addr("get_allocated_memory");
         raw_auto_free = (void (*)(Object *))proc_addr("auto_free");
         raw_node_new = (Node * (*)(const char *))proc_addr("node_new");
         raw_from_node = (Node * (*)(Node *))proc_addr("from_node");
@@ -2616,21 +2652,19 @@ extern fptr (*render_context_get_proc_addr)(const char * proc);
         raw_window_server_register_backend = (Error (*)(const char *, WindowServerBackend *))proc_addr("window_server_register_backend");
         raw_window_server_load_backend = (Error (*)(const char *))proc_addr("window_server_load_backend");
         raw_window_server_backend_new = (WindowServerBackend * (*)(void))proc_addr("window_server_backend_new");
+        raw_window_server_backend_free = (Error (*)(WindowServerBackend *))proc_addr("window_server_backend_free");
         raw_window_server_backend_set_function = (Error (*)(WindowServerBackend *, const char *, void (*)(void)))proc_addr("window_server_backend_set_function");
         raw_window_server_backend_get_function = (Error (*)(WindowServerBackend *, const char *, void (**)(void)))proc_addr("window_server_backend_get_function");
         raw_render_context_register_backend = (Error (*)(const char *, const char *, RenderContextBackend *))proc_addr("render_context_register_backend");
         raw_render_context_load_backend = (Error (*)(const char *, const char *))proc_addr("render_context_load_backend");
         raw_render_context_backend_new = (RenderContextBackend * (*)(void))proc_addr("render_context_backend_new");
+        raw_render_context_backend_free = (Error (*)(RenderContextBackend *))proc_addr("render_context_backend_free");
         raw_render_context_backend_set_function = (Error (*)(RenderContextBackend *, const char *, void (*)(void)))proc_addr("render_context_backend_set_function");
         raw_render_context_backend_get_function = (Error (*)(RenderContextBackend *, const char *, void (**)(void)))proc_addr("render_context_backend_get_function");
 
 
         #if !defined(HEAPI_FULL_TRACE)
                         __he_update_full_trace_info = raw___he_update_full_trace_info;
-            tmalloc = raw_tmalloc;
-            trealloc = raw_trealloc;
-            tfree = raw_tfree;
-            get_allocated_memory = raw_get_allocated_memory;
             datetime_new = raw_datetime_new;
             datetime_free = raw_datetime_free;
             datetime_update = raw_datetime_update;
@@ -2647,6 +2681,10 @@ extern fptr (*render_context_get_proc_addr)(const char * proc);
             datetime_get_utc_hour = raw_datetime_get_utc_hour;
             datetime_get_utc_minute = raw_datetime_get_utc_minute;
             datetime_get_utc_second = raw_datetime_get_utc_second;
+            tmalloc = raw_tmalloc;
+            trealloc = raw_trealloc;
+            tfree = raw_tfree;
+            get_allocated_memory = raw_get_allocated_memory;
             auto_free = raw_auto_free;
             node_new = raw_node_new;
             from_node = raw_from_node;
@@ -2726,11 +2764,13 @@ extern fptr (*render_context_get_proc_addr)(const char * proc);
             window_server_register_backend = raw_window_server_register_backend;
             window_server_load_backend = raw_window_server_load_backend;
             window_server_backend_new = raw_window_server_backend_new;
+            window_server_backend_free = raw_window_server_backend_free;
             window_server_backend_set_function = raw_window_server_backend_set_function;
             window_server_backend_get_function = raw_window_server_backend_get_function;
             render_context_register_backend = raw_render_context_register_backend;
             render_context_load_backend = raw_render_context_load_backend;
             render_context_backend_new = raw_render_context_backend_new;
+            render_context_backend_free = raw_render_context_backend_free;
             render_context_backend_set_function = raw_render_context_backend_set_function;
             render_context_backend_get_function = raw_render_context_backend_get_function;
 
@@ -2784,10 +2824,6 @@ extern fptr (*render_context_get_proc_addr)(const char * proc);
 #endif
 
 #if defined(HEAPI_FULL_TRACE)
-void * full_trace_tmalloc(const char* ___file___, uint32_t ___line___, u64);
-void * full_trace_trealloc(const char* ___file___, uint32_t ___line___, void *, u64);
-void full_trace_tfree(const char* ___file___, uint32_t ___line___, void *);
-u64 full_trace_get_allocated_memory(const char* ___file___, uint32_t ___line___);
 datetime_handle full_trace_datetime_new(const char* ___file___, uint32_t ___line___);
 void full_trace_datetime_free(const char* ___file___, uint32_t ___line___, datetime_handle);
 void full_trace_datetime_update(const char* ___file___, uint32_t ___line___, datetime_handle);
@@ -2804,6 +2840,10 @@ u8 full_trace_datetime_get_utc_day(const char* ___file___, uint32_t ___line___, 
 u8 full_trace_datetime_get_utc_hour(const char* ___file___, uint32_t ___line___, datetime_handle);
 u8 full_trace_datetime_get_utc_minute(const char* ___file___, uint32_t ___line___, datetime_handle);
 u8 full_trace_datetime_get_utc_second(const char* ___file___, uint32_t ___line___, datetime_handle);
+void * full_trace_tmalloc(const char* ___file___, uint32_t ___line___, u64);
+void * full_trace_trealloc(const char* ___file___, uint32_t ___line___, void *, u64);
+void full_trace_tfree(const char* ___file___, uint32_t ___line___, void *);
+u64 full_trace_get_allocated_memory(const char* ___file___, uint32_t ___line___);
 void full_trace_auto_free(const char* ___file___, uint32_t ___line___, Object *);
 Node * full_trace_node_new(const char* ___file___, uint32_t ___line___, const char *);
 Node * full_trace_from_node(const char* ___file___, uint32_t ___line___, Node *);
@@ -2883,11 +2923,13 @@ void full_trace_vfs_stream_close(const char* ___file___, uint32_t ___line___, Fi
 Error full_trace_window_server_register_backend(const char* ___file___, uint32_t ___line___, const char *, WindowServerBackend *);
 Error full_trace_window_server_load_backend(const char* ___file___, uint32_t ___line___, const char *);
 WindowServerBackend * full_trace_window_server_backend_new(const char* ___file___, uint32_t ___line___);
+Error full_trace_window_server_backend_free(const char* ___file___, uint32_t ___line___, WindowServerBackend *);
 Error full_trace_window_server_backend_set_function(const char* ___file___, uint32_t ___line___, WindowServerBackend *, const char *, void (*)(void));
 Error full_trace_window_server_backend_get_function(const char* ___file___, uint32_t ___line___, WindowServerBackend *, const char *, void (**)(void));
 Error full_trace_render_context_register_backend(const char* ___file___, uint32_t ___line___, const char *, const char *, RenderContextBackend *);
 Error full_trace_render_context_load_backend(const char* ___file___, uint32_t ___line___, const char *, const char *);
 RenderContextBackend * full_trace_render_context_backend_new(const char* ___file___, uint32_t ___line___);
+Error full_trace_render_context_backend_free(const char* ___file___, uint32_t ___line___, RenderContextBackend *);
 Error full_trace_render_context_backend_set_function(const char* ___file___, uint32_t ___line___, RenderContextBackend *, const char *, void (*)(void));
 Error full_trace_render_context_backend_get_function(const char* ___file___, uint32_t ___line___, RenderContextBackend *, const char *, void (**)(void));
 Error full_trace_window_server_create_window(const char* ___file___, uint32_t ___line___, const char *, i32, i32, WindowServerWindow *, WindowServerWindow **);
@@ -2909,7 +2951,117 @@ fptr full_trace_render_context_get_proc_addr(const char* ___file___, uint32_t __
 
 
 #if defined(HEAPI_LOAD_IMPL)
-    inline void * full_trace_tmalloc(const char* ___file___, uint32_t ___line___, u64 size) {
+    inline datetime_handle full_trace_datetime_new(const char* ___file___, uint32_t ___line___) {
+    raw___he_update_full_trace_info("datetime_new", ___file___, ___line___);
+    datetime_handle result = raw_datetime_new();
+    raw___he_update_full_trace_info("", "", -1);
+    return result;
+}
+
+inline void full_trace_datetime_free(const char* ___file___, uint32_t ___line___, datetime_handle handle) {
+    raw___he_update_full_trace_info("datetime_free", ___file___, ___line___);
+    raw_datetime_free(handle);
+    raw___he_update_full_trace_info("", "", -1);
+}
+
+inline void full_trace_datetime_update(const char* ___file___, uint32_t ___line___, datetime_handle handle) {
+    raw___he_update_full_trace_info("datetime_update", ___file___, ___line___);
+    raw_datetime_update(handle);
+    raw___he_update_full_trace_info("", "", -1);
+}
+
+inline u16 full_trace_datetime_get_year(const char* ___file___, uint32_t ___line___, datetime_handle handle) {
+    raw___he_update_full_trace_info("datetime_get_year", ___file___, ___line___);
+    u16 result = raw_datetime_get_year(handle);
+    raw___he_update_full_trace_info("", "", -1);
+    return result;
+}
+
+inline u8 full_trace_datetime_get_month(const char* ___file___, uint32_t ___line___, datetime_handle handle) {
+    raw___he_update_full_trace_info("datetime_get_month", ___file___, ___line___);
+    u8 result = raw_datetime_get_month(handle);
+    raw___he_update_full_trace_info("", "", -1);
+    return result;
+}
+
+inline u8 full_trace_datetime_get_day(const char* ___file___, uint32_t ___line___, datetime_handle handle) {
+    raw___he_update_full_trace_info("datetime_get_day", ___file___, ___line___);
+    u8 result = raw_datetime_get_day(handle);
+    raw___he_update_full_trace_info("", "", -1);
+    return result;
+}
+
+inline u8 full_trace_datetime_get_hour(const char* ___file___, uint32_t ___line___, datetime_handle handle) {
+    raw___he_update_full_trace_info("datetime_get_hour", ___file___, ___line___);
+    u8 result = raw_datetime_get_hour(handle);
+    raw___he_update_full_trace_info("", "", -1);
+    return result;
+}
+
+inline u8 full_trace_datetime_get_minute(const char* ___file___, uint32_t ___line___, datetime_handle handle) {
+    raw___he_update_full_trace_info("datetime_get_minute", ___file___, ___line___);
+    u8 result = raw_datetime_get_minute(handle);
+    raw___he_update_full_trace_info("", "", -1);
+    return result;
+}
+
+inline u8 full_trace_datetime_get_second(const char* ___file___, uint32_t ___line___, datetime_handle handle) {
+    raw___he_update_full_trace_info("datetime_get_second", ___file___, ___line___);
+    u8 result = raw_datetime_get_second(handle);
+    raw___he_update_full_trace_info("", "", -1);
+    return result;
+}
+
+inline u32 full_trace_datetime_get_nanosecond(const char* ___file___, uint32_t ___line___, datetime_handle handle) {
+    raw___he_update_full_trace_info("datetime_get_nanosecond", ___file___, ___line___);
+    u32 result = raw_datetime_get_nanosecond(handle);
+    raw___he_update_full_trace_info("", "", -1);
+    return result;
+}
+
+inline u16 full_trace_datetime_get_utc_year(const char* ___file___, uint32_t ___line___, datetime_handle handle) {
+    raw___he_update_full_trace_info("datetime_get_utc_year", ___file___, ___line___);
+    u16 result = raw_datetime_get_utc_year(handle);
+    raw___he_update_full_trace_info("", "", -1);
+    return result;
+}
+
+inline u8 full_trace_datetime_get_utc_month(const char* ___file___, uint32_t ___line___, datetime_handle handle) {
+    raw___he_update_full_trace_info("datetime_get_utc_month", ___file___, ___line___);
+    u8 result = raw_datetime_get_utc_month(handle);
+    raw___he_update_full_trace_info("", "", -1);
+    return result;
+}
+
+inline u8 full_trace_datetime_get_utc_day(const char* ___file___, uint32_t ___line___, datetime_handle handle) {
+    raw___he_update_full_trace_info("datetime_get_utc_day", ___file___, ___line___);
+    u8 result = raw_datetime_get_utc_day(handle);
+    raw___he_update_full_trace_info("", "", -1);
+    return result;
+}
+
+inline u8 full_trace_datetime_get_utc_hour(const char* ___file___, uint32_t ___line___, datetime_handle handle) {
+    raw___he_update_full_trace_info("datetime_get_utc_hour", ___file___, ___line___);
+    u8 result = raw_datetime_get_utc_hour(handle);
+    raw___he_update_full_trace_info("", "", -1);
+    return result;
+}
+
+inline u8 full_trace_datetime_get_utc_minute(const char* ___file___, uint32_t ___line___, datetime_handle handle) {
+    raw___he_update_full_trace_info("datetime_get_utc_minute", ___file___, ___line___);
+    u8 result = raw_datetime_get_utc_minute(handle);
+    raw___he_update_full_trace_info("", "", -1);
+    return result;
+}
+
+inline u8 full_trace_datetime_get_utc_second(const char* ___file___, uint32_t ___line___, datetime_handle handle) {
+    raw___he_update_full_trace_info("datetime_get_utc_second", ___file___, ___line___);
+    u8 result = raw_datetime_get_utc_second(handle);
+    raw___he_update_full_trace_info("", "", -1);
+    return result;
+}
+
+inline void * full_trace_tmalloc(const char* ___file___, uint32_t ___line___, u64 size) {
     raw___he_update_full_trace_info("tmalloc", ___file___, ___line___);
     void * result = raw_tmalloc(size);
     raw___he_update_full_trace_info("", "", -1);
@@ -2932,116 +3084,6 @@ inline void full_trace_tfree(const char* ___file___, uint32_t ___line___, void *
 inline u64 full_trace_get_allocated_memory(const char* ___file___, uint32_t ___line___) {
     raw___he_update_full_trace_info("get_allocated_memory", ___file___, ___line___);
     u64 result = raw_get_allocated_memory();
-    raw___he_update_full_trace_info("", "", -1);
-    return result;
-}
-
-inline datetime_handle full_trace_datetime_new(const char* ___file___, uint32_t ___line___) {
-    raw___he_update_full_trace_info("datetime_new", ___file___, ___line___);
-    datetime_handle result = raw_datetime_new();
-    raw___he_update_full_trace_info("", "", -1);
-    return result;
-}
-
-inline void full_trace_datetime_free(const char* ___file___, uint32_t ___line___, datetime_handle arg0) {
-    raw___he_update_full_trace_info("datetime_free", ___file___, ___line___);
-    raw_datetime_free(arg0);
-    raw___he_update_full_trace_info("", "", -1);
-}
-
-inline void full_trace_datetime_update(const char* ___file___, uint32_t ___line___, datetime_handle handler) {
-    raw___he_update_full_trace_info("datetime_update", ___file___, ___line___);
-    raw_datetime_update(handler);
-    raw___he_update_full_trace_info("", "", -1);
-}
-
-inline u16 full_trace_datetime_get_year(const char* ___file___, uint32_t ___line___, datetime_handle arg0) {
-    raw___he_update_full_trace_info("datetime_get_year", ___file___, ___line___);
-    u16 result = raw_datetime_get_year(arg0);
-    raw___he_update_full_trace_info("", "", -1);
-    return result;
-}
-
-inline u8 full_trace_datetime_get_month(const char* ___file___, uint32_t ___line___, datetime_handle arg0) {
-    raw___he_update_full_trace_info("datetime_get_month", ___file___, ___line___);
-    u8 result = raw_datetime_get_month(arg0);
-    raw___he_update_full_trace_info("", "", -1);
-    return result;
-}
-
-inline u8 full_trace_datetime_get_day(const char* ___file___, uint32_t ___line___, datetime_handle arg0) {
-    raw___he_update_full_trace_info("datetime_get_day", ___file___, ___line___);
-    u8 result = raw_datetime_get_day(arg0);
-    raw___he_update_full_trace_info("", "", -1);
-    return result;
-}
-
-inline u8 full_trace_datetime_get_hour(const char* ___file___, uint32_t ___line___, datetime_handle arg0) {
-    raw___he_update_full_trace_info("datetime_get_hour", ___file___, ___line___);
-    u8 result = raw_datetime_get_hour(arg0);
-    raw___he_update_full_trace_info("", "", -1);
-    return result;
-}
-
-inline u8 full_trace_datetime_get_minute(const char* ___file___, uint32_t ___line___, datetime_handle arg0) {
-    raw___he_update_full_trace_info("datetime_get_minute", ___file___, ___line___);
-    u8 result = raw_datetime_get_minute(arg0);
-    raw___he_update_full_trace_info("", "", -1);
-    return result;
-}
-
-inline u8 full_trace_datetime_get_second(const char* ___file___, uint32_t ___line___, datetime_handle arg0) {
-    raw___he_update_full_trace_info("datetime_get_second", ___file___, ___line___);
-    u8 result = raw_datetime_get_second(arg0);
-    raw___he_update_full_trace_info("", "", -1);
-    return result;
-}
-
-inline u32 full_trace_datetime_get_nanosecond(const char* ___file___, uint32_t ___line___, datetime_handle arg0) {
-    raw___he_update_full_trace_info("datetime_get_nanosecond", ___file___, ___line___);
-    u32 result = raw_datetime_get_nanosecond(arg0);
-    raw___he_update_full_trace_info("", "", -1);
-    return result;
-}
-
-inline u16 full_trace_datetime_get_utc_year(const char* ___file___, uint32_t ___line___, datetime_handle arg0) {
-    raw___he_update_full_trace_info("datetime_get_utc_year", ___file___, ___line___);
-    u16 result = raw_datetime_get_utc_year(arg0);
-    raw___he_update_full_trace_info("", "", -1);
-    return result;
-}
-
-inline u8 full_trace_datetime_get_utc_month(const char* ___file___, uint32_t ___line___, datetime_handle arg0) {
-    raw___he_update_full_trace_info("datetime_get_utc_month", ___file___, ___line___);
-    u8 result = raw_datetime_get_utc_month(arg0);
-    raw___he_update_full_trace_info("", "", -1);
-    return result;
-}
-
-inline u8 full_trace_datetime_get_utc_day(const char* ___file___, uint32_t ___line___, datetime_handle arg0) {
-    raw___he_update_full_trace_info("datetime_get_utc_day", ___file___, ___line___);
-    u8 result = raw_datetime_get_utc_day(arg0);
-    raw___he_update_full_trace_info("", "", -1);
-    return result;
-}
-
-inline u8 full_trace_datetime_get_utc_hour(const char* ___file___, uint32_t ___line___, datetime_handle arg0) {
-    raw___he_update_full_trace_info("datetime_get_utc_hour", ___file___, ___line___);
-    u8 result = raw_datetime_get_utc_hour(arg0);
-    raw___he_update_full_trace_info("", "", -1);
-    return result;
-}
-
-inline u8 full_trace_datetime_get_utc_minute(const char* ___file___, uint32_t ___line___, datetime_handle arg0) {
-    raw___he_update_full_trace_info("datetime_get_utc_minute", ___file___, ___line___);
-    u8 result = raw_datetime_get_utc_minute(arg0);
-    raw___he_update_full_trace_info("", "", -1);
-    return result;
-}
-
-inline u8 full_trace_datetime_get_utc_second(const char* ___file___, uint32_t ___line___, datetime_handle arg0) {
-    raw___he_update_full_trace_info("datetime_get_utc_second", ___file___, ___line___);
-    u8 result = raw_datetime_get_utc_second(arg0);
     raw___he_update_full_trace_info("", "", -1);
     return result;
 }
@@ -3586,6 +3628,13 @@ inline WindowServerBackend * full_trace_window_server_backend_new(const char* __
     return result;
 }
 
+inline Error full_trace_window_server_backend_free(const char* ___file___, uint32_t ___line___, WindowServerBackend * backend) {
+    raw___he_update_full_trace_info("window_server_backend_free", ___file___, ___line___);
+    Error result = raw_window_server_backend_free(backend);
+    raw___he_update_full_trace_info("", "", -1);
+    return result;
+}
+
 inline Error full_trace_window_server_backend_set_function(const char* ___file___, uint32_t ___line___, WindowServerBackend * backend, const char * name, void (* function) (void)) {
     raw___he_update_full_trace_info("window_server_backend_set_function", ___file___, ___line___);
     Error result = raw_window_server_backend_set_function(backend, name, function);
@@ -3617,6 +3666,13 @@ inline Error full_trace_render_context_load_backend(const char* ___file___, uint
 inline RenderContextBackend * full_trace_render_context_backend_new(const char* ___file___, uint32_t ___line___) {
     raw___he_update_full_trace_info("render_context_backend_new", ___file___, ___line___);
     RenderContextBackend * result = raw_render_context_backend_new();
+    raw___he_update_full_trace_info("", "", -1);
+    return result;
+}
+
+inline Error full_trace_render_context_backend_free(const char* ___file___, uint32_t ___line___, RenderContextBackend * backend) {
+    raw___he_update_full_trace_info("render_context_backend_free", ___file___, ___line___);
+    Error result = raw_render_context_backend_free(backend);
     raw___he_update_full_trace_info("", "", -1);
     return result;
 }
@@ -3750,26 +3806,26 @@ inline fptr full_trace_render_context_get_proc_addr(const char* ___file___, uint
 
 #endif
 
+#define datetime_new() full_trace_datetime_new(__FILE__, __LINE__)
+#define datetime_free(handle) full_trace_datetime_free(__FILE__, __LINE__, handle)
+#define datetime_update(handle) full_trace_datetime_update(__FILE__, __LINE__, handle)
+#define datetime_get_year(handle) full_trace_datetime_get_year(__FILE__, __LINE__, handle)
+#define datetime_get_month(handle) full_trace_datetime_get_month(__FILE__, __LINE__, handle)
+#define datetime_get_day(handle) full_trace_datetime_get_day(__FILE__, __LINE__, handle)
+#define datetime_get_hour(handle) full_trace_datetime_get_hour(__FILE__, __LINE__, handle)
+#define datetime_get_minute(handle) full_trace_datetime_get_minute(__FILE__, __LINE__, handle)
+#define datetime_get_second(handle) full_trace_datetime_get_second(__FILE__, __LINE__, handle)
+#define datetime_get_nanosecond(handle) full_trace_datetime_get_nanosecond(__FILE__, __LINE__, handle)
+#define datetime_get_utc_year(handle) full_trace_datetime_get_utc_year(__FILE__, __LINE__, handle)
+#define datetime_get_utc_month(handle) full_trace_datetime_get_utc_month(__FILE__, __LINE__, handle)
+#define datetime_get_utc_day(handle) full_trace_datetime_get_utc_day(__FILE__, __LINE__, handle)
+#define datetime_get_utc_hour(handle) full_trace_datetime_get_utc_hour(__FILE__, __LINE__, handle)
+#define datetime_get_utc_minute(handle) full_trace_datetime_get_utc_minute(__FILE__, __LINE__, handle)
+#define datetime_get_utc_second(handle) full_trace_datetime_get_utc_second(__FILE__, __LINE__, handle)
 #define tmalloc(size) full_trace_tmalloc(__FILE__, __LINE__, size)
 #define trealloc(ptr, size) full_trace_trealloc(__FILE__, __LINE__, ptr, size)
 #define tfree(ptr) full_trace_tfree(__FILE__, __LINE__, ptr)
 #define get_allocated_memory() full_trace_get_allocated_memory(__FILE__, __LINE__)
-#define datetime_new() full_trace_datetime_new(__FILE__, __LINE__)
-#define datetime_free(arg0) full_trace_datetime_free(__FILE__, __LINE__, arg0)
-#define datetime_update(handler) full_trace_datetime_update(__FILE__, __LINE__, handler)
-#define datetime_get_year(arg0) full_trace_datetime_get_year(__FILE__, __LINE__, arg0)
-#define datetime_get_month(arg0) full_trace_datetime_get_month(__FILE__, __LINE__, arg0)
-#define datetime_get_day(arg0) full_trace_datetime_get_day(__FILE__, __LINE__, arg0)
-#define datetime_get_hour(arg0) full_trace_datetime_get_hour(__FILE__, __LINE__, arg0)
-#define datetime_get_minute(arg0) full_trace_datetime_get_minute(__FILE__, __LINE__, arg0)
-#define datetime_get_second(arg0) full_trace_datetime_get_second(__FILE__, __LINE__, arg0)
-#define datetime_get_nanosecond(arg0) full_trace_datetime_get_nanosecond(__FILE__, __LINE__, arg0)
-#define datetime_get_utc_year(arg0) full_trace_datetime_get_utc_year(__FILE__, __LINE__, arg0)
-#define datetime_get_utc_month(arg0) full_trace_datetime_get_utc_month(__FILE__, __LINE__, arg0)
-#define datetime_get_utc_day(arg0) full_trace_datetime_get_utc_day(__FILE__, __LINE__, arg0)
-#define datetime_get_utc_hour(arg0) full_trace_datetime_get_utc_hour(__FILE__, __LINE__, arg0)
-#define datetime_get_utc_minute(arg0) full_trace_datetime_get_utc_minute(__FILE__, __LINE__, arg0)
-#define datetime_get_utc_second(arg0) full_trace_datetime_get_utc_second(__FILE__, __LINE__, arg0)
 #define auto_free(object) full_trace_auto_free(__FILE__, __LINE__, object)
 #define node_new(name) full_trace_node_new(__FILE__, __LINE__, name)
 #define from_node(node) full_trace_from_node(__FILE__, __LINE__, node)
@@ -3849,11 +3905,13 @@ inline fptr full_trace_render_context_get_proc_addr(const char* ___file___, uint
 #define window_server_register_backend(name, backend) full_trace_window_server_register_backend(__FILE__, __LINE__, name, backend)
 #define window_server_load_backend(name) full_trace_window_server_load_backend(__FILE__, __LINE__, name)
 #define window_server_backend_new() full_trace_window_server_backend_new(__FILE__, __LINE__)
+#define window_server_backend_free(backend) full_trace_window_server_backend_free(__FILE__, __LINE__, backend)
 #define window_server_backend_set_function(backend, name, function) full_trace_window_server_backend_set_function(__FILE__, __LINE__, backend, name, function)
 #define window_server_backend_get_function(backend, name, function) full_trace_window_server_backend_get_function(__FILE__, __LINE__, backend, name, function)
 #define render_context_register_backend(render_server_name, window_server_name, backend) full_trace_render_context_register_backend(__FILE__, __LINE__, render_server_name, window_server_name, backend)
 #define render_context_load_backend(render_server_name, window_server_name) full_trace_render_context_load_backend(__FILE__, __LINE__, render_server_name, window_server_name)
 #define render_context_backend_new() full_trace_render_context_backend_new(__FILE__, __LINE__)
+#define render_context_backend_free(backend) full_trace_render_context_backend_free(__FILE__, __LINE__, backend)
 #define render_context_backend_set_function(backend, name, function) full_trace_render_context_backend_set_function(__FILE__, __LINE__, backend, name, function)
 #define render_context_backend_get_function(backend, name, function) full_trace_render_context_backend_get_function(__FILE__, __LINE__, backend, name, function)
 #define window_server_create_window(title, w, h, parent, out) full_trace_window_server_create_window(__FILE__, __LINE__, title, w, h, parent, out)

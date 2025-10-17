@@ -1,3 +1,4 @@
+#include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
 
@@ -18,15 +19,12 @@
 #include <SDL3/SDL.h>
 #include <SDL3/SDL_main.h>
 
+static void init(void);
+static void exit_init(void);
 
 int main(int argc, char** argv) {
-    LOG_WARN("Warn")
-    LOG_ERROR("Error")
-    // LOG_FATAL("Fatal")
-
-    vfs_init();
-    window_server_init();
-    render_context_init();
+    init();
+    atexit(exit_init);
 
     GameFunctions game_functions = load_game();
     game_functions._ready();
@@ -43,4 +41,21 @@ int main(int argc, char** argv) {
     }
 
     return 0;
+}
+
+
+static void init(void) {
+    memory_init();
+    log_init();
+    vfs_init();
+    window_server_init();
+    render_context_init();
+}
+
+static void exit_init(void) {
+    render_context_exit();
+    window_server_exit();
+    vfs_exit();
+    log_exit();
+    memory_exit();
 }

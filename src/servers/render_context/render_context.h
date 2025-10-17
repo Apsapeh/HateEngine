@@ -41,6 +41,8 @@ extern RenderContextBackend RenderContext;
  */
 void render_context_init(void);
 
+void render_context_exit(void);
+
 /**
  * @brief Register a backend
  * @return "InvalidArgument" if render_server_name is NULL or window_server_name is NULL or backend is
@@ -75,6 +77,14 @@ Error render_context_load_backend(const char* render_server_name, const char* wi
  * @api
  */
 RenderContextBackend* render_context_backend_new(void);
+
+/**
+ * @brieif Free a RenderContextBackend instance
+ * @return "InvalidArgument" if backned is NULL
+ *
+ * @api
+ */
+Error render_context_backend_free(RenderContextBackend* backend);
 
 /**
  * @brief Set a function pointer for a backend

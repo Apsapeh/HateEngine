@@ -64,6 +64,7 @@ void _ready(void) {
     printf("%f %f %f\n", pos.x, pos.y, pos.z);
     vec3_normalize_in(&pos);
     printf("%f %f %f\n", pos.x, pos.y, pos.z);
+    
 
     auto_free((Object*) node);
     vfs_unmount_rfs();

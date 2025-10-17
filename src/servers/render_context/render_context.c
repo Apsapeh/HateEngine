@@ -19,13 +19,20 @@ struct RenderContextBackendPair {
 vector_template_def(RenderContextBackendPair, struct RenderContextBackendPair);
 vector_template_impl(RenderContextBackendPair, struct RenderContextBackendPair);
 
-static vec_RenderContextBackendPair registred_backends;
+static vec_RenderContextBackendPair RegistredBackends;
 
 void render_context_init(void) {
-    registred_backends = vec_RenderContextBackendPair_init();
+    RegistredBackends = vec_RenderContextBackendPair_init();
 
     // Register default backend
     render_context_opengl_13_sdl3_backend_register();
+}
+
+void render_context_exit(void) {
+    for (usize i = 0; i < RegistredBackends.size; i++)
+        render_context_backend_free(RegistredBackends.data[i].backend);
+
+    vec_RenderContextBackendPair_free(&RegistredBackends);
 }
 
 Error render_context_register_backend(
@@ -33,9 +40,9 @@ Error render_context_register_backend(
 ) {
     ERROR_ARGS_CHECK_3(render_server_name, window_server_name, backend);
 
-    for (usize i = 0; i < registred_backends.size; i++) {
-        if (strcmp(registred_backends.data[i].render_server_name, render_server_name) == 0 &&
-            strcmp(registred_backends.data[i].window_server_name, window_server_name) == 0) {
+    for (usize i = 0; i < RegistredBackends.size; i++) {
+        if (strcmp(RegistredBackends.data[i].render_server_name, render_server_name) == 0 &&
+            strcmp(RegistredBackends.data[i].window_server_name, window_server_name) == 0) {
             LOG_ERROR(
                     "Backend with RenderServer = '%s' and WindowServer = '%s' already registered",
                     render_server_name, window_server_name
@@ -45,7 +52,7 @@ Error render_context_register_backend(
     }
 
     vec_RenderContextBackendPair_push_back(
-            &registred_backends,
+            &RegistredBackends,
             (struct RenderContextBackendPair) {render_server_name, window_server_name, backend}
     );
 
@@ -55,11 +62,11 @@ Error render_context_register_backend(
 Error render_context_load_backend(const char* render_server_name, const char* window_server_name) {
     ERROR_ARGS_CHECK_2(render_server_name, window_server_name);
 
-    for (usize i = 0; i < registred_backends.size; i++) {
-        if (strcmp(registred_backends.data[i].render_server_name, render_server_name) == 0 &&
-            strcmp(registred_backends.data[i].window_server_name, window_server_name) == 0) {
+    for (usize i = 0; i < RegistredBackends.size; i++) {
+        if (strcmp(RegistredBackends.data[i].render_server_name, render_server_name) == 0 &&
+            strcmp(RegistredBackends.data[i].window_server_name, window_server_name) == 0) {
 
-            RenderContext = *registred_backends.data[i].backend;
+            RenderContext = *RegistredBackends.data[i].backend;
             return ERROR_SUCCESS;
         }
     }
@@ -79,6 +86,12 @@ RenderContextBackend* render_context_backend_new(void) {
     // TODO: Add default functions
 
     return backend;
+}
+
+Error render_context_backend_free(RenderContextBackend* backend) {
+    ERROR_ARG_CHECK(backend);
+    tfree(backend);
+    return ERROR_SUCCESS;
 }
 
 Error render_context_backend_set_function(
