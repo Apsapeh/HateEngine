@@ -3,20 +3,22 @@
 #include <string.h>
 #include "../platform/memory.h"
 
-#if !defined(VECTOR_NO_TRACK)
-#define VECTOR_NOSTD
-#define VECTOR_MALLOC(size) tmalloc(size)
-#define VECTOR_REALLOC(ptr, size) trealloc(ptr, size)
-#define VECTOR_FREE(ptr) tfree(ptr)
-#define VECTOR_MEMMOVE(dest, src, size) memmove(dest, src, size)
-#define VECTOR_MEMCPY(dest, src, size) memcpy(dest, src, size)
-#endif
 
+#define VECTOR_NOSTD
 #include <extc/extc_vec.h>
 
-#define vector_template_def(name, type) extc_vector_template_def(name, type)
-#define vector_template_impl(name, type) extc_vector_template_impl(name, type)
+#define vector_template_impl_with_properties(name, type, fn_prefix, _malloc, _realloc, _free, _memmove, _memcpy)   \
+    extc_vector_template_impl_with_properties(name, type, fn_prefix, _malloc, _realloc, _free, _memmove, _memcpy)
 
+#if !defined(VECTOR_NO_TRACK)
+#define vector_template_impl(name, type) extc_vector_template_impl_with_properties(name, type, , tmalloc, trealloc, tfree, memmove, memcpy)
+#else
+    #define vector_template_impl(name, type) extc_vector_template_impl_with_properties(name, type, malloc, realloc, free, memmove, memcpy)
+#endif
+
+
+#define vector_template_def_with_properties(name, type, fn_prefix) extc_vector_template_def_with_properties(name, type, fn_prefix)
+#define vector_template_def(name, type) extc_vector_template_def(name, type)
 
 /* ============> Default Vector Types <============ */
 
