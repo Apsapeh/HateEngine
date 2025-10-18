@@ -195,7 +195,7 @@ void __he_log_error_no_alloc(i32 line, const char* file, const char* fmt, ...) {
 static c_str set_default(void) {
     HANDLE hConsole = GetStdHandle(STD_ERROR_HANDLE);
     if (hConsole)
-        SetConsoleTextAttribute(hConsole, 0);
+        SetConsoleTextAttribute(hConsole, FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE);
     return "";
 }
 
