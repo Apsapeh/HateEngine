@@ -107,6 +107,12 @@ typedef c_str Error;
 typedef struct datetime_handle * datetime_handle;
 
 /**
+ * @brief Opaque mutex handle
+ * @api
+ */
+typedef struct mutex_handle * mutex_handle;
+
+/**
  * @api
  */
 typedef struct Object Object;
@@ -470,6 +476,54 @@ extern u8 (*raw_datetime_get_utc_minute)(datetime_handle handle);
  * @api
  */
 extern u8 (*raw_datetime_get_utc_second)(datetime_handle handle);
+
+/**
+ * @brief Create a new mutex
+ * @return Mutex handle or NULL on failure
+ * @warning Must be freed with mutex_free()
+ * @api
+ */
+extern mutex_handle (*raw_mutex_new)(void);
+
+/**
+ * @brief Create a new mutex which allows same thread to lock multiple times
+ * @return Mutex handle or NULL on failure
+ * @warning Must be freed with mutex_free()
+ * @api
+ */
+extern mutex_handle (*raw_mutex_new_recursive)(void);
+
+/**
+ * @brief Free a mutex
+ * @param handle Valid mutex handle
+ * @warning Behavior undefined if mutex is locked
+ * @api
+ */
+extern void (*raw_mutex_free)(mutex_handle handle);
+
+/**
+ * @brief Lock a mutex (blocking)
+ * @param handle Valid mutex handle
+ * @warning Undefined behavior if handle is NULL
+ * @api
+ */
+extern void (*raw_mutex_lock)(mutex_handle handle);
+
+/**
+ * @brief Try to lock a mutex without blocking
+ * @param handle Valid mutex handle
+ * @return true if locked successfully, false if already locked
+ * @api
+ */
+extern boolean (*raw_mutex_try_lock)(mutex_handle handle);
+
+/**
+ * @brief Unlock a mutex
+ * @param handle Valid mutex handle
+ * @warning Must be called by the thread that locked it
+ * @api
+ */
+extern void (*raw_mutex_unlock)(mutex_handle handle);
 
 /**
  * @brief Free object by type
@@ -1524,6 +1578,54 @@ extern u8 (*datetime_get_utc_minute)(datetime_handle handle);
 extern u8 (*datetime_get_utc_second)(datetime_handle handle);
 
 /**
+ * @brief Create a new mutex
+ * @return Mutex handle or NULL on failure
+ * @warning Must be freed with mutex_free()
+ * @api
+ */
+extern mutex_handle (*mutex_new)(void);
+
+/**
+ * @brief Create a new mutex which allows same thread to lock multiple times
+ * @return Mutex handle or NULL on failure
+ * @warning Must be freed with mutex_free()
+ * @api
+ */
+extern mutex_handle (*mutex_new_recursive)(void);
+
+/**
+ * @brief Free a mutex
+ * @param handle Valid mutex handle
+ * @warning Behavior undefined if mutex is locked
+ * @api
+ */
+extern void (*mutex_free)(mutex_handle handle);
+
+/**
+ * @brief Lock a mutex (blocking)
+ * @param handle Valid mutex handle
+ * @warning Undefined behavior if handle is NULL
+ * @api
+ */
+extern void (*mutex_lock)(mutex_handle handle);
+
+/**
+ * @brief Try to lock a mutex without blocking
+ * @param handle Valid mutex handle
+ * @return true if locked successfully, false if already locked
+ * @api
+ */
+extern boolean (*mutex_try_lock)(mutex_handle handle);
+
+/**
+ * @brief Unlock a mutex
+ * @param handle Valid mutex handle
+ * @warning Must be called by the thread that locked it
+ * @api
+ */
+extern void (*mutex_unlock)(mutex_handle handle);
+
+/**
  * @brief Free object by type
  *
  * @param object
@@ -2433,6 +2535,12 @@ extern fptr (*render_context_get_proc_addr)(const char * proc);
     u8 (*raw_datetime_get_utc_hour)(datetime_handle handle);
     u8 (*raw_datetime_get_utc_minute)(datetime_handle handle);
     u8 (*raw_datetime_get_utc_second)(datetime_handle handle);
+    mutex_handle (*raw_mutex_new)(void);
+    mutex_handle (*raw_mutex_new_recursive)(void);
+    void (*raw_mutex_free)(mutex_handle handle);
+    void (*raw_mutex_lock)(mutex_handle handle);
+    boolean (*raw_mutex_try_lock)(mutex_handle handle);
+    void (*raw_mutex_unlock)(mutex_handle handle);
     void (*raw_auto_free)(Object * object);
     Node * (*raw_node_new)(const char * name);
     Node * (*raw_from_node)(Node * node);
@@ -2567,6 +2675,12 @@ extern fptr (*render_context_get_proc_addr)(const char * proc);
     u8 (*datetime_get_utc_hour)(datetime_handle handle);
     u8 (*datetime_get_utc_minute)(datetime_handle handle);
     u8 (*datetime_get_utc_second)(datetime_handle handle);
+    mutex_handle (*mutex_new)(void);
+    mutex_handle (*mutex_new_recursive)(void);
+    void (*mutex_free)(mutex_handle handle);
+    void (*mutex_lock)(mutex_handle handle);
+    boolean (*mutex_try_lock)(mutex_handle handle);
+    void (*mutex_unlock)(mutex_handle handle);
     void (*auto_free)(Object * object);
     Node * (*node_new)(const char * name);
     Node * (*from_node)(Node * node);
@@ -2702,6 +2816,12 @@ extern fptr (*render_context_get_proc_addr)(const char * proc);
         raw_datetime_get_utc_hour = (u8 (*)(datetime_handle))proc_addr("datetime_get_utc_hour");
         raw_datetime_get_utc_minute = (u8 (*)(datetime_handle))proc_addr("datetime_get_utc_minute");
         raw_datetime_get_utc_second = (u8 (*)(datetime_handle))proc_addr("datetime_get_utc_second");
+        raw_mutex_new = (mutex_handle (*)(void))proc_addr("mutex_new");
+        raw_mutex_new_recursive = (mutex_handle (*)(void))proc_addr("mutex_new_recursive");
+        raw_mutex_free = (void (*)(mutex_handle))proc_addr("mutex_free");
+        raw_mutex_lock = (void (*)(mutex_handle))proc_addr("mutex_lock");
+        raw_mutex_try_lock = (boolean (*)(mutex_handle))proc_addr("mutex_try_lock");
+        raw_mutex_unlock = (void (*)(mutex_handle))proc_addr("mutex_unlock");
         raw_auto_free = (void (*)(Object *))proc_addr("auto_free");
         raw_node_new = (Node * (*)(const char *))proc_addr("node_new");
         raw_from_node = (Node * (*)(Node *))proc_addr("from_node");
@@ -2820,6 +2940,12 @@ extern fptr (*render_context_get_proc_addr)(const char * proc);
             datetime_get_utc_hour = raw_datetime_get_utc_hour;
             datetime_get_utc_minute = raw_datetime_get_utc_minute;
             datetime_get_utc_second = raw_datetime_get_utc_second;
+            mutex_new = raw_mutex_new;
+            mutex_new_recursive = raw_mutex_new_recursive;
+            mutex_free = raw_mutex_free;
+            mutex_lock = raw_mutex_lock;
+            mutex_try_lock = raw_mutex_try_lock;
+            mutex_unlock = raw_mutex_unlock;
             auto_free = raw_auto_free;
             node_new = raw_node_new;
             from_node = raw_from_node;
@@ -2990,6 +3116,12 @@ u8 full_trace_datetime_get_utc_day(const char* ___file___, uint32_t ___line___, 
 u8 full_trace_datetime_get_utc_hour(const char* ___file___, uint32_t ___line___, datetime_handle);
 u8 full_trace_datetime_get_utc_minute(const char* ___file___, uint32_t ___line___, datetime_handle);
 u8 full_trace_datetime_get_utc_second(const char* ___file___, uint32_t ___line___, datetime_handle);
+mutex_handle full_trace_mutex_new(const char* ___file___, uint32_t ___line___);
+mutex_handle full_trace_mutex_new_recursive(const char* ___file___, uint32_t ___line___);
+void full_trace_mutex_free(const char* ___file___, uint32_t ___line___, mutex_handle);
+void full_trace_mutex_lock(const char* ___file___, uint32_t ___line___, mutex_handle);
+boolean full_trace_mutex_try_lock(const char* ___file___, uint32_t ___line___, mutex_handle);
+void full_trace_mutex_unlock(const char* ___file___, uint32_t ___line___, mutex_handle);
 void full_trace_auto_free(const char* ___file___, uint32_t ___line___, Object *);
 Node * full_trace_node_new(const char* ___file___, uint32_t ___line___, const char *);
 Node * full_trace_from_node(const char* ___file___, uint32_t ___line___, Node *);
@@ -3238,6 +3370,45 @@ inline u8 full_trace_datetime_get_utc_second(const char* ___file___, uint32_t __
     u8 result = raw_datetime_get_utc_second(handle);
     raw___he_update_full_trace_info("", "", -1);
     return result;
+}
+
+inline mutex_handle full_trace_mutex_new(const char* ___file___, uint32_t ___line___) {
+    raw___he_update_full_trace_info("mutex_new", ___file___, ___line___);
+    mutex_handle result = raw_mutex_new();
+    raw___he_update_full_trace_info("", "", -1);
+    return result;
+}
+
+inline mutex_handle full_trace_mutex_new_recursive(const char* ___file___, uint32_t ___line___) {
+    raw___he_update_full_trace_info("mutex_new_recursive", ___file___, ___line___);
+    mutex_handle result = raw_mutex_new_recursive();
+    raw___he_update_full_trace_info("", "", -1);
+    return result;
+}
+
+inline void full_trace_mutex_free(const char* ___file___, uint32_t ___line___, mutex_handle handle) {
+    raw___he_update_full_trace_info("mutex_free", ___file___, ___line___);
+    raw_mutex_free(handle);
+    raw___he_update_full_trace_info("", "", -1);
+}
+
+inline void full_trace_mutex_lock(const char* ___file___, uint32_t ___line___, mutex_handle handle) {
+    raw___he_update_full_trace_info("mutex_lock", ___file___, ___line___);
+    raw_mutex_lock(handle);
+    raw___he_update_full_trace_info("", "", -1);
+}
+
+inline boolean full_trace_mutex_try_lock(const char* ___file___, uint32_t ___line___, mutex_handle handle) {
+    raw___he_update_full_trace_info("mutex_try_lock", ___file___, ___line___);
+    boolean result = raw_mutex_try_lock(handle);
+    raw___he_update_full_trace_info("", "", -1);
+    return result;
+}
+
+inline void full_trace_mutex_unlock(const char* ___file___, uint32_t ___line___, mutex_handle handle) {
+    raw___he_update_full_trace_info("mutex_unlock", ___file___, ___line___);
+    raw_mutex_unlock(handle);
+    raw___he_update_full_trace_info("", "", -1);
 }
 
 inline void full_trace_auto_free(const char* ___file___, uint32_t ___line___, Object * object) {
@@ -4020,6 +4191,12 @@ inline fptr full_trace_render_context_get_proc_addr(const char* ___file___, uint
 #define datetime_get_utc_hour(handle) full_trace_datetime_get_utc_hour(__FILE__, __LINE__, handle)
 #define datetime_get_utc_minute(handle) full_trace_datetime_get_utc_minute(__FILE__, __LINE__, handle)
 #define datetime_get_utc_second(handle) full_trace_datetime_get_utc_second(__FILE__, __LINE__, handle)
+#define mutex_new() full_trace_mutex_new(__FILE__, __LINE__)
+#define mutex_new_recursive() full_trace_mutex_new_recursive(__FILE__, __LINE__)
+#define mutex_free(handle) full_trace_mutex_free(__FILE__, __LINE__, handle)
+#define mutex_lock(handle) full_trace_mutex_lock(__FILE__, __LINE__, handle)
+#define mutex_try_lock(handle) full_trace_mutex_try_lock(__FILE__, __LINE__, handle)
+#define mutex_unlock(handle) full_trace_mutex_unlock(__FILE__, __LINE__, handle)
 #define auto_free(object) full_trace_auto_free(__FILE__, __LINE__, object)
 #define node_new(name) full_trace_node_new(__FILE__, __LINE__, name)
 #define from_node(node) full_trace_from_node(__FILE__, __LINE__, node)

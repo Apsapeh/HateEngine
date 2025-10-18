@@ -144,7 +144,7 @@ static inline void* _trealloc(void* ptr, usize size, c_str file, i32 line) {
     for (usize i = 0; i < AllocatedMemory.size; ++i) {
         struct allocationData* data = &AllocatedMemory.data[i];
         if (data->ptr == ptr) {
-            data->ptr = ptr;
+            data->ptr = new_ptr;
             data->size = size;
             data->user_file = full_trace_mod_level_file;
             data->user_func = full_trace_mod_level_func;

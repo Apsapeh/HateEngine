@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include "platform/datetime.h"
 #include "platform/memory.h"
+#include "platform/mutex.h"
 #include "stdlib.h"
 #include "types/types.h"
 #include <platform/platform.h>
@@ -15,17 +16,19 @@ c_str full_trace_mod_level_func = (c_str) "";
 c_str full_trace_mod_level_file = (c_str) "";
 i32 full_trace_mod_level_line = -1;
 
-// FIXME: Add mutex
+static mutex_handle PrintMutex = NULL;
 static str FormatBuffer = NULL;
 static datetime_handle Datetime = NULL;
 
 
 void log_init(void) {
+    PrintMutex = mutex_new();
     FormatBuffer = tmalloc(sizeof(char) * FORMAT_BUFFER_SIZE);
     Datetime = datetime_new();
 }
 
 void log_exit(void) {
+    mutex_free(PrintMutex);
     tfree(FormatBuffer);
     datetime_free(Datetime);
 }
@@ -61,6 +64,7 @@ static void update_time_buffer(void) {
 static void print_log(
         c_str type, c_str (*color_begin)(void), i32 line, const char* file, const char* fmt, va_list args
 ) {
+    mutex_lock(PrintMutex);
     update_format_buffer(fmt, args);
     update_time_buffer();
 
@@ -76,7 +80,7 @@ static void print_log(
 #if defined(PLATFORM_WINDOWS)
     color_begin();
     fprintf(stderr, "%02u-%02u-%04u %02u:%02u:%02u.%03u [%s] [%s:%d] %s\n", day, month, year, hour,
-            minute, second, nanosecond, type, file, line, format_buffer);
+            minute, second, nanosecond, type, file, line, FormatBuffer);
     set_default();
 #elif defined(PLATFORM_UNIX)
     fprintf(stderr, "%s%02u-%02u-%04u %02u:%02u:%02u.%03u [%s] [%s:%d] %s%s\n", color_begin(), day,
@@ -95,12 +99,14 @@ static void print_log(
                 full_trace_mod_level_file, full_trace_mod_level_line, set_default());
 #endif
     }
+    mutex_unlock(PrintMutex);
 }
+
 
 static void print_log_no_alloc(
         c_str type, c_str (*color_begin)(void), i32 line, const char* file, const char* fmt, va_list args
 ) {
-
+    // mutex_lock(PrintMutex);  Mutex can be not initialized here
 #if defined(PLATFORM_WINDOWS)
     color_begin();
     fprintf(stderr, "[%s] [%s:%d] ", type, file, line);
@@ -124,6 +130,7 @@ static void print_log_no_alloc(
                 full_trace_mod_level_file, full_trace_mod_level_line, set_default());
 #endif
     }
+    // mutex_unlock(PrintMutex);  Mutex can be not initialized here
 }
 
 
@@ -163,6 +170,15 @@ void __he_log_debug(i32 line, const char* file, const char* fmt, ...) {
     va_start(args, fmt);
     print_log("DEBUG", set_debug_color, line, file, fmt, args);
     va_end(args);
+}
+
+
+void __he_log_fatal_no_alloc(i32 line, const char* file, const char* fmt, ...) {
+    va_list args;
+    va_start(args, fmt);
+    print_log_no_alloc("FATAL", set_fatal_color, line, file, fmt, args);
+    va_end(args);
+    exit(1);
 }
 
 void __he_log_error_no_alloc(i32 line, const char* file, const char* fmt, ...) {

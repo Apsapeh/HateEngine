@@ -150,7 +150,13 @@
         v->free_func = free_func;\
     }\
     fn_prefix void vec_##name##_free(vec_##name * v) {\
-        vec_##name##_clear(v);\
+        {\
+            unsigned long i;\
+            for (i = 0; i < v->size; ++i)\
+                if (v->free_func) v->free_func(&v->data[i]);\
+        }\
+        v->size = 0;\
+        v->capacity = 0;\
         v->free_func = NULL;\
         VECTOR_FREE(v->data);\
     }\

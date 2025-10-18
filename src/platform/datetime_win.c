@@ -1,5 +1,6 @@
+// FIXME: Rewrite AI Slop
 /*
-    It's GPT generated code, in future, i maybe update this code
+    It's AI Slop, in future I maybe update this code
 */
 
 #include "platform.h"

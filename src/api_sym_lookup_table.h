@@ -4,24 +4,25 @@
 #define HE_MEM_NO_MACRO
 //#include <extra/full_trace.h>
 
-#include "math/vec3.h"
-#include "log.h"
-#include "math/vec2.h"
 #include "object/node/canvas_item/control/control.h"
+#include "servers/render_context/render_context.h"
+#include "math/mat4.h"
+#include "math/vec3.h"
+#include "object/node/canvas_item/control/viewport/viewport.h"
 #include "servers/render_server/render_server.h"
 #include "vfs/vfs.h"
-#include "math/mat4.h"
-#include "object/node/node.h"
-#include "platform/memory.h"
-#include "platform/datetime.h"
-#include "types/uid.h"
-#include "object/node/canvas_item/control/viewport/viewport.h"
-#include "object/node/node3d/node3d.h"
-#include "object/node/canvas_item/canvas_item.h"
 #include "object/object.h"
 #include "object/node/window/window.h"
+#include "object/node/node.h"
+#include "types/uid.h"
+#include "platform/datetime.h"
 #include "servers/window_server/window_server.h"
-#include "servers/render_context/render_context.h"
+#include "log.h"
+#include "object/node/node3d/node3d.h"
+#include "object/node/canvas_item/canvas_item.h"
+#include "platform/mutex.h"
+#include "math/vec2.h"
+#include "platform/memory.h"
 
 
 typedef struct {
@@ -64,6 +65,12 @@ APIFunctionLookupTable api_function_lookup_table[] = {
     {"mat4_scale", (void*)mat4_scale},
     {"mat4_sub", (void*)mat4_sub},
     {"mat4_transpose", (void*)mat4_transpose},
+    {"mutex_free", (void*)mutex_free},
+    {"mutex_lock", (void*)mutex_lock},
+    {"mutex_new", (void*)mutex_new},
+    {"mutex_new_recursive", (void*)mutex_new_recursive},
+    {"mutex_try_lock", (void*)mutex_try_lock},
+    {"mutex_unlock", (void*)mutex_unlock},
     {"node3d_new", (void*)node3d_new},
     {"node_add_child", (void*)node_add_child},
     {"node_get_child_by_name", (void*)node_get_child_by_name},

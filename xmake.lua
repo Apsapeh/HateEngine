@@ -30,6 +30,7 @@ target("HateEngineRuntime")
     if is_mode("debug") then 
         set_symbols("debug")
         set_optimize("none")
+        add_defines("HE_DEBUG")
     elseif is_mode("release") then
         set_policy("build.optimization.lto", true)
         --set_strip(true)
