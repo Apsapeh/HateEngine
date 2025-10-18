@@ -4,7 +4,13 @@
 #define HE_MEM_NO_MACRO
 //#include <extra/full_trace.h>
 
+#include "math/vec3.h"
+#include "object/node/canvas_item/control/viewport/viewport.h"
+#include "log.h"
+#include "types/uid.h"
 #include "object/node/canvas_item/control/control.h"
+#include "platform/datetime.h"
+#include "vfs/vfs.h"
 #include "servers/render_context/render_context.h"
 #include "math/mat4.h"
 #include "math/vec3.h"
@@ -23,6 +29,16 @@
 #include "platform/mutex.h"
 #include "math/vec2.h"
 #include "platform/memory.h"
+#include "servers/window_server/window_server.h"
+#include "object/node/node.h"
+#include "types/string.h"
+#include "math/mat4.h"
+#include "object/node/node3d/node3d.h"
+#include "object/node/window/window.h"
+#include "object/object.h"
+#include "math/vec2.h"
+#include "object/node/canvas_item/canvas_item.h"
+#include "platform/memory.h"
 
 
 typedef struct {
@@ -36,6 +52,76 @@ APIFunctionLookupTable api_function_lookup_table[] = {
     {"auto_free", (void*)auto_free},
     {"canvas_item_new", (void*)canvas_item_new},
     {"control_new", (void*)control_new},
+    {"vfs_mount_res", (void*)vfs_mount_res},
+    {"vfs_unmount_res", (void*)vfs_unmount_res},
+    {"vfs_mount_rfs", (void*)vfs_mount_rfs},
+    {"vfs_mount_rfs_whitelist", (void*)vfs_mount_rfs_whitelist},
+    {"vfs_unmount_rfs", (void*)vfs_unmount_rfs},
+    {"vfs_res_path_exists", (void*)vfs_res_path_exists},
+    {"vfs_usr_path_exists", (void*)vfs_usr_path_exists},
+    {"vfs_res_read_file", (void*)vfs_res_read_file},
+    {"vfs_res_stream_open", (void*)vfs_res_stream_open},
+    {"vfs_usr_read_file", (void*)vfs_usr_read_file},
+    {"vfs_usr_write_file", (void*)vfs_usr_write_file},
+    {"vfs_usr_stream_open", (void*)vfs_usr_stream_open},
+    {"vfs_stream_size", (void*)vfs_stream_size},
+    {"vfs_stream_read_n", (void*)vfs_stream_read_n},
+    {"vfs_stream_read_all", (void*)vfs_stream_read_all},
+    {"vfs_stream_write", (void*)vfs_stream_write},
+    {"vfs_stream_seek", (void*)vfs_stream_seek},
+    {"vfs_stream_tell", (void*)vfs_stream_tell},
+    {"vfs_stream_flush", (void*)vfs_stream_flush},
+    {"vfs_stream_close", (void*)vfs_stream_close},
+    {"uid_new", (void*)uid_new},
+    {"string_new", (void*)string_new},
+    {"string_from", (void*)string_from},
+    {"string_clone", (void*)string_clone},
+    {"string_set_cstr", (void*)string_set_cstr},
+    {"string_set", (void*)string_set},
+    {"string_cstr", (void*)string_cstr},
+    {"string_len", (void*)string_len},
+    {"string_size", (void*)string_size},
+    {"string_push_back", (void*)string_push_back},
+    {"string_push_back_cstr", (void*)string_push_back_cstr},
+    {"string_push_front", (void*)string_push_front},
+    {"string_push_front_cstr", (void*)string_push_front_cstr},
+    {"string_insert", (void*)string_insert},
+    {"string_insert_cstr", (void*)string_insert_cstr},
+    {"string_insert_cstr_ex", (void*)string_insert_cstr_ex},
+    {"string_insert_cstr_by_byte", (void*)string_insert_cstr_by_byte},
+    {"string_insert_by_byte", (void*)string_insert_by_byte},
+    {"string_remove", (void*)string_remove},
+    {"string_remove_by_byte", (void*)string_remove_by_byte},
+    {"string_remove_n", (void*)string_remove_n},
+    {"string_remove_n_by_byte", (void*)string_remove_n_by_byte},
+    {"string_equals", (void*)string_equals},
+    {"string_equals_cstr", (void*)string_equals_cstr},
+    {"string_free", (void*)string_free},
+    {"string_itr_free", (void*)string_itr_free},
+    {"string_get_itr", (void*)string_get_itr},
+    {"string_itr_next", (void*)string_itr_next},
+    {"string_get_slice", (void*)string_get_slice},
+    {"string_from_slice", (void*)string_from_slice},
+    {"string_equals_slice", (void*)string_equals_slice},
+    {"string_set_slice", (void*)string_set_slice},
+    {"string_push_back_slice", (void*)string_push_back_slice},
+    {"string_push_front_slice", (void*)string_push_front_slice},
+    {"string_insert_slice_ex", (void*)string_insert_slice_ex},
+    {"string_insert_slice", (void*)string_insert_slice},
+    {"string_insert_slice_by_byte", (void*)string_insert_slice_by_byte},
+    {"string_slice_free", (void*)string_slice_free},
+    {"string_utf8_new", (void*)string_utf8_new},
+    {"string_utf8_to_string", (void*)string_utf8_to_string},
+    {"string_utf8_from", (void*)string_utf8_from},
+    {"string_utf8_len", (void*)string_utf8_len},
+    {"string_utf8_size", (void*)string_utf8_size},
+    {"string_utf8_clone", (void*)string_utf8_clone},
+    {"string_utf8_push_back_cstr", (void*)string_utf8_push_back_cstr},
+    {"string_utf8_push_back", (void*)string_utf8_push_back},
+    {"string_utf8_insert", (void*)string_utf8_insert},
+    {"string_utf8_push_front", (void*)string_utf8_push_front},
+    {"string_utf8_free", (void*)string_utf8_free},
+    {"datetime_new", (void*)datetime_new},
     {"datetime_free", (void*)datetime_free},
     {"datetime_get_day", (void*)datetime_get_day},
     {"datetime_get_hour", (void*)datetime_get_hour},
@@ -98,6 +184,11 @@ APIFunctionLookupTable api_function_lookup_table[] = {
     {"tmalloc", (void*)tmalloc},
     {"trealloc", (void*)trealloc},
     {"uid_new", (void*)uid_new},
+    {"tmalloc", (void*)tmalloc},
+    {"trealloc", (void*)trealloc},
+    {"tfree", (void*)tfree},
+    {"get_allocated_memory", (void*)get_allocated_memory},
+    {"vec2_new", (void*)vec2_new},
     {"vec2_add", (void*)vec2_add},
     {"vec2_add_in", (void*)vec2_add_in},
     {"vec2_distance", (void*)vec2_distance},
@@ -110,6 +201,18 @@ APIFunctionLookupTable api_function_lookup_table[] = {
     {"vec2_scale_in", (void*)vec2_scale_in},
     {"vec2_sub", (void*)vec2_sub},
     {"vec2_sub_in", (void*)vec2_sub_in},
+    {"mat4_new", (void*)mat4_new},
+    {"mat4_new_zero", (void*)mat4_new_zero},
+    {"mat4_new_one", (void*)mat4_new_one},
+    {"mat4_from_array", (void*)mat4_from_array},
+    {"mat4_from_mat4", (void*)mat4_from_mat4},
+    {"mat4_add", (void*)mat4_add},
+    {"mat4_sub", (void*)mat4_sub},
+    {"mat4_mul", (void*)mat4_mul},
+    {"mat4_scale", (void*)mat4_scale},
+    {"mat4_transpose", (void*)mat4_transpose},
+    {"mat4_inverse", (void*)mat4_inverse},
+    {"vec3_new", (void*)vec3_new},
     {"vec3_add", (void*)vec3_add},
     {"vec3_add_in", (void*)vec3_add_in},
     {"vec3_cross", (void*)vec3_cross},
@@ -148,6 +251,27 @@ APIFunctionLookupTable api_function_lookup_table[] = {
     {"window_new", (void*)window_new},
     {"window_server_backend_free", (void*)window_server_backend_free},
     {"window_server_backend_get_function", (void*)window_server_backend_get_function},
+    {"auto_free", (void*)auto_free},
+    {"node_new", (void*)node_new},
+    {"from_node", (void*)from_node},
+    {"node_set_name", (void*)node_set_name},
+    {"node_get_name", (void*)node_get_name},
+    {"node_add_child", (void*)node_add_child},
+    {"node_remove_child", (void*)node_remove_child},
+    {"node_remove_child_by_name", (void*)node_remove_child_by_name},
+    {"node_remove_child_by_uid", (void*)node_remove_child_by_uid},
+    {"node_remove_all_children", (void*)node_remove_all_children},
+    {"node_get_child_by_name", (void*)node_get_child_by_name},
+    {"node_get_child_by_uid", (void*)node_get_child_by_uid},
+    {"node3d_new", (void*)node3d_new},
+    {"canvas_item_new", (void*)canvas_item_new},
+    {"control_new", (void*)control_new},
+    {"viewport_new", (void*)viewport_new},
+    {"window_new", (void*)window_new},
+    {"window_set_title", (void*)window_set_title},
+    {"window_get_title", (void*)window_get_title},
+    {"window_server_register_backend", (void*)window_server_register_backend},
+    {"window_server_load_backend", (void*)window_server_load_backend},
     {"window_server_backend_new", (void*)window_server_backend_new},
     {"window_server_backend_set_function", (void*)window_server_backend_set_function},
     {"window_server_load_backend", (void*)window_server_load_backend},
