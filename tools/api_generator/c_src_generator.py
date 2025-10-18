@@ -36,7 +36,8 @@ def api_fn_lookup_table_generator(data: ParseResult):
     includes = set()
 
     api_function_lookup_table_main = ""
-    for function in data.functions:
+    sorted_functions = sorted(data.functions, key=lambda f: f.name)
+    for function in sorted_functions:
         includes.add(function.filename.removeprefix(API_FN_LOOKUP_INCLUDES_PATH_PREFIX_REMOVE))
         api_function_lookup_table_main += f"    {{\"{function.name}\", (void*){function.name}}},\n"
         #api_function_lookup_table_main += f"    {{\"t_{function.name}\", (void*)full_trace_{function.name}}},\n"
