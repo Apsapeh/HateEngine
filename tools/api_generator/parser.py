@@ -199,7 +199,7 @@ def parse_struct_decl(cursor: cc.Cursor, generator_mode: str, config: dict) -> P
 
                         functions.append(Function(fn_name, return_type, args, filename, line, doc))
 
-        result.add_server(Server(struct_name, fn_prefix, init_method, functions, str(cursor.location.file), int(cursor.location.line), doc))
+        result.add_server(Server(struct_name, fn_prefix, init_method, functions, str(cursor.location.file), int(cursor.location.line), cursor.raw_comment))
     else:
         error.error(f"[{cursor.location.file}:{cursor.location.line}] Unknown generator mode: {generator_mode}")
 
