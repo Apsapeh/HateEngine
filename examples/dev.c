@@ -14,6 +14,22 @@ RenderContextSurface* surface2;
 void _ready(void) {
     vfs_mount_rfs("/");
     
+    string* str_hello = string_from("Hello, ");
+    string* str_world = string_from("world!!!!");
+    string* str_hello_world;
+    string_new(&str_hello_world);
+    
+    string_push_back(str_hello_world, str_hello);
+    string_push_back(str_hello_world, str_world);
+    
+    string_free(str_hello);
+    string_free(str_world);
+    
+    printf("String hello_world: %s\n", string_cstr(str_hello_world));
+    
+    //string_free(str_hello_world);
+    
+    
     printf("wscw: %p\n", raw_window_server_create_window);
     printf("wswss: %p\n", raw_window_server_window_set_size);
     if (window_server_create_window("Hello", 800, 600, NULL, &win)) {
