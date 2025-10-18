@@ -12,6 +12,7 @@
 
 #include "game_loader/game_loader.h"
 #include "servers/render_context/render_context.h"
+#include "servers/render_server/render_server.h"
 #include "types/result.h"
 #include "vfs/vfs.h"
 #include "servers/window_server/window_server.h"
@@ -50,9 +51,11 @@ static void init(void) {
     vfs_init();
     window_server_init();
     render_context_init();
+    render_server_init();
 }
 
 static void exit_init(void) {
+    render_server_exit();
     render_context_exit();
     window_server_exit();
     vfs_exit();

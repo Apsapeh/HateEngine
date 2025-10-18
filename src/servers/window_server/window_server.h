@@ -139,6 +139,11 @@ Error window_server_register_backend(const char* name, WindowServerBackend* back
  */
 Error window_server_load_backend(const char* name);
 
+/**
+ * @brief If backend was loaded
+ */
+boolean window_server_is_loaded(void);
+
 
 /* ====================> WindowServerBackend functions <==================== */
 

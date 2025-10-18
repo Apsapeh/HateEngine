@@ -71,9 +71,9 @@ void memory_exit(void) {
             }
         }
     }
-#endif
 
     vec_allocationData_free(&AllocatedMemory);
+#endif
 }
 
 

@@ -7,9 +7,10 @@
 #include <string.h>
 
 // clang-format off
-vector_template_def(vfs_mnt, struct VFSMnt)
-vector_template_impl(vfs_mnt, struct VFSMnt)
+vector_template_def_static(vfs_mnt, struct VFSMnt)
+vector_template_impl_static(vfs_mnt, struct VFSMnt)
 
+// FIXME: Add mutex
 static vec_vfs_mnt mnts;
 static struct VFSRFSMnt rfs_mnt;
 // clang-format on

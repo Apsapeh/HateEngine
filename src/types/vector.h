@@ -14,20 +14,19 @@
             name, type, fn_prefix, _malloc, _realloc, _free, _memmove, _memcpy                          \
     )
 
-#if !defined(VECTOR_NO_TRACK)
-    #define vector_template_impl(name, type)                                                            \
-        extc_vector_template_impl_with_properties(                                                      \
-                name, type, , tmalloc, trealloc, tfree, memmove, memcpy                                 \
-        )
-#else
-    #define vector_template_impl(name, type)                                                            \
-        extc_vector_template_impl_with_properties(name, type, malloc, realloc, free, memmove, memcpy)
-#endif
+#define vector_template_impl(name, type)                                                                \
+    vector_template_impl_with_properties(name, type, , tmalloc, trealloc, tfree, memmove, memcpy)
+
+#define vector_template_impl_static(name, type)                                                         \
+    vector_template_impl_with_properties(name, type, static, tmalloc, trealloc, tfree, memmove, memcpy)
 
 
 #define vector_template_def_with_properties(name, type, fn_prefix)                                      \
     extc_vector_template_def_with_properties(name, type, fn_prefix)
+
 #define vector_template_def(name, type) extc_vector_template_def(name, type)
+
+#define vector_template_def_static(name, type) vector_template_def_with_properties(name, type, static)
 
 /* ============> Default Vector Types <============ */
 

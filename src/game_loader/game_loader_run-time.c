@@ -64,7 +64,7 @@ GameLoaderEnvironment load_environment(void) {
     LOAD_WITH_CHECK_FATAL(result._runtime_init, RUNTIME_FN_INIT);
     LOAD_WITH_CHECK_FATAL(result._window_server_init, WINDOW_SERVER_FN_INIT);
     LOAD_WITH_CHECK_FATAL(result._render_context_init, RENDER_CONTEXT_FN_INIT);
-    // LOAD_WITH_CHECK_FATAL(result._render_server_init, RENDER_SERVER_FN_INIT);
+    LOAD_WITH_CHECK_FATAL(result._render_server_init, RENDER_SERVER_FN_INIT);
 
     LOAD_OR_PLACEHOLDER_WARN(result._setup, SETUP_FN, _setup_placeholder);
     LOAD_OR_PLACEHOLDER_WARN(result._ready, READY_FN, _ready_placeholder);

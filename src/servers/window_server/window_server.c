@@ -2,6 +2,7 @@
 #include "error.h"
 #include "log.h"
 #include <types/vector.h>
+#include "types/types.h"
 
 /* ==> Backends <== */
 #include "sdl3/window_server_sdl3.h"
@@ -15,11 +16,12 @@ struct WindowServerBackendPair {
 };
 
 
-vector_template_def(WindowServerBackendPair, struct WindowServerBackendPair);
-vector_template_impl(WindowServerBackendPair, struct WindowServerBackendPair);
+vector_template_def_static(WindowServerBackendPair, struct WindowServerBackendPair);
+vector_template_impl_static(WindowServerBackendPair, struct WindowServerBackendPair);
 
 // FIXME: Add mutex
 static vec_WindowServerBackendPair RegistredBackends;
+static boolean IsLoaded = false;
 
 void window_server_init(void) {
     RegistredBackends = vec_WindowServerBackendPair_init();
@@ -55,14 +57,24 @@ Error window_server_register_backend(const char* name, WindowServerBackend* back
 Error window_server_load_backend(const char* name) {
     ERROR_ARGS_CHECK_1(name);
 
+    if (IsLoaded) {
+        LOG_ERROR("(window_server_load_backend) Window server already loaded");
+        return ERROR_INVALID_STATE;
+    }
+
     for (usize i = 0; i < RegistredBackends.size; i++) {
         if (strcmp(RegistredBackends.data[i].name, name) == 0) {
             WindowServer = *RegistredBackends.data[i].backend;
+            IsLoaded = true;
             return ERROR_SUCCESS;
         }
     }
 
     return ERROR_NOT_FOUND;
+}
+
+boolean window_server_is_loaded() {
+    return IsLoaded;
 }
 
 

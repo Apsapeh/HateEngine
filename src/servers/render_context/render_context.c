@@ -5,6 +5,7 @@
 
 /* ==> Backends <== */
 #include "opengl_13/sdl3/render_context_opengl_13_sdl3.h"
+#include "types/types.h"
 /* ================ */
 
 RenderContextBackend RenderContext;
@@ -16,10 +17,11 @@ struct RenderContextBackendPair {
 };
 
 
-vector_template_def(RenderContextBackendPair, struct RenderContextBackendPair);
-vector_template_impl(RenderContextBackendPair, struct RenderContextBackendPair);
+vector_template_def_static(RenderContextBackendPair, struct RenderContextBackendPair);
+vector_template_impl_static(RenderContextBackendPair, struct RenderContextBackendPair);
 
 static vec_RenderContextBackendPair RegistredBackends;
+static boolean IsLoaded = false;
 
 void render_context_init(void) {
     RegistredBackends = vec_RenderContextBackendPair_init();
@@ -62,16 +64,26 @@ Error render_context_register_backend(
 Error render_context_load_backend(const char* render_server_name, const char* window_server_name) {
     ERROR_ARGS_CHECK_2(render_server_name, window_server_name);
 
+    if (IsLoaded) {
+        LOG_ERROR("(render_context_load_backend) RenderContext already loaded");
+        return ERROR_INVALID_STATE;
+    }
+
     for (usize i = 0; i < RegistredBackends.size; i++) {
         if (strcmp(RegistredBackends.data[i].render_server_name, render_server_name) == 0 &&
             strcmp(RegistredBackends.data[i].window_server_name, window_server_name) == 0) {
 
             RenderContext = *RegistredBackends.data[i].backend;
+            IsLoaded = true;
             return ERROR_SUCCESS;
         }
     }
 
     return ERROR_NOT_FOUND;
+}
+
+boolean render_context_is_loaded(void) {
+    return IsLoaded;
 }
 
 

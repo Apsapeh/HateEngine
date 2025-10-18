@@ -67,6 +67,10 @@ Error render_context_register_backend(
  */
 Error render_context_load_backend(const char* render_server_name, const char* window_server_name);
 
+/**
+ * @brief If backend was loaded
+ */
+boolean render_context_is_loaded(void);
 
 /* ====================> WindowServerBackend functions <==================== */
 

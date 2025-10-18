@@ -2,6 +2,8 @@
 
 #include "servers/window_server/window_server.h"
 #include "servers/render_context/render_context.h"
+#include "servers/render_server/render_server.h"
+
 typedef struct GameLoaderEnvironment {
     void (*_setup)(void);
     void (*_ready)(void);
@@ -12,6 +14,7 @@ typedef struct GameLoaderEnvironment {
     void (*_runtime_init)(void* (*proc_addr)(const char* name));
     void (*_window_server_init)(WindowServerBackend* backend);
     void (*_render_context_init)(RenderContextBackend* backend);
+    void (*_render_server_init)(RenderServerBackend* backend);
 } GameLoaderEnvironment;
 
 GameLoaderEnvironment load_environment(void);

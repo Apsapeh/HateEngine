@@ -184,6 +184,15 @@ typedef struct WindowServerDisplay WindowServerDisplay;
 typedef struct WindowServerBackend WindowServerBackend;
 
 /**
+ * @api server
+ * @api_config {
+ *     "fn_prefix": "render_server_",
+ *     "init_method": "___hate_engine_runtime_init_render_server"
+ * }
+ */
+typedef struct RenderServerBackend RenderServerBackend;
+
+/**
  * @brief
  *
  * @api
@@ -311,6 +320,45 @@ typedef u8 WindowServerWindowMode;
 extern void (*raw___he_update_full_trace_info)(const char * func, const char * file, i32 line);
 
 /**
+ * @brief Malloc with tracking if compiled with HE_MEM_TRACK
+ *
+ * @param size
+ * @return void*
+ *
+ * @api
+ */
+extern void * (*raw_tmalloc)(u64 size);
+
+/**
+ * @brief Realloc with tracking if compiled with HE_MEM_TRACK
+ *
+ * @param ptr
+ * @param size
+ * @return void*
+ *
+ * @api
+ */
+extern void * (*raw_trealloc)(void * ptr, u64 size);
+
+/**
+ * @brief Free with tracking if compiled with HE_MEM_TRACK
+ *
+ * @param ptr
+ *
+ * @api
+ */
+extern void (*raw_tfree)(void * ptr);
+
+/**
+ * @brief Get allocated memory
+ *
+ * @return size in bytes if compiled with HE_MEM_TRACK, 0 otherwise
+ *
+ * @api
+ */
+extern u64 (*raw_get_allocated_memory)(void);
+
+/**
  * @brief Create time instance and init with current time
  * @warning You should free datetime_handle with 'time_free'
  *
@@ -422,45 +470,6 @@ extern u8 (*raw_datetime_get_utc_minute)(datetime_handle handle);
  * @api
  */
 extern u8 (*raw_datetime_get_utc_second)(datetime_handle handle);
-
-/**
- * @brief Malloc with tracking if compiled with HE_MEM_TRACK
- *
- * @param size
- * @return void*
- *
- * @api
- */
-extern void * (*raw_tmalloc)(u64 size);
-
-/**
- * @brief Realloc with tracking if compiled with HE_MEM_TRACK
- *
- * @param ptr
- * @param size
- * @return void*
- *
- * @api
- */
-extern void * (*raw_trealloc)(void * ptr, u64 size);
-
-/**
- * @brief Free with tracking if compiled with HE_MEM_TRACK
- *
- * @param ptr
- *
- * @api
- */
-extern void (*raw_tfree)(void * ptr);
-
-/**
- * @brief Get allocated memory
- *
- * @return size in bytes if compiled with HE_MEM_TRACK, 0 otherwise
- *
- * @api
- */
-extern u64 (*raw_get_allocated_memory)(void);
 
 /**
  * @brief Free object by type
@@ -1178,7 +1187,7 @@ extern WindowServerBackend * (*raw_window_server_backend_new)(void);
 /**
  * @brieif Free a WindowServerBackend instance
  * @return "InvalidArgument" if backned is NULL
- * 
+ *
  * @api
  */
 extern Error (*raw_window_server_backend_free)(WindowServerBackend * backend);
@@ -1200,6 +1209,60 @@ extern Error (*raw_window_server_backend_set_function)(WindowServerBackend * bac
  * @api
  */
 extern Error (*raw_window_server_backend_get_function)(WindowServerBackend * backend, const char * name, void (** function) (void));
+
+/**
+ * @brief Register a backend
+ * @return "InvalidArgument" if name is NULL or backend is NULL
+ * @return "AlreadyExists" if a backend with the same name is already registered
+ *
+ * @api
+ */
+extern Error (*raw_render_server_register_backend)(const char * name, RenderServerBackend * backend);
+
+/**
+ * @brief Load a backend. First you should register them via render_server_register_backend
+ * @warning If the backend is already loaded, this function does nothing.
+ * @return "InvalidArgument" if name is NULL
+ * @return "NotFound" if a backend with the given name is not registered
+ * @return "InvalidState" if the backend is already loaded
+ *
+ * @api
+ */
+extern Error (*raw_render_server_load_backend)(const char * name);
+
+/**
+ * @brief Create a new RenderServerBackend instance
+ * @return NULL if memory allocation fails
+ *
+ * @api
+ */
+extern RenderServerBackend * (*raw_render_server_backend_new)(void);
+
+/**
+ * @brieif Free a RenderServerBackend instance
+ * @return "InvalidArgument" if backned is NULL
+ *
+ * @api
+ */
+extern Error (*raw_render_server_backend_free)(RenderServerBackend * backend);
+
+/**
+ * @brief Set a function pointer for a backend
+ * @return "InvalidArgument" if name is NULL or func is NULL
+ * @return "NotFound" if a function with the given name does not exist in the backend
+ *
+ * @api
+ */
+extern Error (*raw_render_server_backend_set_function)(RenderServerBackend * backend, const char * name, void (* function) (void));
+
+/**
+ * @brief Get a function pointer for a backend
+ * @return "InvalidArgument" if backend is NULL or name is NULL or function is NULL
+ * @return "NotFound" if a function with the given name is not registered
+ *
+ * @api
+ */
+extern Error (*raw_render_server_backend_get_function)(RenderServerBackend * backend, const char * name, void (** function) (void));
 
 /**
  * @brief Register a backend
@@ -1234,7 +1297,7 @@ extern RenderContextBackend * (*raw_render_context_backend_new)(void);
 /**
  * @brieif Free a RenderContextBackend instance
  * @return "InvalidArgument" if backned is NULL
- * 
+ *
  * @api
  */
 extern Error (*raw_render_context_backend_free)(RenderContextBackend * backend);
@@ -1307,6 +1370,45 @@ extern fptr (*raw_render_context_get_proc_addr)(const char * proc);
  * @api
  */
 extern void (*__he_update_full_trace_info)(const char * func, const char * file, i32 line);
+
+/**
+ * @brief Malloc with tracking if compiled with HE_MEM_TRACK
+ *
+ * @param size
+ * @return void*
+ *
+ * @api
+ */
+extern void * (*tmalloc)(u64 size);
+
+/**
+ * @brief Realloc with tracking if compiled with HE_MEM_TRACK
+ *
+ * @param ptr
+ * @param size
+ * @return void*
+ *
+ * @api
+ */
+extern void * (*trealloc)(void * ptr, u64 size);
+
+/**
+ * @brief Free with tracking if compiled with HE_MEM_TRACK
+ *
+ * @param ptr
+ *
+ * @api
+ */
+extern void (*tfree)(void * ptr);
+
+/**
+ * @brief Get allocated memory
+ *
+ * @return size in bytes if compiled with HE_MEM_TRACK, 0 otherwise
+ *
+ * @api
+ */
+extern u64 (*get_allocated_memory)(void);
 
 /**
  * @brief Create time instance and init with current time
@@ -1420,45 +1522,6 @@ extern u8 (*datetime_get_utc_minute)(datetime_handle handle);
  * @api
  */
 extern u8 (*datetime_get_utc_second)(datetime_handle handle);
-
-/**
- * @brief Malloc with tracking if compiled with HE_MEM_TRACK
- *
- * @param size
- * @return void*
- *
- * @api
- */
-extern void * (*tmalloc)(u64 size);
-
-/**
- * @brief Realloc with tracking if compiled with HE_MEM_TRACK
- *
- * @param ptr
- * @param size
- * @return void*
- *
- * @api
- */
-extern void * (*trealloc)(void * ptr, u64 size);
-
-/**
- * @brief Free with tracking if compiled with HE_MEM_TRACK
- *
- * @param ptr
- *
- * @api
- */
-extern void (*tfree)(void * ptr);
-
-/**
- * @brief Get allocated memory
- *
- * @return size in bytes if compiled with HE_MEM_TRACK, 0 otherwise
- *
- * @api
- */
-extern u64 (*get_allocated_memory)(void);
 
 /**
  * @brief Free object by type
@@ -2176,7 +2239,7 @@ extern WindowServerBackend * (*window_server_backend_new)(void);
 /**
  * @brieif Free a WindowServerBackend instance
  * @return "InvalidArgument" if backned is NULL
- * 
+ *
  * @api
  */
 extern Error (*window_server_backend_free)(WindowServerBackend * backend);
@@ -2198,6 +2261,60 @@ extern Error (*window_server_backend_set_function)(WindowServerBackend * backend
  * @api
  */
 extern Error (*window_server_backend_get_function)(WindowServerBackend * backend, const char * name, void (** function) (void));
+
+/**
+ * @brief Register a backend
+ * @return "InvalidArgument" if name is NULL or backend is NULL
+ * @return "AlreadyExists" if a backend with the same name is already registered
+ *
+ * @api
+ */
+extern Error (*render_server_register_backend)(const char * name, RenderServerBackend * backend);
+
+/**
+ * @brief Load a backend. First you should register them via render_server_register_backend
+ * @warning If the backend is already loaded, this function does nothing.
+ * @return "InvalidArgument" if name is NULL
+ * @return "NotFound" if a backend with the given name is not registered
+ * @return "InvalidState" if the backend is already loaded
+ *
+ * @api
+ */
+extern Error (*render_server_load_backend)(const char * name);
+
+/**
+ * @brief Create a new RenderServerBackend instance
+ * @return NULL if memory allocation fails
+ *
+ * @api
+ */
+extern RenderServerBackend * (*render_server_backend_new)(void);
+
+/**
+ * @brieif Free a RenderServerBackend instance
+ * @return "InvalidArgument" if backned is NULL
+ *
+ * @api
+ */
+extern Error (*render_server_backend_free)(RenderServerBackend * backend);
+
+/**
+ * @brief Set a function pointer for a backend
+ * @return "InvalidArgument" if name is NULL or func is NULL
+ * @return "NotFound" if a function with the given name does not exist in the backend
+ *
+ * @api
+ */
+extern Error (*render_server_backend_set_function)(RenderServerBackend * backend, const char * name, void (* function) (void));
+
+/**
+ * @brief Get a function pointer for a backend
+ * @return "InvalidArgument" if backend is NULL or name is NULL or function is NULL
+ * @return "NotFound" if a function with the given name is not registered
+ *
+ * @api
+ */
+extern Error (*render_server_backend_get_function)(RenderServerBackend * backend, const char * name, void (** function) (void));
 
 /**
  * @brief Register a backend
@@ -2232,7 +2349,7 @@ extern RenderContextBackend * (*render_context_backend_new)(void);
 /**
  * @brieif Free a RenderContextBackend instance
  * @return "InvalidArgument" if backned is NULL
- * 
+ *
  * @api
  */
 extern Error (*render_context_backend_free)(RenderContextBackend * backend);
@@ -2296,6 +2413,10 @@ extern fptr (*render_context_get_proc_addr)(const char * proc);
 
 #if defined(HEAPI_LOAD_IMPL)
         void (*raw___he_update_full_trace_info)(const char * func, const char * file, i32 line);
+    void * (*raw_tmalloc)(u64 size);
+    void * (*raw_trealloc)(void * ptr, u64 size);
+    void (*raw_tfree)(void * ptr);
+    u64 (*raw_get_allocated_memory)(void);
     datetime_handle (*raw_datetime_new)(void);
     void (*raw_datetime_free)(datetime_handle handle);
     void (*raw_datetime_update)(datetime_handle handle);
@@ -2312,10 +2433,6 @@ extern fptr (*render_context_get_proc_addr)(const char * proc);
     u8 (*raw_datetime_get_utc_hour)(datetime_handle handle);
     u8 (*raw_datetime_get_utc_minute)(datetime_handle handle);
     u8 (*raw_datetime_get_utc_second)(datetime_handle handle);
-    void * (*raw_tmalloc)(u64 size);
-    void * (*raw_trealloc)(void * ptr, u64 size);
-    void (*raw_tfree)(void * ptr);
-    u64 (*raw_get_allocated_memory)(void);
     void (*raw_auto_free)(Object * object);
     Node * (*raw_node_new)(const char * name);
     Node * (*raw_from_node)(Node * node);
@@ -2398,6 +2515,12 @@ extern fptr (*render_context_get_proc_addr)(const char * proc);
     Error (*raw_window_server_backend_free)(WindowServerBackend * backend);
     Error (*raw_window_server_backend_set_function)(WindowServerBackend * backend, const char * name, void (* function) (void));
     Error (*raw_window_server_backend_get_function)(WindowServerBackend * backend, const char * name, void (** function) (void));
+    Error (*raw_render_server_register_backend)(const char * name, RenderServerBackend * backend);
+    Error (*raw_render_server_load_backend)(const char * name);
+    RenderServerBackend * (*raw_render_server_backend_new)(void);
+    Error (*raw_render_server_backend_free)(RenderServerBackend * backend);
+    Error (*raw_render_server_backend_set_function)(RenderServerBackend * backend, const char * name, void (* function) (void));
+    Error (*raw_render_server_backend_get_function)(RenderServerBackend * backend, const char * name, void (** function) (void));
     Error (*raw_render_context_register_backend)(const char * render_server_name, const char * window_server_name, RenderContextBackend * backend);
     Error (*raw_render_context_load_backend)(const char * render_server_name, const char * window_server_name);
     RenderContextBackend * (*raw_render_context_backend_new)(void);
@@ -2424,6 +2547,10 @@ extern fptr (*render_context_get_proc_addr)(const char * proc);
 
     #if !defined(HEAPI_FULL_TRACE)
             void (*__he_update_full_trace_info)(const char * func, const char * file, i32 line);
+    void * (*tmalloc)(u64 size);
+    void * (*trealloc)(void * ptr, u64 size);
+    void (*tfree)(void * ptr);
+    u64 (*get_allocated_memory)(void);
     datetime_handle (*datetime_new)(void);
     void (*datetime_free)(datetime_handle handle);
     void (*datetime_update)(datetime_handle handle);
@@ -2440,10 +2567,6 @@ extern fptr (*render_context_get_proc_addr)(const char * proc);
     u8 (*datetime_get_utc_hour)(datetime_handle handle);
     u8 (*datetime_get_utc_minute)(datetime_handle handle);
     u8 (*datetime_get_utc_second)(datetime_handle handle);
-    void * (*tmalloc)(u64 size);
-    void * (*trealloc)(void * ptr, u64 size);
-    void (*tfree)(void * ptr);
-    u64 (*get_allocated_memory)(void);
     void (*auto_free)(Object * object);
     Node * (*node_new)(const char * name);
     Node * (*from_node)(Node * node);
@@ -2526,6 +2649,12 @@ extern fptr (*render_context_get_proc_addr)(const char * proc);
     Error (*window_server_backend_free)(WindowServerBackend * backend);
     Error (*window_server_backend_set_function)(WindowServerBackend * backend, const char * name, void (* function) (void));
     Error (*window_server_backend_get_function)(WindowServerBackend * backend, const char * name, void (** function) (void));
+    Error (*render_server_register_backend)(const char * name, RenderServerBackend * backend);
+    Error (*render_server_load_backend)(const char * name);
+    RenderServerBackend * (*render_server_backend_new)(void);
+    Error (*render_server_backend_free)(RenderServerBackend * backend);
+    Error (*render_server_backend_set_function)(RenderServerBackend * backend, const char * name, void (* function) (void));
+    Error (*render_server_backend_get_function)(RenderServerBackend * backend, const char * name, void (** function) (void));
     Error (*render_context_register_backend)(const char * render_server_name, const char * window_server_name, RenderContextBackend * backend);
     Error (*render_context_load_backend)(const char * render_server_name, const char * window_server_name);
     RenderContextBackend * (*render_context_backend_new)(void);
@@ -2553,6 +2682,10 @@ extern fptr (*render_context_get_proc_addr)(const char * proc);
 
     void ___hate_engine_runtime_init(void* (*proc_addr)(const char* name)) {
                 raw___he_update_full_trace_info = (void (*)(const char *, const char *, i32))proc_addr("__he_update_full_trace_info");
+        raw_tmalloc = (void * (*)(u64))proc_addr("tmalloc");
+        raw_trealloc = (void * (*)(void *, u64))proc_addr("trealloc");
+        raw_tfree = (void (*)(void *))proc_addr("tfree");
+        raw_get_allocated_memory = (u64 (*)(void))proc_addr("get_allocated_memory");
         raw_datetime_new = (datetime_handle (*)(void))proc_addr("datetime_new");
         raw_datetime_free = (void (*)(datetime_handle))proc_addr("datetime_free");
         raw_datetime_update = (void (*)(datetime_handle))proc_addr("datetime_update");
@@ -2569,10 +2702,6 @@ extern fptr (*render_context_get_proc_addr)(const char * proc);
         raw_datetime_get_utc_hour = (u8 (*)(datetime_handle))proc_addr("datetime_get_utc_hour");
         raw_datetime_get_utc_minute = (u8 (*)(datetime_handle))proc_addr("datetime_get_utc_minute");
         raw_datetime_get_utc_second = (u8 (*)(datetime_handle))proc_addr("datetime_get_utc_second");
-        raw_tmalloc = (void * (*)(u64))proc_addr("tmalloc");
-        raw_trealloc = (void * (*)(void *, u64))proc_addr("trealloc");
-        raw_tfree = (void (*)(void *))proc_addr("tfree");
-        raw_get_allocated_memory = (u64 (*)(void))proc_addr("get_allocated_memory");
         raw_auto_free = (void (*)(Object *))proc_addr("auto_free");
         raw_node_new = (Node * (*)(const char *))proc_addr("node_new");
         raw_from_node = (Node * (*)(Node *))proc_addr("from_node");
@@ -2655,6 +2784,12 @@ extern fptr (*render_context_get_proc_addr)(const char * proc);
         raw_window_server_backend_free = (Error (*)(WindowServerBackend *))proc_addr("window_server_backend_free");
         raw_window_server_backend_set_function = (Error (*)(WindowServerBackend *, const char *, void (*)(void)))proc_addr("window_server_backend_set_function");
         raw_window_server_backend_get_function = (Error (*)(WindowServerBackend *, const char *, void (**)(void)))proc_addr("window_server_backend_get_function");
+        raw_render_server_register_backend = (Error (*)(const char *, RenderServerBackend *))proc_addr("render_server_register_backend");
+        raw_render_server_load_backend = (Error (*)(const char *))proc_addr("render_server_load_backend");
+        raw_render_server_backend_new = (RenderServerBackend * (*)(void))proc_addr("render_server_backend_new");
+        raw_render_server_backend_free = (Error (*)(RenderServerBackend *))proc_addr("render_server_backend_free");
+        raw_render_server_backend_set_function = (Error (*)(RenderServerBackend *, const char *, void (*)(void)))proc_addr("render_server_backend_set_function");
+        raw_render_server_backend_get_function = (Error (*)(RenderServerBackend *, const char *, void (**)(void)))proc_addr("render_server_backend_get_function");
         raw_render_context_register_backend = (Error (*)(const char *, const char *, RenderContextBackend *))proc_addr("render_context_register_backend");
         raw_render_context_load_backend = (Error (*)(const char *, const char *))proc_addr("render_context_load_backend");
         raw_render_context_backend_new = (RenderContextBackend * (*)(void))proc_addr("render_context_backend_new");
@@ -2665,6 +2800,10 @@ extern fptr (*render_context_get_proc_addr)(const char * proc);
 
         #if !defined(HEAPI_FULL_TRACE)
                         __he_update_full_trace_info = raw___he_update_full_trace_info;
+            tmalloc = raw_tmalloc;
+            trealloc = raw_trealloc;
+            tfree = raw_tfree;
+            get_allocated_memory = raw_get_allocated_memory;
             datetime_new = raw_datetime_new;
             datetime_free = raw_datetime_free;
             datetime_update = raw_datetime_update;
@@ -2681,10 +2820,6 @@ extern fptr (*render_context_get_proc_addr)(const char * proc);
             datetime_get_utc_hour = raw_datetime_get_utc_hour;
             datetime_get_utc_minute = raw_datetime_get_utc_minute;
             datetime_get_utc_second = raw_datetime_get_utc_second;
-            tmalloc = raw_tmalloc;
-            trealloc = raw_trealloc;
-            tfree = raw_tfree;
-            get_allocated_memory = raw_get_allocated_memory;
             auto_free = raw_auto_free;
             node_new = raw_node_new;
             from_node = raw_from_node;
@@ -2767,6 +2902,12 @@ extern fptr (*render_context_get_proc_addr)(const char * proc);
             window_server_backend_free = raw_window_server_backend_free;
             window_server_backend_set_function = raw_window_server_backend_set_function;
             window_server_backend_get_function = raw_window_server_backend_get_function;
+            render_server_register_backend = raw_render_server_register_backend;
+            render_server_load_backend = raw_render_server_load_backend;
+            render_server_backend_new = raw_render_server_backend_new;
+            render_server_backend_free = raw_render_server_backend_free;
+            render_server_backend_set_function = raw_render_server_backend_set_function;
+            render_server_backend_get_function = raw_render_server_backend_get_function;
             render_context_register_backend = raw_render_context_register_backend;
             render_context_load_backend = raw_render_context_load_backend;
             render_context_backend_new = raw_render_context_backend_new;
@@ -2804,6 +2945,11 @@ extern fptr (*render_context_get_proc_addr)(const char * proc);
         #endif
     }
 
+    void ___hate_engine_runtime_init_render_server(RenderServerBackend* backend) {
+        #if !defined(HEAPI_FULL_TRACE)
+        #endif
+    }
+
     void ___hate_engine_runtime_init_render_context(RenderContextBackend* backend) {
         raw_render_context_backend_get_function(backend, "create_surface", (void (**)(void))&raw_render_context_create_surface);
         raw_render_context_backend_get_function(backend, "destroy_surface", (void (**)(void))&raw_render_context_destroy_surface);
@@ -2824,6 +2970,10 @@ extern fptr (*render_context_get_proc_addr)(const char * proc);
 #endif
 
 #if defined(HEAPI_FULL_TRACE)
+void * full_trace_tmalloc(const char* ___file___, uint32_t ___line___, u64);
+void * full_trace_trealloc(const char* ___file___, uint32_t ___line___, void *, u64);
+void full_trace_tfree(const char* ___file___, uint32_t ___line___, void *);
+u64 full_trace_get_allocated_memory(const char* ___file___, uint32_t ___line___);
 datetime_handle full_trace_datetime_new(const char* ___file___, uint32_t ___line___);
 void full_trace_datetime_free(const char* ___file___, uint32_t ___line___, datetime_handle);
 void full_trace_datetime_update(const char* ___file___, uint32_t ___line___, datetime_handle);
@@ -2840,10 +2990,6 @@ u8 full_trace_datetime_get_utc_day(const char* ___file___, uint32_t ___line___, 
 u8 full_trace_datetime_get_utc_hour(const char* ___file___, uint32_t ___line___, datetime_handle);
 u8 full_trace_datetime_get_utc_minute(const char* ___file___, uint32_t ___line___, datetime_handle);
 u8 full_trace_datetime_get_utc_second(const char* ___file___, uint32_t ___line___, datetime_handle);
-void * full_trace_tmalloc(const char* ___file___, uint32_t ___line___, u64);
-void * full_trace_trealloc(const char* ___file___, uint32_t ___line___, void *, u64);
-void full_trace_tfree(const char* ___file___, uint32_t ___line___, void *);
-u64 full_trace_get_allocated_memory(const char* ___file___, uint32_t ___line___);
 void full_trace_auto_free(const char* ___file___, uint32_t ___line___, Object *);
 Node * full_trace_node_new(const char* ___file___, uint32_t ___line___, const char *);
 Node * full_trace_from_node(const char* ___file___, uint32_t ___line___, Node *);
@@ -2926,6 +3072,12 @@ WindowServerBackend * full_trace_window_server_backend_new(const char* ___file__
 Error full_trace_window_server_backend_free(const char* ___file___, uint32_t ___line___, WindowServerBackend *);
 Error full_trace_window_server_backend_set_function(const char* ___file___, uint32_t ___line___, WindowServerBackend *, const char *, void (*)(void));
 Error full_trace_window_server_backend_get_function(const char* ___file___, uint32_t ___line___, WindowServerBackend *, const char *, void (**)(void));
+Error full_trace_render_server_register_backend(const char* ___file___, uint32_t ___line___, const char *, RenderServerBackend *);
+Error full_trace_render_server_load_backend(const char* ___file___, uint32_t ___line___, const char *);
+RenderServerBackend * full_trace_render_server_backend_new(const char* ___file___, uint32_t ___line___);
+Error full_trace_render_server_backend_free(const char* ___file___, uint32_t ___line___, RenderServerBackend *);
+Error full_trace_render_server_backend_set_function(const char* ___file___, uint32_t ___line___, RenderServerBackend *, const char *, void (*)(void));
+Error full_trace_render_server_backend_get_function(const char* ___file___, uint32_t ___line___, RenderServerBackend *, const char *, void (**)(void));
 Error full_trace_render_context_register_backend(const char* ___file___, uint32_t ___line___, const char *, const char *, RenderContextBackend *);
 Error full_trace_render_context_load_backend(const char* ___file___, uint32_t ___line___, const char *, const char *);
 RenderContextBackend * full_trace_render_context_backend_new(const char* ___file___, uint32_t ___line___);
@@ -2951,7 +3103,34 @@ fptr full_trace_render_context_get_proc_addr(const char* ___file___, uint32_t __
 
 
 #if defined(HEAPI_LOAD_IMPL)
-    inline datetime_handle full_trace_datetime_new(const char* ___file___, uint32_t ___line___) {
+    inline void * full_trace_tmalloc(const char* ___file___, uint32_t ___line___, u64 size) {
+    raw___he_update_full_trace_info("tmalloc", ___file___, ___line___);
+    void * result = raw_tmalloc(size);
+    raw___he_update_full_trace_info("", "", -1);
+    return result;
+}
+
+inline void * full_trace_trealloc(const char* ___file___, uint32_t ___line___, void * ptr, u64 size) {
+    raw___he_update_full_trace_info("trealloc", ___file___, ___line___);
+    void * result = raw_trealloc(ptr, size);
+    raw___he_update_full_trace_info("", "", -1);
+    return result;
+}
+
+inline void full_trace_tfree(const char* ___file___, uint32_t ___line___, void * ptr) {
+    raw___he_update_full_trace_info("tfree", ___file___, ___line___);
+    raw_tfree(ptr);
+    raw___he_update_full_trace_info("", "", -1);
+}
+
+inline u64 full_trace_get_allocated_memory(const char* ___file___, uint32_t ___line___) {
+    raw___he_update_full_trace_info("get_allocated_memory", ___file___, ___line___);
+    u64 result = raw_get_allocated_memory();
+    raw___he_update_full_trace_info("", "", -1);
+    return result;
+}
+
+inline datetime_handle full_trace_datetime_new(const char* ___file___, uint32_t ___line___) {
     raw___he_update_full_trace_info("datetime_new", ___file___, ___line___);
     datetime_handle result = raw_datetime_new();
     raw___he_update_full_trace_info("", "", -1);
@@ -3057,33 +3236,6 @@ inline u8 full_trace_datetime_get_utc_minute(const char* ___file___, uint32_t __
 inline u8 full_trace_datetime_get_utc_second(const char* ___file___, uint32_t ___line___, datetime_handle handle) {
     raw___he_update_full_trace_info("datetime_get_utc_second", ___file___, ___line___);
     u8 result = raw_datetime_get_utc_second(handle);
-    raw___he_update_full_trace_info("", "", -1);
-    return result;
-}
-
-inline void * full_trace_tmalloc(const char* ___file___, uint32_t ___line___, u64 size) {
-    raw___he_update_full_trace_info("tmalloc", ___file___, ___line___);
-    void * result = raw_tmalloc(size);
-    raw___he_update_full_trace_info("", "", -1);
-    return result;
-}
-
-inline void * full_trace_trealloc(const char* ___file___, uint32_t ___line___, void * ptr, u64 size) {
-    raw___he_update_full_trace_info("trealloc", ___file___, ___line___);
-    void * result = raw_trealloc(ptr, size);
-    raw___he_update_full_trace_info("", "", -1);
-    return result;
-}
-
-inline void full_trace_tfree(const char* ___file___, uint32_t ___line___, void * ptr) {
-    raw___he_update_full_trace_info("tfree", ___file___, ___line___);
-    raw_tfree(ptr);
-    raw___he_update_full_trace_info("", "", -1);
-}
-
-inline u64 full_trace_get_allocated_memory(const char* ___file___, uint32_t ___line___) {
-    raw___he_update_full_trace_info("get_allocated_memory", ___file___, ___line___);
-    u64 result = raw_get_allocated_memory();
     raw___he_update_full_trace_info("", "", -1);
     return result;
 }
@@ -3649,6 +3801,48 @@ inline Error full_trace_window_server_backend_get_function(const char* ___file__
     return result;
 }
 
+inline Error full_trace_render_server_register_backend(const char* ___file___, uint32_t ___line___, const char * name, RenderServerBackend * backend) {
+    raw___he_update_full_trace_info("render_server_register_backend", ___file___, ___line___);
+    Error result = raw_render_server_register_backend(name, backend);
+    raw___he_update_full_trace_info("", "", -1);
+    return result;
+}
+
+inline Error full_trace_render_server_load_backend(const char* ___file___, uint32_t ___line___, const char * name) {
+    raw___he_update_full_trace_info("render_server_load_backend", ___file___, ___line___);
+    Error result = raw_render_server_load_backend(name);
+    raw___he_update_full_trace_info("", "", -1);
+    return result;
+}
+
+inline RenderServerBackend * full_trace_render_server_backend_new(const char* ___file___, uint32_t ___line___) {
+    raw___he_update_full_trace_info("render_server_backend_new", ___file___, ___line___);
+    RenderServerBackend * result = raw_render_server_backend_new();
+    raw___he_update_full_trace_info("", "", -1);
+    return result;
+}
+
+inline Error full_trace_render_server_backend_free(const char* ___file___, uint32_t ___line___, RenderServerBackend * backend) {
+    raw___he_update_full_trace_info("render_server_backend_free", ___file___, ___line___);
+    Error result = raw_render_server_backend_free(backend);
+    raw___he_update_full_trace_info("", "", -1);
+    return result;
+}
+
+inline Error full_trace_render_server_backend_set_function(const char* ___file___, uint32_t ___line___, RenderServerBackend * backend, const char * name, void (* function) (void)) {
+    raw___he_update_full_trace_info("render_server_backend_set_function", ___file___, ___line___);
+    Error result = raw_render_server_backend_set_function(backend, name, function);
+    raw___he_update_full_trace_info("", "", -1);
+    return result;
+}
+
+inline Error full_trace_render_server_backend_get_function(const char* ___file___, uint32_t ___line___, RenderServerBackend * backend, const char * name, void (** function) (void)) {
+    raw___he_update_full_trace_info("render_server_backend_get_function", ___file___, ___line___);
+    Error result = raw_render_server_backend_get_function(backend, name, function);
+    raw___he_update_full_trace_info("", "", -1);
+    return result;
+}
+
 inline Error full_trace_render_context_register_backend(const char* ___file___, uint32_t ___line___, const char * render_server_name, const char * window_server_name, RenderContextBackend * backend) {
     raw___he_update_full_trace_info("render_context_register_backend", ___file___, ___line___);
     Error result = raw_render_context_register_backend(render_server_name, window_server_name, backend);
@@ -3806,6 +4000,10 @@ inline fptr full_trace_render_context_get_proc_addr(const char* ___file___, uint
 
 #endif
 
+#define tmalloc(size) full_trace_tmalloc(__FILE__, __LINE__, size)
+#define trealloc(ptr, size) full_trace_trealloc(__FILE__, __LINE__, ptr, size)
+#define tfree(ptr) full_trace_tfree(__FILE__, __LINE__, ptr)
+#define get_allocated_memory() full_trace_get_allocated_memory(__FILE__, __LINE__)
 #define datetime_new() full_trace_datetime_new(__FILE__, __LINE__)
 #define datetime_free(handle) full_trace_datetime_free(__FILE__, __LINE__, handle)
 #define datetime_update(handle) full_trace_datetime_update(__FILE__, __LINE__, handle)
@@ -3822,10 +4020,6 @@ inline fptr full_trace_render_context_get_proc_addr(const char* ___file___, uint
 #define datetime_get_utc_hour(handle) full_trace_datetime_get_utc_hour(__FILE__, __LINE__, handle)
 #define datetime_get_utc_minute(handle) full_trace_datetime_get_utc_minute(__FILE__, __LINE__, handle)
 #define datetime_get_utc_second(handle) full_trace_datetime_get_utc_second(__FILE__, __LINE__, handle)
-#define tmalloc(size) full_trace_tmalloc(__FILE__, __LINE__, size)
-#define trealloc(ptr, size) full_trace_trealloc(__FILE__, __LINE__, ptr, size)
-#define tfree(ptr) full_trace_tfree(__FILE__, __LINE__, ptr)
-#define get_allocated_memory() full_trace_get_allocated_memory(__FILE__, __LINE__)
 #define auto_free(object) full_trace_auto_free(__FILE__, __LINE__, object)
 #define node_new(name) full_trace_node_new(__FILE__, __LINE__, name)
 #define from_node(node) full_trace_from_node(__FILE__, __LINE__, node)
@@ -3908,6 +4102,12 @@ inline fptr full_trace_render_context_get_proc_addr(const char* ___file___, uint
 #define window_server_backend_free(backend) full_trace_window_server_backend_free(__FILE__, __LINE__, backend)
 #define window_server_backend_set_function(backend, name, function) full_trace_window_server_backend_set_function(__FILE__, __LINE__, backend, name, function)
 #define window_server_backend_get_function(backend, name, function) full_trace_window_server_backend_get_function(__FILE__, __LINE__, backend, name, function)
+#define render_server_register_backend(name, backend) full_trace_render_server_register_backend(__FILE__, __LINE__, name, backend)
+#define render_server_load_backend(name) full_trace_render_server_load_backend(__FILE__, __LINE__, name)
+#define render_server_backend_new() full_trace_render_server_backend_new(__FILE__, __LINE__)
+#define render_server_backend_free(backend) full_trace_render_server_backend_free(__FILE__, __LINE__, backend)
+#define render_server_backend_set_function(backend, name, function) full_trace_render_server_backend_set_function(__FILE__, __LINE__, backend, name, function)
+#define render_server_backend_get_function(backend, name, function) full_trace_render_server_backend_get_function(__FILE__, __LINE__, backend, name, function)
 #define render_context_register_backend(render_server_name, window_server_name, backend) full_trace_render_context_register_backend(__FILE__, __LINE__, render_server_name, window_server_name, backend)
 #define render_context_load_backend(render_server_name, window_server_name) full_trace_render_context_load_backend(__FILE__, __LINE__, render_server_name, window_server_name)
 #define render_context_backend_new() full_trace_render_context_backend_new(__FILE__, __LINE__)
