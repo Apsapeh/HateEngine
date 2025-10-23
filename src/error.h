@@ -68,3 +68,20 @@ typedef c_str Error;
 #define ERROR_NOT_FOUND "NotFound"
 #define ERROR_INVALID_STATE "InvalidState"
 #define ERROR_ALLOCATION_FAILED "AllocationFailed"
+
+// API END
+
+/**
+ *
+ *
+ * @api
+ */
+void set_error(Error err);
+
+
+/**
+ *
+ *
+ * @api
+ */
+Error get_error(void);

@@ -99,6 +99,7 @@ typedef c_str Error;
 #define ERROR_INVALID_STATE "InvalidState"
 #define ERROR_ALLOCATION_FAILED "AllocationFailed"
 
+
 /**
  * DateTime handler for get UTC and local date and time
  *
@@ -161,27 +162,27 @@ typedef struct Viewport Viewport;
 
 /**
  * @api
-*/
+ */
 typedef struct string string;
 
 /**
  * @api
-*/
+ */
 typedef struct string_itr string_itr;
 
 /**
  * @api
-*/
+ */
 typedef struct string_slice string_slice;
 
 /**
  * @api
-*/
+ */
 typedef struct string_utf8 string_utf8;
 
 /**
  * @api
-*/
+ */
 typedef struct string_itr_utf8 string_itr_utf8;
 
 /**
@@ -349,6 +350,20 @@ typedef u8 WindowServerWindowMode;
  * @api
  */
 extern void (*raw___he_update_full_trace_info)(const char * func, const char * file, i32 line);
+
+/**
+ *
+ *
+ * @api
+ */
+extern void (*raw_set_error)(Error err);
+
+/**
+ *
+ *
+ * @api
+ */
+extern Error (*raw_get_error)(void);
 
 /**
  * @brief Malloc with tracking if compiled with HE_MEM_TRACK
@@ -1012,242 +1027,242 @@ extern UID (*raw_uid_new)(void);
 
 /**
  * @api
-*/
+ */
 extern Error (*raw_string_new)(string ** str);
 
 /**
  * @api
-*/
+ */
 extern string * (*raw_string_from)(const char * c_str);
 
 /**
  * @api
-*/
+ */
 extern string * (*raw_string_clone)(const string * c_str);
 
 /**
  * @api
-*/
+ */
 extern string * (*raw_string_set_cstr)(string * self, const char * c_cstr);
 
 /**
  * @api
-*/
+ */
 extern string * (*raw_string_set)(string * self, const string * c_str);
 
 /**
  * @api
-*/
+ */
 extern char * (*raw_string_cstr)(const string * c_str);
 
 /**
  * @api
-*/
+ */
 extern usize (*raw_string_len)(const string * c_str);
 
 /**
  * @api
-*/
+ */
 extern usize (*raw_string_size)(const string * c_str);
 
 /**
  * @api
-*/
+ */
 extern string * (*raw_string_push_back)(string * dest, const string * src);
 
 /**
  * @api
-*/
+ */
 extern string * (*raw_string_push_back_cstr)(string * dest, const char * src);
 
 /**
  * @api
-*/
+ */
 extern string * (*raw_string_push_front)(string * dest, const string * src);
 
 /**
  * @api
-*/
+ */
 extern string * (*raw_string_push_front_cstr)(string * dest, const char * src);
 
 /**
  * @api
-*/
+ */
 extern string * (*raw_string_insert)(string * dest, const string * src, const usize i);
 
 /**
  * @api
-*/
+ */
 extern string * (*raw_string_insert_cstr)(string * dest, const char * src, const usize i);
 
 /**
  * @api
-*/
+ */
 extern string * (*raw_string_insert_cstr_ex)(string * dest, const char * src, const usize i);
 
 /**
  * @api
-*/
+ */
 extern string * (*raw_string_insert_cstr_by_byte)(string * dest, const char * src, const usize b);
 
 /**
  * @api
-*/
+ */
 extern string * (*raw_string_insert_by_byte)(string * dest, const string * src, const usize b);
 
 /**
  * @api
-*/
+ */
 extern string * (*raw_string_remove)(string * self, const usize i);
 
 /**
  * @api
-*/
+ */
 extern string * (*raw_string_remove_by_byte)(string * self, const usize b);
 
 /**
  * @api
-*/
+ */
 extern string * (*raw_string_remove_n)(string * self, const usize i, const usize n);
 
 /**
  * @api
-*/
+ */
 extern string * (*raw_string_remove_n_by_byte)(string * self, const usize b, const usize b_n);
 
 /**
  * @api
-*/
+ */
 extern boolean (*raw_string_equals)(const string * str1, const string * str2);
 
 /**
  * @api
-*/
+ */
 extern boolean (*raw_string_equals_cstr)(const string * str, const char * cstr);
 
 /**
  * @api
-*/
+ */
 extern void (*raw_string_free)(string * str);
 
 /**
  * @api
-*/
+ */
 extern void (*raw_string_itr_free)(string_itr * str_itr);
 
 /**
  * @api
-*/
+ */
 extern string_itr * (*raw_string_get_itr)(const string * c_str);
 
 /**
  * @api
-*/
+ */
 extern u8 (*raw_string_itr_next)(string_itr * str_itr);
 
 /**
  * @api
-*/
+ */
 extern string_slice * (*raw_string_get_slice)(const string * str, const usize s, const usize e);
 
 /**
  * @api
-*/
+ */
 extern string * (*raw_string_from_slice)(const string_slice * str_sl);
 
 /**
  * @api
-*/
+ */
 extern boolean (*raw_string_equals_slice)(string_slice * str_sl_1, string_slice * str_sl_2);
 
 /**
  * @api
-*/
+ */
 extern string_slice * (*raw_string_set_slice)(string_slice * self, const string_slice * str_sl);
 
 /**
  * @api
-*/
+ */
 extern string * (*raw_string_push_back_slice)(string * dest, const string_slice * src);
 
 /**
  * @api
-*/
+ */
 extern string * (*raw_string_push_front_slice)(string * dest, const string_slice * src);
 
 /**
  * @api
-*/
+ */
 extern string * (*raw_string_insert_slice_ex)(string * dest, const string_slice * src, const usize i);
 
 /**
  * @api
-*/
+ */
 extern string * (*raw_string_insert_slice)(string * dest, const string_slice * src, const usize i);
 
 /**
  * @api
-*/
+ */
 extern string * (*raw_string_insert_slice_by_byte)(string * dest, const string_slice * src, const usize b);
 
 /**
  * @api
-*/
+ */
 extern void (*raw_string_slice_free)(string_slice * str_sl);
 
 /**
  * @api
-*/
+ */
 extern Error (*raw_string_utf8_new)(string_utf8 ** str);
 
 /**
  * @api
-*/
+ */
 extern Error (*raw_string_utf8_to_string)(string ** dest, const string_utf8 * str);
 
 /**
  * @api
-*/
+ */
 extern Error (*raw_string_utf8_from)(string_utf8 ** str, const char * c_str);
 
 /**
  * @api
-*/
+ */
 extern Error (*raw_string_utf8_len)(usize * len, const string_utf8 * c_str);
 
 /**
  * @api
-*/
+ */
 extern Error (*raw_string_utf8_size)(usize * size, const string_utf8 * c_str);
 
 /**
  * @api
-*/
+ */
 extern Error (*raw_string_utf8_clone)(string_utf8 ** str, const string_utf8 * c_str);
 
 /**
  * @api
-*/
+ */
 extern Error (*raw_string_utf8_push_back_cstr)(string_utf8 * dest, const char * src);
 
 /**
  * @api
-*/
+ */
 extern Error (*raw_string_utf8_push_back)(string_utf8 * dest, const string_utf8 * src);
 
 /**
  * @api
-*/
+ */
 extern Error (*raw_string_utf8_insert)(string_utf8 * dest, const string_utf8 * src, const usize i);
 
 /**
  * @api
-*/
+ */
 extern Error (*raw_string_utf8_push_front)(string_utf8 * dest, const string_utf8 * src);
 
 /**
  * @api
-*/
+ */
 extern void (*raw_string_utf8_free)(string_utf8 * str);
 
 /**
@@ -1689,6 +1704,20 @@ extern fptr (*raw_render_context_get_proc_addr)(const char * proc);
  * @api
  */
 extern void (*__he_update_full_trace_info)(const char * func, const char * file, i32 line);
+
+/**
+ *
+ *
+ * @api
+ */
+extern void (*set_error)(Error err);
+
+/**
+ *
+ *
+ * @api
+ */
+extern Error (*get_error)(void);
 
 /**
  * @brief Malloc with tracking if compiled with HE_MEM_TRACK
@@ -2352,242 +2381,242 @@ extern UID (*uid_new)(void);
 
 /**
  * @api
-*/
+ */
 extern Error (*string_new)(string ** str);
 
 /**
  * @api
-*/
+ */
 extern string * (*string_from)(const char * c_str);
 
 /**
  * @api
-*/
+ */
 extern string * (*string_clone)(const string * c_str);
 
 /**
  * @api
-*/
+ */
 extern string * (*string_set_cstr)(string * self, const char * c_cstr);
 
 /**
  * @api
-*/
+ */
 extern string * (*string_set)(string * self, const string * c_str);
 
 /**
  * @api
-*/
+ */
 extern char * (*string_cstr)(const string * c_str);
 
 /**
  * @api
-*/
+ */
 extern usize (*string_len)(const string * c_str);
 
 /**
  * @api
-*/
+ */
 extern usize (*string_size)(const string * c_str);
 
 /**
  * @api
-*/
+ */
 extern string * (*string_push_back)(string * dest, const string * src);
 
 /**
  * @api
-*/
+ */
 extern string * (*string_push_back_cstr)(string * dest, const char * src);
 
 /**
  * @api
-*/
+ */
 extern string * (*string_push_front)(string * dest, const string * src);
 
 /**
  * @api
-*/
+ */
 extern string * (*string_push_front_cstr)(string * dest, const char * src);
 
 /**
  * @api
-*/
+ */
 extern string * (*string_insert)(string * dest, const string * src, const usize i);
 
 /**
  * @api
-*/
+ */
 extern string * (*string_insert_cstr)(string * dest, const char * src, const usize i);
 
 /**
  * @api
-*/
+ */
 extern string * (*string_insert_cstr_ex)(string * dest, const char * src, const usize i);
 
 /**
  * @api
-*/
+ */
 extern string * (*string_insert_cstr_by_byte)(string * dest, const char * src, const usize b);
 
 /**
  * @api
-*/
+ */
 extern string * (*string_insert_by_byte)(string * dest, const string * src, const usize b);
 
 /**
  * @api
-*/
+ */
 extern string * (*string_remove)(string * self, const usize i);
 
 /**
  * @api
-*/
+ */
 extern string * (*string_remove_by_byte)(string * self, const usize b);
 
 /**
  * @api
-*/
+ */
 extern string * (*string_remove_n)(string * self, const usize i, const usize n);
 
 /**
  * @api
-*/
+ */
 extern string * (*string_remove_n_by_byte)(string * self, const usize b, const usize b_n);
 
 /**
  * @api
-*/
+ */
 extern boolean (*string_equals)(const string * str1, const string * str2);
 
 /**
  * @api
-*/
+ */
 extern boolean (*string_equals_cstr)(const string * str, const char * cstr);
 
 /**
  * @api
-*/
+ */
 extern void (*string_free)(string * str);
 
 /**
  * @api
-*/
+ */
 extern void (*string_itr_free)(string_itr * str_itr);
 
 /**
  * @api
-*/
+ */
 extern string_itr * (*string_get_itr)(const string * c_str);
 
 /**
  * @api
-*/
+ */
 extern u8 (*string_itr_next)(string_itr * str_itr);
 
 /**
  * @api
-*/
+ */
 extern string_slice * (*string_get_slice)(const string * str, const usize s, const usize e);
 
 /**
  * @api
-*/
+ */
 extern string * (*string_from_slice)(const string_slice * str_sl);
 
 /**
  * @api
-*/
+ */
 extern boolean (*string_equals_slice)(string_slice * str_sl_1, string_slice * str_sl_2);
 
 /**
  * @api
-*/
+ */
 extern string_slice * (*string_set_slice)(string_slice * self, const string_slice * str_sl);
 
 /**
  * @api
-*/
+ */
 extern string * (*string_push_back_slice)(string * dest, const string_slice * src);
 
 /**
  * @api
-*/
+ */
 extern string * (*string_push_front_slice)(string * dest, const string_slice * src);
 
 /**
  * @api
-*/
+ */
 extern string * (*string_insert_slice_ex)(string * dest, const string_slice * src, const usize i);
 
 /**
  * @api
-*/
+ */
 extern string * (*string_insert_slice)(string * dest, const string_slice * src, const usize i);
 
 /**
  * @api
-*/
+ */
 extern string * (*string_insert_slice_by_byte)(string * dest, const string_slice * src, const usize b);
 
 /**
  * @api
-*/
+ */
 extern void (*string_slice_free)(string_slice * str_sl);
 
 /**
  * @api
-*/
+ */
 extern Error (*string_utf8_new)(string_utf8 ** str);
 
 /**
  * @api
-*/
+ */
 extern Error (*string_utf8_to_string)(string ** dest, const string_utf8 * str);
 
 /**
  * @api
-*/
+ */
 extern Error (*string_utf8_from)(string_utf8 ** str, const char * c_str);
 
 /**
  * @api
-*/
+ */
 extern Error (*string_utf8_len)(usize * len, const string_utf8 * c_str);
 
 /**
  * @api
-*/
+ */
 extern Error (*string_utf8_size)(usize * size, const string_utf8 * c_str);
 
 /**
  * @api
-*/
+ */
 extern Error (*string_utf8_clone)(string_utf8 ** str, const string_utf8 * c_str);
 
 /**
  * @api
-*/
+ */
 extern Error (*string_utf8_push_back_cstr)(string_utf8 * dest, const char * src);
 
 /**
  * @api
-*/
+ */
 extern Error (*string_utf8_push_back)(string_utf8 * dest, const string_utf8 * src);
 
 /**
  * @api
-*/
+ */
 extern Error (*string_utf8_insert)(string_utf8 * dest, const string_utf8 * src, const usize i);
 
 /**
  * @api
-*/
+ */
 extern Error (*string_utf8_push_front)(string_utf8 * dest, const string_utf8 * src);
 
 /**
  * @api
-*/
+ */
 extern void (*string_utf8_free)(string_utf8 * str);
 
 /**
@@ -3020,6 +3049,8 @@ extern fptr (*render_context_get_proc_addr)(const char * proc);
 
 #if defined(HEAPI_LOAD_IMPL)
         void (*raw___he_update_full_trace_info)(const char * func, const char * file, i32 line);
+    void (*raw_set_error)(Error err);
+    Error (*raw_get_error)(void);
     void * (*raw_tmalloc)(u64 size);
     void * (*raw_trealloc)(void * ptr, u64 size);
     void (*raw_tfree)(void * ptr);
@@ -3208,6 +3239,8 @@ extern fptr (*render_context_get_proc_addr)(const char * proc);
 
     #if !defined(HEAPI_FULL_TRACE)
             void (*__he_update_full_trace_info)(const char * func, const char * file, i32 line);
+    void (*set_error)(Error err);
+    Error (*get_error)(void);
     void * (*tmalloc)(u64 size);
     void * (*trealloc)(void * ptr, u64 size);
     void (*tfree)(void * ptr);
@@ -3397,6 +3430,8 @@ extern fptr (*render_context_get_proc_addr)(const char * proc);
 
     void ___hate_engine_runtime_init(void* (*proc_addr)(const char* name)) {
                 raw___he_update_full_trace_info = (void (*)(const char *, const char *, i32))proc_addr("__he_update_full_trace_info");
+        raw_set_error = (void (*)(Error))proc_addr("set_error");
+        raw_get_error = (Error (*)(void))proc_addr("get_error");
         raw_tmalloc = (void * (*)(u64))proc_addr("tmalloc");
         raw_trealloc = (void * (*)(void *, u64))proc_addr("trealloc");
         raw_tfree = (void (*)(void *))proc_addr("tfree");
@@ -3569,6 +3604,8 @@ extern fptr (*render_context_get_proc_addr)(const char * proc);
 
         #if !defined(HEAPI_FULL_TRACE)
                         __he_update_full_trace_info = raw___he_update_full_trace_info;
+            set_error = raw_set_error;
+            get_error = raw_get_error;
             tmalloc = raw_tmalloc;
             trealloc = raw_trealloc;
             tfree = raw_tfree;
@@ -3793,6 +3830,8 @@ extern fptr (*render_context_get_proc_addr)(const char * proc);
 #endif
 
 #if defined(HEAPI_FULL_TRACE)
+void full_trace_set_error(const char* ___file___, uint32_t ___line___, Error);
+Error full_trace_get_error(const char* ___file___, uint32_t ___line___);
 void * full_trace_tmalloc(const char* ___file___, uint32_t ___line___, u64);
 void * full_trace_trealloc(const char* ___file___, uint32_t ___line___, void *, u64);
 void full_trace_tfree(const char* ___file___, uint32_t ___line___, void *);
@@ -3980,7 +4019,20 @@ fptr full_trace_render_context_get_proc_addr(const char* ___file___, uint32_t __
 
 
 #if defined(HEAPI_LOAD_IMPL)
-    inline void * full_trace_tmalloc(const char* ___file___, uint32_t ___line___, u64 size) {
+    inline void full_trace_set_error(const char* ___file___, uint32_t ___line___, Error err) {
+    raw___he_update_full_trace_info("set_error", ___file___, ___line___);
+    raw_set_error(err);
+    raw___he_update_full_trace_info("", "", -1);
+}
+
+inline Error full_trace_get_error(const char* ___file___, uint32_t ___line___) {
+    raw___he_update_full_trace_info("get_error", ___file___, ___line___);
+    Error result = raw_get_error();
+    raw___he_update_full_trace_info("", "", -1);
+    return result;
+}
+
+inline void * full_trace_tmalloc(const char* ___file___, uint32_t ___line___, u64 size) {
     raw___he_update_full_trace_info("tmalloc", ___file___, ___line___);
     void * result = raw_tmalloc(size);
     raw___he_update_full_trace_info("", "", -1);
@@ -5248,6 +5300,8 @@ inline fptr full_trace_render_context_get_proc_addr(const char* ___file___, uint
 
 #endif
 
+#define set_error(err) full_trace_set_error(__FILE__, __LINE__, err)
+#define get_error() full_trace_get_error(__FILE__, __LINE__)
 #define tmalloc(size) full_trace_tmalloc(__FILE__, __LINE__, size)
 #define trealloc(ptr, size) full_trace_trealloc(__FILE__, __LINE__, ptr, size)
 #define tfree(ptr) full_trace_tfree(__FILE__, __LINE__, ptr)

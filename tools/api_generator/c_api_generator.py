@@ -255,16 +255,17 @@ def include_file(file) -> str:
     with open(file, "r") as f:
         code = f.read().splitlines()
         n = 0
+        result: list[str] = []
+        is_in_api: bool = False
         for i, c in enumerate(code):
             if c.startswith("// API START"):
-                n = i + 1
-                break
+                is_in_api = True
+            elif c.startswith("// API END"):
+                is_in_api = False
+            elif is_in_api:
+                result.append(c)
 
-        if n == len(code):
-            n = 0
-
-        code = code[n:]
-        return "\n".join(code)
+        return "\n".join(result)
     
 def camel_to_upper_snake_case(name):
     result = []
