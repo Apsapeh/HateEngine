@@ -47,4 +47,7 @@ char* dylib_error(void) {
     return dlerror();
 }
 
+
+#else
+static char c99_dummy = 0;
 #endif

@@ -1,13 +1,10 @@
 #include "game_loader.h"
 #include "game_loader_environment.h"
 
-#include "platform/memory.h"
-#include "platform/dylib.h"
 #include "log.h"
 #include "servers/render_context/render_context.h"
 #include "servers/render_server/render_server.h"
 #include "servers/window_server/window_server.h"
-#include <stdlib.h>
 #include <string.h>
 
 

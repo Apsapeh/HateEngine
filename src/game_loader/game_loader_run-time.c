@@ -11,9 +11,9 @@
         }                                                                                               \
     } while (0)
 
-#define LOAD_WITH_CHECK_FATAL(var, fn_name)                                                             \
+#define LOAD_WITH_CHECK_FATAL(var, fn_name, cast)                                                       \
     do {                                                                                                \
-        var = dylib_sym(handle, fn_name);                                                               \
+        var = (cast) dylib_sym(handle, fn_name);                                                        \
         CHECK_FATAL(var, fn_name);                                                                      \
     } while (0)
 
@@ -25,9 +25,9 @@
         }                                                                                               \
     } while (0)
 
-#define LOAD_OR_PLACEHOLDER_WARN(var, fn_name, placeholder)                                             \
+#define LOAD_OR_PLACEHOLDER_WARN(var, fn_name, cast, placeholder)                                       \
     do {                                                                                                \
-        var = dylib_sym(handle, fn_name);                                                               \
+        var = (cast) dylib_sym(handle, fn_name);                                                        \
         PLACEHOLDER_WARN(var, fn_name, placeholder);                                                    \
     } while (0)
 
@@ -61,15 +61,17 @@ GameLoaderEnvironment load_environment(void) {
         LOG_FATAL("Failed to load game: game '%s' was not fonud", name);
     }
 
-    LOAD_WITH_CHECK_FATAL(result._runtime_init, RUNTIME_FN_INIT);
-    LOAD_WITH_CHECK_FATAL(result._window_server_init, WINDOW_SERVER_FN_INIT);
-    LOAD_WITH_CHECK_FATAL(result._render_context_init, RENDER_CONTEXT_FN_INIT);
-    LOAD_WITH_CHECK_FATAL(result._render_server_init, RENDER_SERVER_FN_INIT);
+    LOAD_WITH_CHECK_FATAL(result._runtime_init, RUNTIME_FN_INIT, RuntimeInitFn);
+    LOAD_WITH_CHECK_FATAL(result._window_server_init, WINDOW_SERVER_FN_INIT, WindowServerInitFn);
+    LOAD_WITH_CHECK_FATAL(result._render_context_init, RENDER_CONTEXT_FN_INIT, RenderContextInitFn);
+    LOAD_WITH_CHECK_FATAL(result._render_server_init, RENDER_SERVER_FN_INIT, RenderServerIninFn);
 
-    LOAD_OR_PLACEHOLDER_WARN(result._setup, SETUP_FN, _setup_placeholder);
-    LOAD_OR_PLACEHOLDER_WARN(result._ready, READY_FN, _ready_placeholder);
-    LOAD_OR_PLACEHOLDER_WARN(result._process, PROCESS_FN, _process_placeholder);
-    LOAD_OR_PLACEHOLDER_WARN(result._physics_process, PHYSICS_PROCESS_FN, _physics_process_placeholder);
+    LOAD_OR_PLACEHOLDER_WARN(result._setup, SETUP_FN, SetupFn, _setup_placeholder);
+    LOAD_OR_PLACEHOLDER_WARN(result._ready, READY_FN, ReadyFn, _ready_placeholder);
+    LOAD_OR_PLACEHOLDER_WARN(result._process, PROCESS_FN, ProcessFn, _process_placeholder);
+    LOAD_OR_PLACEHOLDER_WARN(
+            result._physics_process, PHYSICS_PROCESS_FN, PhysicsProcessFn, _physics_process_placeholder
+    );
 
     return result;
 }

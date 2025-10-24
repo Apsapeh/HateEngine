@@ -15,13 +15,14 @@ struct backendPair {
 };
 
 
-vector_template_def_static(backendPair, struct backendPair);
-vector_template_impl_static(backendPair, struct backendPair);
+// clang-format off
+vector_template_def_static(backendPair, struct backendPair)
+vector_template_impl_static(backendPair, struct backendPair)
 
 // FIXME: Add mutex
 static vec_backendPair RegistredBackends;
 static boolean IsLoaded = false;
-
+// clang-format on
 
 void render_server_init(void) {
     RegistredBackends = vec_backendPair_init();

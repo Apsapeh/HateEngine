@@ -125,4 +125,7 @@ void mutex_unlock(mutex_handle handle) {
     }
 }
 
+
+#else
+static char c99_dummy = 0;
 #endif

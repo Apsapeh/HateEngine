@@ -80,4 +80,6 @@ void mutex_unlock(mutex_handle handle) {
     LeaveCriticalSection(&handle->cs);
 }
 
+#else
+static char c99_dummy = 0;
 #endif

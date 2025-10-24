@@ -25,13 +25,16 @@ struct allocationData {
 };
 #endif
 
-vector_template_def_with_properties(allocationData, struct allocationData, static);
+// clang-format off
+vector_template_def_with_properties(allocationData, struct allocationData, static)
 vector_template_impl_with_properties(
         allocationData, struct allocationData, static, malloc, realloc, free, memmove, memcpy
-);
+)
 
 // FIXME: Add mutex
 static vec_allocationData AllocatedMemory;
+// clang-format on
+
 
 static inline void* _tmalloc(usize size, c_str file, i32 line);
 static inline void* _trealloc(void* ptr, usize size, c_str file, i32 line);

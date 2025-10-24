@@ -1,9 +1,11 @@
 #pragma once
 
+#include "game_loader_environment.h"
+
 typedef struct GameFunctions {
-    void (*_ready)(void);
-    void (*_process)(double);
-    void (*_physics_process)(double);
+    ReadyFn _ready;
+    ProcessFn _process;
+    PhysicsProcessFn _physics_process;
 } GameFunctions;
 
 GameFunctions load_game(void);

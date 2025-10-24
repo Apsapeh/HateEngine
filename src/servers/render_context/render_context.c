@@ -16,12 +16,16 @@ struct RenderContextBackendPair {
     RenderContextBackend* backend;
 };
 
+// clang-format off
 
-vector_template_def_static(RenderContextBackendPair, struct RenderContextBackendPair);
-vector_template_impl_static(RenderContextBackendPair, struct RenderContextBackendPair);
+vector_template_def_static(RenderContextBackendPair, struct RenderContextBackendPair)
+vector_template_impl_static(RenderContextBackendPair, struct RenderContextBackendPair)
 
+// FIXME: Add mutex
 static vec_RenderContextBackendPair RegistredBackends;
 static boolean IsLoaded = false;
+// clang-format on
+
 
 void render_context_init(void) {
     RegistredBackends = vec_RenderContextBackendPair_init();

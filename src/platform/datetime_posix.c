@@ -193,6 +193,9 @@ u8 datetime_get_utc_second(datetime_handle handle) {
     return (u8)handle->utc_tm.tm_sec;
 }
 
+
+#else
+static char c99_dummy = 0;
 #endif
 
 // clang-format on
