@@ -1,13 +1,8 @@
 #include <stdlib.h>
-#include <string.h>
-#include <stdio.h>
 
 #include "SDL3/SDL_events.h"
 #include "SDL3/SDL_timer.h"
-#include "SDL3/SDL_video.h"
-#include "error.h"
 #include "log.h"
-#include "platform/dylib.h"
 #include "platform/memory.h"
 
 #include "game_loader/game_loader.h"

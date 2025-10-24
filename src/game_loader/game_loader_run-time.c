@@ -40,15 +40,15 @@ static void _physics_process_placeholder(double _) {}
 // clang-format on
 
 
-c_str SETUP_FN = "_setup";
-c_str READY_FN = "_ready";
-c_str PROCESS_FN = "_process";
-c_str PHYSICS_PROCESS_FN = "_physics_process";
+c_str const static SETUP_FN = "_setup";
+c_str const static READY_FN = "_ready";
+c_str const static PROCESS_FN = "_process";
+c_str const static PHYSICS_PROCESS_FN = "_physics_process";
 
-c_str RUNTIME_FN_INIT = "___hate_engine_runtime_init";
-c_str WINDOW_SERVER_FN_INIT = "___hate_engine_runtime_init_window_server";
-c_str RENDER_CONTEXT_FN_INIT = "___hate_engine_runtime_init_render_context";
-c_str RENDER_SERVER_FN_INIT = "___hate_engine_runtime_init_render_server";
+c_str const static RUNTIME_FN_INIT = "___hate_engine_runtime_init";
+c_str const static WINDOW_SERVER_FN_INIT = "___hate_engine_runtime_init_window_server";
+c_str const static RENDER_CONTEXT_FN_INIT = "___hate_engine_runtime_init_render_context";
+c_str const static RENDER_SERVER_FN_INIT = "___hate_engine_runtime_init_render_server";
 
 GameLoaderEnvironment load_environment(void) {
     GameLoaderEnvironment result;

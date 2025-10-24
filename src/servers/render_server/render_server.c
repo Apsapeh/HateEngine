@@ -20,35 +20,35 @@ vector_template_def_static(backendPair, struct backendPair)
 vector_template_impl_static(backendPair, struct backendPair)
 
 // FIXME: Add mutex
-static vec_backendPair RegistredBackends;
-static boolean IsLoaded = false;
+static vec_backendPair g_registredBackends;
+static boolean g_isLoaded = false;
 // clang-format on
 
 void render_server_init(void) {
-    RegistredBackends = vec_backendPair_init();
+    g_registredBackends = vec_backendPair_init();
 
     // Register default backend
     render_server_opengl_13_backend_register();
 }
 
 void render_server_exit(void) {
-    for (usize i = 0; i < RegistredBackends.size; i++)
-        render_server_backend_free(RegistredBackends.data[i].backend);
+    for (usize i = 0; i < g_registredBackends.size; i++)
+        render_server_backend_free(g_registredBackends.data[i].backend);
 
-    vec_backendPair_free(&RegistredBackends);
+    vec_backendPair_free(&g_registredBackends);
 }
 
 Error render_server_register_backend(const char* name, RenderServerBackend* backend) {
     ERROR_ARGS_CHECK_2(name, backend);
 
-    for (usize i = 0; i < RegistredBackends.size; i++) {
-        if (strcmp(RegistredBackends.data[i].name, name) == 0) {
+    for (usize i = 0; i < g_registredBackends.size; i++) {
+        if (strcmp(g_registredBackends.data[i].name, name) == 0) {
             LOG_ERROR("Backend with name '%s' already registered", name);
             return ERROR_ALREADY_EXISTS;
         }
     }
 
-    vec_backendPair_push_back(&RegistredBackends, (struct backendPair) {name, backend});
+    vec_backendPair_push_back(&g_registredBackends, (struct backendPair) {name, backend});
 
     return ERROR_SUCCESS;
 }
@@ -56,15 +56,15 @@ Error render_server_register_backend(const char* name, RenderServerBackend* back
 Error render_server_load_backend(const char* name) {
     ERROR_ARGS_CHECK_1(name);
 
-    if (IsLoaded) {
+    if (g_isLoaded) {
         LOG_ERROR("(render_server_load_backend) Render server already loaded");
         return ERROR_INVALID_STATE;
     }
 
-    for (usize i = 0; i < RegistredBackends.size; i++) {
-        if (strcmp(RegistredBackends.data[i].name, name) == 0) {
-            RenderServer = *RegistredBackends.data[i].backend;
-            IsLoaded = true;
+    for (usize i = 0; i < g_registredBackends.size; i++) {
+        if (strcmp(g_registredBackends.data[i].name, name) == 0) {
+            RenderServer = *g_registredBackends.data[i].backend;
+            g_isLoaded = true;
             return ERROR_SUCCESS;
         }
     }
@@ -73,7 +73,7 @@ Error render_server_load_backend(const char* name) {
 }
 
 boolean render_server_is_loaded(void) {
-    return IsLoaded;
+    return g_isLoaded;
 }
 
 /* ====================> RenderServerBackend functions <==================== */
@@ -113,16 +113,16 @@ Error render_server_backend_get_function(
 static Error backend_set_get(
         RenderServerBackend* backend, const char* name, void (**fn)(void), unsigned char is_set
 ) {
-    typedef void (**fn_t)(void);
+    typedef void (**FnT)(void);
     struct fn_pair {
         const char* name;
-        fn_t function;
+        FnT function;
     };
 
     // TODO: generate with API Generator
     const struct fn_pair pairs[] = {
-            {"_init", (fn_t) &backend->_init},
-            {"_quit", (fn_t) &backend->_quit},
+            {"_init", (FnT) &backend->_init},
+            {"_quit", (FnT) &backend->_quit},
     };
 
     for (usize i = 0; i < sizeof(pairs) / sizeof(pairs[0]); i++) {

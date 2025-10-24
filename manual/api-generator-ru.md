@@ -92,7 +92,7 @@ void _process(double delta) {
 // some_header.h
 
 /**
- * @api
+ * @api forward
  */
 typedef struct Vec2 {
     float x;
@@ -119,7 +119,7 @@ void _process(double delta) {
 // some_header.h
 
 /**
- * @api
+ * @api server
  * @api_config {
  *     "fn_prefix": "window_server_",
  *     "init_method": "___hate_engine_runtime_init_window_server"

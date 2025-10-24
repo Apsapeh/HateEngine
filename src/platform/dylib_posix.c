@@ -9,18 +9,18 @@
     #include "platform/memory.h"
 
     #if defined(__APPLE__)
-const char* dylib_extension = ".dylib";
+static const char* const DYLIB_EXTENSION = ".dylib";
     #else
-const char* dylib_extension = ".so";
+static const char* const DYLIB_EXTENSION = ".so";
     #endif
 
-const char* PREFIX = "./";
+static const char* const PREFIX = "./";
 
 dylib_handle* dylib_open(const char* path) {
-    char* full_path = tmalloc(strlen(PREFIX) + strlen(path) + strlen(dylib_extension) + 1);
+    char* full_path = tmalloc(strlen(PREFIX) + strlen(path) + strlen(DYLIB_EXTENSION) + 1);
     strcpy(full_path, PREFIX);
     strcat(full_path, path);
-    strcat(full_path, dylib_extension);
+    strcat(full_path, DYLIB_EXTENSION);
     dylib_handle* handle = dylib_open_raw(full_path);
     tfree(full_path);
     return handle;

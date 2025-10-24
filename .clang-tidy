@@ -1,0 +1,53 @@
+Checks: '-*,readability-identifier-naming'
+CheckOptions:
+  # 1. Функции: snake_case
+  - key: readability-identifier-naming.FunctionCase
+    value: lower_case
+  # Игнорируем "виртуальные" методы бэкендов и внутренние функции API
+  - key: readability-identifier-naming.FunctionIgnoredRegexp
+    value: '^_.*|__he_.*'
+
+  # 2. Типы: CamelCase
+  - key: readability-identifier-naming.ClassCase
+    value: CamelCase
+  - key: readability-identifier-naming.StructCase
+    value: CamelCase
+  - key: readability-identifier-naming.EnumCase
+    value: CamelCase
+  # Для typedef (включая хэндлы)
+  - key: readability-identifier-naming.TypedefCase
+    value: 'aNy_CasE' # Разрешаем и CamelCase (Error) и snake_case (mutex_handle)
+    
+  # 3. Члены Enum: Разрешаем и CamelCase, и UPPER_CASE
+  - key: readability-identifier-naming.EnumConstantCase
+    value: 'aNy_CasE'
+  - key: readability-identifier-naming.EnumConstantPrefix
+    value: ''
+
+  # 4. Переменные: snake_case
+  - key: readability-identifier-naming.VariableCase
+    value: lower_case
+  - key: readability-identifier-naming.LocalVariableCase
+    value: lower_case
+  - key: readability-identifier-naming.ParameterCase
+    value: lower_case
+  - key: readability-identifier-naming.ClassMemberCase
+    value: lower_case
+  - key: readability-identifier-naming.StructMemberCase
+    value: lower_case
+
+  # 5. Глобальные переменные:
+  - key: readability-identifier-naming.GlobalVariableCase
+    value: camelBack
+  # Разрешаем 'g_'
+  - key: readability-identifier-naming.GlobalVariablePrefix
+    value: 'g_'
+  # ... но также разрешаем CamelCase (RenderServer, WindowServer)
+  - key: readability-identifier-naming.GlobalVariableIgnoredRegexp
+    value: '^[A-Z][a-zA-Z0-9]+$'
+
+  # 6. Константы и Макросы
+  - key: readability-identifier-naming.GlobalConstantCase
+    value: UPPER_CASE
+  - key: readability-identifier-naming.MacroDefinitionCase
+    value: UPPER_CASE

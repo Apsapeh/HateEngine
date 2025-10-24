@@ -72,7 +72,7 @@ typedef c_str Error;
 // API END
 
 /**
- *
+ * @brief Set a last error that occurred on the current thread.
  *
  * @api
  */
@@ -80,7 +80,7 @@ void set_error(Error err);
 
 
 /**
- *
+ * @brief Retrieve a last error that occurred on the current thread.
  *
  * @api
  */

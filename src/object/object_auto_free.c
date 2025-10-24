@@ -13,7 +13,7 @@ typedef void (*free_func)(void* object);
 #define CAST_FREE(func) (free_func) func
 
 // clang-format off
-static free_func free_table[] = {
+static free_func g_freeTable[] = {
         [ObjectTypeNode]       = CAST_FREE(node_free),
         [ObjectTypeCanvasItem] = CAST_FREE(canvas_item_free),
         [ObjectTypeControl]    = CAST_FREE(control_free),
@@ -24,6 +24,6 @@ static free_func free_table[] = {
 // clang-format on
 
 void auto_free(Object* object) {
-    free_table[object->type](object);
+    g_freeTable[object->type](object);
     tfree(object);
 }

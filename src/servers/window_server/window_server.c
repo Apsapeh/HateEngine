@@ -21,36 +21,36 @@ vector_template_def_static(WindowServerBackendPair, struct WindowServerBackendPa
 vector_template_impl_static(WindowServerBackendPair, struct WindowServerBackendPair)
 
 // FIXME: Add mutex
-static vec_WindowServerBackendPair RegistredBackends;
-static boolean IsLoaded = false;
+static vec_WindowServerBackendPair g_registredBackends;
+static boolean g_isLoaded = false;
 // clang-format on
 
 void window_server_init(void) {
-    RegistredBackends = vec_WindowServerBackendPair_init();
+    g_registredBackends = vec_WindowServerBackendPair_init();
 
     // Register default backend
     window_server_sdl3_backend_register();
 }
 
 void window_server_exit(void) {
-    for (usize i = 0; i < RegistredBackends.size; i++)
-        window_server_backend_free(RegistredBackends.data[i].backend);
+    for (usize i = 0; i < g_registredBackends.size; i++)
+        window_server_backend_free(g_registredBackends.data[i].backend);
 
-    vec_WindowServerBackendPair_free(&RegistredBackends);
+    vec_WindowServerBackendPair_free(&g_registredBackends);
 }
 
 Error window_server_register_backend(const char* name, WindowServerBackend* backend) {
     ERROR_ARGS_CHECK_2(name, backend);
 
-    for (usize i = 0; i < RegistredBackends.size; i++) {
-        if (strcmp(RegistredBackends.data[i].name, name) == 0) {
+    for (usize i = 0; i < g_registredBackends.size; i++) {
+        if (strcmp(g_registredBackends.data[i].name, name) == 0) {
             LOG_ERROR("Backend with name '%s' already registered", name);
             return ERROR_ALREADY_EXISTS;
         }
     }
 
     vec_WindowServerBackendPair_push_back(
-            &RegistredBackends, (struct WindowServerBackendPair) {name, backend}
+            &g_registredBackends, (struct WindowServerBackendPair) {name, backend}
     );
 
     return ERROR_SUCCESS;
@@ -59,15 +59,15 @@ Error window_server_register_backend(const char* name, WindowServerBackend* back
 Error window_server_load_backend(const char* name) {
     ERROR_ARGS_CHECK_1(name);
 
-    if (IsLoaded) {
+    if (g_isLoaded) {
         LOG_ERROR("(window_server_load_backend) Window server already loaded");
         return ERROR_INVALID_STATE;
     }
 
-    for (usize i = 0; i < RegistredBackends.size; i++) {
-        if (strcmp(RegistredBackends.data[i].name, name) == 0) {
-            WindowServer = *RegistredBackends.data[i].backend;
-            IsLoaded = true;
+    for (usize i = 0; i < g_registredBackends.size; i++) {
+        if (strcmp(g_registredBackends.data[i].name, name) == 0) {
+            WindowServer = *g_registredBackends.data[i].backend;
+            g_isLoaded = true;
             return ERROR_SUCCESS;
         }
     }
@@ -75,8 +75,8 @@ Error window_server_load_backend(const char* name) {
     return ERROR_NOT_FOUND;
 }
 
-boolean window_server_is_loaded() {
-    return IsLoaded;
+boolean window_server_is_loaded(void) {
+    return g_isLoaded;
 }
 
 
@@ -117,27 +117,27 @@ Error window_server_backend_get_function(
 static Error backend_set_get(
         WindowServerBackend* backend, const char* name, void (**fn)(void), unsigned char is_set
 ) {
-    typedef void (**fn_t)(void);
-    struct fn_pair {
+    typedef void (**FnT)(void);
+    struct FnPair {
         const char* name;
-        fn_t function;
+        FnT function;
     };
 
     // TODO: generate with API Generator
-    const struct fn_pair pairs[] = {
-            {"_init", (fn_t) &backend->_init},
-            {"_quit", (fn_t) &backend->_quit},
-            {"create_window", (fn_t) &backend->create_window},
-            {"destroy_window", (fn_t) &backend->destroy_window},
-            {"window_set_title", (fn_t) &backend->window_set_title},
-            {"window_get_title", (fn_t) &backend->window_get_title},
-            {"window_set_mode", (fn_t) &backend->window_set_mode},
-            {"window_get_mode", (fn_t) &backend->window_get_mode},
-            {"window_set_size", (fn_t) &backend->window_set_size},
-            {"window_get_size", (fn_t) &backend->window_get_size},
-            {"window_set_position", (fn_t) &backend->window_set_position},
-            {"window_get_position", (fn_t) &backend->window_get_position},
-            {"window_set_fullscreen_display", (fn_t) &backend->window_set_fullscreen_display},
+    const struct FnPair pairs[] = {
+            {"_init", (FnT) &backend->_init},
+            {"_quit", (FnT) &backend->_quit},
+            {"create_window", (FnT) &backend->create_window},
+            {"destroy_window", (FnT) &backend->destroy_window},
+            {"window_set_title", (FnT) &backend->window_set_title},
+            {"window_get_title", (FnT) &backend->window_get_title},
+            {"window_set_mode", (FnT) &backend->window_set_mode},
+            {"window_get_mode", (FnT) &backend->window_get_mode},
+            {"window_set_size", (FnT) &backend->window_set_size},
+            {"window_get_size", (FnT) &backend->window_get_size},
+            {"window_set_position", (FnT) &backend->window_set_position},
+            {"window_get_position", (FnT) &backend->window_get_position},
+            {"window_set_fullscreen_display", (FnT) &backend->window_set_fullscreen_display},
     };
 
     for (usize i = 0; i < sizeof(pairs) / sizeof(pairs[0]); i++) {

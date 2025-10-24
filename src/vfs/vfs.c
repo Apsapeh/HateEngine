@@ -11,18 +11,18 @@ vector_template_def_static(vfs_mnt, struct VFSMnt)
 vector_template_impl_static(vfs_mnt, struct VFSMnt)
 
 // FIXME: Add mutex
-static vec_vfs_mnt mnts;
-static struct VFSRFSMnt rfs_mnt;
+static vec_vfs_mnt g_mnts;
+static struct VFSRFSMnt g_rfsMnt;
 // clang-format on
 
 
 void vfs_init(void) {
-    mnts = vec_vfs_mnt_init();
-    rfs_mnt.path = NULL;
+    g_mnts = vec_vfs_mnt_init();
+    g_rfsMnt.path = NULL;
 }
 
 void vfs_exit(void) {
-    vec_vfs_mnt_free(&mnts);
+    vec_vfs_mnt_free(&g_mnts);
 }
 
 boolean vfs_mount_res(const char* path, const char* mount_point) {
@@ -41,7 +41,7 @@ boolean vfs_mount_rfs(const char* mount_point) {
         return false;
     }
 
-    if (rfs_mnt.path != NULL) {
+    if (g_rfsMnt.path != NULL) {
         LOG_ERROR("RFS is already mounted");
         return false;
     }
@@ -52,20 +52,20 @@ boolean vfs_mount_rfs(const char* mount_point) {
         return false;
     }
 
-    rfs_mnt.whitelist = NULL;
-    rfs_mnt.name = NULL;
+    g_rfsMnt.whitelist = NULL;
+    g_rfsMnt.name = NULL;
 
-    rfs_mnt.path = tmalloc(strlen(base_path) + 1);
-    strcpy(rfs_mnt.path, base_path);
+    g_rfsMnt.path = tmalloc(strlen(base_path) + 1);
+    strcpy(g_rfsMnt.path, base_path);
 
     if (mount_point[0] != '/') {
         LOG_WARN("Mount point does not start with '/': %s", mount_point);
-        rfs_mnt.mount_point = tmalloc(strlen(mount_point) + 2);
-        strcpy(&rfs_mnt.mount_point[1], mount_point);
-        rfs_mnt.mount_point[0] = '/';
+        g_rfsMnt.mount_point = tmalloc(strlen(mount_point) + 2);
+        strcpy(&g_rfsMnt.mount_point[1], mount_point);
+        g_rfsMnt.mount_point[0] = '/';
     } else {
-        rfs_mnt.mount_point = tmalloc(strlen(mount_point) + 1);
-        strcpy(rfs_mnt.mount_point, mount_point);
+        g_rfsMnt.mount_point = tmalloc(strlen(mount_point) + 1);
+        strcpy(g_rfsMnt.mount_point, mount_point);
     }
 
     return true;
@@ -82,7 +82,7 @@ boolean vfs_mount_rfs_whitelist(const char** whitelist, u64 count, const char* m
         return false;
     }
 
-    if (rfs_mnt.path != NULL) {
+    if (g_rfsMnt.path != NULL) {
         LOG_ERROR("RFS is already mounted");
         return false;
     }
@@ -91,27 +91,27 @@ boolean vfs_mount_rfs_whitelist(const char** whitelist, u64 count, const char* m
         return false;
     }
 
-    rfs_mnt.whitelist = tmalloc((count + 1) * sizeof(const char*));
+    g_rfsMnt.whitelist = tmalloc((count + 1) * sizeof(const char*));
     // Deep copy
     for (usize i = 0; i < count; i++) {
-        rfs_mnt.whitelist[i] = tmalloc(strlen(whitelist[i]) + 1);
-        strcpy(rfs_mnt.whitelist[i], whitelist[i]);
+        g_rfsMnt.whitelist[i] = tmalloc(strlen(whitelist[i]) + 1);
+        strcpy(g_rfsMnt.whitelist[i], whitelist[i]);
     }
-    rfs_mnt.whitelist[count] = NULL; // NULL terminate
+    g_rfsMnt.whitelist[count] = NULL; // NULL terminate
     return true;
 }
 
 boolean vfs_unmount_rfs(void) {
-    if (rfs_mnt.path != NULL) {
-        tfree(rfs_mnt.path);
-        tfree(rfs_mnt.mount_point);
-        if (rfs_mnt.whitelist != NULL) {
-            for (char** ptr = rfs_mnt.whitelist; *ptr != NULL; ++ptr) {
+    if (g_rfsMnt.path != NULL) {
+        tfree(g_rfsMnt.path);
+        tfree(g_rfsMnt.mount_point);
+        if (g_rfsMnt.whitelist != NULL) {
+            for (char** ptr = g_rfsMnt.whitelist; *ptr != NULL; ++ptr) {
                 tfree(*ptr);
             }
-            tfree(rfs_mnt.whitelist);
+            tfree(g_rfsMnt.whitelist);
         }
-        rfs_mnt.path = NULL;
+        g_rfsMnt.path = NULL;
         return true;
     }
     return false;
@@ -229,8 +229,8 @@ static boolean vfs_path_starts_with(const char* path, const char* mount_point) {
 }
 
 static struct VFSResFile* vfs_res_find_file(const char* path) {
-    for (usize mnt_i = mnts.size; mnt_i > 0; mnt_i--) {
-        struct VFSMnt* mnt = &mnts.data[mnt_i - 1];
+    for (usize mnt_i = g_mnts.size; mnt_i > 0; mnt_i--) {
+        struct VFSMnt* mnt = &g_mnts.data[mnt_i - 1];
         struct VFSResFile* current_dir = &mnt->root;
 
         if (!vfs_path_starts_with(path, mnt->mount_point))
@@ -273,8 +273,8 @@ static struct VFSResFile* vfs_res_find_file(const char* path) {
 
 void* vfs_res_read_file(const char* path, u64* size) {
     // Check path
-    char** _parts = split_path(path);
-    if (!_parts) {
+    char** parts = split_path(path);
+    if (!parts) {
         if (path) {
             LOG_ERROR("Invalid path: %s", path)
         } else {
@@ -289,16 +289,16 @@ void* vfs_res_read_file(const char* path, u64* size) {
         LOG_FATAL("TODO: vfs_res_read_file");
     }
 
-    if (rfs_mnt.path != NULL) {
+    if (g_rfsMnt.path != NULL) {
         // TODO: Add whitelist impl
         usize parts_len = 0;
-        for (char** part = _parts; *part != NULL; part++)
+        for (char** part = parts; *part != NULL; part++)
             parts_len += strlen(*part) + 1;
 
-        parts_len += strlen(rfs_mnt.path);
+        parts_len += strlen(g_rfsMnt.path);
         char* full_path = tmalloc(parts_len);
-        strcpy(full_path, rfs_mnt.path);
-        for (char** part = _parts; *part != NULL; part++) {
+        strcpy(full_path, g_rfsMnt.path);
+        for (char** part = parts; *part != NULL; part++) {
             strcat(full_path, *part);
             if (*(part + 1) != NULL) {
                 strcat(full_path, "/");
@@ -311,20 +311,20 @@ void* vfs_res_read_file(const char* path, u64* size) {
         if (stream) {
             void* data = fs_stream_read_all(stream, size);
             fs_stream_close(stream);
-            free_split_path(_parts);
+            free_split_path(parts);
             return data;
         }
     }
 
-    free_split_path(_parts);
+    free_split_path(parts);
     return NULL;
 }
 
 
 FileStream* vfs_res_stream_open(const char* path) {
     // Check path
-    char** _parts = split_path(path);
-    if (!_parts) {
+    char** parts = split_path(path);
+    if (!parts) {
         LOG_ERROR("Invalid path: %s", path);
         return NULL;
     }
@@ -335,8 +335,8 @@ FileStream* vfs_res_stream_open(const char* path) {
         LOG_FATAL("TODO: vfs_res_read_file");
     }
 
-    if (rfs_mnt.path != NULL && vfs_path_starts_with(path, rfs_mnt.mount_point)) {
-        char** mnt_parts = split_path(rfs_mnt.mount_point);
+    if (g_rfsMnt.path != NULL && vfs_path_starts_with(path, g_rfsMnt.mount_point)) {
+        char** mnt_parts = split_path(g_rfsMnt.mount_point);
         usize mnt_parts_len = 0;
         for (char** part = mnt_parts; *part != NULL; part++)
             mnt_parts_len++;
@@ -344,12 +344,12 @@ FileStream* vfs_res_stream_open(const char* path) {
 
         // TODO: Add whitelist impl
         usize parts_len = 0;
-        for (char** part = _parts + mnt_parts_len; *part != NULL; part++)
+        for (char** part = parts + mnt_parts_len; *part != NULL; part++)
             parts_len += strlen(*part) + 1;
 
         char* full_path = tmalloc(parts_len);
-        strcpy(full_path, rfs_mnt.path);
-        for (char** part = _parts + mnt_parts_len; *part != NULL; part++) {
+        strcpy(full_path, g_rfsMnt.path);
+        for (char** part = parts + mnt_parts_len; *part != NULL; part++) {
             strcat(full_path, *part);
             if (*(part + 1) != NULL) {
                 strcat(full_path, "/");
@@ -363,12 +363,12 @@ FileStream* vfs_res_stream_open(const char* path) {
             result_stream->stream = stream;
             result_stream->type = VFSStreamTypeRFS;
             result_stream->is_res_scope = true;
-            free_split_path(_parts);
+            free_split_path(parts);
             return result_stream;
         }
     }
 
-    free_split_path(_parts);
+    free_split_path(parts);
     return NULL;
 }
 

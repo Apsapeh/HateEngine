@@ -7,36 +7,49 @@
 #include "stdlib.h"
 #include "types/types.h"
 #include <platform/platform.h>
+#include <platform/thread_local_storage.h>
 
-const usize FORMAT_BUFFER_SIZE = 8192;
-const usize TIME_BUFFER_SIZE = 80;
+#define FORMAT_BUFFER_SIZE 8192
+#define TIME_BUFFER_SIZE 80
 
-// FIXME: Made thread safety with context
-c_str full_trace_mod_level_func = (c_str) "";
-c_str full_trace_mod_level_file = (c_str) "";
-i32 full_trace_mod_level_line = -1;
+// clang-format off
+thread_local_storage_impl(c_str, g_fullTraceFuncTLS)
+thread_local_storage_impl(c_str, g_fullTraceFileTLS)
+thread_local_storage_impl(i32, g_fullTraceLineTLS)
+struct DummyClangFormat; // This code dirty hack for normal formatting. It's does nothing for program
+// clang-format on
 
-static mutex_handle PrintMutex = NULL;
-static str FormatBuffer = NULL;
-static datetime_handle Datetime = NULL;
+static mutex_handle g_printMutex = NULL;
+static str g_formatBuffer = NULL;
+static datetime_handle g_datetime = NULL;
 
 
 void log_init(void) {
-    PrintMutex = mutex_new();
-    FormatBuffer = tmalloc(sizeof(char) * FORMAT_BUFFER_SIZE);
-    Datetime = datetime_new();
+    g_printMutex = mutex_new();
+    g_formatBuffer = tmalloc(sizeof(char) * FORMAT_BUFFER_SIZE);
+    g_datetime = datetime_new();
 }
 
 void log_exit(void) {
-    mutex_free(PrintMutex);
-    tfree(FormatBuffer);
-    datetime_free(Datetime);
+    mutex_free(g_printMutex);
+    tfree(g_formatBuffer);
+    datetime_free(g_datetime);
 }
 
 void __he_update_full_trace_info(const char* func, const char* file, i32 line) {
-    full_trace_mod_level_func = func;
-    full_trace_mod_level_file = file;
-    full_trace_mod_level_line = line;
+    g_fullTraceFuncTLS_set_value(func);
+    g_fullTraceFileTLS_set_value(file);
+    g_fullTraceLineTLS_set_value(line);
+}
+
+log_full_trace_info log_full_trace_get_info(void) {
+    g_fullTraceFuncTLS_try_init("");
+    g_fullTraceFileTLS_try_init("");
+    g_fullTraceLineTLS_try_init(-1);
+
+    return (log_full_trace_info) {.func = g_fullTraceFuncTLS_get_value(),
+                                  .file = g_fullTraceFileTLS_get_value(),
+                                  .line = g_fullTraceLineTLS_get_value()};
 }
 
 
@@ -50,11 +63,11 @@ static c_str set_trace_color(void);
 
 
 static void update_format_buffer(c_str fmt, va_list args) {
-    vsnprintf(FormatBuffer, FORMAT_BUFFER_SIZE, fmt, args);
+    vsnprintf(g_formatBuffer, FORMAT_BUFFER_SIZE, fmt, args);
 }
 
 static void update_time_buffer(void) {
-    datetime_update(Datetime);
+    datetime_update(g_datetime);
 }
 
 // 13-10-2025 13:36:45.348 [DEBUG] [dev.c:examples/dev.cpp@138] Debug message
@@ -64,18 +77,18 @@ static void update_time_buffer(void) {
 static void print_log(
         c_str type, c_str (*color_begin)(void), i32 line, const char* file, const char* fmt, va_list args
 ) {
-    mutex_lock(PrintMutex);
+    mutex_lock(g_printMutex);
     update_format_buffer(fmt, args);
     update_time_buffer();
 
-    u8 day = datetime_get_day(Datetime);
-    u8 month = datetime_get_month(Datetime);
-    u16 year = datetime_get_year(Datetime);
+    u8 day = datetime_get_day(g_datetime);
+    u8 month = datetime_get_month(g_datetime);
+    u16 year = datetime_get_year(g_datetime);
 
-    u8 hour = datetime_get_hour(Datetime);
-    u8 minute = datetime_get_minute(Datetime);
-    u8 second = datetime_get_second(Datetime);
-    u32 nanosecond = datetime_get_nanosecond(Datetime) / 1000000;
+    u8 hour = datetime_get_hour(g_datetime);
+    u8 minute = datetime_get_minute(g_datetime);
+    u8 second = datetime_get_second(g_datetime);
+    u32 nanosecond = datetime_get_nanosecond(g_datetime) / 1000000;
 
 #if defined(PLATFORM_WINDOWS)
     color_begin();
@@ -84,22 +97,23 @@ static void print_log(
     set_default();
 #elif defined(PLATFORM_UNIX)
     fprintf(stderr, "%s%02u-%02u-%04u %02u:%02u:%02u.%03u [%s] [%s:%d] %s%s\n", color_begin(), day,
-            month, year, hour, minute, second, nanosecond, type, file, line, FormatBuffer,
+            month, year, hour, minute, second, nanosecond, type, file, line, g_formatBuffer,
             set_default());
 #endif
 
-    if (full_trace_mod_level_line != -1) {
+    if (g_fullTraceLineTLS_get_value() != -1) {
 #if defined(PLATFORM_WINDOWS)
         set_trace_color();
         fprintf(stderr, "\tThrowed in '%s' at %s@%d%s\n", full_trace_mod_level_func,
                 full_trace_mod_level_file, full_trace_mod_level_line);
         set_default();
 #elif defined(PLATFORM_UNIX)
-        fprintf(stderr, "%s\tThrowed in '%s' at %s@%d%s\n", set_trace_color(), full_trace_mod_level_func,
-                full_trace_mod_level_file, full_trace_mod_level_line, set_default());
+        fprintf(stderr, "%s\tThrowed in '%s' at %s@%d%s\n", set_trace_color(),
+                g_fullTraceFuncTLS_get_value(), g_fullTraceFileTLS_get_value(),
+                g_fullTraceLineTLS_get_value(), set_default());
 #endif
     }
-    mutex_unlock(PrintMutex);
+    mutex_unlock(g_printMutex);
 }
 
 
@@ -119,15 +133,16 @@ static void print_log_no_alloc(
     fprintf(stderr, "%s\n", set_default());
 #endif
 
-    if (full_trace_mod_level_line != -1) {
+    if (g_fullTraceLineTLS_get_value() != -1) {
 #if defined(PLATFORM_WINDOWS)
         set_trace_color();
         fprintf(stderr, "\tThrowed in '%s' at %s@%d%s\n", full_trace_mod_level_func,
                 full_trace_mod_level_file, full_trace_mod_level_line);
         set_default();
 #elif defined(PLATFORM_UNIX)
-        fprintf(stderr, "%s\tThrowed in '%s' at %s@%d%s\n", set_trace_color(), full_trace_mod_level_func,
-                full_trace_mod_level_file, full_trace_mod_level_line, set_default());
+        fprintf(stderr, "%s\tThrowed in '%s' at %s@%d%s\n", set_trace_color(),
+                g_fullTraceFuncTLS_get_value(), g_fullTraceFileTLS_get_value(),
+                g_fullTraceLineTLS_get_value(), set_default());
 #endif
     }
     // mutex_unlock(PrintMutex);  Mutex can be not initialized here

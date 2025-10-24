@@ -2,10 +2,6 @@
 
 #include "types/types.h"
 
-extern c_str full_trace_mod_level_func;
-extern c_str full_trace_mod_level_file;
-extern i32 full_trace_mod_level_line;
-
 void log_init(void);
 void log_exit(void);
 
@@ -20,6 +16,14 @@ void log_exit(void);
  * @api
  */
 void __he_update_full_trace_info(const char* func, const char* file, i32 line);
+
+typedef struct {
+    c_str func;
+    c_str file;
+    i32 line;
+} log_full_trace_info;
+
+log_full_trace_info log_full_trace_get_info(void);
 
 
 #define LOG_INFO(...) __he_log_info(__LINE__, __FILE__, __VA_ARGS__)

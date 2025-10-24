@@ -4,9 +4,10 @@
 #include <types/vector.h>
 
 #include <stdlib.h>
+#include <string.h>
 
 #if defined(HE_MEM_TRACK_TRACE)
-struct allocationData {
+struct AllocationData {
     void* ptr;
     usize size;
     c_str file;
@@ -26,13 +27,13 @@ struct allocationData {
 #endif
 
 // clang-format off
-vector_template_def_with_properties(allocationData, struct allocationData, static)
+vector_template_def_with_properties(allocationData, struct AllocationData, static)
 vector_template_impl_with_properties(
-        allocationData, struct allocationData, static, malloc, realloc, free, memmove, memcpy
+        allocationData, struct AllocationData, static, malloc, realloc, free, memmove, memcpy
 )
 
 // FIXME: Add mutex
-static vec_allocationData AllocatedMemory;
+static vec_allocationData g_allocatedMemory;
 // clang-format on
 
 
@@ -41,7 +42,7 @@ static inline void* _trealloc(void* ptr, usize size, c_str file, i32 line);
 
 void memory_init(void) {
 #if defined(HE_MEM_TRACK) | defined(HE_MEM_TRACK_TRACE)
-    AllocatedMemory = vec_allocationData_init();
+    g_allocatedMemory = vec_allocationData_init();
 #endif
 }
 
@@ -52,8 +53,8 @@ void memory_exit(void) {
         __he_update_full_trace_info("", "", -1);
         LOG_ERROR_NO_ALLOC("Unallocated memory size: %zu bytes", used);
 
-        for (usize i = 0; i < AllocatedMemory.size; ++i) {
-            struct allocationData* data = &AllocatedMemory.data[i];
+        for (usize i = 0; i < g_allocatedMemory.size; ++i) {
+            struct AllocationData* data = &g_allocatedMemory.data[i];
 
             if (data->user_line != -1) {
     #if defined(HE_MEM_TRACK_TRACE)
@@ -75,7 +76,7 @@ void memory_exit(void) {
         }
     }
 
-    vec_allocationData_free(&AllocatedMemory);
+    vec_allocationData_free(&g_allocatedMemory);
 #endif
 }
 
@@ -90,9 +91,9 @@ void* trealloc(void* ptr, u64 size) {
 
 void tfree(void* ptr) {
 #if defined(HE_MEM_TRACK) | defined(HE_MEM_TRACK_TRACE)
-    for (usize i = 0; i < AllocatedMemory.size; i++) {
-        if (AllocatedMemory.data[i].ptr == ptr) {
-            vec_allocationData_erase(&AllocatedMemory, i);
+    for (usize i = 0; i < g_allocatedMemory.size; i++) {
+        if (g_allocatedMemory.data[i].ptr == ptr) {
+            vec_allocationData_erase(&g_allocatedMemory, i);
             break;
         }
     }
@@ -103,8 +104,8 @@ void tfree(void* ptr) {
 u64 get_allocated_memory(void) {
 #if defined(HE_MEM_TRACK) | defined(HE_MEM_TRACK_TRACE)
     u64 total = 0;
-    for (usize i = 0; i < AllocatedMemory.size; i++) {
-        total += AllocatedMemory.data[i].size;
+    for (usize i = 0; i < g_allocatedMemory.size; i++) {
+        total += g_allocatedMemory.data[i].size;
     }
     return total;
 #else
@@ -116,14 +117,9 @@ u64 get_allocated_memory(void) {
 static inline void* _tmalloc(usize size, c_str file, i32 line) {
 #if defined(HE_MEM_TRACK_TRACE)
     void* ptr = malloc(size);
-    struct allocationData data = {ptr,
-                                  size,
-                                  file,
-                                  line,
-                                  full_trace_mod_level_func,
-                                  full_trace_mod_level_file,
-                                  full_trace_mod_level_line};
-    vec_allocationData_push_back(&AllocatedMemory, data);
+    log_full_trace_info ft_info = log_full_trace_get_info();
+    struct AllocationData data = {ptr, size, file, line, ft_info.func, ft_info.file, ft_info.line};
+    vec_allocationData_push_back(&g_allocatedMemory, data);
     return ptr;
 #elif defined(HE_MEM_TRACK)
     void* ptr = malloc(size);
@@ -144,14 +140,15 @@ static inline void* _trealloc(void* ptr, usize size, c_str file, i32 line) {
         return _tmalloc(size, file, line);
 
     void* new_ptr = realloc(ptr, size);
-    for (usize i = 0; i < AllocatedMemory.size; ++i) {
-        struct allocationData* data = &AllocatedMemory.data[i];
+    for (usize i = 0; i < g_allocatedMemory.size; ++i) {
+        struct AllocationData* data = &g_allocatedMemory.data[i];
+        log_full_trace_info ft_info = log_full_trace_get_info();
         if (data->ptr == ptr) {
             data->ptr = new_ptr;
             data->size = size;
-            data->user_file = full_trace_mod_level_file;
-            data->user_func = full_trace_mod_level_func;
-            data->user_line = full_trace_mod_level_line;
+            data->user_file = ft_info.file;
+            data->user_func = ft_info.func;
+            data->user_line = ft_info.line;
     #if defined(HE_MEM_TRACK_TRACE)
             data->file = file;
             data->line = line;

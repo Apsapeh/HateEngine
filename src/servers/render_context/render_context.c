@@ -22,23 +22,23 @@ vector_template_def_static(RenderContextBackendPair, struct RenderContextBackend
 vector_template_impl_static(RenderContextBackendPair, struct RenderContextBackendPair)
 
 // FIXME: Add mutex
-static vec_RenderContextBackendPair RegistredBackends;
-static boolean IsLoaded = false;
+static vec_RenderContextBackendPair g_registredBackends;
+static boolean g_isLoaded = false;
 // clang-format on
 
 
 void render_context_init(void) {
-    RegistredBackends = vec_RenderContextBackendPair_init();
+    g_registredBackends = vec_RenderContextBackendPair_init();
 
     // Register default backend
     render_context_opengl_13_sdl3_backend_register();
 }
 
 void render_context_exit(void) {
-    for (usize i = 0; i < RegistredBackends.size; i++)
-        render_context_backend_free(RegistredBackends.data[i].backend);
+    for (usize i = 0; i < g_registredBackends.size; i++)
+        render_context_backend_free(g_registredBackends.data[i].backend);
 
-    vec_RenderContextBackendPair_free(&RegistredBackends);
+    vec_RenderContextBackendPair_free(&g_registredBackends);
 }
 
 Error render_context_register_backend(
@@ -46,9 +46,9 @@ Error render_context_register_backend(
 ) {
     ERROR_ARGS_CHECK_3(render_server_name, window_server_name, backend);
 
-    for (usize i = 0; i < RegistredBackends.size; i++) {
-        if (strcmp(RegistredBackends.data[i].render_server_name, render_server_name) == 0 &&
-            strcmp(RegistredBackends.data[i].window_server_name, window_server_name) == 0) {
+    for (usize i = 0; i < g_registredBackends.size; i++) {
+        if (strcmp(g_registredBackends.data[i].render_server_name, render_server_name) == 0 &&
+            strcmp(g_registredBackends.data[i].window_server_name, window_server_name) == 0) {
             LOG_ERROR(
                     "Backend with RenderServer = '%s' and WindowServer = '%s' already registered",
                     render_server_name, window_server_name
@@ -58,7 +58,7 @@ Error render_context_register_backend(
     }
 
     vec_RenderContextBackendPair_push_back(
-            &RegistredBackends,
+            &g_registredBackends,
             (struct RenderContextBackendPair) {render_server_name, window_server_name, backend}
     );
 
@@ -68,17 +68,17 @@ Error render_context_register_backend(
 Error render_context_load_backend(const char* render_server_name, const char* window_server_name) {
     ERROR_ARGS_CHECK_2(render_server_name, window_server_name);
 
-    if (IsLoaded) {
+    if (g_isLoaded) {
         LOG_ERROR("(render_context_load_backend) RenderContext already loaded");
         return ERROR_INVALID_STATE;
     }
 
-    for (usize i = 0; i < RegistredBackends.size; i++) {
-        if (strcmp(RegistredBackends.data[i].render_server_name, render_server_name) == 0 &&
-            strcmp(RegistredBackends.data[i].window_server_name, window_server_name) == 0) {
+    for (usize i = 0; i < g_registredBackends.size; i++) {
+        if (strcmp(g_registredBackends.data[i].render_server_name, render_server_name) == 0 &&
+            strcmp(g_registredBackends.data[i].window_server_name, window_server_name) == 0) {
 
-            RenderContext = *RegistredBackends.data[i].backend;
-            IsLoaded = true;
+            RenderContext = *g_registredBackends.data[i].backend;
+            g_isLoaded = true;
             return ERROR_SUCCESS;
         }
     }
@@ -87,7 +87,7 @@ Error render_context_load_backend(const char* render_server_name, const char* wi
 }
 
 boolean render_context_is_loaded(void) {
-    return IsLoaded;
+    return g_isLoaded;
 }
 
 
@@ -128,21 +128,21 @@ Error render_context_backend_get_function(
 static Error backend_set_get(
         RenderContextBackend* backend, const char* name, void (**fn)(void), u8 is_set
 ) {
-    typedef void (**fn_t)(void);
+    typedef void (**FnT)(void);
     struct fn_pair {
         const char* name;
-        fn_t function;
+        FnT function;
     };
 
     // TODO: generate with API Generator
     const struct fn_pair pairs[] = {
-            {"_init", (fn_t) &backend->_init},
-            {"_quit", (fn_t) &backend->_quit},
-            {"create_surface", (fn_t) &backend->create_surface},
-            {"destroy_surface", (fn_t) &backend->destroy_surface},
-            {"surface_make_current", (fn_t) &backend->surface_make_current},
-            {"surface_present", (fn_t) &backend->surface_present},
-            {"get_proc_addr", (fn_t) &backend->get_proc_addr},
+            {"_init", (FnT) &backend->_init},
+            {"_quit", (FnT) &backend->_quit},
+            {"create_surface", (FnT) &backend->create_surface},
+            {"destroy_surface", (FnT) &backend->destroy_surface},
+            {"surface_make_current", (FnT) &backend->surface_make_current},
+            {"surface_present", (FnT) &backend->surface_present},
+            {"get_proc_addr", (FnT) &backend->get_proc_addr},
     };
 
     for (usize i = 0; i < sizeof(pairs) / sizeof(pairs[0]); i++) {

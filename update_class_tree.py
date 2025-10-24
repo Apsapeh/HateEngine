@@ -27,7 +27,7 @@ typedef void (*free_func)(void* object);
 #define CAST_FREE(func) (free_func) func
 
 // clang-format off
-static free_func free_table[] = {
+static free_func g_freeTable[] = {
 FREE_TABLE
 };
 // clang-format on
