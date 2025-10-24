@@ -10,7 +10,7 @@
 
 RenderContextBackend RenderContext;
 
-struct RenderContextBackendPair {
+struct BackendPair {
     const char* render_server_name;
     const char* window_server_name;
     RenderContextBackend* backend;
@@ -18,17 +18,17 @@ struct RenderContextBackendPair {
 
 // clang-format off
 
-vector_template_def_static(RenderContextBackendPair, struct RenderContextBackendPair)
-vector_template_impl_static(RenderContextBackendPair, struct RenderContextBackendPair)
+vector_template_def_static(backendPair, struct BackendPair)
+vector_template_impl_static(backendPair, struct BackendPair)
 
 // FIXME: Add mutex
-static vec_RenderContextBackendPair g_registredBackends;
+static vec_backendPair g_registredBackends;
 static boolean g_isLoaded = false;
 // clang-format on
 
 
 void render_context_init(void) {
-    g_registredBackends = vec_RenderContextBackendPair_init();
+    g_registredBackends = vec_backendPair_init();
 
     // Register default backend
     render_context_opengl_13_sdl3_backend_register();
@@ -38,13 +38,13 @@ void render_context_exit(void) {
     for (usize i = 0; i < g_registredBackends.size; i++)
         render_context_backend_free(g_registredBackends.data[i].backend);
 
-    vec_RenderContextBackendPair_free(&g_registredBackends);
+    vec_backendPair_free(&g_registredBackends);
 }
 
-Error render_context_register_backend(
+boolean render_context_register_backend(
         const char* render_server_name, const char* window_server_name, RenderContextBackend* backend
 ) {
-    ERROR_ARGS_CHECK_3(render_server_name, window_server_name, backend);
+    ERROR_ARGS_CHECK_3(render_server_name, window_server_name, backend, { return false; });
 
     for (usize i = 0; i < g_registredBackends.size; i++) {
         if (strcmp(g_registredBackends.data[i].render_server_name, render_server_name) == 0 &&
@@ -53,24 +53,25 @@ Error render_context_register_backend(
                     "Backend with RenderServer = '%s' and WindowServer = '%s' already registered",
                     render_server_name, window_server_name
             );
-            return ERROR_ALREADY_EXISTS;
+            set_error(ERROR_ALREADY_EXISTS);
+            return false;
         }
     }
 
-    vec_RenderContextBackendPair_push_back(
-            &g_registredBackends,
-            (struct RenderContextBackendPair) {render_server_name, window_server_name, backend}
+    vec_backendPair_push_back(
+            &g_registredBackends, (struct BackendPair) {render_server_name, window_server_name, backend}
     );
 
-    return ERROR_SUCCESS;
+    return true;
 }
 
-Error render_context_load_backend(const char* render_server_name, const char* window_server_name) {
-    ERROR_ARGS_CHECK_2(render_server_name, window_server_name);
+boolean render_context_load_backend(const char* render_server_name, const char* window_server_name) {
+    ERROR_ARGS_CHECK_2(render_server_name, window_server_name, { return false; });
 
     if (g_isLoaded) {
         LOG_ERROR("(render_context_load_backend) RenderContext already loaded");
-        return ERROR_INVALID_STATE;
+        set_error(ERROR_INVALID_STATE);
+        return false;
     }
 
     for (usize i = 0; i < g_registredBackends.size; i++) {
@@ -79,11 +80,12 @@ Error render_context_load_backend(const char* render_server_name, const char* wi
 
             RenderContext = *g_registredBackends.data[i].backend;
             g_isLoaded = true;
-            return ERROR_SUCCESS;
+            return true;
         }
     }
 
-    return ERROR_NOT_FOUND;
+    set_error(ERROR_NOT_FOUND);
+    return false;
 }
 
 boolean render_context_is_loaded(void) {
@@ -92,11 +94,12 @@ boolean render_context_is_loaded(void) {
 
 
 /* ====================> RenderContextBackend functions <==================== */
-static Error backend_set_get(
-        RenderContextBackend* backend, const char* name, void (**fn)(void), u8 is_set
+static boolean backend_set_get(
+        RenderContextBackend* backend, const char* name, void (**fn)(void), unsigned char is_set
 );
 
 RenderContextBackend* render_context_backend_new(void) {
+    // FIXME: Add tmalloc check
     RenderContextBackend* backend = tmalloc(sizeof(RenderContextBackend));
 
     // TODO: Add default functions
@@ -104,38 +107,38 @@ RenderContextBackend* render_context_backend_new(void) {
     return backend;
 }
 
-Error render_context_backend_free(RenderContextBackend* backend) {
-    ERROR_ARG_CHECK(backend);
+boolean render_context_backend_free(RenderContextBackend* backend) {
+    ERROR_ARG_CHECK(backend, { return false; });
     tfree(backend);
-    return ERROR_SUCCESS;
+    return true;
 }
 
-Error render_context_backend_set_function(
-        RenderContextBackend* backend, const char* name, void (*function)(void)
+boolean render_context_backend_set_function(
+        RenderContextBackend* backend, const char* name, fptr function
 ) {
-    ERROR_ARGS_CHECK_3(backend, name, function);
+    ERROR_ARGS_CHECK_3(backend, name, function, { return false; });
     return backend_set_get(backend, name, (void (**)(void)) function, 1);
 }
 
-Error render_context_backend_get_function(
-        RenderContextBackend* backend, const char* name, void (**function)(void)
-) {
-    ERROR_ARGS_CHECK_3(backend, name, function);
-    return backend_set_get(backend, name, function, 0);
+fptr render_context_backend_get_function(RenderContextBackend* backend, const char* name) {
+    ERROR_ARGS_CHECK_2(backend, name, { return false; });
+    fptr function = NULL;
+    backend_set_get(backend, name, &function, 0);
+    return function;
 }
 
 
-static Error backend_set_get(
-        RenderContextBackend* backend, const char* name, void (**fn)(void), u8 is_set
+static boolean backend_set_get(
+        RenderContextBackend* backend, const char* name, void (**fn)(void), unsigned char is_set
 ) {
     typedef void (**FnT)(void);
-    struct fn_pair {
+    struct FnPair {
         const char* name;
         FnT function;
     };
 
     // TODO: generate with API Generator
-    const struct fn_pair pairs[] = {
+    const struct FnPair pairs[] = {
             {"_init", (FnT) &backend->_init},
             {"_quit", (FnT) &backend->_quit},
             {"create_surface", (FnT) &backend->create_surface},
@@ -151,10 +154,11 @@ static Error backend_set_get(
                 *pairs[i].function = (void (*)(void)) fn;
             else
                 *fn = *pairs[i].function;
-            return ERROR_SUCCESS;
+            return true;
         }
     }
 
     LOG_ERROR("Unknown function name: %s", name);
-    return ERROR_NOT_FOUND;
+    set_error(ERROR_NOT_FOUND);
+    return false;
 }

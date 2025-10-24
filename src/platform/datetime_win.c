@@ -125,7 +125,7 @@ static unsigned long long get_current_filetime100ns(struct datetime_handle* h) {
 }
 
 // Вспомог: инициализация доступных функций и baseline
-DatetimeHandle datetime_new(void) {
+datetime_handle datetime_new(void) {
     struct datetime_handle* h = (struct datetime_handle*) malloc(sizeof(*h));
     if (!h)
         return NULL;
@@ -210,17 +210,17 @@ DatetimeHandle datetime_new(void) {
         }
     }
 
-    return (DatetimeHandle) h;
+    return (datetime_handle) h;
 }
 
-void datetime_free(DatetimeHandle handler) {
+void datetime_free(datetime_handle handler) {
     if (!handler)
         return;
     struct datetime_handle* h = (struct datetime_handle*) handler;
     free(h);
 }
 
-void datetime_update(DatetimeHandle handler) {
+void datetime_update(datetime_handle handler) {
     // in this implementation we don't store a cached SystemTime struct,
     // getters will compute from baseline+elapsed when called.
     (void) handler; // no-op (kept for API compatibility)
@@ -248,7 +248,7 @@ static void get_systemtime_from_handle_local(struct datetime_handle* h, SYSTEMTI
 }
 
 // Get local fields
-u16 datetime_get_year(DatetimeHandle handler) {
+u16 datetime_get_year(datetime_handle handler) {
     if (!handler)
         return 0;
     struct datetime_handle* h = (struct datetime_handle*) handler;
@@ -257,7 +257,7 @@ u16 datetime_get_year(DatetimeHandle handler) {
     return (u16) st.wYear;
 }
 
-u8 datetime_get_month(DatetimeHandle handler) {
+u8 datetime_get_month(datetime_handle handler) {
     if (!handler)
         return 0;
     struct datetime_handle* h = (struct datetime_handle*) handler;
@@ -266,7 +266,7 @@ u8 datetime_get_month(DatetimeHandle handler) {
     return (u8) st.wMonth;
 }
 
-u8 datetime_get_day(DatetimeHandle handler) {
+u8 datetime_get_day(datetime_handle handler) {
     if (!handler)
         return 0;
     struct datetime_handle* h = (struct datetime_handle*) handler;
@@ -275,7 +275,7 @@ u8 datetime_get_day(DatetimeHandle handler) {
     return (u8) st.wDay;
 }
 
-u8 datetime_get_hour(DatetimeHandle handler) {
+u8 datetime_get_hour(datetime_handle handler) {
     if (!handler)
         return 0;
     struct datetime_handle* h = (struct datetime_handle*) handler;
@@ -284,7 +284,7 @@ u8 datetime_get_hour(DatetimeHandle handler) {
     return (u8) st.wHour;
 }
 
-u8 datetime_get_minute(DatetimeHandle handler) {
+u8 datetime_get_minute(datetime_handle handler) {
     if (!handler)
         return 0;
     struct datetime_handle* h = (struct datetime_handle*) handler;
@@ -293,7 +293,7 @@ u8 datetime_get_minute(DatetimeHandle handler) {
     return (u8) st.wMinute;
 }
 
-u8 datetime_get_second(DatetimeHandle handler) {
+u8 datetime_get_second(datetime_handle handler) {
     if (!handler)
         return 0;
     struct datetime_handle* h = (struct datetime_handle*) handler;
@@ -302,7 +302,7 @@ u8 datetime_get_second(DatetimeHandle handler) {
     return (u8) st.wSecond;
 }
 
-u32 datetime_get_nanosecond(DatetimeHandle handler) {
+u32 datetime_get_nanosecond(datetime_handle handler) {
     if (!handler)
         return 0;
     struct datetime_handle* h = (struct datetime_handle*) handler;
@@ -316,7 +316,7 @@ u32 datetime_get_nanosecond(DatetimeHandle handler) {
 
 /* ========== UTC getters ========== */
 
-u16 datetime_get_utc_year(DatetimeHandle handler) {
+u16 datetime_get_utc_year(datetime_handle handler) {
     if (!handler)
         return 0;
     struct datetime_handle* h = (struct datetime_handle*) handler;
@@ -325,7 +325,7 @@ u16 datetime_get_utc_year(DatetimeHandle handler) {
     return (u16) st.wYear;
 }
 
-u8 datetime_get_utc_month(DatetimeHandle handler) {
+u8 datetime_get_utc_month(datetime_handle handler) {
     if (!handler)
         return 0;
     struct datetime_handle* h = (struct datetime_handle*) handler;
@@ -334,7 +334,7 @@ u8 datetime_get_utc_month(DatetimeHandle handler) {
     return (u8) st.wMonth;
 }
 
-u8 datetime_get_utc_day(DatetimeHandle handler) {
+u8 datetime_get_utc_day(datetime_handle handler) {
     if (!handler)
         return 0;
     struct datetime_handle* h = (struct datetime_handle*) handler;
@@ -343,7 +343,7 @@ u8 datetime_get_utc_day(DatetimeHandle handler) {
     return (u8) st.wDay;
 }
 
-u8 datetime_get_utc_hour(DatetimeHandle handler) {
+u8 datetime_get_utc_hour(datetime_handle handler) {
     if (!handler)
         return 0;
     struct datetime_handle* h = (struct datetime_handle*) handler;
@@ -352,7 +352,7 @@ u8 datetime_get_utc_hour(DatetimeHandle handler) {
     return (u8) st.wHour;
 }
 
-u8 datetime_get_utc_minute(DatetimeHandle handler) {
+u8 datetime_get_utc_minute(datetime_handle handler) {
     if (!handler)
         return 0;
     struct datetime_handle* h = (struct datetime_handle*) handler;
@@ -361,7 +361,7 @@ u8 datetime_get_utc_minute(DatetimeHandle handler) {
     return (u8) st.wMinute;
 }
 
-u8 datetime_get_utc_second(DatetimeHandle handler) {
+u8 datetime_get_utc_second(datetime_handle handler) {
     if (!handler)
         return 0;
     struct datetime_handle* h = (struct datetime_handle*) handler;

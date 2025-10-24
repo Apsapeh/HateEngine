@@ -1,62 +1,66 @@
 #include <math.h>
 #define HEAPI_LOAD_IMPL
-#define HEAPI_FULL_TRACE
+// #define HEAPI_FULL_TRACE
 #include <HateEngineAPI.h>
 
 #include <stdio.h>
 #include <stdlib.h>
 
-WindowServerWindow* win;
-RenderContextSurface* surface;
+WindowServerWindow* g_win;
+RenderContextSurface* g_surface;
 
-WindowServerWindow* win2;
-RenderContextSurface* surface2;
+WindowServerWindow* g_win2;
+RenderContextSurface* g_surface2;
 void _ready(void) {
     vfs_mount_rfs("/");
-    
+
     string* str_hello = string_from("Hello, ");
     string* str_world = string_from("world!!!!");
     string* str_hello_world;
     string_new(&str_hello_world);
-    
+
     string_push_back(str_hello_world, str_hello);
     string_push_back(str_hello_world, str_world);
-    
+
     string_free(str_hello);
     string_free(str_world);
-    
+
     printf("String hello_world: %s\n", string_cstr(str_hello_world));
-    
-    //string_free(str_hello_world);
-    
-    
-    printf("wscw: %p\n", raw_window_server_create_window);
-    printf("wswss: %p\n", raw_window_server_window_set_size);
-    if (window_server_create_window("Hello", 800, 600, NULL, &win)) {
-        printf("СМЭРТЬ\n");
+
+    // string_free(str_hello_world);
+
+
+    printf("wscw: %p\n", (void*) raw_window_server_create_window);
+    printf("wswss: %p\n", (void*) raw_window_server_window_set_size);
+    g_win = window_server_create_window("Hello", ivec2_new(800, 600), NULL);
+    if (!g_win) {
+        printf("СМЭРТЬ: %s\n", get_error());
         exit(1);
     }
-    
-    if (render_context_create_surface(win, &surface)) {
-        printf("СМЭРТЬ\n");
+
+    g_surface = render_context_create_surface(g_win);
+    if (!g_surface) {
+        printf("СМЭРТЬ: %s\n", get_error());
         exit(1);
     }
-    
-    if (window_server_create_window("Hello 2", 800, 600, NULL, &win2)) {
-        printf("СМЭРТЬ\n");
+
+    g_win2 = window_server_create_window("Hello2", ivec2_new(800, 600), NULL);
+    if (!g_win2) {
+        printf("СМЭРТЬ: %s\n", get_error());
         exit(1);
     }
-    
-    if (render_context_create_surface(win2, &surface2)) {
-        printf("СМЭРТЬ\n");
+
+    g_surface2 = render_context_create_surface(g_win2);
+    if (!g_surface2) {
+        printf("СМЭРТЬ: %s\n", get_error());
         exit(1);
     }
-    //window_server_destroy_window(win);*/
+    // window_server_destroy_window(win);*/
 
     printf("Used mem: %zu\n", get_allocated_memory());
     u64 size;
     char* data = vfs_res_read_file("/assets/text.txt", &size);
-    
+
     if (data) {
         printf("Data: %s\n", data);
         tfree(data);
@@ -65,7 +69,7 @@ void _ready(void) {
     }
     printf("Used mem: %zu\n", get_allocated_memory());
 
-    printf("Ptr: %p\n", raw_node_new);
+    printf("Ptr: %p\n", (void*) raw_node_new);
     Node* node = node_new("Jopa");
     const char* name = node_get_name(node);
 
@@ -80,30 +84,30 @@ void _ready(void) {
     printf("%f %f %f\n", pos.x, pos.y, pos.z);
     vec3_normalize_in(&pos);
     printf("%f %f %f\n", pos.x, pos.y, pos.z);
-    
+
 
     auto_free((Object*) node);
     vfs_unmount_rfs();
 }
-                 
-static int count = 0;
-double _time = 0;
+
+static int g_count = 0;
+double g_time = 0;
 void _process(double delta) {
-    //printf("Process %d\n", count);
-    _time += delta;
-    count++;
-    
-    //if (count % 1000 == 0) {
-    window_server_window_set_size(win, 800 + 100 * sin(_time), 600);
-    window_server_window_set_size(win2, 800, 600 + 75 * cos(_time));
-        //x}
-    
-    render_context_surface_present(surface);
-    render_context_surface_present(surface2);
-    
+    // printf("Process %d\n", count);
+    g_time += delta;
+    g_count++;
+
+    // if (count % 1000 == 0) {
+    window_server_window_set_size(g_win, ivec2_new(800 + 100 * sin(g_time), 600));
+    window_server_window_set_size(g_win2, ivec2_new(800, 600 + 75 * cos(g_time)));
+    // x}
+
+    render_context_surface_present(g_surface);
+    render_context_surface_present(g_surface2);
+
     return;
 
-    if (count == 20000000) {
+    if (g_count == 20000000) {
         printf("Exit\n");
         exit(0);
     }

@@ -5,7 +5,7 @@
 #ifndef HE_NO_NATIVE_TLS // Try to use native __thread or something like that
 
     #if defined(_MSC_VER) || defined(__GNUC__) || defined(__clang__)
-        #if defined(_MSC_VER)
+        #if defined(_MSC_VER) || defined(__MINGW32__) || defined(__MINGW64__)
             #define THREAD_LOCAL __declspec(thread)
         #else
             #define THREAD_LOCAL __thread

@@ -11,8 +11,8 @@
  * }
  */
 typedef struct {
-    Error (*_init)(void);
-    Error (*_quit)(void);
+    boolean (*_init)(void);
+    boolean (*_quit)(void);
 } RenderServerBackend;
 
 
@@ -33,7 +33,7 @@ void render_server_exit(void);
  *
  * @api
  */
-Error render_server_register_backend(const char* name, RenderServerBackend* backend);
+boolean render_server_register_backend(const char* name, RenderServerBackend* backend);
 
 /**
  * @brief Load a backend. First you should register them via render_server_register_backend
@@ -44,7 +44,7 @@ Error render_server_register_backend(const char* name, RenderServerBackend* back
  *
  * @api
  */
-Error render_server_load_backend(const char* name);
+boolean render_server_load_backend(const char* name);
 
 /**
  * @brief If backend was loaded
@@ -68,7 +68,7 @@ RenderServerBackend* render_server_backend_new(void);
  *
  * @api
  */
-Error render_server_backend_free(RenderServerBackend* backend);
+boolean render_server_backend_free(RenderServerBackend* backend);
 
 /**
  * @brief Set a function pointer for a backend
@@ -77,8 +77,8 @@ Error render_server_backend_free(RenderServerBackend* backend);
  *
  * @api
  */
-Error render_server_backend_set_function(
-        RenderServerBackend* backend, const char* name, void (*function)(void)
+boolean render_server_backend_set_function(
+        RenderServerBackend* backend, const char* name, fptr function
 );
 
 
@@ -89,6 +89,4 @@ Error render_server_backend_set_function(
  *
  * @api
  */
-Error render_server_backend_get_function(
-        RenderServerBackend* backend, const char* name, void (**function)(void)
-);
+fptr render_server_backend_get_function(RenderServerBackend* backend, const char* name);

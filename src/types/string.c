@@ -6,13 +6,13 @@
 #include "../log.h"
 
 Error string_new(string** str) {
-    ERROR_ARG_CHECK(str);
+    ERROR_ARG_CHECK(str, { return ERROR_INVALID_ARGUMENT; });
 
     string* str_new = tmalloc(sizeof(string));
-    ERROR_ARG_CHECK(str_new);
+    ERROR_ARG_CHECK(str_new, { return ERROR_INVALID_ARGUMENT; });
 
     str_new->ptr = tmalloc(sizeof(u8));
-    ERROR_ARG_CHECK(str_new->ptr);
+    ERROR_ARG_CHECK(str_new->ptr, { return ERROR_INVALID_ARGUMENT; });
 
     *(str_new->ptr) = '\0';
     str_new->len = 0;
@@ -406,13 +406,13 @@ void string_slice_free(string_slice* str_sl) {
 //<--------------------------- UTF-8 --------------------------->
 
 Error string_utf8_new(string_utf8** str) {
-    ERROR_ARG_CHECK(str);
+    ERROR_ARG_CHECK(str, { return ERROR_INVALID_ARGUMENT; });
 
     string_utf8* str_new = tmalloc(sizeof(string_utf8));
-    ERROR_ARG_CHECK(str_new);
+    ERROR_ARG_CHECK(str_new, { return ERROR_INVALID_ARGUMENT; });
 
     str_new->ptr = tmalloc(1);
-    ERROR_ARG_CHECK(str_new->ptr);
+    ERROR_ARG_CHECK(str_new->ptr, { return ERROR_INVALID_ARGUMENT; });
 
     *(u8*) str_new->ptr = '\0';
     str_new->len = 0;
@@ -451,11 +451,11 @@ static Error string_utf8_dec(string_utf8** str, const u8* c_str) {
     *(u8*) tmp_ptr = '\0';
 
     string_utf8* str_new = tmalloc(sizeof(string_utf8));
-    ERROR_ARG_CHECK(str_new);
+    ERROR_ARG_CHECK(str_new, { return ERROR_INVALID_ARGUMENT; });
 
     usize size_new_str = 4 * (tmp_ptr - cache) + 1;
     str_new->ptr = tmalloc(size_new_str);
-    ERROR_ARG_CHECK(str_new->ptr);
+    ERROR_ARG_CHECK(str_new->ptr, { return ERROR_INVALID_ARGUMENT; });
     str_new->len = tmp_ptr - cache;
 
     memcpy(str_new->ptr, cache, size_new_str);
@@ -465,7 +465,7 @@ static Error string_utf8_dec(string_utf8** str, const u8* c_str) {
 }
 
 Error string_utf8_to_string(string** dest, const string_utf8* str) {
-    ERROR_ARGS_CHECK_2(dest, str);
+    ERROR_ARGS_CHECK_2(dest, str, { return ERROR_INVALID_ARGUMENT; });
 
     usize len_str;
     string_utf8_len(&len_str, str);
@@ -494,11 +494,11 @@ Error string_utf8_to_string(string** dest, const string_utf8* str) {
     *tmp_ptr = '\0';
 
     string* str_new = tmalloc(sizeof(string));
-    ERROR_ARG_CHECK(str_new);
+    ERROR_ARG_CHECK(str_new, { return ERROR_INVALID_ARGUMENT; });
 
     usize size_new_str = tmp_ptr - cache + 1;
     str_new->ptr = tmalloc(size_new_str);
-    ERROR_ARG_CHECK(str_new->ptr);
+    ERROR_ARG_CHECK(str_new->ptr, { return ERROR_INVALID_ARGUMENT; });
     str_new->len = size_new_str - 1;
 
     memcpy(str_new->ptr, cache, size_new_str);
@@ -508,32 +508,32 @@ Error string_utf8_to_string(string** dest, const string_utf8* str) {
 }
 
 Error string_utf8_from(string_utf8** str, const char* c_str) {
-    ERROR_ARGS_CHECK_2(str, c_str);
+    ERROR_ARGS_CHECK_2(str, c_str, { return ERROR_INVALID_ARGUMENT; });
     return string_utf8_dec(str, (u8*) c_str);
 }
 
 
 Error string_utf8_len(usize* len, const string_utf8* c_str) {
-    ERROR_ARGS_CHECK_2(len, c_str);
+    ERROR_ARGS_CHECK_2(len, c_str, { return ERROR_INVALID_ARGUMENT; });
     *len = c_str->len;
     return ERROR_SUCCESS;
 }
 
 Error string_utf8_size(usize* size, const string_utf8* c_str) {
-    ERROR_ARGS_CHECK_2(size, c_str);
+    ERROR_ARGS_CHECK_2(size, c_str, { return ERROR_INVALID_ARGUMENT; });
     *size = 4 * c_str->len + 1;
     return ERROR_SUCCESS;
 }
 
 Error string_utf8_clone(string_utf8** str, const string_utf8* c_str) {
-    ERROR_ARGS_CHECK_2(str, c_str);
+    ERROR_ARGS_CHECK_2(str, c_str, { return ERROR_INVALID_ARGUMENT; });
 
     string_utf8* str_new = tmalloc(sizeof(string));
-    ERROR_ARG_CHECK(str_new);
+    ERROR_ARG_CHECK(str_new, { return ERROR_INVALID_ARGUMENT; });
 
     usize size_c_str = 4 * c_str->len + 1;
     str_new->ptr = tmalloc(size_c_str);
-    ERROR_ARG_CHECK(str_new->ptr);
+    ERROR_ARG_CHECK(str_new->ptr, { return ERROR_INVALID_ARGUMENT; });
     str_new->len = c_str->len;
     memcpy(str_new->ptr, c_str->ptr, size_c_str);
     *str = str_new;
@@ -542,7 +542,7 @@ Error string_utf8_clone(string_utf8** str, const string_utf8* c_str) {
 }
 
 Error string_utf8_push_back_cstr(string_utf8* dest, const char* src) {
-    ERROR_ARGS_CHECK_2(dest, src);
+    ERROR_ARGS_CHECK_2(dest, src, { return ERROR_INVALID_ARGUMENT; });
 
     string_utf8* str_new;
     if (string_utf8_dec(&str_new, (u8*) src)) {
@@ -560,12 +560,12 @@ Error string_utf8_push_back_cstr(string_utf8* dest, const char* src) {
 }
 
 Error string_utf8_push_back(string_utf8* dest, const string_utf8* src) {
-    ERROR_ARGS_CHECK_2(dest, src);
+    ERROR_ARGS_CHECK_2(dest, src, { return ERROR_INVALID_ARGUMENT; });
 
     usize size_dest = 4 * dest->len + 1;
     usize size_src = 4 * src->len + 1;
     u32* tmp_ptr = trealloc(dest->ptr, size_dest + size_src - 1);
-    ERROR_ARG_CHECK(tmp_ptr);
+    ERROR_ARG_CHECK(tmp_ptr, { return ERROR_INVALID_ARGUMENT; });
 
     dest->ptr = tmp_ptr;
     memcpy(dest->ptr + dest->len, src->ptr, size_src);
@@ -575,12 +575,12 @@ Error string_utf8_push_back(string_utf8* dest, const string_utf8* src) {
 }
 
 Error string_utf8_push_front(string_utf8* dest, const string_utf8* src) {
-    ERROR_ARGS_CHECK_2(dest, src);
+    ERROR_ARGS_CHECK_2(dest, src, { return ERROR_INVALID_ARGUMENT; });
 
     usize size_dest = 4 * dest->len + 1;
     usize size_src = 4 * src->len + 1;
     u32* tmp_ptr = trealloc(dest->ptr, size_dest + size_src - 1);
-    ERROR_ARG_CHECK(tmp_ptr);
+    ERROR_ARG_CHECK(tmp_ptr, { return ERROR_INVALID_ARGUMENT; });
 
     dest->ptr = tmp_ptr;
     memcpy(dest->ptr + src->len, dest->ptr, size_dest);
@@ -591,7 +591,7 @@ Error string_utf8_push_front(string_utf8* dest, const string_utf8* src) {
 }
 
 Error string_utf8_insert(string_utf8* dest, const string_utf8* src, const usize i) {
-    ERROR_ARGS_CHECK_2(dest, src);
+    ERROR_ARGS_CHECK_2(dest, src, { return ERROR_INVALID_ARGUMENT; });
 
     if (i == 0)
         return string_utf8_push_front(dest, src);
@@ -599,7 +599,7 @@ Error string_utf8_insert(string_utf8* dest, const string_utf8* src, const usize 
     usize size_dest = 4 * dest->len + 1;
     usize size_src = 4 * src->len + 1;
     u32* tmp_ptr = trealloc(dest->ptr, size_dest + size_src - 1);
-    ERROR_ARG_CHECK(tmp_ptr);
+    ERROR_ARG_CHECK(tmp_ptr, { return ERROR_INVALID_ARGUMENT; });
 
     dest->ptr = tmp_ptr;
     memcpy(dest->ptr + src->len + i, dest->ptr + i, 4 * (dest->len - i + 1));

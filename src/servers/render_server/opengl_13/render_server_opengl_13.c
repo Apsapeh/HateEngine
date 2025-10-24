@@ -2,17 +2,18 @@
 #include "servers/render_server/render_server.h"
 #include "error.h"
 #include "log.h"
+#include "types/types.h"
 
 /* ====> Errors <==== */
 
 /* ================== */
 
-static Error _init(void) {
-    return ERROR_SUCCESS;
+static boolean _init(void) {
+    return true;
 }
 
-static Error _quit(void) {
-    return ERROR_SUCCESS;
+static boolean _quit(void) {
+    return true;
 }
 
 

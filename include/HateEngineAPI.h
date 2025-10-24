@@ -34,6 +34,32 @@ typedef void (*fptr)(void);
 typedef void* ptr;
 
 
+#define U8_MAX UINT8_MAX
+#define U8_MIN UINT8_MIN
+
+#define U16_MAX UINT16_MAX
+#define U16_MIN UINT16_MIN
+
+#define U32_MAX UINT32_MAX
+#define U32_MIN UINT32_MIN
+
+#define U64_MAX UINT64_MAX
+#define U64_MIN UINT64_MIN
+
+
+#define I8_MAX INT8_MAX
+#define I8_MIN INT8_MIN
+
+#define I16_MAX INT16_MAX
+#define I16_MIN INT16_MIN
+
+#define I32_MAX INT32_MAX
+#define I32_MIN INT32_MIN
+
+#define I64_MAX INT64_MAX
+#define I64_MIN INT64_MIN
+
+
 typedef c_str Error;
 
 #define ERROR_ASSERT_INFO(error, ...)                                                                   \
@@ -65,27 +91,28 @@ typedef c_str Error;
     } while (0)
 
 
-#define ERROR_ARG_CHECK(arg)                                                                            \
+#define ERROR_ARG_CHECK(arg, to_return)                                                                 \
     do {                                                                                                \
         if (!(arg)) {                                                                                   \
             LOG_ERROR("Invalid argument (is NULL): " #arg);                                             \
-            return ERROR_INVALID_ARGUMENT;                                                              \
+            set_error(ERROR_INVALID_ARGUMENT);                                                          \
+            to_return                                                                                   \
         }                                                                                               \
     } while (0)
 
-#define ERROR_ARGS_CHECK_1(a) ERROR_ARG_CHECK(a)
-#define ERROR_ARGS_CHECK_2(a, b)                                                                        \
-    ERROR_ARG_CHECK(a);                                                                                 \
-    ERROR_ARG_CHECK(b)
-#define ERROR_ARGS_CHECK_3(a, b, c)                                                                     \
-    ERROR_ARG_CHECK(a);                                                                                 \
-    ERROR_ARG_CHECK(b);                                                                                 \
-    ERROR_ARG_CHECK(c)
-#define ERROR_ARGS_CHECK_4(a, b, c, d)                                                                  \
-    ERROR_ARG_CHECK(a);                                                                                 \
-    ERROR_ARG_CHECK(b);                                                                                 \
-    ERROR_ARG_CHECK(c);                                                                                 \
-    ERROR_ARG_CHECK(d)
+#define ERROR_ARGS_CHECK_1(a, end_block) ERROR_ARG_CHECK(a, end_block)
+#define ERROR_ARGS_CHECK_2(a, b, end_block)                                                             \
+    ERROR_ARG_CHECK(a, end_block);                                                                      \
+    ERROR_ARG_CHECK(b, end_block)
+#define ERROR_ARGS_CHECK_3(a, b, c, end_block)                                                          \
+    ERROR_ARG_CHECK(a, end_block);                                                                      \
+    ERROR_ARG_CHECK(b, end_block);                                                                      \
+    ERROR_ARG_CHECK(c, end_block)
+#define ERROR_ARGS_CHECK_4(a, b, c, d, end_block)                                                       \
+    ERROR_ARG_CHECK(a, end_block);                                                                      \
+    ERROR_ARG_CHECK(b, end_block);                                                                      \
+    ERROR_ARG_CHECK(c, end_block);                                                                      \
+    ERROR_ARG_CHECK(d, end_block)
 
 
 #define ERROR_ASSERT(error, ...) ERROR_ASSERT_FATAL(error, __VA_ARGS__)
@@ -273,6 +300,16 @@ typedef struct Vec3 {
 } Vec3;
 
 /**
+ * @brief Primitive 2D vector i32
+ *
+ * @api forward
+ */
+typedef struct IVec2 {
+    i32 x;
+    i32 y;
+} IVec2;
+
+/**
  * 's' - Seek from start
  *
  * 'c' - Seek from current
@@ -318,11 +355,15 @@ typedef u8 WindowServerWindowMode;
 
 #define FS_SEEK_FROM_END 'e'
 
+#define WINDOW_SERVER_WINDOW_V_SYNC_UNKNOWN '\0'
+
 #define WINDOW_SERVER_WINDOW_V_SYNC_DISABLED 'd'
 
 #define WINDOW_SERVER_WINDOW_V_SYNC_ENABLED 'e'
 
 #define WINDOW_SERVER_WINDOW_V_SYNC_ENABLED_ASYNC 'a'
+
+#define WINDOW_SERVER_WINDOW_MODE_UNKNOWN '\0'
 
 #define WINDOW_SERVER_WINDOW_MODE_WINDOWED 'w'
 
@@ -352,14 +393,14 @@ typedef u8 WindowServerWindowMode;
 extern void (*raw___he_update_full_trace_info)(const char * func, const char * file, i32 line);
 
 /**
- *
+ * @brief Set a last error that occurred on the current thread.
  *
  * @api
  */
 extern void (*raw_set_error)(Error err);
 
 /**
- *
+ * @brief Retrieve a last error that occurred on the current thread.
  *
  * @api
  */
@@ -1019,6 +1060,85 @@ extern void (*raw_vec3_scale_in)(Vec3 *const to, const float factor);
 extern void (*raw_vec3_normalize_in)(Vec3 *const a);
 
 /**
+ * @api
+ */
+extern IVec2 (*raw_ivec2_new)(i32 x, i32 y);
+
+/**
+ * @api
+ */
+extern IVec2 (*raw_ivec2_add)(const IVec2 *const a, const IVec2 *const b);
+
+/**
+ * @api
+ */
+extern IVec2 (*raw_ivec2_sub)(const IVec2 *const a, const IVec2 *const b);
+
+/**
+ * @api
+ */
+extern IVec2 (*raw_ivec2_scale)(const IVec2 *const a, const float factor);
+
+/**
+ * @api
+ */
+extern float (*raw_ivec2_dot)(const IVec2 *const a, const IVec2 *const b);
+
+/**
+ * @api
+ */
+extern float (*raw_ivec2_length)(const IVec2 *const a);
+
+/**
+ * @api
+ */
+extern IVec2 (*raw_ivec2_normalize)(const IVec2 *const a);
+
+/**
+ * @api
+ */
+extern float (*raw_ivec2_distance)(const IVec2 *const a, const IVec2 *const b);
+
+/**
+ * @brief Add b to a
+ *
+ * @param[in/out] a
+ * @param[in] b
+ *
+ * @api
+ */
+extern void (*raw_ivec2_add_in)(IVec2 *const to, const IVec2 *const what);
+
+/**
+ * @brief
+ *
+ * @param[in/out] from
+ * @param[in] what
+ *
+ * @api
+ */
+extern void (*raw_ivec2_sub_in)(IVec2 *const from, const IVec2 *const what);
+
+/**
+ * @brief
+ *
+ * @param[in/out] to
+ * @param[in] factor
+ *
+ * @api
+ */
+extern void (*raw_ivec2_scale_in)(IVec2 *const to, const float factor);
+
+/**
+ * @brief
+ *
+ * @param[in/out] a
+ *
+ * @api
+ */
+extern void (*raw_ivec2_normalize_in)(IVec2 *const a);
+
+/**
  * @brief
  *
  * @api
@@ -1497,7 +1617,7 @@ extern void (*raw_vfs_stream_close)(FileStream * stream);
  *
  * @api
  */
-extern Error (*raw_window_server_register_backend)(const char * name, WindowServerBackend * backend);
+extern boolean (*raw_window_server_register_backend)(const char * name, WindowServerBackend * backend);
 
 /**
  * @brief Load a backend. First you should register them via window_server_register_backend
@@ -1508,7 +1628,7 @@ extern Error (*raw_window_server_register_backend)(const char * name, WindowServ
  *
  * @api
  */
-extern Error (*raw_window_server_load_backend)(const char * name);
+extern boolean (*raw_window_server_load_backend)(const char * name);
 
 /**
  * @brief Create a new WindowServerBackend instance
@@ -1524,7 +1644,7 @@ extern WindowServerBackend * (*raw_window_server_backend_new)(void);
  *
  * @api
  */
-extern Error (*raw_window_server_backend_free)(WindowServerBackend * backend);
+extern boolean (*raw_window_server_backend_free)(WindowServerBackend * backend);
 
 /**
  * @brief Set a function pointer for a backend
@@ -1533,7 +1653,7 @@ extern Error (*raw_window_server_backend_free)(WindowServerBackend * backend);
  *
  * @api
  */
-extern Error (*raw_window_server_backend_set_function)(WindowServerBackend * backend, const char * name, void (* function) (void));
+extern boolean (*raw_window_server_backend_set_function)(WindowServerBackend * backend, const char * name, fptr function);
 
 /**
  * @brief Get a function pointer for a backend
@@ -1542,7 +1662,7 @@ extern Error (*raw_window_server_backend_set_function)(WindowServerBackend * bac
  *
  * @api
  */
-extern Error (*raw_window_server_backend_get_function)(WindowServerBackend * backend, const char * name, void (** function) (void));
+extern fptr (*raw_window_server_backend_get_function)(WindowServerBackend * backend, const char * name);
 
 /**
  * @brief Register a backend
@@ -1551,7 +1671,7 @@ extern Error (*raw_window_server_backend_get_function)(WindowServerBackend * bac
  *
  * @api
  */
-extern Error (*raw_render_server_register_backend)(const char * name, RenderServerBackend * backend);
+extern boolean (*raw_render_server_register_backend)(const char * name, RenderServerBackend * backend);
 
 /**
  * @brief Load a backend. First you should register them via render_server_register_backend
@@ -1562,7 +1682,7 @@ extern Error (*raw_render_server_register_backend)(const char * name, RenderServ
  *
  * @api
  */
-extern Error (*raw_render_server_load_backend)(const char * name);
+extern boolean (*raw_render_server_load_backend)(const char * name);
 
 /**
  * @brief Create a new RenderServerBackend instance
@@ -1578,7 +1698,7 @@ extern RenderServerBackend * (*raw_render_server_backend_new)(void);
  *
  * @api
  */
-extern Error (*raw_render_server_backend_free)(RenderServerBackend * backend);
+extern boolean (*raw_render_server_backend_free)(RenderServerBackend * backend);
 
 /**
  * @brief Set a function pointer for a backend
@@ -1587,7 +1707,7 @@ extern Error (*raw_render_server_backend_free)(RenderServerBackend * backend);
  *
  * @api
  */
-extern Error (*raw_render_server_backend_set_function)(RenderServerBackend * backend, const char * name, void (* function) (void));
+extern boolean (*raw_render_server_backend_set_function)(RenderServerBackend * backend, const char * name, fptr function);
 
 /**
  * @brief Get a function pointer for a backend
@@ -1596,7 +1716,7 @@ extern Error (*raw_render_server_backend_set_function)(RenderServerBackend * bac
  *
  * @api
  */
-extern Error (*raw_render_server_backend_get_function)(RenderServerBackend * backend, const char * name, void (** function) (void));
+extern fptr (*raw_render_server_backend_get_function)(RenderServerBackend * backend, const char * name);
 
 /**
  * @brief Register a backend
@@ -1607,7 +1727,7 @@ extern Error (*raw_render_server_backend_get_function)(RenderServerBackend * bac
  *
  * @api
  */
-extern Error (*raw_render_context_register_backend)(const char * render_server_name, const char * window_server_name, RenderContextBackend * backend);
+extern boolean (*raw_render_context_register_backend)(const char * render_server_name, const char * window_server_name, RenderContextBackend * backend);
 
 /**
  * @brief Load a backend. First you should register them via render_context_register_backend
@@ -1618,7 +1738,7 @@ extern Error (*raw_render_context_register_backend)(const char * render_server_n
  *
  * @api
  */
-extern Error (*raw_render_context_load_backend)(const char * render_server_name, const char * window_server_name);
+extern boolean (*raw_render_context_load_backend)(const char * render_server_name, const char * window_server_name);
 
 /**
  * @brief Create a new RenderContextBackend instance
@@ -1634,7 +1754,7 @@ extern RenderContextBackend * (*raw_render_context_backend_new)(void);
  *
  * @api
  */
-extern Error (*raw_render_context_backend_free)(RenderContextBackend * backend);
+extern boolean (*raw_render_context_backend_free)(RenderContextBackend * backend);
 
 /**
  * @brief Set a function pointer for a backend
@@ -1643,7 +1763,7 @@ extern Error (*raw_render_context_backend_free)(RenderContextBackend * backend);
  *
  * @api
  */
-extern Error (*raw_render_context_backend_set_function)(RenderContextBackend * backend, const char * name, void (* function) (void));
+extern boolean (*raw_render_context_backend_set_function)(RenderContextBackend * backend, const char * name, fptr function);
 
 /**
  * @brief Get a function pointer for a backend
@@ -1652,41 +1772,35 @@ extern Error (*raw_render_context_backend_set_function)(RenderContextBackend * b
  *
  * @api
  */
-extern Error (*raw_render_context_backend_get_function)(RenderContextBackend * backend, const char * name, void (** function) (void));
+extern fptr (*raw_render_context_backend_get_function)(RenderContextBackend * backend, const char * name);
 
-extern Error (*raw_window_server_create_window)(const char * title, i32 w, i32 h, WindowServerWindow * parent, WindowServerWindow ** out);
+extern WindowServerWindow * (*raw_window_server_create_window)(const char * title, IVec2 size, WindowServerWindow * parent);
 
-extern Error (*raw_window_server_destroy_window)(WindowServerWindow * this);
+extern boolean (*raw_window_server_destroy_window)(WindowServerWindow * this);
 
-extern Error (*raw_window_server_window_set_title)(WindowServerWindow * this, const char * title);
+extern boolean (*raw_window_server_window_set_title)(WindowServerWindow * this, const char * title);
 
-extern Error (*raw_window_server_window_get_title)(WindowServerWindow * this, const char ** out);
+extern c_str (*raw_window_server_window_get_title)(WindowServerWindow * this);
 
-/**
-     * @brief HOLA BOLA
-     *
-     */
-extern Error (*raw_window_server_window_set_mode)(WindowServerWindow * this, WindowServerWindowMode mode);
+extern boolean (*raw_window_server_window_set_mode)(WindowServerWindow * this, WindowServerWindowMode mode);
 
-extern Error (*raw_window_server_window_get_mode)(WindowServerWindow * this, WindowServerWindowMode * out);
+extern WindowServerWindowMode (*raw_window_server_window_get_mode)(WindowServerWindow * this);
 
-extern Error (*raw_window_server_window_set_size)(WindowServerWindow * this, i32 w, i32 h);
+extern boolean (*raw_window_server_window_set_size)(WindowServerWindow * this, IVec2 dimensions);
 
-extern Error (*raw_window_server_window_get_size)(WindowServerWindow * this, i32 * w, i32 * h);
+extern IVec2 (*raw_window_server_window_get_size)(WindowServerWindow * this, boolean * success);
 
-extern Error (*raw_window_server_window_set_position)(WindowServerWindow * this, i32 x, i32 y);
+extern boolean (*raw_window_server_window_set_position)(WindowServerWindow * this, IVec2 dimensions);
 
-extern Error (*raw_window_server_window_get_position)(WindowServerWindow * this, i32 * x, i32 * y);
+extern IVec2 (*raw_window_server_window_get_position)(WindowServerWindow * this, boolean * success);
 
-extern Error (*raw_window_server_window_set_fullscreen_display)(WindowServerWindow * this, WindowServerDisplay * fullscreen);
+extern RenderContextSurface * (*raw_render_context_create_surface)(WindowServerWindow * window);
 
-extern Error (*raw_render_context_create_surface)(WindowServerWindow * window, RenderContextSurface ** out);
+extern boolean (*raw_render_context_destroy_surface)(RenderContextSurface * surface);
 
-extern Error (*raw_render_context_destroy_surface)(RenderContextSurface * surface);
+extern boolean (*raw_render_context_surface_make_current)(RenderContextSurface * surface);
 
-extern Error (*raw_render_context_surface_make_current)(RenderContextSurface * surface);
-
-extern Error (*raw_render_context_surface_present)(RenderContextSurface * surface);
+extern boolean (*raw_render_context_surface_present)(RenderContextSurface * surface);
 
 extern fptr (*raw_render_context_get_proc_addr)(const char * proc);
 
@@ -1706,14 +1820,14 @@ extern fptr (*raw_render_context_get_proc_addr)(const char * proc);
 extern void (*__he_update_full_trace_info)(const char * func, const char * file, i32 line);
 
 /**
- *
+ * @brief Set a last error that occurred on the current thread.
  *
  * @api
  */
 extern void (*set_error)(Error err);
 
 /**
- *
+ * @brief Retrieve a last error that occurred on the current thread.
  *
  * @api
  */
@@ -2373,6 +2487,85 @@ extern void (*vec3_scale_in)(Vec3 *const to, const float factor);
 extern void (*vec3_normalize_in)(Vec3 *const a);
 
 /**
+ * @api
+ */
+extern IVec2 (*ivec2_new)(i32 x, i32 y);
+
+/**
+ * @api
+ */
+extern IVec2 (*ivec2_add)(const IVec2 *const a, const IVec2 *const b);
+
+/**
+ * @api
+ */
+extern IVec2 (*ivec2_sub)(const IVec2 *const a, const IVec2 *const b);
+
+/**
+ * @api
+ */
+extern IVec2 (*ivec2_scale)(const IVec2 *const a, const float factor);
+
+/**
+ * @api
+ */
+extern float (*ivec2_dot)(const IVec2 *const a, const IVec2 *const b);
+
+/**
+ * @api
+ */
+extern float (*ivec2_length)(const IVec2 *const a);
+
+/**
+ * @api
+ */
+extern IVec2 (*ivec2_normalize)(const IVec2 *const a);
+
+/**
+ * @api
+ */
+extern float (*ivec2_distance)(const IVec2 *const a, const IVec2 *const b);
+
+/**
+ * @brief Add b to a
+ *
+ * @param[in/out] a
+ * @param[in] b
+ *
+ * @api
+ */
+extern void (*ivec2_add_in)(IVec2 *const to, const IVec2 *const what);
+
+/**
+ * @brief
+ *
+ * @param[in/out] from
+ * @param[in] what
+ *
+ * @api
+ */
+extern void (*ivec2_sub_in)(IVec2 *const from, const IVec2 *const what);
+
+/**
+ * @brief
+ *
+ * @param[in/out] to
+ * @param[in] factor
+ *
+ * @api
+ */
+extern void (*ivec2_scale_in)(IVec2 *const to, const float factor);
+
+/**
+ * @brief
+ *
+ * @param[in/out] a
+ *
+ * @api
+ */
+extern void (*ivec2_normalize_in)(IVec2 *const a);
+
+/**
  * @brief
  *
  * @api
@@ -2851,7 +3044,7 @@ extern void (*vfs_stream_close)(FileStream * stream);
  *
  * @api
  */
-extern Error (*window_server_register_backend)(const char * name, WindowServerBackend * backend);
+extern boolean (*window_server_register_backend)(const char * name, WindowServerBackend * backend);
 
 /**
  * @brief Load a backend. First you should register them via window_server_register_backend
@@ -2862,7 +3055,7 @@ extern Error (*window_server_register_backend)(const char * name, WindowServerBa
  *
  * @api
  */
-extern Error (*window_server_load_backend)(const char * name);
+extern boolean (*window_server_load_backend)(const char * name);
 
 /**
  * @brief Create a new WindowServerBackend instance
@@ -2878,7 +3071,7 @@ extern WindowServerBackend * (*window_server_backend_new)(void);
  *
  * @api
  */
-extern Error (*window_server_backend_free)(WindowServerBackend * backend);
+extern boolean (*window_server_backend_free)(WindowServerBackend * backend);
 
 /**
  * @brief Set a function pointer for a backend
@@ -2887,7 +3080,7 @@ extern Error (*window_server_backend_free)(WindowServerBackend * backend);
  *
  * @api
  */
-extern Error (*window_server_backend_set_function)(WindowServerBackend * backend, const char * name, void (* function) (void));
+extern boolean (*window_server_backend_set_function)(WindowServerBackend * backend, const char * name, fptr function);
 
 /**
  * @brief Get a function pointer for a backend
@@ -2896,7 +3089,7 @@ extern Error (*window_server_backend_set_function)(WindowServerBackend * backend
  *
  * @api
  */
-extern Error (*window_server_backend_get_function)(WindowServerBackend * backend, const char * name, void (** function) (void));
+extern fptr (*window_server_backend_get_function)(WindowServerBackend * backend, const char * name);
 
 /**
  * @brief Register a backend
@@ -2905,7 +3098,7 @@ extern Error (*window_server_backend_get_function)(WindowServerBackend * backend
  *
  * @api
  */
-extern Error (*render_server_register_backend)(const char * name, RenderServerBackend * backend);
+extern boolean (*render_server_register_backend)(const char * name, RenderServerBackend * backend);
 
 /**
  * @brief Load a backend. First you should register them via render_server_register_backend
@@ -2916,7 +3109,7 @@ extern Error (*render_server_register_backend)(const char * name, RenderServerBa
  *
  * @api
  */
-extern Error (*render_server_load_backend)(const char * name);
+extern boolean (*render_server_load_backend)(const char * name);
 
 /**
  * @brief Create a new RenderServerBackend instance
@@ -2932,7 +3125,7 @@ extern RenderServerBackend * (*render_server_backend_new)(void);
  *
  * @api
  */
-extern Error (*render_server_backend_free)(RenderServerBackend * backend);
+extern boolean (*render_server_backend_free)(RenderServerBackend * backend);
 
 /**
  * @brief Set a function pointer for a backend
@@ -2941,7 +3134,7 @@ extern Error (*render_server_backend_free)(RenderServerBackend * backend);
  *
  * @api
  */
-extern Error (*render_server_backend_set_function)(RenderServerBackend * backend, const char * name, void (* function) (void));
+extern boolean (*render_server_backend_set_function)(RenderServerBackend * backend, const char * name, fptr function);
 
 /**
  * @brief Get a function pointer for a backend
@@ -2950,7 +3143,7 @@ extern Error (*render_server_backend_set_function)(RenderServerBackend * backend
  *
  * @api
  */
-extern Error (*render_server_backend_get_function)(RenderServerBackend * backend, const char * name, void (** function) (void));
+extern fptr (*render_server_backend_get_function)(RenderServerBackend * backend, const char * name);
 
 /**
  * @brief Register a backend
@@ -2961,7 +3154,7 @@ extern Error (*render_server_backend_get_function)(RenderServerBackend * backend
  *
  * @api
  */
-extern Error (*render_context_register_backend)(const char * render_server_name, const char * window_server_name, RenderContextBackend * backend);
+extern boolean (*render_context_register_backend)(const char * render_server_name, const char * window_server_name, RenderContextBackend * backend);
 
 /**
  * @brief Load a backend. First you should register them via render_context_register_backend
@@ -2972,7 +3165,7 @@ extern Error (*render_context_register_backend)(const char * render_server_name,
  *
  * @api
  */
-extern Error (*render_context_load_backend)(const char * render_server_name, const char * window_server_name);
+extern boolean (*render_context_load_backend)(const char * render_server_name, const char * window_server_name);
 
 /**
  * @brief Create a new RenderContextBackend instance
@@ -2988,7 +3181,7 @@ extern RenderContextBackend * (*render_context_backend_new)(void);
  *
  * @api
  */
-extern Error (*render_context_backend_free)(RenderContextBackend * backend);
+extern boolean (*render_context_backend_free)(RenderContextBackend * backend);
 
 /**
  * @brief Set a function pointer for a backend
@@ -2997,7 +3190,7 @@ extern Error (*render_context_backend_free)(RenderContextBackend * backend);
  *
  * @api
  */
-extern Error (*render_context_backend_set_function)(RenderContextBackend * backend, const char * name, void (* function) (void));
+extern boolean (*render_context_backend_set_function)(RenderContextBackend * backend, const char * name, fptr function);
 
 /**
  * @brief Get a function pointer for a backend
@@ -3006,41 +3199,35 @@ extern Error (*render_context_backend_set_function)(RenderContextBackend * backe
  *
  * @api
  */
-extern Error (*render_context_backend_get_function)(RenderContextBackend * backend, const char * name, void (** function) (void));
+extern fptr (*render_context_backend_get_function)(RenderContextBackend * backend, const char * name);
 
-extern Error (*window_server_create_window)(const char * title, i32 w, i32 h, WindowServerWindow * parent, WindowServerWindow ** out);
+extern WindowServerWindow * (*window_server_create_window)(const char * title, IVec2 size, WindowServerWindow * parent);
 
-extern Error (*window_server_destroy_window)(WindowServerWindow * this);
+extern boolean (*window_server_destroy_window)(WindowServerWindow * this);
 
-extern Error (*window_server_window_set_title)(WindowServerWindow * this, const char * title);
+extern boolean (*window_server_window_set_title)(WindowServerWindow * this, const char * title);
 
-extern Error (*window_server_window_get_title)(WindowServerWindow * this, const char ** out);
+extern c_str (*window_server_window_get_title)(WindowServerWindow * this);
 
-/**
-     * @brief HOLA BOLA
-     *
-     */
-extern Error (*window_server_window_set_mode)(WindowServerWindow * this, WindowServerWindowMode mode);
+extern boolean (*window_server_window_set_mode)(WindowServerWindow * this, WindowServerWindowMode mode);
 
-extern Error (*window_server_window_get_mode)(WindowServerWindow * this, WindowServerWindowMode * out);
+extern WindowServerWindowMode (*window_server_window_get_mode)(WindowServerWindow * this);
 
-extern Error (*window_server_window_set_size)(WindowServerWindow * this, i32 w, i32 h);
+extern boolean (*window_server_window_set_size)(WindowServerWindow * this, IVec2 dimensions);
 
-extern Error (*window_server_window_get_size)(WindowServerWindow * this, i32 * w, i32 * h);
+extern IVec2 (*window_server_window_get_size)(WindowServerWindow * this, boolean * success);
 
-extern Error (*window_server_window_set_position)(WindowServerWindow * this, i32 x, i32 y);
+extern boolean (*window_server_window_set_position)(WindowServerWindow * this, IVec2 dimensions);
 
-extern Error (*window_server_window_get_position)(WindowServerWindow * this, i32 * x, i32 * y);
+extern IVec2 (*window_server_window_get_position)(WindowServerWindow * this, boolean * success);
 
-extern Error (*window_server_window_set_fullscreen_display)(WindowServerWindow * this, WindowServerDisplay * fullscreen);
+extern RenderContextSurface * (*render_context_create_surface)(WindowServerWindow * window);
 
-extern Error (*render_context_create_surface)(WindowServerWindow * window, RenderContextSurface ** out);
+extern boolean (*render_context_destroy_surface)(RenderContextSurface * surface);
 
-extern Error (*render_context_destroy_surface)(RenderContextSurface * surface);
+extern boolean (*render_context_surface_make_current)(RenderContextSurface * surface);
 
-extern Error (*render_context_surface_make_current)(RenderContextSurface * surface);
-
-extern Error (*render_context_surface_present)(RenderContextSurface * surface);
+extern boolean (*render_context_surface_present)(RenderContextSurface * surface);
 
 extern fptr (*render_context_get_proc_addr)(const char * proc);
 
@@ -3132,6 +3319,18 @@ extern fptr (*render_context_get_proc_addr)(const char * proc);
     void (*raw_vec3_sub_in)(Vec3 *const from, const Vec3 *const what);
     void (*raw_vec3_scale_in)(Vec3 *const to, const float factor);
     void (*raw_vec3_normalize_in)(Vec3 *const a);
+    IVec2 (*raw_ivec2_new)(i32 x, i32 y);
+    IVec2 (*raw_ivec2_add)(const IVec2 *const a, const IVec2 *const b);
+    IVec2 (*raw_ivec2_sub)(const IVec2 *const a, const IVec2 *const b);
+    IVec2 (*raw_ivec2_scale)(const IVec2 *const a, const float factor);
+    float (*raw_ivec2_dot)(const IVec2 *const a, const IVec2 *const b);
+    float (*raw_ivec2_length)(const IVec2 *const a);
+    IVec2 (*raw_ivec2_normalize)(const IVec2 *const a);
+    float (*raw_ivec2_distance)(const IVec2 *const a, const IVec2 *const b);
+    void (*raw_ivec2_add_in)(IVec2 *const to, const IVec2 *const what);
+    void (*raw_ivec2_sub_in)(IVec2 *const from, const IVec2 *const what);
+    void (*raw_ivec2_scale_in)(IVec2 *const to, const float factor);
+    void (*raw_ivec2_normalize_in)(IVec2 *const a);
     UID (*raw_uid_new)(void);
     Error (*raw_string_new)(string ** str);
     string * (*raw_string_from)(const char * c_str);
@@ -3201,39 +3400,38 @@ extern fptr (*render_context_get_proc_addr)(const char * proc);
     u64 (*raw_vfs_stream_tell)(FileStream * stream, boolean * success);
     boolean (*raw_vfs_stream_flush)(FileStream * stream);
     void (*raw_vfs_stream_close)(FileStream * stream);
-    Error (*raw_window_server_register_backend)(const char * name, WindowServerBackend * backend);
-    Error (*raw_window_server_load_backend)(const char * name);
+    boolean (*raw_window_server_register_backend)(const char * name, WindowServerBackend * backend);
+    boolean (*raw_window_server_load_backend)(const char * name);
     WindowServerBackend * (*raw_window_server_backend_new)(void);
-    Error (*raw_window_server_backend_free)(WindowServerBackend * backend);
-    Error (*raw_window_server_backend_set_function)(WindowServerBackend * backend, const char * name, void (* function) (void));
-    Error (*raw_window_server_backend_get_function)(WindowServerBackend * backend, const char * name, void (** function) (void));
-    Error (*raw_render_server_register_backend)(const char * name, RenderServerBackend * backend);
-    Error (*raw_render_server_load_backend)(const char * name);
+    boolean (*raw_window_server_backend_free)(WindowServerBackend * backend);
+    boolean (*raw_window_server_backend_set_function)(WindowServerBackend * backend, const char * name, fptr function);
+    fptr (*raw_window_server_backend_get_function)(WindowServerBackend * backend, const char * name);
+    boolean (*raw_render_server_register_backend)(const char * name, RenderServerBackend * backend);
+    boolean (*raw_render_server_load_backend)(const char * name);
     RenderServerBackend * (*raw_render_server_backend_new)(void);
-    Error (*raw_render_server_backend_free)(RenderServerBackend * backend);
-    Error (*raw_render_server_backend_set_function)(RenderServerBackend * backend, const char * name, void (* function) (void));
-    Error (*raw_render_server_backend_get_function)(RenderServerBackend * backend, const char * name, void (** function) (void));
-    Error (*raw_render_context_register_backend)(const char * render_server_name, const char * window_server_name, RenderContextBackend * backend);
-    Error (*raw_render_context_load_backend)(const char * render_server_name, const char * window_server_name);
+    boolean (*raw_render_server_backend_free)(RenderServerBackend * backend);
+    boolean (*raw_render_server_backend_set_function)(RenderServerBackend * backend, const char * name, fptr function);
+    fptr (*raw_render_server_backend_get_function)(RenderServerBackend * backend, const char * name);
+    boolean (*raw_render_context_register_backend)(const char * render_server_name, const char * window_server_name, RenderContextBackend * backend);
+    boolean (*raw_render_context_load_backend)(const char * render_server_name, const char * window_server_name);
     RenderContextBackend * (*raw_render_context_backend_new)(void);
-    Error (*raw_render_context_backend_free)(RenderContextBackend * backend);
-    Error (*raw_render_context_backend_set_function)(RenderContextBackend * backend, const char * name, void (* function) (void));
-    Error (*raw_render_context_backend_get_function)(RenderContextBackend * backend, const char * name, void (** function) (void));
-    Error (*raw_window_server_create_window)(const char * title, i32 w, i32 h, WindowServerWindow * parent, WindowServerWindow ** out);
-    Error (*raw_window_server_destroy_window)(WindowServerWindow * this);
-    Error (*raw_window_server_window_set_title)(WindowServerWindow * this, const char * title);
-    Error (*raw_window_server_window_get_title)(WindowServerWindow * this, const char ** out);
-    Error (*raw_window_server_window_set_mode)(WindowServerWindow * this, WindowServerWindowMode mode);
-    Error (*raw_window_server_window_get_mode)(WindowServerWindow * this, WindowServerWindowMode * out);
-    Error (*raw_window_server_window_set_size)(WindowServerWindow * this, i32 w, i32 h);
-    Error (*raw_window_server_window_get_size)(WindowServerWindow * this, i32 * w, i32 * h);
-    Error (*raw_window_server_window_set_position)(WindowServerWindow * this, i32 x, i32 y);
-    Error (*raw_window_server_window_get_position)(WindowServerWindow * this, i32 * x, i32 * y);
-    Error (*raw_window_server_window_set_fullscreen_display)(WindowServerWindow * this, WindowServerDisplay * fullscreen);
-    Error (*raw_render_context_create_surface)(WindowServerWindow * window, RenderContextSurface ** out);
-    Error (*raw_render_context_destroy_surface)(RenderContextSurface * surface);
-    Error (*raw_render_context_surface_make_current)(RenderContextSurface * surface);
-    Error (*raw_render_context_surface_present)(RenderContextSurface * surface);
+    boolean (*raw_render_context_backend_free)(RenderContextBackend * backend);
+    boolean (*raw_render_context_backend_set_function)(RenderContextBackend * backend, const char * name, fptr function);
+    fptr (*raw_render_context_backend_get_function)(RenderContextBackend * backend, const char * name);
+    WindowServerWindow * (*raw_window_server_create_window)(const char * title, IVec2 size, WindowServerWindow * parent);
+    boolean (*raw_window_server_destroy_window)(WindowServerWindow * this);
+    boolean (*raw_window_server_window_set_title)(WindowServerWindow * this, const char * title);
+    c_str (*raw_window_server_window_get_title)(WindowServerWindow * this);
+    boolean (*raw_window_server_window_set_mode)(WindowServerWindow * this, WindowServerWindowMode mode);
+    WindowServerWindowMode (*raw_window_server_window_get_mode)(WindowServerWindow * this);
+    boolean (*raw_window_server_window_set_size)(WindowServerWindow * this, IVec2 dimensions);
+    IVec2 (*raw_window_server_window_get_size)(WindowServerWindow * this, boolean * success);
+    boolean (*raw_window_server_window_set_position)(WindowServerWindow * this, IVec2 dimensions);
+    IVec2 (*raw_window_server_window_get_position)(WindowServerWindow * this, boolean * success);
+    RenderContextSurface * (*raw_render_context_create_surface)(WindowServerWindow * window);
+    boolean (*raw_render_context_destroy_surface)(RenderContextSurface * surface);
+    boolean (*raw_render_context_surface_make_current)(RenderContextSurface * surface);
+    boolean (*raw_render_context_surface_present)(RenderContextSurface * surface);
     fptr (*raw_render_context_get_proc_addr)(const char * proc);
 
 
@@ -3322,6 +3520,18 @@ extern fptr (*render_context_get_proc_addr)(const char * proc);
     void (*vec3_sub_in)(Vec3 *const from, const Vec3 *const what);
     void (*vec3_scale_in)(Vec3 *const to, const float factor);
     void (*vec3_normalize_in)(Vec3 *const a);
+    IVec2 (*ivec2_new)(i32 x, i32 y);
+    IVec2 (*ivec2_add)(const IVec2 *const a, const IVec2 *const b);
+    IVec2 (*ivec2_sub)(const IVec2 *const a, const IVec2 *const b);
+    IVec2 (*ivec2_scale)(const IVec2 *const a, const float factor);
+    float (*ivec2_dot)(const IVec2 *const a, const IVec2 *const b);
+    float (*ivec2_length)(const IVec2 *const a);
+    IVec2 (*ivec2_normalize)(const IVec2 *const a);
+    float (*ivec2_distance)(const IVec2 *const a, const IVec2 *const b);
+    void (*ivec2_add_in)(IVec2 *const to, const IVec2 *const what);
+    void (*ivec2_sub_in)(IVec2 *const from, const IVec2 *const what);
+    void (*ivec2_scale_in)(IVec2 *const to, const float factor);
+    void (*ivec2_normalize_in)(IVec2 *const a);
     UID (*uid_new)(void);
     Error (*string_new)(string ** str);
     string * (*string_from)(const char * c_str);
@@ -3391,39 +3601,38 @@ extern fptr (*render_context_get_proc_addr)(const char * proc);
     u64 (*vfs_stream_tell)(FileStream * stream, boolean * success);
     boolean (*vfs_stream_flush)(FileStream * stream);
     void (*vfs_stream_close)(FileStream * stream);
-    Error (*window_server_register_backend)(const char * name, WindowServerBackend * backend);
-    Error (*window_server_load_backend)(const char * name);
+    boolean (*window_server_register_backend)(const char * name, WindowServerBackend * backend);
+    boolean (*window_server_load_backend)(const char * name);
     WindowServerBackend * (*window_server_backend_new)(void);
-    Error (*window_server_backend_free)(WindowServerBackend * backend);
-    Error (*window_server_backend_set_function)(WindowServerBackend * backend, const char * name, void (* function) (void));
-    Error (*window_server_backend_get_function)(WindowServerBackend * backend, const char * name, void (** function) (void));
-    Error (*render_server_register_backend)(const char * name, RenderServerBackend * backend);
-    Error (*render_server_load_backend)(const char * name);
+    boolean (*window_server_backend_free)(WindowServerBackend * backend);
+    boolean (*window_server_backend_set_function)(WindowServerBackend * backend, const char * name, fptr function);
+    fptr (*window_server_backend_get_function)(WindowServerBackend * backend, const char * name);
+    boolean (*render_server_register_backend)(const char * name, RenderServerBackend * backend);
+    boolean (*render_server_load_backend)(const char * name);
     RenderServerBackend * (*render_server_backend_new)(void);
-    Error (*render_server_backend_free)(RenderServerBackend * backend);
-    Error (*render_server_backend_set_function)(RenderServerBackend * backend, const char * name, void (* function) (void));
-    Error (*render_server_backend_get_function)(RenderServerBackend * backend, const char * name, void (** function) (void));
-    Error (*render_context_register_backend)(const char * render_server_name, const char * window_server_name, RenderContextBackend * backend);
-    Error (*render_context_load_backend)(const char * render_server_name, const char * window_server_name);
+    boolean (*render_server_backend_free)(RenderServerBackend * backend);
+    boolean (*render_server_backend_set_function)(RenderServerBackend * backend, const char * name, fptr function);
+    fptr (*render_server_backend_get_function)(RenderServerBackend * backend, const char * name);
+    boolean (*render_context_register_backend)(const char * render_server_name, const char * window_server_name, RenderContextBackend * backend);
+    boolean (*render_context_load_backend)(const char * render_server_name, const char * window_server_name);
     RenderContextBackend * (*render_context_backend_new)(void);
-    Error (*render_context_backend_free)(RenderContextBackend * backend);
-    Error (*render_context_backend_set_function)(RenderContextBackend * backend, const char * name, void (* function) (void));
-    Error (*render_context_backend_get_function)(RenderContextBackend * backend, const char * name, void (** function) (void));
-    Error (*window_server_create_window)(const char * title, i32 w, i32 h, WindowServerWindow * parent, WindowServerWindow ** out);
-    Error (*window_server_destroy_window)(WindowServerWindow * this);
-    Error (*window_server_window_set_title)(WindowServerWindow * this, const char * title);
-    Error (*window_server_window_get_title)(WindowServerWindow * this, const char ** out);
-    Error (*window_server_window_set_mode)(WindowServerWindow * this, WindowServerWindowMode mode);
-    Error (*window_server_window_get_mode)(WindowServerWindow * this, WindowServerWindowMode * out);
-    Error (*window_server_window_set_size)(WindowServerWindow * this, i32 w, i32 h);
-    Error (*window_server_window_get_size)(WindowServerWindow * this, i32 * w, i32 * h);
-    Error (*window_server_window_set_position)(WindowServerWindow * this, i32 x, i32 y);
-    Error (*window_server_window_get_position)(WindowServerWindow * this, i32 * x, i32 * y);
-    Error (*window_server_window_set_fullscreen_display)(WindowServerWindow * this, WindowServerDisplay * fullscreen);
-    Error (*render_context_create_surface)(WindowServerWindow * window, RenderContextSurface ** out);
-    Error (*render_context_destroy_surface)(RenderContextSurface * surface);
-    Error (*render_context_surface_make_current)(RenderContextSurface * surface);
-    Error (*render_context_surface_present)(RenderContextSurface * surface);
+    boolean (*render_context_backend_free)(RenderContextBackend * backend);
+    boolean (*render_context_backend_set_function)(RenderContextBackend * backend, const char * name, fptr function);
+    fptr (*render_context_backend_get_function)(RenderContextBackend * backend, const char * name);
+    WindowServerWindow * (*window_server_create_window)(const char * title, IVec2 size, WindowServerWindow * parent);
+    boolean (*window_server_destroy_window)(WindowServerWindow * this);
+    boolean (*window_server_window_set_title)(WindowServerWindow * this, const char * title);
+    c_str (*window_server_window_get_title)(WindowServerWindow * this);
+    boolean (*window_server_window_set_mode)(WindowServerWindow * this, WindowServerWindowMode mode);
+    WindowServerWindowMode (*window_server_window_get_mode)(WindowServerWindow * this);
+    boolean (*window_server_window_set_size)(WindowServerWindow * this, IVec2 dimensions);
+    IVec2 (*window_server_window_get_size)(WindowServerWindow * this, boolean * success);
+    boolean (*window_server_window_set_position)(WindowServerWindow * this, IVec2 dimensions);
+    IVec2 (*window_server_window_get_position)(WindowServerWindow * this, boolean * success);
+    RenderContextSurface * (*render_context_create_surface)(WindowServerWindow * window);
+    boolean (*render_context_destroy_surface)(RenderContextSurface * surface);
+    boolean (*render_context_surface_make_current)(RenderContextSurface * surface);
+    boolean (*render_context_surface_present)(RenderContextSurface * surface);
     fptr (*render_context_get_proc_addr)(const char * proc);
 
     #endif
@@ -3513,6 +3722,18 @@ extern fptr (*render_context_get_proc_addr)(const char * proc);
         raw_vec3_sub_in = (void (*)(Vec3 *const, const Vec3 *const))proc_addr("vec3_sub_in");
         raw_vec3_scale_in = (void (*)(Vec3 *const, const float))proc_addr("vec3_scale_in");
         raw_vec3_normalize_in = (void (*)(Vec3 *const))proc_addr("vec3_normalize_in");
+        raw_ivec2_new = (IVec2 (*)(i32, i32))proc_addr("ivec2_new");
+        raw_ivec2_add = (IVec2 (*)(const IVec2 *const, const IVec2 *const))proc_addr("ivec2_add");
+        raw_ivec2_sub = (IVec2 (*)(const IVec2 *const, const IVec2 *const))proc_addr("ivec2_sub");
+        raw_ivec2_scale = (IVec2 (*)(const IVec2 *const, const float))proc_addr("ivec2_scale");
+        raw_ivec2_dot = (float (*)(const IVec2 *const, const IVec2 *const))proc_addr("ivec2_dot");
+        raw_ivec2_length = (float (*)(const IVec2 *const))proc_addr("ivec2_length");
+        raw_ivec2_normalize = (IVec2 (*)(const IVec2 *const))proc_addr("ivec2_normalize");
+        raw_ivec2_distance = (float (*)(const IVec2 *const, const IVec2 *const))proc_addr("ivec2_distance");
+        raw_ivec2_add_in = (void (*)(IVec2 *const, const IVec2 *const))proc_addr("ivec2_add_in");
+        raw_ivec2_sub_in = (void (*)(IVec2 *const, const IVec2 *const))proc_addr("ivec2_sub_in");
+        raw_ivec2_scale_in = (void (*)(IVec2 *const, const float))proc_addr("ivec2_scale_in");
+        raw_ivec2_normalize_in = (void (*)(IVec2 *const))proc_addr("ivec2_normalize_in");
         raw_uid_new = (UID (*)(void))proc_addr("uid_new");
         raw_string_new = (Error (*)(string **))proc_addr("string_new");
         raw_string_from = (string * (*)(const char *))proc_addr("string_from");
@@ -3582,24 +3803,24 @@ extern fptr (*render_context_get_proc_addr)(const char * proc);
         raw_vfs_stream_tell = (u64 (*)(FileStream *, boolean *))proc_addr("vfs_stream_tell");
         raw_vfs_stream_flush = (boolean (*)(FileStream *))proc_addr("vfs_stream_flush");
         raw_vfs_stream_close = (void (*)(FileStream *))proc_addr("vfs_stream_close");
-        raw_window_server_register_backend = (Error (*)(const char *, WindowServerBackend *))proc_addr("window_server_register_backend");
-        raw_window_server_load_backend = (Error (*)(const char *))proc_addr("window_server_load_backend");
+        raw_window_server_register_backend = (boolean (*)(const char *, WindowServerBackend *))proc_addr("window_server_register_backend");
+        raw_window_server_load_backend = (boolean (*)(const char *))proc_addr("window_server_load_backend");
         raw_window_server_backend_new = (WindowServerBackend * (*)(void))proc_addr("window_server_backend_new");
-        raw_window_server_backend_free = (Error (*)(WindowServerBackend *))proc_addr("window_server_backend_free");
-        raw_window_server_backend_set_function = (Error (*)(WindowServerBackend *, const char *, void (*)(void)))proc_addr("window_server_backend_set_function");
-        raw_window_server_backend_get_function = (Error (*)(WindowServerBackend *, const char *, void (**)(void)))proc_addr("window_server_backend_get_function");
-        raw_render_server_register_backend = (Error (*)(const char *, RenderServerBackend *))proc_addr("render_server_register_backend");
-        raw_render_server_load_backend = (Error (*)(const char *))proc_addr("render_server_load_backend");
+        raw_window_server_backend_free = (boolean (*)(WindowServerBackend *))proc_addr("window_server_backend_free");
+        raw_window_server_backend_set_function = (boolean (*)(WindowServerBackend *, const char *, fptr))proc_addr("window_server_backend_set_function");
+        raw_window_server_backend_get_function = (fptr (*)(WindowServerBackend *, const char *))proc_addr("window_server_backend_get_function");
+        raw_render_server_register_backend = (boolean (*)(const char *, RenderServerBackend *))proc_addr("render_server_register_backend");
+        raw_render_server_load_backend = (boolean (*)(const char *))proc_addr("render_server_load_backend");
         raw_render_server_backend_new = (RenderServerBackend * (*)(void))proc_addr("render_server_backend_new");
-        raw_render_server_backend_free = (Error (*)(RenderServerBackend *))proc_addr("render_server_backend_free");
-        raw_render_server_backend_set_function = (Error (*)(RenderServerBackend *, const char *, void (*)(void)))proc_addr("render_server_backend_set_function");
-        raw_render_server_backend_get_function = (Error (*)(RenderServerBackend *, const char *, void (**)(void)))proc_addr("render_server_backend_get_function");
-        raw_render_context_register_backend = (Error (*)(const char *, const char *, RenderContextBackend *))proc_addr("render_context_register_backend");
-        raw_render_context_load_backend = (Error (*)(const char *, const char *))proc_addr("render_context_load_backend");
+        raw_render_server_backend_free = (boolean (*)(RenderServerBackend *))proc_addr("render_server_backend_free");
+        raw_render_server_backend_set_function = (boolean (*)(RenderServerBackend *, const char *, fptr))proc_addr("render_server_backend_set_function");
+        raw_render_server_backend_get_function = (fptr (*)(RenderServerBackend *, const char *))proc_addr("render_server_backend_get_function");
+        raw_render_context_register_backend = (boolean (*)(const char *, const char *, RenderContextBackend *))proc_addr("render_context_register_backend");
+        raw_render_context_load_backend = (boolean (*)(const char *, const char *))proc_addr("render_context_load_backend");
         raw_render_context_backend_new = (RenderContextBackend * (*)(void))proc_addr("render_context_backend_new");
-        raw_render_context_backend_free = (Error (*)(RenderContextBackend *))proc_addr("render_context_backend_free");
-        raw_render_context_backend_set_function = (Error (*)(RenderContextBackend *, const char *, void (*)(void)))proc_addr("render_context_backend_set_function");
-        raw_render_context_backend_get_function = (Error (*)(RenderContextBackend *, const char *, void (**)(void)))proc_addr("render_context_backend_get_function");
+        raw_render_context_backend_free = (boolean (*)(RenderContextBackend *))proc_addr("render_context_backend_free");
+        raw_render_context_backend_set_function = (boolean (*)(RenderContextBackend *, const char *, fptr))proc_addr("render_context_backend_set_function");
+        raw_render_context_backend_get_function = (fptr (*)(RenderContextBackend *, const char *))proc_addr("render_context_backend_get_function");
 
 
         #if !defined(HEAPI_FULL_TRACE)
@@ -3687,6 +3908,18 @@ extern fptr (*render_context_get_proc_addr)(const char * proc);
             vec3_sub_in = raw_vec3_sub_in;
             vec3_scale_in = raw_vec3_scale_in;
             vec3_normalize_in = raw_vec3_normalize_in;
+            ivec2_new = raw_ivec2_new;
+            ivec2_add = raw_ivec2_add;
+            ivec2_sub = raw_ivec2_sub;
+            ivec2_scale = raw_ivec2_scale;
+            ivec2_dot = raw_ivec2_dot;
+            ivec2_length = raw_ivec2_length;
+            ivec2_normalize = raw_ivec2_normalize;
+            ivec2_distance = raw_ivec2_distance;
+            ivec2_add_in = raw_ivec2_add_in;
+            ivec2_sub_in = raw_ivec2_sub_in;
+            ivec2_scale_in = raw_ivec2_scale_in;
+            ivec2_normalize_in = raw_ivec2_normalize_in;
             uid_new = raw_uid_new;
             string_new = raw_string_new;
             string_from = raw_string_from;
@@ -3779,17 +4012,16 @@ extern fptr (*render_context_get_proc_addr)(const char * proc);
     }
 
     void ___hate_engine_runtime_init_window_server(WindowServerBackend* backend) {
-        raw_window_server_backend_get_function(backend, "create_window", (void (**)(void))&raw_window_server_create_window);
-        raw_window_server_backend_get_function(backend, "destroy_window", (void (**)(void))&raw_window_server_destroy_window);
-        raw_window_server_backend_get_function(backend, "window_set_title", (void (**)(void))&raw_window_server_window_set_title);
-        raw_window_server_backend_get_function(backend, "window_get_title", (void (**)(void))&raw_window_server_window_get_title);
-        raw_window_server_backend_get_function(backend, "window_set_mode", (void (**)(void))&raw_window_server_window_set_mode);
-        raw_window_server_backend_get_function(backend, "window_get_mode", (void (**)(void))&raw_window_server_window_get_mode);
-        raw_window_server_backend_get_function(backend, "window_set_size", (void (**)(void))&raw_window_server_window_set_size);
-        raw_window_server_backend_get_function(backend, "window_get_size", (void (**)(void))&raw_window_server_window_get_size);
-        raw_window_server_backend_get_function(backend, "window_set_position", (void (**)(void))&raw_window_server_window_set_position);
-        raw_window_server_backend_get_function(backend, "window_get_position", (void (**)(void))&raw_window_server_window_get_position);
-        raw_window_server_backend_get_function(backend, "window_set_fullscreen_display", (void (**)(void))&raw_window_server_window_set_fullscreen_display);
+        raw_window_server_create_window = (WindowServerWindow * (*)(const char *, IVec2, WindowServerWindow *))raw_window_server_backend_get_function(backend, "create_window");
+        raw_window_server_destroy_window = (boolean (*)(WindowServerWindow *))raw_window_server_backend_get_function(backend, "destroy_window");
+        raw_window_server_window_set_title = (boolean (*)(WindowServerWindow *, const char *))raw_window_server_backend_get_function(backend, "window_set_title");
+        raw_window_server_window_get_title = (c_str (*)(WindowServerWindow *))raw_window_server_backend_get_function(backend, "window_get_title");
+        raw_window_server_window_set_mode = (boolean (*)(WindowServerWindow *, WindowServerWindowMode))raw_window_server_backend_get_function(backend, "window_set_mode");
+        raw_window_server_window_get_mode = (WindowServerWindowMode (*)(WindowServerWindow *))raw_window_server_backend_get_function(backend, "window_get_mode");
+        raw_window_server_window_set_size = (boolean (*)(WindowServerWindow *, IVec2))raw_window_server_backend_get_function(backend, "window_set_size");
+        raw_window_server_window_get_size = (IVec2 (*)(WindowServerWindow *, boolean *))raw_window_server_backend_get_function(backend, "window_get_size");
+        raw_window_server_window_set_position = (boolean (*)(WindowServerWindow *, IVec2))raw_window_server_backend_get_function(backend, "window_set_position");
+        raw_window_server_window_get_position = (IVec2 (*)(WindowServerWindow *, boolean *))raw_window_server_backend_get_function(backend, "window_get_position");
         #if !defined(HEAPI_FULL_TRACE)
             window_server_create_window = raw_window_server_create_window;
             window_server_destroy_window = raw_window_server_destroy_window;
@@ -3801,7 +4033,6 @@ extern fptr (*render_context_get_proc_addr)(const char * proc);
             window_server_window_get_size = raw_window_server_window_get_size;
             window_server_window_set_position = raw_window_server_window_set_position;
             window_server_window_get_position = raw_window_server_window_get_position;
-            window_server_window_set_fullscreen_display = raw_window_server_window_set_fullscreen_display;
         #endif
     }
 
@@ -3811,11 +4042,11 @@ extern fptr (*render_context_get_proc_addr)(const char * proc);
     }
 
     void ___hate_engine_runtime_init_render_context(RenderContextBackend* backend) {
-        raw_render_context_backend_get_function(backend, "create_surface", (void (**)(void))&raw_render_context_create_surface);
-        raw_render_context_backend_get_function(backend, "destroy_surface", (void (**)(void))&raw_render_context_destroy_surface);
-        raw_render_context_backend_get_function(backend, "surface_make_current", (void (**)(void))&raw_render_context_surface_make_current);
-        raw_render_context_backend_get_function(backend, "surface_present", (void (**)(void))&raw_render_context_surface_present);
-        raw_render_context_backend_get_function(backend, "get_proc_addr", (void (**)(void))&raw_render_context_get_proc_addr);
+        raw_render_context_create_surface = (RenderContextSurface * (*)(WindowServerWindow *))raw_render_context_backend_get_function(backend, "create_surface");
+        raw_render_context_destroy_surface = (boolean (*)(RenderContextSurface *))raw_render_context_backend_get_function(backend, "destroy_surface");
+        raw_render_context_surface_make_current = (boolean (*)(RenderContextSurface *))raw_render_context_backend_get_function(backend, "surface_make_current");
+        raw_render_context_surface_present = (boolean (*)(RenderContextSurface *))raw_render_context_backend_get_function(backend, "surface_present");
+        raw_render_context_get_proc_addr = (fptr (*)(const char *))raw_render_context_backend_get_function(backend, "get_proc_addr");
         #if !defined(HEAPI_FULL_TRACE)
             render_context_create_surface = raw_render_context_create_surface;
             render_context_destroy_surface = raw_render_context_destroy_surface;
@@ -3913,6 +4144,18 @@ void full_trace_vec3_add_in(const char* ___file___, uint32_t ___line___, Vec3 *c
 void full_trace_vec3_sub_in(const char* ___file___, uint32_t ___line___, Vec3 *const, const Vec3 *const);
 void full_trace_vec3_scale_in(const char* ___file___, uint32_t ___line___, Vec3 *const, const float);
 void full_trace_vec3_normalize_in(const char* ___file___, uint32_t ___line___, Vec3 *const);
+IVec2 full_trace_ivec2_new(const char* ___file___, uint32_t ___line___, i32, i32);
+IVec2 full_trace_ivec2_add(const char* ___file___, uint32_t ___line___, const IVec2 *const, const IVec2 *const);
+IVec2 full_trace_ivec2_sub(const char* ___file___, uint32_t ___line___, const IVec2 *const, const IVec2 *const);
+IVec2 full_trace_ivec2_scale(const char* ___file___, uint32_t ___line___, const IVec2 *const, const float);
+float full_trace_ivec2_dot(const char* ___file___, uint32_t ___line___, const IVec2 *const, const IVec2 *const);
+float full_trace_ivec2_length(const char* ___file___, uint32_t ___line___, const IVec2 *const);
+IVec2 full_trace_ivec2_normalize(const char* ___file___, uint32_t ___line___, const IVec2 *const);
+float full_trace_ivec2_distance(const char* ___file___, uint32_t ___line___, const IVec2 *const, const IVec2 *const);
+void full_trace_ivec2_add_in(const char* ___file___, uint32_t ___line___, IVec2 *const, const IVec2 *const);
+void full_trace_ivec2_sub_in(const char* ___file___, uint32_t ___line___, IVec2 *const, const IVec2 *const);
+void full_trace_ivec2_scale_in(const char* ___file___, uint32_t ___line___, IVec2 *const, const float);
+void full_trace_ivec2_normalize_in(const char* ___file___, uint32_t ___line___, IVec2 *const);
 UID full_trace_uid_new(const char* ___file___, uint32_t ___line___);
 Error full_trace_string_new(const char* ___file___, uint32_t ___line___, string **);
 string * full_trace_string_from(const char* ___file___, uint32_t ___line___, const char *);
@@ -3982,39 +4225,38 @@ boolean full_trace_vfs_stream_seek(const char* ___file___, uint32_t ___line___, 
 u64 full_trace_vfs_stream_tell(const char* ___file___, uint32_t ___line___, FileStream *, boolean *);
 boolean full_trace_vfs_stream_flush(const char* ___file___, uint32_t ___line___, FileStream *);
 void full_trace_vfs_stream_close(const char* ___file___, uint32_t ___line___, FileStream *);
-Error full_trace_window_server_register_backend(const char* ___file___, uint32_t ___line___, const char *, WindowServerBackend *);
-Error full_trace_window_server_load_backend(const char* ___file___, uint32_t ___line___, const char *);
+boolean full_trace_window_server_register_backend(const char* ___file___, uint32_t ___line___, const char *, WindowServerBackend *);
+boolean full_trace_window_server_load_backend(const char* ___file___, uint32_t ___line___, const char *);
 WindowServerBackend * full_trace_window_server_backend_new(const char* ___file___, uint32_t ___line___);
-Error full_trace_window_server_backend_free(const char* ___file___, uint32_t ___line___, WindowServerBackend *);
-Error full_trace_window_server_backend_set_function(const char* ___file___, uint32_t ___line___, WindowServerBackend *, const char *, void (*)(void));
-Error full_trace_window_server_backend_get_function(const char* ___file___, uint32_t ___line___, WindowServerBackend *, const char *, void (**)(void));
-Error full_trace_render_server_register_backend(const char* ___file___, uint32_t ___line___, const char *, RenderServerBackend *);
-Error full_trace_render_server_load_backend(const char* ___file___, uint32_t ___line___, const char *);
+boolean full_trace_window_server_backend_free(const char* ___file___, uint32_t ___line___, WindowServerBackend *);
+boolean full_trace_window_server_backend_set_function(const char* ___file___, uint32_t ___line___, WindowServerBackend *, const char *, fptr);
+fptr full_trace_window_server_backend_get_function(const char* ___file___, uint32_t ___line___, WindowServerBackend *, const char *);
+boolean full_trace_render_server_register_backend(const char* ___file___, uint32_t ___line___, const char *, RenderServerBackend *);
+boolean full_trace_render_server_load_backend(const char* ___file___, uint32_t ___line___, const char *);
 RenderServerBackend * full_trace_render_server_backend_new(const char* ___file___, uint32_t ___line___);
-Error full_trace_render_server_backend_free(const char* ___file___, uint32_t ___line___, RenderServerBackend *);
-Error full_trace_render_server_backend_set_function(const char* ___file___, uint32_t ___line___, RenderServerBackend *, const char *, void (*)(void));
-Error full_trace_render_server_backend_get_function(const char* ___file___, uint32_t ___line___, RenderServerBackend *, const char *, void (**)(void));
-Error full_trace_render_context_register_backend(const char* ___file___, uint32_t ___line___, const char *, const char *, RenderContextBackend *);
-Error full_trace_render_context_load_backend(const char* ___file___, uint32_t ___line___, const char *, const char *);
+boolean full_trace_render_server_backend_free(const char* ___file___, uint32_t ___line___, RenderServerBackend *);
+boolean full_trace_render_server_backend_set_function(const char* ___file___, uint32_t ___line___, RenderServerBackend *, const char *, fptr);
+fptr full_trace_render_server_backend_get_function(const char* ___file___, uint32_t ___line___, RenderServerBackend *, const char *);
+boolean full_trace_render_context_register_backend(const char* ___file___, uint32_t ___line___, const char *, const char *, RenderContextBackend *);
+boolean full_trace_render_context_load_backend(const char* ___file___, uint32_t ___line___, const char *, const char *);
 RenderContextBackend * full_trace_render_context_backend_new(const char* ___file___, uint32_t ___line___);
-Error full_trace_render_context_backend_free(const char* ___file___, uint32_t ___line___, RenderContextBackend *);
-Error full_trace_render_context_backend_set_function(const char* ___file___, uint32_t ___line___, RenderContextBackend *, const char *, void (*)(void));
-Error full_trace_render_context_backend_get_function(const char* ___file___, uint32_t ___line___, RenderContextBackend *, const char *, void (**)(void));
-Error full_trace_window_server_create_window(const char* ___file___, uint32_t ___line___, const char *, i32, i32, WindowServerWindow *, WindowServerWindow **);
-Error full_trace_window_server_destroy_window(const char* ___file___, uint32_t ___line___, WindowServerWindow *);
-Error full_trace_window_server_window_set_title(const char* ___file___, uint32_t ___line___, WindowServerWindow *, const char *);
-Error full_trace_window_server_window_get_title(const char* ___file___, uint32_t ___line___, WindowServerWindow *, const char **);
-Error full_trace_window_server_window_set_mode(const char* ___file___, uint32_t ___line___, WindowServerWindow *, WindowServerWindowMode);
-Error full_trace_window_server_window_get_mode(const char* ___file___, uint32_t ___line___, WindowServerWindow *, WindowServerWindowMode *);
-Error full_trace_window_server_window_set_size(const char* ___file___, uint32_t ___line___, WindowServerWindow *, i32, i32);
-Error full_trace_window_server_window_get_size(const char* ___file___, uint32_t ___line___, WindowServerWindow *, i32 *, i32 *);
-Error full_trace_window_server_window_set_position(const char* ___file___, uint32_t ___line___, WindowServerWindow *, i32, i32);
-Error full_trace_window_server_window_get_position(const char* ___file___, uint32_t ___line___, WindowServerWindow *, i32 *, i32 *);
-Error full_trace_window_server_window_set_fullscreen_display(const char* ___file___, uint32_t ___line___, WindowServerWindow *, WindowServerDisplay *);
-Error full_trace_render_context_create_surface(const char* ___file___, uint32_t ___line___, WindowServerWindow *, RenderContextSurface **);
-Error full_trace_render_context_destroy_surface(const char* ___file___, uint32_t ___line___, RenderContextSurface *);
-Error full_trace_render_context_surface_make_current(const char* ___file___, uint32_t ___line___, RenderContextSurface *);
-Error full_trace_render_context_surface_present(const char* ___file___, uint32_t ___line___, RenderContextSurface *);
+boolean full_trace_render_context_backend_free(const char* ___file___, uint32_t ___line___, RenderContextBackend *);
+boolean full_trace_render_context_backend_set_function(const char* ___file___, uint32_t ___line___, RenderContextBackend *, const char *, fptr);
+fptr full_trace_render_context_backend_get_function(const char* ___file___, uint32_t ___line___, RenderContextBackend *, const char *);
+WindowServerWindow * full_trace_window_server_create_window(const char* ___file___, uint32_t ___line___, const char *, IVec2, WindowServerWindow *);
+boolean full_trace_window_server_destroy_window(const char* ___file___, uint32_t ___line___, WindowServerWindow *);
+boolean full_trace_window_server_window_set_title(const char* ___file___, uint32_t ___line___, WindowServerWindow *, const char *);
+c_str full_trace_window_server_window_get_title(const char* ___file___, uint32_t ___line___, WindowServerWindow *);
+boolean full_trace_window_server_window_set_mode(const char* ___file___, uint32_t ___line___, WindowServerWindow *, WindowServerWindowMode);
+WindowServerWindowMode full_trace_window_server_window_get_mode(const char* ___file___, uint32_t ___line___, WindowServerWindow *);
+boolean full_trace_window_server_window_set_size(const char* ___file___, uint32_t ___line___, WindowServerWindow *, IVec2);
+IVec2 full_trace_window_server_window_get_size(const char* ___file___, uint32_t ___line___, WindowServerWindow *, boolean *);
+boolean full_trace_window_server_window_set_position(const char* ___file___, uint32_t ___line___, WindowServerWindow *, IVec2);
+IVec2 full_trace_window_server_window_get_position(const char* ___file___, uint32_t ___line___, WindowServerWindow *, boolean *);
+RenderContextSurface * full_trace_render_context_create_surface(const char* ___file___, uint32_t ___line___, WindowServerWindow *);
+boolean full_trace_render_context_destroy_surface(const char* ___file___, uint32_t ___line___, RenderContextSurface *);
+boolean full_trace_render_context_surface_make_current(const char* ___file___, uint32_t ___line___, RenderContextSurface *);
+boolean full_trace_render_context_surface_present(const char* ___file___, uint32_t ___line___, RenderContextSurface *);
 fptr full_trace_render_context_get_proc_addr(const char* ___file___, uint32_t ___line___, const char *);
 
 
@@ -4581,6 +4823,86 @@ inline void full_trace_vec3_normalize_in(const char* ___file___, uint32_t ___lin
     raw___he_update_full_trace_info("", "", -1);
 }
 
+inline IVec2 full_trace_ivec2_new(const char* ___file___, uint32_t ___line___, i32 x, i32 y) {
+    raw___he_update_full_trace_info("ivec2_new", ___file___, ___line___);
+    IVec2 result = raw_ivec2_new(x, y);
+    raw___he_update_full_trace_info("", "", -1);
+    return result;
+}
+
+inline IVec2 full_trace_ivec2_add(const char* ___file___, uint32_t ___line___, const IVec2 *const a, const IVec2 *const b) {
+    raw___he_update_full_trace_info("ivec2_add", ___file___, ___line___);
+    IVec2 result = raw_ivec2_add(a, b);
+    raw___he_update_full_trace_info("", "", -1);
+    return result;
+}
+
+inline IVec2 full_trace_ivec2_sub(const char* ___file___, uint32_t ___line___, const IVec2 *const a, const IVec2 *const b) {
+    raw___he_update_full_trace_info("ivec2_sub", ___file___, ___line___);
+    IVec2 result = raw_ivec2_sub(a, b);
+    raw___he_update_full_trace_info("", "", -1);
+    return result;
+}
+
+inline IVec2 full_trace_ivec2_scale(const char* ___file___, uint32_t ___line___, const IVec2 *const a, const float factor) {
+    raw___he_update_full_trace_info("ivec2_scale", ___file___, ___line___);
+    IVec2 result = raw_ivec2_scale(a, factor);
+    raw___he_update_full_trace_info("", "", -1);
+    return result;
+}
+
+inline float full_trace_ivec2_dot(const char* ___file___, uint32_t ___line___, const IVec2 *const a, const IVec2 *const b) {
+    raw___he_update_full_trace_info("ivec2_dot", ___file___, ___line___);
+    float result = raw_ivec2_dot(a, b);
+    raw___he_update_full_trace_info("", "", -1);
+    return result;
+}
+
+inline float full_trace_ivec2_length(const char* ___file___, uint32_t ___line___, const IVec2 *const a) {
+    raw___he_update_full_trace_info("ivec2_length", ___file___, ___line___);
+    float result = raw_ivec2_length(a);
+    raw___he_update_full_trace_info("", "", -1);
+    return result;
+}
+
+inline IVec2 full_trace_ivec2_normalize(const char* ___file___, uint32_t ___line___, const IVec2 *const a) {
+    raw___he_update_full_trace_info("ivec2_normalize", ___file___, ___line___);
+    IVec2 result = raw_ivec2_normalize(a);
+    raw___he_update_full_trace_info("", "", -1);
+    return result;
+}
+
+inline float full_trace_ivec2_distance(const char* ___file___, uint32_t ___line___, const IVec2 *const a, const IVec2 *const b) {
+    raw___he_update_full_trace_info("ivec2_distance", ___file___, ___line___);
+    float result = raw_ivec2_distance(a, b);
+    raw___he_update_full_trace_info("", "", -1);
+    return result;
+}
+
+inline void full_trace_ivec2_add_in(const char* ___file___, uint32_t ___line___, IVec2 *const to, const IVec2 *const what) {
+    raw___he_update_full_trace_info("ivec2_add_in", ___file___, ___line___);
+    raw_ivec2_add_in(to, what);
+    raw___he_update_full_trace_info("", "", -1);
+}
+
+inline void full_trace_ivec2_sub_in(const char* ___file___, uint32_t ___line___, IVec2 *const from, const IVec2 *const what) {
+    raw___he_update_full_trace_info("ivec2_sub_in", ___file___, ___line___);
+    raw_ivec2_sub_in(from, what);
+    raw___he_update_full_trace_info("", "", -1);
+}
+
+inline void full_trace_ivec2_scale_in(const char* ___file___, uint32_t ___line___, IVec2 *const to, const float factor) {
+    raw___he_update_full_trace_info("ivec2_scale_in", ___file___, ___line___);
+    raw_ivec2_scale_in(to, factor);
+    raw___he_update_full_trace_info("", "", -1);
+}
+
+inline void full_trace_ivec2_normalize_in(const char* ___file___, uint32_t ___line___, IVec2 *const a) {
+    raw___he_update_full_trace_info("ivec2_normalize_in", ___file___, ___line___);
+    raw_ivec2_normalize_in(a);
+    raw___he_update_full_trace_info("", "", -1);
+}
+
 inline UID full_trace_uid_new(const char* ___file___, uint32_t ___line___) {
     raw___he_update_full_trace_info("uid_new", ___file___, ___line___);
     UID result = raw_uid_new();
@@ -5059,16 +5381,16 @@ inline void full_trace_vfs_stream_close(const char* ___file___, uint32_t ___line
     raw___he_update_full_trace_info("", "", -1);
 }
 
-inline Error full_trace_window_server_register_backend(const char* ___file___, uint32_t ___line___, const char * name, WindowServerBackend * backend) {
+inline boolean full_trace_window_server_register_backend(const char* ___file___, uint32_t ___line___, const char * name, WindowServerBackend * backend) {
     raw___he_update_full_trace_info("window_server_register_backend", ___file___, ___line___);
-    Error result = raw_window_server_register_backend(name, backend);
+    boolean result = raw_window_server_register_backend(name, backend);
     raw___he_update_full_trace_info("", "", -1);
     return result;
 }
 
-inline Error full_trace_window_server_load_backend(const char* ___file___, uint32_t ___line___, const char * name) {
+inline boolean full_trace_window_server_load_backend(const char* ___file___, uint32_t ___line___, const char * name) {
     raw___he_update_full_trace_info("window_server_load_backend", ___file___, ___line___);
-    Error result = raw_window_server_load_backend(name);
+    boolean result = raw_window_server_load_backend(name);
     raw___he_update_full_trace_info("", "", -1);
     return result;
 }
@@ -5080,37 +5402,37 @@ inline WindowServerBackend * full_trace_window_server_backend_new(const char* __
     return result;
 }
 
-inline Error full_trace_window_server_backend_free(const char* ___file___, uint32_t ___line___, WindowServerBackend * backend) {
+inline boolean full_trace_window_server_backend_free(const char* ___file___, uint32_t ___line___, WindowServerBackend * backend) {
     raw___he_update_full_trace_info("window_server_backend_free", ___file___, ___line___);
-    Error result = raw_window_server_backend_free(backend);
+    boolean result = raw_window_server_backend_free(backend);
     raw___he_update_full_trace_info("", "", -1);
     return result;
 }
 
-inline Error full_trace_window_server_backend_set_function(const char* ___file___, uint32_t ___line___, WindowServerBackend * backend, const char * name, void (* function) (void)) {
+inline boolean full_trace_window_server_backend_set_function(const char* ___file___, uint32_t ___line___, WindowServerBackend * backend, const char * name, fptr function) {
     raw___he_update_full_trace_info("window_server_backend_set_function", ___file___, ___line___);
-    Error result = raw_window_server_backend_set_function(backend, name, function);
+    boolean result = raw_window_server_backend_set_function(backend, name, function);
     raw___he_update_full_trace_info("", "", -1);
     return result;
 }
 
-inline Error full_trace_window_server_backend_get_function(const char* ___file___, uint32_t ___line___, WindowServerBackend * backend, const char * name, void (** function) (void)) {
+inline fptr full_trace_window_server_backend_get_function(const char* ___file___, uint32_t ___line___, WindowServerBackend * backend, const char * name) {
     raw___he_update_full_trace_info("window_server_backend_get_function", ___file___, ___line___);
-    Error result = raw_window_server_backend_get_function(backend, name, function);
+    fptr result = raw_window_server_backend_get_function(backend, name);
     raw___he_update_full_trace_info("", "", -1);
     return result;
 }
 
-inline Error full_trace_render_server_register_backend(const char* ___file___, uint32_t ___line___, const char * name, RenderServerBackend * backend) {
+inline boolean full_trace_render_server_register_backend(const char* ___file___, uint32_t ___line___, const char * name, RenderServerBackend * backend) {
     raw___he_update_full_trace_info("render_server_register_backend", ___file___, ___line___);
-    Error result = raw_render_server_register_backend(name, backend);
+    boolean result = raw_render_server_register_backend(name, backend);
     raw___he_update_full_trace_info("", "", -1);
     return result;
 }
 
-inline Error full_trace_render_server_load_backend(const char* ___file___, uint32_t ___line___, const char * name) {
+inline boolean full_trace_render_server_load_backend(const char* ___file___, uint32_t ___line___, const char * name) {
     raw___he_update_full_trace_info("render_server_load_backend", ___file___, ___line___);
-    Error result = raw_render_server_load_backend(name);
+    boolean result = raw_render_server_load_backend(name);
     raw___he_update_full_trace_info("", "", -1);
     return result;
 }
@@ -5122,37 +5444,37 @@ inline RenderServerBackend * full_trace_render_server_backend_new(const char* __
     return result;
 }
 
-inline Error full_trace_render_server_backend_free(const char* ___file___, uint32_t ___line___, RenderServerBackend * backend) {
+inline boolean full_trace_render_server_backend_free(const char* ___file___, uint32_t ___line___, RenderServerBackend * backend) {
     raw___he_update_full_trace_info("render_server_backend_free", ___file___, ___line___);
-    Error result = raw_render_server_backend_free(backend);
+    boolean result = raw_render_server_backend_free(backend);
     raw___he_update_full_trace_info("", "", -1);
     return result;
 }
 
-inline Error full_trace_render_server_backend_set_function(const char* ___file___, uint32_t ___line___, RenderServerBackend * backend, const char * name, void (* function) (void)) {
+inline boolean full_trace_render_server_backend_set_function(const char* ___file___, uint32_t ___line___, RenderServerBackend * backend, const char * name, fptr function) {
     raw___he_update_full_trace_info("render_server_backend_set_function", ___file___, ___line___);
-    Error result = raw_render_server_backend_set_function(backend, name, function);
+    boolean result = raw_render_server_backend_set_function(backend, name, function);
     raw___he_update_full_trace_info("", "", -1);
     return result;
 }
 
-inline Error full_trace_render_server_backend_get_function(const char* ___file___, uint32_t ___line___, RenderServerBackend * backend, const char * name, void (** function) (void)) {
+inline fptr full_trace_render_server_backend_get_function(const char* ___file___, uint32_t ___line___, RenderServerBackend * backend, const char * name) {
     raw___he_update_full_trace_info("render_server_backend_get_function", ___file___, ___line___);
-    Error result = raw_render_server_backend_get_function(backend, name, function);
+    fptr result = raw_render_server_backend_get_function(backend, name);
     raw___he_update_full_trace_info("", "", -1);
     return result;
 }
 
-inline Error full_trace_render_context_register_backend(const char* ___file___, uint32_t ___line___, const char * render_server_name, const char * window_server_name, RenderContextBackend * backend) {
+inline boolean full_trace_render_context_register_backend(const char* ___file___, uint32_t ___line___, const char * render_server_name, const char * window_server_name, RenderContextBackend * backend) {
     raw___he_update_full_trace_info("render_context_register_backend", ___file___, ___line___);
-    Error result = raw_render_context_register_backend(render_server_name, window_server_name, backend);
+    boolean result = raw_render_context_register_backend(render_server_name, window_server_name, backend);
     raw___he_update_full_trace_info("", "", -1);
     return result;
 }
 
-inline Error full_trace_render_context_load_backend(const char* ___file___, uint32_t ___line___, const char * render_server_name, const char * window_server_name) {
+inline boolean full_trace_render_context_load_backend(const char* ___file___, uint32_t ___line___, const char * render_server_name, const char * window_server_name) {
     raw___he_update_full_trace_info("render_context_load_backend", ___file___, ___line___);
-    Error result = raw_render_context_load_backend(render_server_name, window_server_name);
+    boolean result = raw_render_context_load_backend(render_server_name, window_server_name);
     raw___he_update_full_trace_info("", "", -1);
     return result;
 }
@@ -5164,128 +5486,121 @@ inline RenderContextBackend * full_trace_render_context_backend_new(const char* 
     return result;
 }
 
-inline Error full_trace_render_context_backend_free(const char* ___file___, uint32_t ___line___, RenderContextBackend * backend) {
+inline boolean full_trace_render_context_backend_free(const char* ___file___, uint32_t ___line___, RenderContextBackend * backend) {
     raw___he_update_full_trace_info("render_context_backend_free", ___file___, ___line___);
-    Error result = raw_render_context_backend_free(backend);
+    boolean result = raw_render_context_backend_free(backend);
     raw___he_update_full_trace_info("", "", -1);
     return result;
 }
 
-inline Error full_trace_render_context_backend_set_function(const char* ___file___, uint32_t ___line___, RenderContextBackend * backend, const char * name, void (* function) (void)) {
+inline boolean full_trace_render_context_backend_set_function(const char* ___file___, uint32_t ___line___, RenderContextBackend * backend, const char * name, fptr function) {
     raw___he_update_full_trace_info("render_context_backend_set_function", ___file___, ___line___);
-    Error result = raw_render_context_backend_set_function(backend, name, function);
+    boolean result = raw_render_context_backend_set_function(backend, name, function);
     raw___he_update_full_trace_info("", "", -1);
     return result;
 }
 
-inline Error full_trace_render_context_backend_get_function(const char* ___file___, uint32_t ___line___, RenderContextBackend * backend, const char * name, void (** function) (void)) {
+inline fptr full_trace_render_context_backend_get_function(const char* ___file___, uint32_t ___line___, RenderContextBackend * backend, const char * name) {
     raw___he_update_full_trace_info("render_context_backend_get_function", ___file___, ___line___);
-    Error result = raw_render_context_backend_get_function(backend, name, function);
+    fptr result = raw_render_context_backend_get_function(backend, name);
     raw___he_update_full_trace_info("", "", -1);
     return result;
 }
 
-inline Error full_trace_window_server_create_window(const char* ___file___, uint32_t ___line___, const char * title, i32 w, i32 h, WindowServerWindow * parent, WindowServerWindow ** out) {
+inline WindowServerWindow * full_trace_window_server_create_window(const char* ___file___, uint32_t ___line___, const char * title, IVec2 size, WindowServerWindow * parent) {
     raw___he_update_full_trace_info("window_server_create_window", ___file___, ___line___);
-    Error result = raw_window_server_create_window(title, w, h, parent, out);
+    WindowServerWindow * result = raw_window_server_create_window(title, size, parent);
     raw___he_update_full_trace_info("", "", -1);
     return result;
 }
 
-inline Error full_trace_window_server_destroy_window(const char* ___file___, uint32_t ___line___, WindowServerWindow * this) {
+inline boolean full_trace_window_server_destroy_window(const char* ___file___, uint32_t ___line___, WindowServerWindow * this) {
     raw___he_update_full_trace_info("window_server_destroy_window", ___file___, ___line___);
-    Error result = raw_window_server_destroy_window(this);
+    boolean result = raw_window_server_destroy_window(this);
     raw___he_update_full_trace_info("", "", -1);
     return result;
 }
 
-inline Error full_trace_window_server_window_set_title(const char* ___file___, uint32_t ___line___, WindowServerWindow * this, const char * title) {
+inline boolean full_trace_window_server_window_set_title(const char* ___file___, uint32_t ___line___, WindowServerWindow * this, const char * title) {
     raw___he_update_full_trace_info("window_server_window_set_title", ___file___, ___line___);
-    Error result = raw_window_server_window_set_title(this, title);
+    boolean result = raw_window_server_window_set_title(this, title);
     raw___he_update_full_trace_info("", "", -1);
     return result;
 }
 
-inline Error full_trace_window_server_window_get_title(const char* ___file___, uint32_t ___line___, WindowServerWindow * this, const char ** out) {
+inline c_str full_trace_window_server_window_get_title(const char* ___file___, uint32_t ___line___, WindowServerWindow * this) {
     raw___he_update_full_trace_info("window_server_window_get_title", ___file___, ___line___);
-    Error result = raw_window_server_window_get_title(this, out);
+    c_str result = raw_window_server_window_get_title(this);
     raw___he_update_full_trace_info("", "", -1);
     return result;
 }
 
-inline Error full_trace_window_server_window_set_mode(const char* ___file___, uint32_t ___line___, WindowServerWindow * this, WindowServerWindowMode mode) {
+inline boolean full_trace_window_server_window_set_mode(const char* ___file___, uint32_t ___line___, WindowServerWindow * this, WindowServerWindowMode mode) {
     raw___he_update_full_trace_info("window_server_window_set_mode", ___file___, ___line___);
-    Error result = raw_window_server_window_set_mode(this, mode);
+    boolean result = raw_window_server_window_set_mode(this, mode);
     raw___he_update_full_trace_info("", "", -1);
     return result;
 }
 
-inline Error full_trace_window_server_window_get_mode(const char* ___file___, uint32_t ___line___, WindowServerWindow * this, WindowServerWindowMode * out) {
+inline WindowServerWindowMode full_trace_window_server_window_get_mode(const char* ___file___, uint32_t ___line___, WindowServerWindow * this) {
     raw___he_update_full_trace_info("window_server_window_get_mode", ___file___, ___line___);
-    Error result = raw_window_server_window_get_mode(this, out);
+    WindowServerWindowMode result = raw_window_server_window_get_mode(this);
     raw___he_update_full_trace_info("", "", -1);
     return result;
 }
 
-inline Error full_trace_window_server_window_set_size(const char* ___file___, uint32_t ___line___, WindowServerWindow * this, i32 w, i32 h) {
+inline boolean full_trace_window_server_window_set_size(const char* ___file___, uint32_t ___line___, WindowServerWindow * this, IVec2 dimensions) {
     raw___he_update_full_trace_info("window_server_window_set_size", ___file___, ___line___);
-    Error result = raw_window_server_window_set_size(this, w, h);
+    boolean result = raw_window_server_window_set_size(this, dimensions);
     raw___he_update_full_trace_info("", "", -1);
     return result;
 }
 
-inline Error full_trace_window_server_window_get_size(const char* ___file___, uint32_t ___line___, WindowServerWindow * this, i32 * w, i32 * h) {
+inline IVec2 full_trace_window_server_window_get_size(const char* ___file___, uint32_t ___line___, WindowServerWindow * this, boolean * success) {
     raw___he_update_full_trace_info("window_server_window_get_size", ___file___, ___line___);
-    Error result = raw_window_server_window_get_size(this, w, h);
+    IVec2 result = raw_window_server_window_get_size(this, success);
     raw___he_update_full_trace_info("", "", -1);
     return result;
 }
 
-inline Error full_trace_window_server_window_set_position(const char* ___file___, uint32_t ___line___, WindowServerWindow * this, i32 x, i32 y) {
+inline boolean full_trace_window_server_window_set_position(const char* ___file___, uint32_t ___line___, WindowServerWindow * this, IVec2 dimensions) {
     raw___he_update_full_trace_info("window_server_window_set_position", ___file___, ___line___);
-    Error result = raw_window_server_window_set_position(this, x, y);
+    boolean result = raw_window_server_window_set_position(this, dimensions);
     raw___he_update_full_trace_info("", "", -1);
     return result;
 }
 
-inline Error full_trace_window_server_window_get_position(const char* ___file___, uint32_t ___line___, WindowServerWindow * this, i32 * x, i32 * y) {
+inline IVec2 full_trace_window_server_window_get_position(const char* ___file___, uint32_t ___line___, WindowServerWindow * this, boolean * success) {
     raw___he_update_full_trace_info("window_server_window_get_position", ___file___, ___line___);
-    Error result = raw_window_server_window_get_position(this, x, y);
+    IVec2 result = raw_window_server_window_get_position(this, success);
     raw___he_update_full_trace_info("", "", -1);
     return result;
 }
 
-inline Error full_trace_window_server_window_set_fullscreen_display(const char* ___file___, uint32_t ___line___, WindowServerWindow * this, WindowServerDisplay * fullscreen) {
-    raw___he_update_full_trace_info("window_server_window_set_fullscreen_display", ___file___, ___line___);
-    Error result = raw_window_server_window_set_fullscreen_display(this, fullscreen);
-    raw___he_update_full_trace_info("", "", -1);
-    return result;
-}
-
-inline Error full_trace_render_context_create_surface(const char* ___file___, uint32_t ___line___, WindowServerWindow * window, RenderContextSurface ** out) {
+inline RenderContextSurface * full_trace_render_context_create_surface(const char* ___file___, uint32_t ___line___, WindowServerWindow * window) {
     raw___he_update_full_trace_info("render_context_create_surface", ___file___, ___line___);
-    Error result = raw_render_context_create_surface(window, out);
+    RenderContextSurface * result = raw_render_context_create_surface(window);
     raw___he_update_full_trace_info("", "", -1);
     return result;
 }
 
-inline Error full_trace_render_context_destroy_surface(const char* ___file___, uint32_t ___line___, RenderContextSurface * surface) {
+inline boolean full_trace_render_context_destroy_surface(const char* ___file___, uint32_t ___line___, RenderContextSurface * surface) {
     raw___he_update_full_trace_info("render_context_destroy_surface", ___file___, ___line___);
-    Error result = raw_render_context_destroy_surface(surface);
+    boolean result = raw_render_context_destroy_surface(surface);
     raw___he_update_full_trace_info("", "", -1);
     return result;
 }
 
-inline Error full_trace_render_context_surface_make_current(const char* ___file___, uint32_t ___line___, RenderContextSurface * surface) {
+inline boolean full_trace_render_context_surface_make_current(const char* ___file___, uint32_t ___line___, RenderContextSurface * surface) {
     raw___he_update_full_trace_info("render_context_surface_make_current", ___file___, ___line___);
-    Error result = raw_render_context_surface_make_current(surface);
+    boolean result = raw_render_context_surface_make_current(surface);
     raw___he_update_full_trace_info("", "", -1);
     return result;
 }
 
-inline Error full_trace_render_context_surface_present(const char* ___file___, uint32_t ___line___, RenderContextSurface * surface) {
+inline boolean full_trace_render_context_surface_present(const char* ___file___, uint32_t ___line___, RenderContextSurface * surface) {
     raw___he_update_full_trace_info("render_context_surface_present", ___file___, ___line___);
-    Error result = raw_render_context_surface_present(surface);
+    boolean result = raw_render_context_surface_present(surface);
     raw___he_update_full_trace_info("", "", -1);
     return result;
 }
@@ -5383,6 +5698,18 @@ inline fptr full_trace_render_context_get_proc_addr(const char* ___file___, uint
 #define vec3_sub_in(from, what) full_trace_vec3_sub_in(__FILE__, __LINE__, from, what)
 #define vec3_scale_in(to, factor) full_trace_vec3_scale_in(__FILE__, __LINE__, to, factor)
 #define vec3_normalize_in(a) full_trace_vec3_normalize_in(__FILE__, __LINE__, a)
+#define ivec2_new(x, y) full_trace_ivec2_new(__FILE__, __LINE__, x, y)
+#define ivec2_add(a, b) full_trace_ivec2_add(__FILE__, __LINE__, a, b)
+#define ivec2_sub(a, b) full_trace_ivec2_sub(__FILE__, __LINE__, a, b)
+#define ivec2_scale(a, factor) full_trace_ivec2_scale(__FILE__, __LINE__, a, factor)
+#define ivec2_dot(a, b) full_trace_ivec2_dot(__FILE__, __LINE__, a, b)
+#define ivec2_length(a) full_trace_ivec2_length(__FILE__, __LINE__, a)
+#define ivec2_normalize(a) full_trace_ivec2_normalize(__FILE__, __LINE__, a)
+#define ivec2_distance(a, b) full_trace_ivec2_distance(__FILE__, __LINE__, a, b)
+#define ivec2_add_in(to, what) full_trace_ivec2_add_in(__FILE__, __LINE__, to, what)
+#define ivec2_sub_in(from, what) full_trace_ivec2_sub_in(__FILE__, __LINE__, from, what)
+#define ivec2_scale_in(to, factor) full_trace_ivec2_scale_in(__FILE__, __LINE__, to, factor)
+#define ivec2_normalize_in(a) full_trace_ivec2_normalize_in(__FILE__, __LINE__, a)
 #define uid_new() full_trace_uid_new(__FILE__, __LINE__)
 #define string_new(str) full_trace_string_new(__FILE__, __LINE__, str)
 #define string_from(c_str) full_trace_string_from(__FILE__, __LINE__, c_str)
@@ -5457,31 +5784,30 @@ inline fptr full_trace_render_context_get_proc_addr(const char* ___file___, uint
 #define window_server_backend_new() full_trace_window_server_backend_new(__FILE__, __LINE__)
 #define window_server_backend_free(backend) full_trace_window_server_backend_free(__FILE__, __LINE__, backend)
 #define window_server_backend_set_function(backend, name, function) full_trace_window_server_backend_set_function(__FILE__, __LINE__, backend, name, function)
-#define window_server_backend_get_function(backend, name, function) full_trace_window_server_backend_get_function(__FILE__, __LINE__, backend, name, function)
+#define window_server_backend_get_function(backend, name) full_trace_window_server_backend_get_function(__FILE__, __LINE__, backend, name)
 #define render_server_register_backend(name, backend) full_trace_render_server_register_backend(__FILE__, __LINE__, name, backend)
 #define render_server_load_backend(name) full_trace_render_server_load_backend(__FILE__, __LINE__, name)
 #define render_server_backend_new() full_trace_render_server_backend_new(__FILE__, __LINE__)
 #define render_server_backend_free(backend) full_trace_render_server_backend_free(__FILE__, __LINE__, backend)
 #define render_server_backend_set_function(backend, name, function) full_trace_render_server_backend_set_function(__FILE__, __LINE__, backend, name, function)
-#define render_server_backend_get_function(backend, name, function) full_trace_render_server_backend_get_function(__FILE__, __LINE__, backend, name, function)
+#define render_server_backend_get_function(backend, name) full_trace_render_server_backend_get_function(__FILE__, __LINE__, backend, name)
 #define render_context_register_backend(render_server_name, window_server_name, backend) full_trace_render_context_register_backend(__FILE__, __LINE__, render_server_name, window_server_name, backend)
 #define render_context_load_backend(render_server_name, window_server_name) full_trace_render_context_load_backend(__FILE__, __LINE__, render_server_name, window_server_name)
 #define render_context_backend_new() full_trace_render_context_backend_new(__FILE__, __LINE__)
 #define render_context_backend_free(backend) full_trace_render_context_backend_free(__FILE__, __LINE__, backend)
 #define render_context_backend_set_function(backend, name, function) full_trace_render_context_backend_set_function(__FILE__, __LINE__, backend, name, function)
-#define render_context_backend_get_function(backend, name, function) full_trace_render_context_backend_get_function(__FILE__, __LINE__, backend, name, function)
-#define window_server_create_window(title, w, h, parent, out) full_trace_window_server_create_window(__FILE__, __LINE__, title, w, h, parent, out)
+#define render_context_backend_get_function(backend, name) full_trace_render_context_backend_get_function(__FILE__, __LINE__, backend, name)
+#define window_server_create_window(title, size, parent) full_trace_window_server_create_window(__FILE__, __LINE__, title, size, parent)
 #define window_server_destroy_window(this) full_trace_window_server_destroy_window(__FILE__, __LINE__, this)
 #define window_server_window_set_title(this, title) full_trace_window_server_window_set_title(__FILE__, __LINE__, this, title)
-#define window_server_window_get_title(this, out) full_trace_window_server_window_get_title(__FILE__, __LINE__, this, out)
+#define window_server_window_get_title(this) full_trace_window_server_window_get_title(__FILE__, __LINE__, this)
 #define window_server_window_set_mode(this, mode) full_trace_window_server_window_set_mode(__FILE__, __LINE__, this, mode)
-#define window_server_window_get_mode(this, out) full_trace_window_server_window_get_mode(__FILE__, __LINE__, this, out)
-#define window_server_window_set_size(this, w, h) full_trace_window_server_window_set_size(__FILE__, __LINE__, this, w, h)
-#define window_server_window_get_size(this, w, h) full_trace_window_server_window_get_size(__FILE__, __LINE__, this, w, h)
-#define window_server_window_set_position(this, x, y) full_trace_window_server_window_set_position(__FILE__, __LINE__, this, x, y)
-#define window_server_window_get_position(this, x, y) full_trace_window_server_window_get_position(__FILE__, __LINE__, this, x, y)
-#define window_server_window_set_fullscreen_display(this, fullscreen) full_trace_window_server_window_set_fullscreen_display(__FILE__, __LINE__, this, fullscreen)
-#define render_context_create_surface(window, out) full_trace_render_context_create_surface(__FILE__, __LINE__, window, out)
+#define window_server_window_get_mode(this) full_trace_window_server_window_get_mode(__FILE__, __LINE__, this)
+#define window_server_window_set_size(this, dimensions) full_trace_window_server_window_set_size(__FILE__, __LINE__, this, dimensions)
+#define window_server_window_get_size(this, success) full_trace_window_server_window_get_size(__FILE__, __LINE__, this, success)
+#define window_server_window_set_position(this, dimensions) full_trace_window_server_window_set_position(__FILE__, __LINE__, this, dimensions)
+#define window_server_window_get_position(this, success) full_trace_window_server_window_get_position(__FILE__, __LINE__, this, success)
+#define render_context_create_surface(window) full_trace_render_context_create_surface(__FILE__, __LINE__, window)
 #define render_context_destroy_surface(surface) full_trace_render_context_destroy_surface(__FILE__, __LINE__, surface)
 #define render_context_surface_make_current(surface) full_trace_render_context_surface_make_current(__FILE__, __LINE__, surface)
 #define render_context_surface_present(surface) full_trace_render_context_surface_present(__FILE__, __LINE__, surface)

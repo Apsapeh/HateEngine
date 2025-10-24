@@ -93,7 +93,7 @@ static void print_log(
 #if defined(PLATFORM_WINDOWS)
     color_begin();
     fprintf(stderr, "%02u-%02u-%04u %02u:%02u:%02u.%03u [%s] [%s:%d] %s\n", day, month, year, hour,
-            minute, second, nanosecond, type, file, line, FormatBuffer);
+            minute, second, nanosecond, type, file, line, g_formatBuffer);
     set_default();
 #elif defined(PLATFORM_UNIX)
     fprintf(stderr, "%s%02u-%02u-%04u %02u:%02u:%02u.%03u [%s] [%s:%d] %s%s\n", color_begin(), day,
@@ -104,8 +104,8 @@ static void print_log(
     if (g_fullTraceLineTLS_get_value() != -1) {
 #if defined(PLATFORM_WINDOWS)
         set_trace_color();
-        fprintf(stderr, "\tThrowed in '%s' at %s@%d%s\n", full_trace_mod_level_func,
-                full_trace_mod_level_file, full_trace_mod_level_line);
+        fprintf(stderr, "\tThrowed in '%s' at %s@%d%s\n", g_fullTraceFuncTLS_get_value(),
+                g_fullTraceFileTLS_get_value(), g_fullTraceLineTLS_get_value());
         set_default();
 #elif defined(PLATFORM_UNIX)
         fprintf(stderr, "%s\tThrowed in '%s' at %s@%d%s\n", set_trace_color(),
@@ -136,8 +136,8 @@ static void print_log_no_alloc(
     if (g_fullTraceLineTLS_get_value() != -1) {
 #if defined(PLATFORM_WINDOWS)
         set_trace_color();
-        fprintf(stderr, "\tThrowed in '%s' at %s@%d%s\n", full_trace_mod_level_func,
-                full_trace_mod_level_file, full_trace_mod_level_line);
+        fprintf(stderr, "\tThrowed in '%s' at %s@%d%s\n", g_fullTraceFuncTLS_get_value(),
+                g_fullTraceFileTLS_get_value(), g_fullTraceLineTLS_get_value());
         set_default();
 #elif defined(PLATFORM_UNIX)
         fprintf(stderr, "%s\tThrowed in '%s' at %s@%d%s\n", set_trace_color(),

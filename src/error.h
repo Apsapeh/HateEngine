@@ -35,27 +35,28 @@ typedef c_str Error;
     } while (0)
 
 
-#define ERROR_ARG_CHECK(arg)                                                                            \
+#define ERROR_ARG_CHECK(arg, to_return)                                                                 \
     do {                                                                                                \
         if (!(arg)) {                                                                                   \
             LOG_ERROR("Invalid argument (is NULL): " #arg);                                             \
-            return ERROR_INVALID_ARGUMENT;                                                              \
+            set_error(ERROR_INVALID_ARGUMENT);                                                          \
+            to_return                                                                                   \
         }                                                                                               \
     } while (0)
 
-#define ERROR_ARGS_CHECK_1(a) ERROR_ARG_CHECK(a)
-#define ERROR_ARGS_CHECK_2(a, b)                                                                        \
-    ERROR_ARG_CHECK(a);                                                                                 \
-    ERROR_ARG_CHECK(b)
-#define ERROR_ARGS_CHECK_3(a, b, c)                                                                     \
-    ERROR_ARG_CHECK(a);                                                                                 \
-    ERROR_ARG_CHECK(b);                                                                                 \
-    ERROR_ARG_CHECK(c)
-#define ERROR_ARGS_CHECK_4(a, b, c, d)                                                                  \
-    ERROR_ARG_CHECK(a);                                                                                 \
-    ERROR_ARG_CHECK(b);                                                                                 \
-    ERROR_ARG_CHECK(c);                                                                                 \
-    ERROR_ARG_CHECK(d)
+#define ERROR_ARGS_CHECK_1(a, end_block) ERROR_ARG_CHECK(a, end_block)
+#define ERROR_ARGS_CHECK_2(a, b, end_block)                                                             \
+    ERROR_ARG_CHECK(a, end_block);                                                                      \
+    ERROR_ARG_CHECK(b, end_block)
+#define ERROR_ARGS_CHECK_3(a, b, c, end_block)                                                          \
+    ERROR_ARG_CHECK(a, end_block);                                                                      \
+    ERROR_ARG_CHECK(b, end_block);                                                                      \
+    ERROR_ARG_CHECK(c, end_block)
+#define ERROR_ARGS_CHECK_4(a, b, c, d, end_block)                                                       \
+    ERROR_ARG_CHECK(a, end_block);                                                                      \
+    ERROR_ARG_CHECK(b, end_block);                                                                      \
+    ERROR_ARG_CHECK(c, end_block);                                                                      \
+    ERROR_ARG_CHECK(d, end_block)
 
 
 #define ERROR_ASSERT(error, ...) ERROR_ASSERT_FATAL(error, __VA_ARGS__)
@@ -70,6 +71,8 @@ typedef c_str Error;
 #define ERROR_ALLOCATION_FAILED "AllocationFailed"
 
 // API END
+
+boolean __error_check_ptr_arg(void* ptr, c_str name);
 
 /**
  * @brief Set a last error that occurred on the current thread.

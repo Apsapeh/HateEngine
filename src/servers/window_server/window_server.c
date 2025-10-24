@@ -39,13 +39,14 @@ void window_server_exit(void) {
     vec_WindowServerBackendPair_free(&g_registredBackends);
 }
 
-Error window_server_register_backend(const char* name, WindowServerBackend* backend) {
-    ERROR_ARGS_CHECK_2(name, backend);
+boolean window_server_register_backend(const char* name, WindowServerBackend* backend) {
+    ERROR_ARGS_CHECK_2(name, backend, { return false; });
 
     for (usize i = 0; i < g_registredBackends.size; i++) {
         if (strcmp(g_registredBackends.data[i].name, name) == 0) {
             LOG_ERROR("Backend with name '%s' already registered", name);
-            return ERROR_ALREADY_EXISTS;
+            set_error(ERROR_ALREADY_EXISTS);
+            return false;
         }
     }
 
@@ -53,26 +54,28 @@ Error window_server_register_backend(const char* name, WindowServerBackend* back
             &g_registredBackends, (struct WindowServerBackendPair) {name, backend}
     );
 
-    return ERROR_SUCCESS;
+    return true;
 }
 
-Error window_server_load_backend(const char* name) {
-    ERROR_ARGS_CHECK_1(name);
+boolean window_server_load_backend(const char* name) {
+    ERROR_ARGS_CHECK_1(name, { return false; });
 
     if (g_isLoaded) {
         LOG_ERROR("(window_server_load_backend) Window server already loaded");
-        return ERROR_INVALID_STATE;
+        set_error(ERROR_INVALID_STATE);
+        return false;
     }
 
     for (usize i = 0; i < g_registredBackends.size; i++) {
         if (strcmp(g_registredBackends.data[i].name, name) == 0) {
             WindowServer = *g_registredBackends.data[i].backend;
             g_isLoaded = true;
-            return ERROR_SUCCESS;
+            return true;
         }
     }
 
-    return ERROR_NOT_FOUND;
+    set_error(ERROR_NOT_FOUND);
+    return false;
 }
 
 boolean window_server_is_loaded(void) {
@@ -81,11 +84,12 @@ boolean window_server_is_loaded(void) {
 
 
 /* ====================> WindowServerBackend functions <==================== */
-static Error backend_set_get(
+static boolean backend_set_get(
         WindowServerBackend* backend, const char* name, void (**fn)(void), unsigned char is_set
 );
 
 WindowServerBackend* window_server_backend_new(void) {
+    // FIXME: Add tmalloc check
     WindowServerBackend* backend = tmalloc(sizeof(WindowServerBackend));
 
     // TODO: Add default functions
@@ -93,28 +97,28 @@ WindowServerBackend* window_server_backend_new(void) {
     return backend;
 }
 
-Error window_server_backend_free(WindowServerBackend* backend) {
-    ERROR_ARG_CHECK(backend);
+boolean window_server_backend_free(WindowServerBackend* backend) {
+    ERROR_ARG_CHECK(backend, { return false; });
     tfree(backend);
-    return ERROR_SUCCESS;
+    return true;
 }
 
-Error window_server_backend_set_function(
-        WindowServerBackend* backend, const char* name, void (*function)(void)
+boolean window_server_backend_set_function(
+        WindowServerBackend* backend, const char* name, fptr function
 ) {
-    ERROR_ARGS_CHECK_3(backend, name, function);
+    ERROR_ARGS_CHECK_3(backend, name, function, { return false; });
     return backend_set_get(backend, name, (void (**)(void)) function, 1);
 }
 
-Error window_server_backend_get_function(
-        WindowServerBackend* backend, const char* name, void (**function)(void)
-) {
-    ERROR_ARGS_CHECK_3(backend, name, function);
-    return backend_set_get(backend, name, function, 0);
+fptr window_server_backend_get_function(WindowServerBackend* backend, const char* name) {
+    ERROR_ARGS_CHECK_2(backend, name, { return false; });
+    fptr function = NULL;
+    backend_set_get(backend, name, &function, 0);
+    return function;
 }
 
 
-static Error backend_set_get(
+static boolean backend_set_get(
         WindowServerBackend* backend, const char* name, void (**fn)(void), unsigned char is_set
 ) {
     typedef void (**FnT)(void);
@@ -137,7 +141,7 @@ static Error backend_set_get(
             {"window_get_size", (FnT) &backend->window_get_size},
             {"window_set_position", (FnT) &backend->window_set_position},
             {"window_get_position", (FnT) &backend->window_get_position},
-            {"window_set_fullscreen_display", (FnT) &backend->window_set_fullscreen_display},
+            // {"window_set_fullscreen_display", (FnT) &backend->window_set_fullscreen_display},
     };
 
     for (usize i = 0; i < sizeof(pairs) / sizeof(pairs[0]); i++) {
@@ -146,10 +150,11 @@ static Error backend_set_get(
                 *pairs[i].function = (void (*)(void)) fn;
             else
                 *fn = *pairs[i].function;
-            return ERROR_SUCCESS;
+            return true;
         }
     }
 
     LOG_ERROR("Unknown function name: %s", name);
-    return ERROR_NOT_FOUND;
+    set_error(ERROR_NOT_FOUND);
+    return false;
 }

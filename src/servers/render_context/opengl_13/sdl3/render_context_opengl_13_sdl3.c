@@ -9,6 +9,7 @@
 #include "servers/render_context/render_context.h"
 #include "servers/window_server/sdl3/window_server_sdl3.h"
 #include "servers/window_server/window_server.h"
+#include "types/types.h"
 
 /*struct RenderContextSurface {
     int a;
@@ -20,99 +21,101 @@
 /* ================== */
 
 
-#define MAIN_THREAD_CHECK(function)                                                                     \
+#define MAIN_THREAD_CHECK(function, end_block)                                                          \
     do {                                                                                                \
         if (!SDL_IsMainThread()) {                                                                      \
             LOG_ERROR(                                                                                  \
-                    "RenderContext(OpenGL 1.3, SDL3)::" #function                                       \
-                    " must be called only from main thread or "                                         \
+                    "WindowServer(SDL3)::" #function " must be called only from main thread or "        \
                     "via call_deferred/call_deferred_async"                                             \
             )                                                                                           \
-            return NOT_MAIN_THREAD_ERROR;                                                               \
+            set_error(NOT_MAIN_THREAD_ERROR);                                                           \
+            end_block                                                                                   \
         }                                                                                               \
     } while (0)
 
 
 const static u32 INIT_FLAGS = SDL_INIT_VIDEO | SDL_INIT_EVENTS;
-static u8 is_init = 0;
+static u8 g_isInit = 0;
 
-static Error _init(void) {
+static boolean _init(void) {
     if (!SDL_WasInit(INIT_FLAGS)) {
         if (!SDL_Init(INIT_FLAGS)) {
-            return ANY_ERROR;
+            set_error(ANY_ERROR);
+            return false;
         }
-        is_init = 1;
+        g_isInit = 1;
     }
 
-    return ERROR_SUCCESS;
+    return true;
 }
 
-static Error _quit(void) {
-    if (is_init) {
+static boolean _quit(void) {
+    if (g_isInit) {
         SDL_QuitSubSystem(INIT_FLAGS);
     }
-    return ERROR_SUCCESS;
+    return true;
 }
 
 
-static SDL_GLContext OPENGL_SHARED_CONTEXT = NULL;
-static Error create_surface(WindowServerWindow* window, RenderContextSurface** out) {
-    ERROR_ARGS_CHECK_2(window, out);
-    MAIN_THREAD_CHECK(create_surface);
+static SDL_GLContext g_openglSharedContext = NULL;
+static RenderContextSurface* create_surface(WindowServerWindow* window) {
+    ERROR_ARGS_CHECK_1(window, { return NULL; });
+    MAIN_THREAD_CHECK(create_surface, { return NULL; });
 
-    if (!OPENGL_SHARED_CONTEXT) {
-        OPENGL_SHARED_CONTEXT = SDL_GL_CreateContext((SDL_Window*) window);
+    if (!g_openglSharedContext) {
+        g_openglSharedContext = SDL_GL_CreateContext((SDL_Window*) window);
 
-        if (!OPENGL_SHARED_CONTEXT) {
+        if (!g_openglSharedContext) {
             LOG_FATAL("Failed to create shared OpenGL context. SDL Error: %s", SDL_GetError());
-            return ANY_ERROR;
+            set_error(ANY_ERROR);
+            return NULL;
         }
     }
 
-    *out = (RenderContextSurface*) window;
-    return ERROR_SUCCESS;
+    return (RenderContextSurface*) window;
 }
 
 
-static Error destroy_surface(RenderContextSurface* surface) {
-    ERROR_ARG_CHECK(surface);
-    return ERROR_SUCCESS;
+static boolean destroy_surface(RenderContextSurface* surface) {
+    ERROR_ARG_CHECK(surface, { return false; });
+    return true;
 }
 
 
-static RenderContextSurface* CURRENT_SURFACE = NULL;
-static Error surface_make_current(RenderContextSurface* surface) {
-    ERROR_ARG_CHECK(surface);
-    MAIN_THREAD_CHECK(create_surface);
+static RenderContextSurface* g_currentSurface = NULL;
+static boolean surface_make_current(RenderContextSurface* surface) {
+    ERROR_ARG_CHECK(surface, { return false; });
+    MAIN_THREAD_CHECK(create_surface, { return false; });
 
-    if (surface == CURRENT_SURFACE) {
-        return ERROR_SUCCESS;
+    if (surface == g_currentSurface) {
+        return true;
     }
 
-    if (!SDL_GL_MakeCurrent((SDL_Window*) surface, OPENGL_SHARED_CONTEXT)) {
+    if (!SDL_GL_MakeCurrent((SDL_Window*) surface, g_openglSharedContext)) {
         LOG_FATAL("Failed to change OpenGL context. SDL Error: %s", SDL_GetError());
-        return ANY_ERROR;
+        set_error(ANY_ERROR);
+        return false;
     }
-    CURRENT_SURFACE = surface;
+    g_currentSurface = surface;
 
-    return ERROR_SUCCESS;
+    return true;
 }
 
 
-static Error surface_present(RenderContextSurface* surface) {
-    ERROR_ARG_CHECK(surface);
-    MAIN_THREAD_CHECK(create_surface);
+static boolean surface_present(RenderContextSurface* surface) {
+    ERROR_ARG_CHECK(surface, { return false; });
+    MAIN_THREAD_CHECK(create_surface, { return false; });
 
-    if (surface != CURRENT_SURFACE) {
-        Error err = surface_make_current(surface);
-        if (err)
-            return err;
+    if (surface != g_currentSurface) {
+        if (!surface_make_current(surface))
+            return false;
     }
     if (!SDL_GL_SwapWindow((SDL_Window*) surface)) {
         LOG_FATAL("Failed to swap window's buffers. SDL Error: %s", SDL_GetError());
-        return ANY_ERROR;
+        set_error(ANY_ERROR);
+        return false;
     }
-    return ERROR_SUCCESS;
+    return true;
 }
 
 

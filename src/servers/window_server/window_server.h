@@ -2,12 +2,14 @@
 
 #include <error.h>
 #include <types/types.h>
+#include "math/ivec2.h"
 
 /*
 API ENUM {
         "name": "WindowServerWindowVSync",
         "type": "char",
         "values": [
+                ["Unknown", "'\\0'"],
                 ["Disabled", "'d'"],
                 ["Enabled", "'e'"],
                 ["EnabledAsync", "'a'"]
@@ -15,6 +17,7 @@ API ENUM {
 }
 */
 
+#define WINDOW_SERVER_WINDOW_VSYNC_UNKNOWN '\0'
 #define WINDOW_SERVER_WINDOW_VSYNC_DISABLED 'd'
 #define WINDOW_SERVER_WINDOW_VSYNC_ENABLED 'e'
 #define WINDOW_SERVER_WINDOW_VSYNC_ENABLED_ASYNC 'a'
@@ -36,6 +39,7 @@ API ENUM {
         "name": "WindowServerWindowMode",
         "type": "char",
         "values": [
+                ["Unknown", "'\\0'"],
                 ["Windowed", "'w'"],
                 ["Fullscreen", "'f'"],
                 ["BorderlessFullscreen", "'b'"]
@@ -43,6 +47,7 @@ API ENUM {
 }
 */
 
+#define WINDOW_SERVER_WINDOW_MODE_UNKNOWN '\0'
 #define WINDOW_SERVER_WINDOW_MODE_WINDOWED 'w'
 #define WINDOW_SERVER_WINDOW_MODE_FULLSCREEN 'f'
 #define WINDOW_SERVER_WINDOW_MODE_BORDERLESS_FULLSCREEN 'b'
@@ -81,31 +86,26 @@ typedef struct WindowServerDisplay WindowServerDisplay;
  * }
  */
 typedef struct {
-    Error (*_init)(void);
-    Error (*_quit)(void);
+    boolean (*_init)(void);
+    boolean (*_quit)(void);
 
-    Error (*create_window)(
-            const char* title, i32 w, i32 h, WindowServerWindow* parent, WindowServerWindow** out
-    );
-    Error (*destroy_window)(WindowServerWindow* this);
+    WindowServerWindow* (*create_window)(const char* title, IVec2 size, WindowServerWindow* parent);
+    boolean (*destroy_window)(WindowServerWindow* this);
 
-    Error (*window_set_title)(WindowServerWindow* this, const char* title);
-    Error (*window_get_title)(WindowServerWindow* this, const char** out);
+    boolean (*window_set_title)(WindowServerWindow* this, const char* title);
+    c_str (*window_get_title)(WindowServerWindow* this);
 
-    /**
-     * @brief HOLA BOLA
-     *
-     */
-    Error (*window_set_mode)(WindowServerWindow* this, WindowServerWindowMode mode);
-    Error (*window_get_mode)(WindowServerWindow* this, WindowServerWindowMode* out);
+    boolean (*window_set_mode)(WindowServerWindow* this, WindowServerWindowMode mode);
+    WindowServerWindowMode (*window_get_mode)(WindowServerWindow* this);
 
-    Error (*window_set_size)(WindowServerWindow* this, i32 w, i32 h);
-    Error (*window_get_size)(WindowServerWindow* this, i32* w, i32* h);
+    boolean (*window_set_size)(WindowServerWindow* this, IVec2 dimensions);
+    IVec2 (*window_get_size)(WindowServerWindow* this, boolean* success);
 
-    Error (*window_set_position)(WindowServerWindow* this, i32 x, i32 y);
-    Error (*window_get_position)(WindowServerWindow* this, i32* x, i32* y);
+    boolean (*window_set_position)(WindowServerWindow* this, IVec2 dimensions);
+    IVec2 (*window_get_position)(WindowServerWindow* this, boolean* success);
 
-    Error (*window_set_fullscreen_display)(WindowServerWindow* this, WindowServerDisplay* fullscreen);
+    // boolean (*window_set_fullscreen_display)(WindowServerWindow* this, WindowServerDisplay*
+    // fullscreen);
 } WindowServerBackend;
 
 
@@ -126,7 +126,7 @@ void window_server_exit(void);
  *
  * @api
  */
-Error window_server_register_backend(const char* name, WindowServerBackend* backend);
+boolean window_server_register_backend(const char* name, WindowServerBackend* backend);
 
 /**
  * @brief Load a backend. First you should register them via window_server_register_backend
@@ -137,7 +137,7 @@ Error window_server_register_backend(const char* name, WindowServerBackend* back
  *
  * @api
  */
-Error window_server_load_backend(const char* name);
+boolean window_server_load_backend(const char* name);
 
 /**
  * @brief If backend was loaded
@@ -161,7 +161,7 @@ WindowServerBackend* window_server_backend_new(void);
  *
  * @api
  */
-Error window_server_backend_free(WindowServerBackend* backend);
+boolean window_server_backend_free(WindowServerBackend* backend);
 
 /**
  * @brief Set a function pointer for a backend
@@ -170,8 +170,8 @@ Error window_server_backend_free(WindowServerBackend* backend);
  *
  * @api
  */
-Error window_server_backend_set_function(
-        WindowServerBackend* backend, const char* name, void (*function)(void)
+boolean window_server_backend_set_function(
+        WindowServerBackend* backend, const char* name, fptr function
 );
 
 
@@ -182,6 +182,4 @@ Error window_server_backend_set_function(
  *
  * @api
  */
-Error window_server_backend_get_function(
-        WindowServerBackend* backend, const char* name, void (**function)(void)
-);
+fptr window_server_backend_get_function(WindowServerBackend* backend, const char* name);

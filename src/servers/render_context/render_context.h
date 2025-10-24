@@ -20,14 +20,14 @@ typedef struct RenderContextSurface RenderContextSurface;
  * }
  */
 typedef struct {
-    Error (*_init)(void);
-    Error (*_quit)(void);
+    boolean (*_init)(void);
+    boolean (*_quit)(void);
 
-    Error (*create_surface)(WindowServerWindow* window, RenderContextSurface** out);
-    Error (*destroy_surface)(RenderContextSurface* surface);
+    RenderContextSurface* (*create_surface)(WindowServerWindow* window);
+    boolean (*destroy_surface)(RenderContextSurface* surface);
 
-    Error (*surface_make_current)(RenderContextSurface* surface);
-    Error (*surface_present)(RenderContextSurface* surface);
+    boolean (*surface_make_current)(RenderContextSurface* surface);
+    boolean (*surface_present)(RenderContextSurface* surface);
 
     fptr (*get_proc_addr)(const char* proc);
 } RenderContextBackend;
@@ -52,7 +52,7 @@ void render_context_exit(void);
  *
  * @api
  */
-Error render_context_register_backend(
+boolean render_context_register_backend(
         const char* render_server_name, const char* window_server_name, RenderContextBackend* backend
 );
 
@@ -65,7 +65,7 @@ Error render_context_register_backend(
  *
  * @api
  */
-Error render_context_load_backend(const char* render_server_name, const char* window_server_name);
+boolean render_context_load_backend(const char* render_server_name, const char* window_server_name);
 
 /**
  * @brief If backend was loaded
@@ -88,7 +88,7 @@ RenderContextBackend* render_context_backend_new(void);
  *
  * @api
  */
-Error render_context_backend_free(RenderContextBackend* backend);
+boolean render_context_backend_free(RenderContextBackend* backend);
 
 /**
  * @brief Set a function pointer for a backend
@@ -97,8 +97,8 @@ Error render_context_backend_free(RenderContextBackend* backend);
  *
  * @api
  */
-Error render_context_backend_set_function(
-        RenderContextBackend* backend, const char* name, void (*function)(void)
+boolean render_context_backend_set_function(
+        RenderContextBackend* backend, const char* name, fptr function
 );
 
 
@@ -109,6 +109,4 @@ Error render_context_backend_set_function(
  *
  * @api
  */
-Error render_context_backend_get_function(
-        RenderContextBackend* backend, const char* name, void (**function)(void)
-);
+fptr render_context_backend_get_function(RenderContextBackend* backend, const char* name);

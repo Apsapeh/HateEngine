@@ -4,27 +4,28 @@
 #define HE_MEM_NO_MACRO
 //#include <extra/full_trace.h>
 
-#include "object/node/canvas_item/canvas_item.h"
-#include "object/node/canvas_item/control/control.h"
-#include "servers/render_server/render_server.h"
-#include "math/vec2.h"
-#include "log.h"
-#include "servers/render_context/render_context.h"
-#include "platform/memory.h"
-#include "types/uid.h"
-#include "math/vec3.h"
-#include "object/node/canvas_item/control/viewport/viewport.h"
-#include "vfs/vfs.h"
-#include "types/string.h"
-#include "math/mat4.h"
-#include "object/node/node.h"
-#include "error.h"
-#include "object/node/window/window.h"
-#include "object/node/node3d/node3d.h"
-#include "platform/mutex.h"
-#include "platform/datetime.h"
 #include "object/object.h"
+#include "object/node/canvas_item/control/control.h"
+#include "math/ivec2.h"
+#include "math/vec3.h"
+#include "object/node/node.h"
+#include "math/vec2.h"
+#include "platform/memory.h"
+#include "math/mat4.h"
+#include "log.h"
+#include "platform/datetime.h"
+#include "object/node/canvas_item/canvas_item.h"
+#include "object/node/node3d/node3d.h"
+#include "types/string.h"
+#include "error.h"
+#include "servers/render_context/render_context.h"
+#include "platform/mutex.h"
 #include "servers/window_server/window_server.h"
+#include "servers/render_server/render_server.h"
+#include "vfs/vfs.h"
+#include "object/node/window/window.h"
+#include "types/uid.h"
+#include "object/node/canvas_item/control/viewport/viewport.h"
 
 
 typedef struct {
@@ -57,6 +58,18 @@ APIFunctionLookupTable api_function_lookup_table[] = {
     {"from_node", (void*)from_node},
     {"get_allocated_memory", (void*)get_allocated_memory},
     {"get_error", (void*)get_error},
+    {"ivec2_add", (void*)ivec2_add},
+    {"ivec2_add_in", (void*)ivec2_add_in},
+    {"ivec2_distance", (void*)ivec2_distance},
+    {"ivec2_dot", (void*)ivec2_dot},
+    {"ivec2_length", (void*)ivec2_length},
+    {"ivec2_new", (void*)ivec2_new},
+    {"ivec2_normalize", (void*)ivec2_normalize},
+    {"ivec2_normalize_in", (void*)ivec2_normalize_in},
+    {"ivec2_scale", (void*)ivec2_scale},
+    {"ivec2_scale_in", (void*)ivec2_scale_in},
+    {"ivec2_sub", (void*)ivec2_sub},
+    {"ivec2_sub_in", (void*)ivec2_sub_in},
     {"mat4_add", (void*)mat4_add},
     {"mat4_from_array", (void*)mat4_from_array},
     {"mat4_from_mat4", (void*)mat4_from_mat4},

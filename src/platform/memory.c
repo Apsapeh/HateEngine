@@ -48,10 +48,11 @@ void memory_init(void) {
 
 void memory_exit(void) {
 #if defined(HE_MEM_TRACK) | defined(HE_MEM_TRACK_TRACE)
-    u64 used = get_allocated_memory();
+    usize used = get_allocated_memory();
     if (used != 0) {
         __he_update_full_trace_info("", "", -1);
-        LOG_ERROR_NO_ALLOC("Unallocated memory size: %zu bytes", used);
+        // FIXME: Change %u to usize arg. %z doesn't work on WinXP
+        LOG_ERROR_NO_ALLOC("Unallocated memory size: %u bytes", used);
 
         for (usize i = 0; i < g_allocatedMemory.size; ++i) {
             struct AllocationData* data = &g_allocatedMemory.data[i];
@@ -59,18 +60,18 @@ void memory_exit(void) {
             if (data->user_line != -1) {
     #if defined(HE_MEM_TRACK_TRACE)
                 LOG_ERROR_NO_ALLOC(
-                        "\t%zu bytes AT %s:%d IN \"%s\"@%s:%d", data->size, data->file, data->line,
+                        "\t%u bytes AT %s:%d IN \"%s\"@%s:%d", data->size, data->file, data->line,
                         data->user_func, data->user_file, data->user_line
                 );
     #else
                 LOG_ERROR_NO_ALLOC(
-                        "\t%zu bytes IN \"%s\"@%s:%d", data->size, data->user_func, data->user_file,
+                        "\t%u bytes IN \"%s\"@%s:%d", data->size, data->user_func, data->user_file,
                         data->user_line
                 );
     #endif
             } else {
     #if defined(HE_MEM_TRACK_TRACE)
-                LOG_ERROR_NO_ALLOC("\t%zu bytes AT %s:%d", data->size, data->file, data->line);
+                LOG_ERROR_NO_ALLOC("\t%u bytes AT %s:%d", data->size, data->file, data->line);
     #endif
             }
         }

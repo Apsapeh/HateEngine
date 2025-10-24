@@ -9,15 +9,15 @@
 
 RenderServerBackend RenderServer;
 
-struct backendPair {
+struct BackendPair {
     const char* name;
     RenderServerBackend* backend;
 };
 
 
 // clang-format off
-vector_template_def_static(backendPair, struct backendPair)
-vector_template_impl_static(backendPair, struct backendPair)
+vector_template_def_static(backendPair, struct BackendPair)
+vector_template_impl_static(backendPair, struct BackendPair)
 
 // FIXME: Add mutex
 static vec_backendPair g_registredBackends;
@@ -38,50 +38,55 @@ void render_server_exit(void) {
     vec_backendPair_free(&g_registredBackends);
 }
 
-Error render_server_register_backend(const char* name, RenderServerBackend* backend) {
-    ERROR_ARGS_CHECK_2(name, backend);
+boolean render_server_register_backend(const char* name, RenderServerBackend* backend) {
+    ERROR_ARGS_CHECK_2(name, backend, { return false; });
 
     for (usize i = 0; i < g_registredBackends.size; i++) {
         if (strcmp(g_registredBackends.data[i].name, name) == 0) {
             LOG_ERROR("Backend with name '%s' already registered", name);
-            return ERROR_ALREADY_EXISTS;
+            set_error(ERROR_ALREADY_EXISTS);
+            return false;
         }
     }
 
-    vec_backendPair_push_back(&g_registredBackends, (struct backendPair) {name, backend});
+    vec_backendPair_push_back(&g_registredBackends, (struct BackendPair) {name, backend});
 
-    return ERROR_SUCCESS;
+    return true;
 }
 
-Error render_server_load_backend(const char* name) {
-    ERROR_ARGS_CHECK_1(name);
+boolean render_server_load_backend(const char* name) {
+    ERROR_ARGS_CHECK_1(name, { return false; });
 
     if (g_isLoaded) {
-        LOG_ERROR("(render_server_load_backend) Render server already loaded");
-        return ERROR_INVALID_STATE;
+        LOG_ERROR("(render_server_load_backend) Window server already loaded");
+        set_error(ERROR_INVALID_STATE);
+        return false;
     }
 
     for (usize i = 0; i < g_registredBackends.size; i++) {
         if (strcmp(g_registredBackends.data[i].name, name) == 0) {
             RenderServer = *g_registredBackends.data[i].backend;
             g_isLoaded = true;
-            return ERROR_SUCCESS;
+            return true;
         }
     }
 
-    return ERROR_NOT_FOUND;
+    set_error(ERROR_NOT_FOUND);
+    return false;
 }
 
 boolean render_server_is_loaded(void) {
     return g_isLoaded;
 }
 
+
 /* ====================> RenderServerBackend functions <==================== */
-static Error backend_set_get(
+static boolean backend_set_get(
         RenderServerBackend* backend, const char* name, void (**fn)(void), unsigned char is_set
 );
 
 RenderServerBackend* render_server_backend_new(void) {
+    // FIXME: Add tmalloc check
     RenderServerBackend* backend = tmalloc(sizeof(RenderServerBackend));
 
     // TODO: Add default functions
@@ -89,38 +94,38 @@ RenderServerBackend* render_server_backend_new(void) {
     return backend;
 }
 
-Error render_server_backend_free(RenderServerBackend* backend) {
-    ERROR_ARG_CHECK(backend);
+boolean render_server_backend_free(RenderServerBackend* backend) {
+    ERROR_ARG_CHECK(backend, { return false; });
     tfree(backend);
-    return ERROR_SUCCESS;
+    return true;
 }
 
-Error render_server_backend_set_function(
-        RenderServerBackend* backend, const char* name, void (*function)(void)
+boolean render_server_backend_set_function(
+        RenderServerBackend* backend, const char* name, fptr function
 ) {
-    ERROR_ARGS_CHECK_3(backend, name, function);
+    ERROR_ARGS_CHECK_3(backend, name, function, { return false; });
     return backend_set_get(backend, name, (void (**)(void)) function, 1);
 }
 
-Error render_server_backend_get_function(
-        RenderServerBackend* backend, const char* name, void (**function)(void)
-) {
-    ERROR_ARGS_CHECK_3(backend, name, function);
-    return backend_set_get(backend, name, function, 0);
+fptr render_server_backend_get_function(RenderServerBackend* backend, const char* name) {
+    ERROR_ARGS_CHECK_2(backend, name, { return false; });
+    fptr function = NULL;
+    backend_set_get(backend, name, &function, 0);
+    return function;
 }
 
 
-static Error backend_set_get(
+static boolean backend_set_get(
         RenderServerBackend* backend, const char* name, void (**fn)(void), unsigned char is_set
 ) {
     typedef void (**FnT)(void);
-    struct fn_pair {
+    struct FnPair {
         const char* name;
         FnT function;
     };
 
     // TODO: generate with API Generator
-    const struct fn_pair pairs[] = {
+    const struct FnPair pairs[] = {
             {"_init", (FnT) &backend->_init},
             {"_quit", (FnT) &backend->_quit},
     };
@@ -131,10 +136,11 @@ static Error backend_set_get(
                 *pairs[i].function = (void (*)(void)) fn;
             else
                 *fn = *pairs[i].function;
-            return ERROR_SUCCESS;
+            return true;
         }
     }
 
     LOG_ERROR("Unknown function name: %s", name);
-    return ERROR_NOT_FOUND;
+    set_error(ERROR_NOT_FOUND);
+    return false;
 }
