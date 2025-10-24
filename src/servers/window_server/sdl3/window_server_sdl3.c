@@ -6,6 +6,7 @@
 #include "math/ivec2.h"
 #include "servers/window_server/window_server.h"
 #include "types/types.h"
+#include "helpers.h"
 
 /* ====> Errors <==== */
 #define NOT_MAIN_THREAD_ERROR "SDL3NotMainThread"
@@ -22,20 +23,6 @@
             )                                                                                           \
             set_error(NOT_MAIN_THREAD_ERROR);                                                           \
             end_block                                                                                   \
-        }                                                                                               \
-    } while (0)
-
-#define SET_SUCCESS_FALSE                                                                               \
-    do {                                                                                                \
-        if (success) {                                                                                  \
-            *success = false;                                                                           \
-        }                                                                                               \
-    } while (0)
-
-#define SET_SUCCESS_TRUE                                                                                \
-    do {                                                                                                \
-        if (success) {                                                                                  \
-            *success = true;                                                                            \
         }                                                                                               \
     } while (0)
 
@@ -141,11 +128,11 @@ static boolean window_set_size(WindowServerWindow* this, IVec2 dimensions) {
 
 static IVec2 window_get_size(WindowServerWindow* this, boolean* success) {
     ERROR_ARGS_CHECK_1(this, {
-        SET_SUCCESS_FALSE;
+        H_SET_SUCCESS_FALSE;
         return ivec2_new(-1, -1);
     });
     MAIN_THREAD_CHECK(window_get_size, {
-        SET_SUCCESS_FALSE;
+        H_SET_SUCCESS_FALSE;
         return ivec2_new(-1, -1);
     });
 
@@ -153,11 +140,11 @@ static IVec2 window_get_size(WindowServerWindow* this, boolean* success) {
     if (!SDL_GetWindowSize((SDL_Window*) this, &out_w, &out_h)) {
         LOG_ERROR("Failed to get window size. SDL Error: %s", SDL_GetError());
         set_error(ANY_ERROR);
-        SET_SUCCESS_FALSE;
+        H_SET_SUCCESS_FALSE;
         return ivec2_new(-1, -1);
     }
 
-    SET_SUCCESS_TRUE;
+    H_SET_SUCCESS_TRUE;
     return ivec2_new((i32) out_w, (i32) out_h);
 }
 
@@ -176,11 +163,11 @@ static boolean window_set_position(WindowServerWindow* this, IVec2 dimensions) {
 
 static IVec2 window_get_position(WindowServerWindow* this, boolean* success) {
     ERROR_ARGS_CHECK_1(this, {
-        SET_SUCCESS_FALSE;
+        H_SET_SUCCESS_FALSE;
         return ivec2_new(I32_MIN, I32_MIN);
     });
     MAIN_THREAD_CHECK(window_get_position, {
-        SET_SUCCESS_FALSE;
+        H_SET_SUCCESS_FALSE;
         return ivec2_new(I32_MIN, I32_MIN);
     });
 
@@ -188,11 +175,11 @@ static IVec2 window_get_position(WindowServerWindow* this, boolean* success) {
     if (!SDL_GetWindowPosition((SDL_Window*) this, &out_x, &out_y)) {
         LOG_ERROR("Failed to get window position. SDL Error: %s", SDL_GetError());
         set_error(ANY_ERROR);
-        SET_SUCCESS_FALSE;
+        H_SET_SUCCESS_FALSE;
         return ivec2_new(I32_MIN, I32_MIN);
     }
 
-    SET_SUCCESS_TRUE;
+    H_SET_SUCCESS_TRUE;
     return ivec2_new((i32) out_x, (i32) out_y);
 }
 
