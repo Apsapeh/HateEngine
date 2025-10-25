@@ -39,6 +39,8 @@ int main(int argc, char** argv) {
     return 0;
 }
 
+// test code
+
 
 static void init(void) {
     memory_init();
