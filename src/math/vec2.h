@@ -10,25 +10,38 @@ typedef struct {
     float y;
 } Vec2;
 
-/**
- * @api
- */
-Vec2 vec2_new(float x, float y, float z);
+// MACROS API START
+#define VEC2_NEW_M(v_x, v_y)                                                                            \
+    (Vec2) {                                                                                            \
+        .x = v_x, .y = v_y                                                                              \
+    }
+#define VEC2_ZERO_M VEC2_NEW_M(0.0f, 0.0f)
+#define VEC2_ONE_M VEC2_NEW_M(1.0f, 1.0f)
+#define VEC2_MINUS_ONE_M VEC2_NEW_M(-1.0f, 1.0f)
+// #define VEC2_MAX_M (Vec2){.x=I32_MAX, .y=I32_MAX}
+// #define VEC2_MIN_M (Vec2){.x=I32_MIN, .y=I32_MIN}
+
+// MACROS API END
 
 /**
  * @api
  */
-Vec2 vec2_add(const Vec2* const a, const Vec2* const b);
+void vec2_init(const float x, const float y, Vec2* const out);
 
 /**
  * @api
  */
-Vec2 vec2_sub(const Vec2* const a, const Vec2* const b);
+void vec2_add(const Vec2* const a, const Vec2* const b, Vec2* const out);
 
 /**
  * @api
  */
-Vec2 vec2_scale(const Vec2* const a, const float factor);
+void vec2_sub(const Vec2* const a, const Vec2* const b, Vec2* const out);
+
+/**
+ * @api
+ */
+void vec2_scale(const Vec2* const a, const float factor, Vec2* const out);
 
 /**
  * @api
@@ -43,7 +56,7 @@ float vec2_length(const Vec2* const a);
 /**
  * @api
  */
-Vec2 vec2_normalize(const Vec2* const a);
+void vec2_normalize(const Vec2* const a, Vec2* const out);
 
 /**
  * @api

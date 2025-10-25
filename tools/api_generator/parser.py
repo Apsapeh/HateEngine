@@ -18,12 +18,12 @@ SERVER_FN_SKIP = (
 
 
 
-def parse(folder: str) -> ParseResult:
-    args = generate_args(folder)
+def parse() -> ParseResult:
+    args = generate_args()
 
     result = ParseResult()
-    for filename in glob(folder+'/**/*.h', recursive=True):
-        f = filename[len(folder)+1:]
+    for filename in glob('src/**/*.h', recursive=True):
+        f = filename[len('src')+1:]
 
         if f in GLOB_BLACK_LIST:
             continue
@@ -45,7 +45,7 @@ def parse(folder: str) -> ParseResult:
     return result
 
 
-def generate_args(folder: str) -> list:
+def generate_args() -> list:
     args = [
         '-x', 'c',  # Язык - C
         '-std=c99',  # Стандарт C

@@ -1,5 +1,6 @@
 from api_generator.parser_types import *
 from . import general
+from glob import glob
 
 API_HEADER = """
 #pragma once
@@ -11,6 +12,8 @@ API_HEADER = """
 INCLUDE_TYPES
 
 INCLUDE_ERROR
+
+INCLUDE_MACROS
 
 TYPES
 
@@ -178,9 +181,15 @@ def run(data: ParseResult):
         servers_init += f"    }}\n\n"
             
 
+    include_macros = ""
+    for filename in glob('src/**/*.h', recursive=True):
+        #f = filename[len('src')+1:]
+        include_macros += include_file_macros(filename) + "\n"
+
     to_replace = (
         ("INCLUDE_TYPES", include_file("src/types/types.h")),
         ("INCLUDE_ERROR", include_file("src/error.h")),
+        ("INCLUDE_MACROS", include_macros),
         ("TYPES", types),
         ("CT_FN_DECL", ""),
         ("RAW_FN_PTRS_DECL", fn_ptrs_decl),
@@ -258,9 +267,25 @@ def include_file(file) -> str:
         result: list[str] = []
         is_in_api: bool = False
         for i, c in enumerate(code):
-            if c.startswith("// API START"):
+            if c.startswith("// API START") or c.startswith("// API BEGIN"):
                 is_in_api = True
             elif c.startswith("// API END"):
+                is_in_api = False
+            elif is_in_api:
+                result.append(c)
+
+        return "\n".join(result)
+    
+def include_file_macros(file) -> str:
+    with open(file, "r") as f:
+        code = f.read().splitlines()
+        n = 0
+        result: list[str] = []
+        is_in_api: bool = False
+        for i, c in enumerate(code):
+            if c.startswith("// MACROS API START") or c.startswith("// MACROS API BEGIN"):
+                is_in_api = True
+            elif c.startswith("// MACROS API END"):
                 is_in_api = False
             elif is_in_api:
                 result.append(c)

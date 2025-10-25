@@ -6,7 +6,7 @@
 
 void node3d_init(Node3D* this, enum ObjectType object_type, const char* name) {
     node_init(&this->node, object_type, name);
-    this->transform = mat4_new_one();
+    this->transform = MAT4_ONE_M;
 }
 
 void node3d_free(Node3D* node3d) {

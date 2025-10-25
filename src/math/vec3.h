@@ -11,33 +11,52 @@ typedef struct {
     float z;
 } Vec3;
 
-/**
- * @brief
- *
- * @api
- */
-Vec3 vec3_new(float x, float y, float z);
+// MACROS API START
+#define VEC3_NEW_M(v_x, v_y, v_z)                                                                       \
+    (Vec3) {                                                                                            \
+        .x = v_x, .y = v_y, .z = v_z                                                                    \
+    }
+#define VEC3_ZERO_M VEC3_NEW_M(0.0f, 0.0f, 0.0f)
+#define VEC3_ONE_M VEC3_NEW_M(1.0f, 1.0f, 1.0f)
+#define VEC3_MINUS_ONE_M VEC3_NEW_M(1.0f, -1.0f, -1.0f)
+// #define VEC3_MAX_M (Vec3){.x=I32_MAX, .y=I32_MAX}
+// #define VEC3_MIN_M (Vec3){.x=I32_MIN, .y=I32_MIN}
+// MACROS API END
 
 /**
  * @brief
  *
  * @api
  */
-Vec3 vec3_add(const Vec3* const a, const Vec3* const b);
+void vec3_init(float x, float y, float z, Vec3* const out);
 
 /**
  * @brief
  *
  * @api
  */
-Vec3 vec3_sub(const Vec3* const a, const Vec3* const b);
+void vec3_add(const Vec3* const a, const Vec3* const b, Vec3* const out);
 
 /**
  * @brief
  *
  * @api
  */
-Vec3 vec3_scale(const Vec3* const a, const float factor);
+void vec3_sub(const Vec3* const a, const Vec3* const b, Vec3* const out);
+
+/**
+ * @brief
+ *
+ * @api
+ */
+void vec3_scale(const Vec3* const a, const float factor, Vec3* const out);
+
+/**
+ * @brief
+ *
+ * @api
+ */
+void vec3_cross(const Vec3* const a, const Vec3* const b, Vec3* const out);
 
 /**
  * @brief
@@ -51,13 +70,6 @@ float vec3_dot(const Vec3* const a, const Vec3* const b);
  *
  * @api
  */
-Vec3 vec3_cross(const Vec3* const a, const Vec3* const b);
-
-/**
- * @brief
- *
- * @api
- */
 float vec3_length(const Vec3* const a);
 
 /**
@@ -65,7 +77,7 @@ float vec3_length(const Vec3* const a);
  *
  * @api
  */
-Vec3 vec3_normalize(const Vec3* const a);
+void vec3_normalize(const Vec3* const a, Vec3* const out);
 
 /**
  * @brief

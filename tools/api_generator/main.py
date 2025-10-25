@@ -6,7 +6,7 @@ def main():
     # aboba.main()
     # aboba.parse_file(sys.argv[1])
     #parser.parse(sys.argv[1])
-    parse_result = parser.parse("src")
+    parse_result = parser.parse()
     c_src_generator.run(parse_result)
     c_api_generator.run(parse_result)
     return

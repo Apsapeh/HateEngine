@@ -1,32 +1,24 @@
 #include "vec2.h"
 #include <math.h>
 
-Vec2 vec2_new(float x, float y, float z) {
-    Vec2 result;
-    result.x = x;
-    result.y = y;
-    return result;
+void vec2_init(float x, float y, Vec2* const out) {
+    out->x = x;
+    out->y = y;
 }
 
-Vec2 vec2_add(const Vec2* const a, const Vec2* const b) {
-    Vec2 result;
-    result.x = a->x + b->x;
-    result.y = a->y + b->y;
-    return result;
+void vec2_add(const Vec2* const a, const Vec2* const b, Vec2* const out) {
+    out->x = a->x + b->x;
+    out->y = a->y + b->y;
 }
 
-Vec2 vec2_sub(const Vec2* const a, const Vec2* const b) {
-    Vec2 result;
-    result.x = a->x - b->x;
-    result.y = a->y - b->y;
-    return result;
+void vec2_sub(const Vec2* const a, const Vec2* const b, Vec2* const out) {
+    out->x = a->x - b->x;
+    out->y = a->y - b->y;
 }
 
-Vec2 vec2_scale(const Vec2* const a, const float factor) {
-    Vec2 result;
-    result.x = a->x * factor;
-    result.y = a->y * factor;
-    return result;
+void vec2_scale(const Vec2* const a, const float factor, Vec2* const out) {
+    out->x = a->x * factor;
+    out->y = a->y * factor;
 }
 
 float vec2_dot(const Vec2* const a, const Vec2* const b) {
@@ -37,12 +29,13 @@ float vec2_length(const Vec2* const a) {
     return sqrt(a->x * a->x + a->y * a->y);
 }
 
-Vec2 vec2_normalize(const Vec2* const a) {
-    return vec2_scale(a, 1.0f / vec2_length(a));
+void vec2_normalize(const Vec2* const a, Vec2* const out) {
+    vec2_scale(a, 1.0f / vec2_length(a), out);
 }
 
 float vec2_distance(const Vec2* const a, const Vec2* const b) {
-    Vec2 delta = vec2_sub(a, b);
+    Vec2 delta;
+    vec2_sub(a, b, &delta);
     return vec2_length(&delta);
 }
 

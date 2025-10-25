@@ -1,60 +1,51 @@
 #include "vec3.h"
 #include <math.h>
 
-Vec3 vec3_new(float x, float y, float z) {
-    Vec3 result;
-    result.x = x;
-    result.y = y;
-    result.z = z;
-    return result;
+void vec3_init(float x, float y, float z, Vec3* const out) {
+    out->x = x;
+    out->y = y;
+    out->z = z;
 }
 
-Vec3 vec3_add(const Vec3* const a, const Vec3* const b) {
-    Vec3 result;
-    result.x = a->x + b->x;
-    result.y = a->y + b->y;
-    result.z = a->z + b->z;
-    return result;
+void vec3_add(const Vec3* const a, const Vec3* const b, Vec3* const out) {
+    out->x = a->x + b->x;
+    out->y = a->y + b->y;
+    out->z = a->z + b->z;
 }
 
-Vec3 vec3_sub(const Vec3* const a, const Vec3* const b) {
-    Vec3 result;
-    result.x = a->x - b->x;
-    result.y = a->y - b->y;
-    result.z = a->z - b->z;
-    return result;
+void vec3_sub(const Vec3* const a, const Vec3* const b, Vec3* const out) {
+    out->x = a->x - b->x;
+    out->y = a->y - b->y;
+    out->z = a->z - b->z;
 }
 
-Vec3 vec3_scale(const Vec3* const a, const float factor) {
-    Vec3 result;
-    result.x = a->x * factor;
-    result.y = a->y * factor;
-    result.z = a->z * factor;
-    return result;
+void vec3_scale(const Vec3* const a, const float factor, Vec3* const out) {
+    out->x = a->x * factor;
+    out->y = a->y * factor;
+    out->z = a->z * factor;
+}
+
+void vec3_cross(const Vec3* const a, const Vec3* const b, Vec3* const out) {
+    out->x = a->y * b->z - a->z * b->y;
+    out->y = a->z * b->x - a->x * b->z;
+    out->z = a->x * b->y - a->y * b->x;
 }
 
 float vec3_dot(const Vec3* const a, const Vec3* const b) {
     return a->x * b->x + a->y * b->y + a->z * b->z;
 }
 
-Vec3 vec3_cross(const Vec3* const a, const Vec3* const b) {
-    Vec3 result;
-    result.x = a->y * b->z - a->z * b->y;
-    result.y = a->z * b->x - a->x * b->z;
-    result.z = a->x * b->y - a->y * b->x;
-    return result;
-}
-
 float vec3_length(const Vec3* const a) {
     return sqrt(a->x * a->x + a->y * a->y + a->z * a->z);
 }
 
-Vec3 vec3_normalize(const Vec3* const a) {
-    return vec3_scale(a, 1.0f / vec3_length(a));
+void vec3_normalize(const Vec3* const a, Vec3* const out) {
+    vec3_scale(a, 1.0f / vec3_length(a), out);
 }
 
 float vec3_distance(const Vec3* const a, const Vec3* const b) {
-    Vec3 delta = vec3_sub(a, b);
+    Vec3 delta;
+    vec3_sub(a, b, &delta);
     return vec3_length(&delta);
 }
 

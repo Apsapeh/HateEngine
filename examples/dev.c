@@ -27,12 +27,17 @@ void _ready(void) {
 
     printf("String hello_world: %s\n", string_cstr(str_hello_world));
 
-    // string_free(str_hello_world);
+    string* str_hello_world_hand = string_from("Hello, world!!!!");
+
+    printf("String equals: %b\n", string_equals(str_hello_world, str_hello_world_hand));
+
+    string_free(str_hello_world);
+    string_free(str_hello_world_hand);
 
 
     printf("wscw: %p\n", (void*) raw_window_server_create_window);
     printf("wswss: %p\n", (void*) raw_window_server_window_set_size);
-    g_win = window_server_create_window("Hello", ivec2_new(800, 600), NULL);
+    g_win = window_server_create_window("Hello", IVEC2_NEW_M(800, 600), NULL);
     if (!g_win) {
         printf("СМЭРТЬ: %s\n", get_error());
         exit(1);
@@ -44,7 +49,7 @@ void _ready(void) {
         exit(1);
     }
 
-    g_win2 = window_server_create_window("Hello2", ivec2_new(800, 600), NULL);
+    g_win2 = window_server_create_window("Hello2", IVEC2_NEW_M(800, 600), NULL);
     if (!g_win2) {
         printf("СМЭРТЬ: %s\n", get_error());
         exit(1);
@@ -79,7 +84,7 @@ void _ready(void) {
     name = node_get_name(node);
     printf("%s\n", name);
 
-    Vec3 pos = vec3_new(1, 2, 3);
+    Vec3 pos = VEC3_NEW_M(1, 2, 3);
     vec3_add_in(&pos, &pos);
     printf("%f %f %f\n", pos.x, pos.y, pos.z);
     vec3_normalize_in(&pos);
@@ -98,8 +103,8 @@ void _process(double delta) {
     g_count++;
 
     // if (count % 1000 == 0) {
-    window_server_window_set_size(g_win, ivec2_new(800 + 100 * sin(g_time), 600));
-    window_server_window_set_size(g_win2, ivec2_new(800, 600 + 75 * cos(g_time)));
+    window_server_window_set_size(g_win, IVEC2_NEW_M(800 + 100 * sin(g_time), 600));
+    window_server_window_set_size(g_win2, IVEC2_NEW_M(800, 600 + 75 * cos(g_time)));
     // x}
 
     render_context_surface_present(g_surface);

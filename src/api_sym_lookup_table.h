@@ -4,28 +4,28 @@
 #define HE_MEM_NO_MACRO
 //#include <extra/full_trace.h>
 
-#include "object/object.h"
-#include "object/node/canvas_item/control/control.h"
 #include "math/ivec2.h"
-#include "math/vec3.h"
-#include "object/node/node.h"
-#include "math/vec2.h"
-#include "platform/memory.h"
-#include "math/mat4.h"
-#include "log.h"
-#include "platform/datetime.h"
-#include "object/node/canvas_item/canvas_item.h"
-#include "object/node/node3d/node3d.h"
-#include "types/string.h"
-#include "error.h"
-#include "servers/render_context/render_context.h"
-#include "platform/mutex.h"
-#include "servers/window_server/window_server.h"
-#include "servers/render_server/render_server.h"
 #include "vfs/vfs.h"
-#include "object/node/window/window.h"
+#include "platform/datetime.h"
+#include "object/object.h"
+#include "servers/render_server/render_server.h"
+#include "error.h"
+#include "types/string.h"
+#include "object/node/canvas_item/control/control.h"
+#include "object/node/node.h"
+#include "platform/mutex.h"
+#include "math/vec2.h"
+#include "servers/render_context/render_context.h"
+#include "platform/memory.h"
+#include "object/node/node3d/node3d.h"
+#include "object/node/canvas_item/canvas_item.h"
+#include "log.h"
+#include "servers/window_server/window_server.h"
 #include "types/uid.h"
+#include "object/node/window/window.h"
 #include "object/node/canvas_item/control/viewport/viewport.h"
+#include "math/mat4.h"
+#include "math/vec3.h"
 
 
 typedef struct {
@@ -62,8 +62,8 @@ APIFunctionLookupTable api_function_lookup_table[] = {
     {"ivec2_add_in", (void*)ivec2_add_in},
     {"ivec2_distance", (void*)ivec2_distance},
     {"ivec2_dot", (void*)ivec2_dot},
+    {"ivec2_init", (void*)ivec2_init},
     {"ivec2_length", (void*)ivec2_length},
-    {"ivec2_new", (void*)ivec2_new},
     {"ivec2_normalize", (void*)ivec2_normalize},
     {"ivec2_normalize_in", (void*)ivec2_normalize_in},
     {"ivec2_scale", (void*)ivec2_scale},
@@ -71,13 +71,11 @@ APIFunctionLookupTable api_function_lookup_table[] = {
     {"ivec2_sub", (void*)ivec2_sub},
     {"ivec2_sub_in", (void*)ivec2_sub_in},
     {"mat4_add", (void*)mat4_add},
+    {"mat4_clone", (void*)mat4_clone},
     {"mat4_from_array", (void*)mat4_from_array},
-    {"mat4_from_mat4", (void*)mat4_from_mat4},
+    {"mat4_init", (void*)mat4_init},
     {"mat4_inverse", (void*)mat4_inverse},
     {"mat4_mul", (void*)mat4_mul},
-    {"mat4_new", (void*)mat4_new},
-    {"mat4_new_one", (void*)mat4_new_one},
-    {"mat4_new_zero", (void*)mat4_new_zero},
     {"mat4_scale", (void*)mat4_scale},
     {"mat4_sub", (void*)mat4_sub},
     {"mat4_transpose", (void*)mat4_transpose},
@@ -167,8 +165,8 @@ APIFunctionLookupTable api_function_lookup_table[] = {
     {"vec2_add_in", (void*)vec2_add_in},
     {"vec2_distance", (void*)vec2_distance},
     {"vec2_dot", (void*)vec2_dot},
+    {"vec2_init", (void*)vec2_init},
     {"vec2_length", (void*)vec2_length},
-    {"vec2_new", (void*)vec2_new},
     {"vec2_normalize", (void*)vec2_normalize},
     {"vec2_normalize_in", (void*)vec2_normalize_in},
     {"vec2_scale", (void*)vec2_scale},
@@ -180,8 +178,8 @@ APIFunctionLookupTable api_function_lookup_table[] = {
     {"vec3_cross", (void*)vec3_cross},
     {"vec3_distance", (void*)vec3_distance},
     {"vec3_dot", (void*)vec3_dot},
+    {"vec3_init", (void*)vec3_init},
     {"vec3_length", (void*)vec3_length},
-    {"vec3_new", (void*)vec3_new},
     {"vec3_normalize", (void*)vec3_normalize},
     {"vec3_normalize_in", (void*)vec3_normalize_in},
     {"vec3_scale", (void*)vec3_scale},

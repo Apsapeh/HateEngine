@@ -126,26 +126,20 @@ static boolean window_set_size(WindowServerWindow* this, IVec2 dimensions) {
     return true;
 }
 
-static IVec2 window_get_size(WindowServerWindow* this, boolean* success) {
-    ERROR_ARGS_CHECK_1(this, {
-        H_SET_SUCCESS_FALSE;
-        return ivec2_new(-1, -1);
-    });
-    MAIN_THREAD_CHECK(window_get_size, {
-        H_SET_SUCCESS_FALSE;
-        return ivec2_new(-1, -1);
-    });
+static boolean window_get_size(WindowServerWindow* this, IVec2* out) {
+    ERROR_ARGS_CHECK_2(this, out, { return false; });
+    MAIN_THREAD_CHECK(window_get_size, { return false; });
 
     int out_w, out_h;
     if (!SDL_GetWindowSize((SDL_Window*) this, &out_w, &out_h)) {
         LOG_ERROR("Failed to get window size. SDL Error: %s", SDL_GetError());
         set_error(ANY_ERROR);
-        H_SET_SUCCESS_FALSE;
-        return ivec2_new(-1, -1);
+        return false;
     }
 
-    H_SET_SUCCESS_TRUE;
-    return ivec2_new((i32) out_w, (i32) out_h);
+    out->x = (i32) out_w;
+    out->y = (i32) out_h;
+    return true;
 }
 
 
@@ -161,26 +155,20 @@ static boolean window_set_position(WindowServerWindow* this, IVec2 dimensions) {
     return true;
 }
 
-static IVec2 window_get_position(WindowServerWindow* this, boolean* success) {
-    ERROR_ARGS_CHECK_1(this, {
-        H_SET_SUCCESS_FALSE;
-        return ivec2_new(I32_MIN, I32_MIN);
-    });
-    MAIN_THREAD_CHECK(window_get_position, {
-        H_SET_SUCCESS_FALSE;
-        return ivec2_new(I32_MIN, I32_MIN);
-    });
+static boolean window_get_position(WindowServerWindow* this, IVec2* out) {
+    ERROR_ARGS_CHECK_2(this, out, { return false; });
+    MAIN_THREAD_CHECK(window_get_position, { return false; });
 
     int out_x, out_y;
     if (!SDL_GetWindowPosition((SDL_Window*) this, &out_x, &out_y)) {
         LOG_ERROR("Failed to get window position. SDL Error: %s", SDL_GetError());
         set_error(ANY_ERROR);
-        H_SET_SUCCESS_FALSE;
-        return ivec2_new(I32_MIN, I32_MIN);
+        return false;
     }
 
-    H_SET_SUCCESS_TRUE;
-    return ivec2_new((i32) out_x, (i32) out_y);
+    out->x = (i32) out_x;
+    out->y = (i32) out_y;
+    return true;
 }
 
 

@@ -1,36 +1,35 @@
 #include "mat4.h"
 #include <string.h>
 
-Mat4 mat4_new(
+void mat4_init(
         float m00, float m01, float m02, float m03, float m10, float m11, float m12, float m13,
-        float m20, float m21, float m22, float m23, float m30, float m31, float m32, float m33
+        float m20, float m21, float m22, float m23, float m30, float m31, float m32, float m33,
+        Mat4* const out
 ) {
-    Mat4 result;
-    result.m[0][0] = m00;
-    result.m[0][1] = m01;
-    result.m[0][2] = m02;
-    result.m[0][3] = m03;
-    result.m[1][0] = m10;
-    result.m[1][1] = m11;
-    result.m[1][2] = m12;
-    result.m[1][3] = m13;
-    result.m[2][0] = m20;
-    result.m[2][1] = m21;
-    result.m[2][2] = m22;
-    result.m[2][3] = m23;
-    result.m[3][0] = m30;
-    result.m[3][1] = m31;
-    result.m[3][2] = m32;
-    result.m[3][3] = m33;
-    return result;
+    out->m[0][0] = m00;
+    out->m[0][1] = m01;
+    out->m[0][2] = m02;
+    out->m[0][3] = m03;
+    out->m[1][0] = m10;
+    out->m[1][1] = m11;
+    out->m[1][2] = m12;
+    out->m[1][3] = m13;
+    out->m[2][0] = m20;
+    out->m[2][1] = m21;
+    out->m[2][2] = m22;
+    out->m[2][3] = m23;
+    out->m[3][0] = m30;
+    out->m[3][1] = m31;
+    out->m[3][2] = m32;
+    out->m[3][3] = m33;
 }
 
-Mat4 mat4_new_zero(void) {
+/*Mat4 mat4_new_zero(void) {
     // clang-format off
     float array[16] = {
-        0.0f, 0.0f, 0.0f, 0.0f, 
         0.0f, 0.0f, 0.0f, 0.0f,
-        0.0f, 0.0f, 0.0f, 0.0f, 
+        0.0f, 0.0f, 0.0f, 0.0f,
+        0.0f, 0.0f, 0.0f, 0.0f,
         0.0f, 0.0f, 0.0f, 0.0f
     };
     // clang-format on
@@ -40,86 +39,72 @@ Mat4 mat4_new_zero(void) {
 Mat4 mat4_new_one(void) {
     // clang-format off
     float array[16] = {
-        1.0f, 0.0f, 0.0f, 0.0f, 
+        1.0f, 0.0f, 0.0f, 0.0f,
         0.0f, 1.0f, 0.0f, 0.0f,
-        0.0f, 0.0f, 1.0f, 0.0f, 
+        0.0f, 0.0f, 1.0f, 0.0f,
         0.0f, 0.0f, 0.0f, 1.0f
     };
     // clang-format on
     return mat4_from_array(array);
+}*/
+
+void mat4_from_array(const float* const array, Mat4* const out) {
+    memcpy(out, array, sizeof(Mat4));
 }
 
-Mat4 mat4_from_array(const float* const array) {
-    Mat4 result;
-    memcpy(&result, array, sizeof(Mat4));
-    return result;
+void mat4_clone(const Mat4* const a, Mat4* const out) {
+    memcpy(out, a, sizeof(Mat4));
 }
 
-Mat4 mat4_from_mat4(const Mat4* const a) {
-    Mat4 result;
-    memcpy(&result, a, sizeof(Mat4));
-    return result;
-}
-
-Mat4 mat4_add(const Mat4* const a, const Mat4* const b) {
-    Mat4 result;
+void mat4_add(const Mat4* const a, const Mat4* const b, Mat4* const out) {
     for (int i = 0; i < 4; i++) {
         for (int j = 0; j < 4; j++) {
-            result.m[i][j] = a->m[i][j] + b->m[i][j];
+            out->m[i][j] = a->m[i][j] + b->m[i][j];
         }
     }
-    return result;
 }
 
-Mat4 mat4_sub(const Mat4* const a, const Mat4* const b) {
-    Mat4 result;
+void mat4_sub(const Mat4* const a, const Mat4* const b, Mat4* const out) {
     for (int i = 0; i < 4; i++) {
         for (int j = 0; j < 4; j++) {
-            result.m[i][j] = a->m[i][j] - b->m[i][j];
+            out->m[i][j] = a->m[i][j] - b->m[i][j];
         }
     }
-    return result;
 }
 
-Mat4 mat4_mul(const Mat4* const a, const Mat4* const b) {
-    Mat4 result;
+void mat4_mul(const Mat4* const a, const Mat4* const b, Mat4* const out) {
     for (int row = 0; row < 4; row++) {
         for (int col = 0; col < 4; col++) {
             float sum = 0.0f;
             for (int i = 0; i < 4; i++) {
                 sum += a->m[row][i] * b->m[i][col];
             }
-            result.m[row][col] = sum;
+            out->m[row][col] = sum;
         }
     }
-    return result;
 }
 
 // Mat4 mat4_mul_vec
 
-Mat4 mat4_scale(const Mat4* const a, const float factor) {
-    Mat4 result;
+void mat4_scale(const Mat4* const a, const float factor, Mat4* const out) {
     for (int i = 0; i < 4; i++) {
         for (int j = 0; j < 4; j++) {
-            result.m[i][j] = a->m[i][j] * factor;
+            out->m[i][j] = a->m[i][j] * factor;
         }
     }
-    return result;
 }
 
-Mat4 mat4_transpose(const Mat4* const a) {
-    Mat4 result;
+void mat4_transpose(const Mat4* const a, Mat4* const out) {
     for (int row = 0; row < 4; row++) {
         for (int col = 0; col < 4; col++) {
-            result.m[row][col] = a->m[col][row];
+            out->m[row][col] = a->m[col][row];
         }
     }
-    return result;
 }
 
-Mat4 mat4_inverse(const Mat4* const a) {
+void mat4_inverse(const Mat4* const a, Mat4* const out) {
     // TOOD: Need a determinant function
-    return mat4_new_zero();
+    *out = MAT4_ZERO_M;
 }
 
 

@@ -99,10 +99,10 @@ typedef struct {
     WindowServerWindowMode (*window_get_mode)(WindowServerWindow* this);
 
     boolean (*window_set_size)(WindowServerWindow* this, IVec2 dimensions);
-    IVec2 (*window_get_size)(WindowServerWindow* this, boolean* success);
+    boolean (*window_get_size)(WindowServerWindow* this, IVec2* out);
 
     boolean (*window_set_position)(WindowServerWindow* this, IVec2 dimensions);
-    IVec2 (*window_get_position)(WindowServerWindow* this, boolean* success);
+    boolean (*window_get_position)(WindowServerWindow* this, IVec2* out);
 
     // boolean (*window_set_fullscreen_display)(WindowServerWindow* this, WindowServerDisplay*
     // fullscreen);
