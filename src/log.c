@@ -25,6 +25,10 @@ static datetime_handle g_datetime = NULL;
 
 
 void log_init(void) {
+    g_fullTraceFuncTLS_try_init("");
+    g_fullTraceFileTLS_try_init("");
+    g_fullTraceLineTLS_try_init(-1);
+
     g_printMutex = mutex_new();
     g_formatBuffer = tmalloc(sizeof(char) * FORMAT_BUFFER_SIZE);
     g_datetime = datetime_new();
@@ -40,13 +44,13 @@ void __he_update_full_trace_info(const char* func, const char* file, i32 line) {
     g_fullTraceFuncTLS_set_value(func);
     g_fullTraceFileTLS_set_value(file);
     g_fullTraceLineTLS_set_value(line);
+
+    if (line == 0) {
+        LOG_FATAL_NO_ALLOC("OEUEOU")
+    }
 }
 
 log_full_trace_info log_full_trace_get_info(void) {
-    g_fullTraceFuncTLS_try_init("");
-    g_fullTraceFileTLS_try_init("");
-    g_fullTraceLineTLS_try_init(-1);
-
     return (log_full_trace_info) {.func = g_fullTraceFuncTLS_get_value(),
                                   .file = g_fullTraceFileTLS_get_value(),
                                   .line = g_fullTraceLineTLS_get_value()};

@@ -2,11 +2,13 @@
 #define HE_MEM_NO_MACRO
 #include "memory.h"
 #include <types/vector.h>
+#include "platform/mutex.h"
 
 #include <stdlib.h>
 #include <string.h>
 
-#if defined(HE_MEM_TRACK_TRACE)
+#if defined(HE_MEM_TRACK) | defined(HE_MEM_TRACK_TRACE)
+    #if defined(HE_MEM_TRACK_TRACE)
 struct AllocationData {
     void* ptr;
     usize size;
@@ -16,7 +18,7 @@ struct AllocationData {
     c_str user_file;
     i32 user_line;
 };
-#elif defined(HE_MEM_TRACK)
+    #elif defined(HE_MEM_TRACK)
 struct allocationData {
     void* ptr;
     usize size;
@@ -24,7 +26,7 @@ struct allocationData {
     c_str user_file;
     i32 user_line;
 };
-#endif
+    #endif
 
 // clang-format off
 vector_template_def_with_properties(allocationData, struct AllocationData, static)
@@ -32,9 +34,10 @@ vector_template_impl_with_properties(
         allocationData, struct AllocationData, static, malloc, realloc, free, memmove, memcpy
 )
 
-// FIXME: Add mutex
 static vec_allocationData g_allocatedMemory;
+static mutex_handle g_mutexAllocatedMemory;
 // clang-format on
+#endif
 
 
 static inline void* _tmalloc(usize size, c_str file, i32 line);
@@ -43,6 +46,10 @@ static inline void* _trealloc(void* ptr, usize size, c_str file, i32 line);
 void memory_init(void) {
 #if defined(HE_MEM_TRACK) | defined(HE_MEM_TRACK_TRACE)
     g_allocatedMemory = vec_allocationData_init();
+    g_mutexAllocatedMemory = mutex_new();
+    if (!g_mutexAllocatedMemory) {
+        LOG_FATAL_NO_ALLOC("Memory mutex creation error");
+    }
 #endif
 }
 
@@ -78,6 +85,17 @@ void memory_exit(void) {
     }
 
     vec_allocationData_free(&g_allocatedMemory);
+
+    /*
+     g_mutexAllocatedMemory = NULL is a dirty hack!
+     memory_exit() -> mutex_free() -> tfree() -> mutex_lock() -> MUTEX LOCKING ERROR because mutex
+     already destroyed
+
+     Need to check g_mutexAllocatedMemory is NULL before tfree();
+    */
+    mutex_handle mutex_ptr = g_mutexAllocatedMemory;
+    g_mutexAllocatedMemory = NULL;
+    mutex_free(mutex_ptr);
 #endif
 }
 
@@ -92,22 +110,34 @@ void* trealloc(void* ptr, u64 size) {
 
 void tfree(void* ptr) {
 #if defined(HE_MEM_TRACK) | defined(HE_MEM_TRACK_TRACE)
-    for (usize i = 0; i < g_allocatedMemory.size; i++) {
-        if (g_allocatedMemory.data[i].ptr == ptr) {
-            vec_allocationData_erase(&g_allocatedMemory, i);
-            break;
+    /*
+     g_mutexAllocatedMemory check is a dirty hack!
+     memory_exit() -> mutex_free() -> tfree() -> mutex_lock() -> MUTEX LOCKING ERROR because mutex
+     already destroyed
+    */
+    if (g_mutexAllocatedMemory) {
+        mutex_lock(g_mutexAllocatedMemory);
+        for (usize i = 0; i < g_allocatedMemory.size; i++) {
+            if (g_allocatedMemory.data[i].ptr == ptr) {
+                vec_allocationData_erase(&g_allocatedMemory, i);
+                break;
+            }
         }
+        mutex_unlock(g_mutexAllocatedMemory);
     }
+
 #endif
     free(ptr);
 }
 
 u64 get_allocated_memory(void) {
 #if defined(HE_MEM_TRACK) | defined(HE_MEM_TRACK_TRACE)
+    mutex_lock(g_mutexAllocatedMemory);
     u64 total = 0;
     for (usize i = 0; i < g_allocatedMemory.size; i++) {
         total += g_allocatedMemory.data[i].size;
     }
+    mutex_unlock(g_mutexAllocatedMemory);
     return total;
 #else
     return 0;
@@ -118,19 +148,36 @@ u64 get_allocated_memory(void) {
 static inline void* _tmalloc(usize size, c_str file, i32 line) {
 #if defined(HE_MEM_TRACK_TRACE)
     void* ptr = malloc(size);
-    log_full_trace_info ft_info = log_full_trace_get_info();
-    struct AllocationData data = {ptr, size, file, line, ft_info.func, ft_info.file, ft_info.line};
-    vec_allocationData_push_back(&g_allocatedMemory, data);
+    /*
+     g_mutexAllocatedMemory check is a dirty hack!
+     memory_init() -> mutex_init() -> tmalloc() -> mutex_lock() -> ERROR MUTEX IS NOT INITED
+    */
+    if (g_mutexAllocatedMemory) {
+        log_full_trace_info ft_info = log_full_trace_get_info();
+        struct AllocationData data = {ptr, size, file, line, ft_info.func, ft_info.file, ft_info.line};
+        mutex_lock(g_mutexAllocatedMemory);
+        vec_allocationData_push_back(&g_allocatedMemory, data);
+        mutex_unlock(g_mutexAllocatedMemory);
+    }
     return ptr;
 #elif defined(HE_MEM_TRACK)
     void* ptr = malloc(size);
-    struct allocationData data = {
-            ptr, size, full_trace_mod_level_func, full_trace_mod_level_file, full_trace_mod_level_line
-    };
-    vec_allocationData_push_back(&AllocatedMemory, data);
+    /*
+     g_mutexAllocatedMemory check is a dirty hack!
+     memory_init() -> mutex_init() -> tmalloc() -> mutex_lock() -> ERROR MUTEX IS NOT INITED
+    */
+    if (g_mutexAllocatedMemory) {
+        struct allocationData data = {
+                ptr, size, full_trace_mod_level_func, full_trace_mod_level_file,
+                full_trace_mod_level_line
+        };
+        mutex_lock(g_mutexAllocatedMemory);
+        vec_allocationData_push_back(&g_allocatedMemory, data);
+        mutex_unlock(g_mutexAllocatedMemory);
+    }
     return ptr;
 #else
-    return malloc(size)
+    return malloc(size);
 #endif
 }
 
@@ -140,6 +187,7 @@ static inline void* _trealloc(void* ptr, usize size, c_str file, i32 line) {
     if (ptr == NULL)
         return _tmalloc(size, file, line);
 
+    mutex_lock(g_mutexAllocatedMemory);
     void* new_ptr = realloc(ptr, size);
     for (usize i = 0; i < g_allocatedMemory.size; ++i) {
         struct AllocationData* data = &g_allocatedMemory.data[i];
@@ -157,9 +205,10 @@ static inline void* _trealloc(void* ptr, usize size, c_str file, i32 line) {
             break;
         }
     }
+    mutex_unlock(g_mutexAllocatedMemory);
     return new_ptr;
 #else
-    return realloc(ptr, size)
+    return realloc(ptr, size);
 #endif
 }
 

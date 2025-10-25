@@ -10,6 +10,8 @@ build/
 .ropeproject
 doc/
 
+.zed
+
 compile_commands.json
 
 .cache/

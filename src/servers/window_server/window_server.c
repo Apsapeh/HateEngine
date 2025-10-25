@@ -20,7 +20,6 @@ struct WindowServerBackendPair {
 vector_template_def_static(WindowServerBackendPair, struct WindowServerBackendPair)
 vector_template_impl_static(WindowServerBackendPair, struct WindowServerBackendPair)
 
-// FIXME: Add mutex
 static vec_WindowServerBackendPair g_registredBackends;
 static boolean g_isLoaded = false;
 // clang-format on

@@ -9,6 +9,9 @@
  */
 typedef u64 UID;
 
+void uid_init(void);
+void uid_exit(void);
+
 /**
  * @brief
  *

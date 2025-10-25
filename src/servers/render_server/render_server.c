@@ -19,7 +19,6 @@ struct BackendPair {
 vector_template_def_static(backendPair, struct BackendPair)
 vector_template_impl_static(backendPair, struct BackendPair)
 
-// FIXME: Add mutex
 static vec_backendPair g_registredBackends;
 static boolean g_isLoaded = false;
 // clang-format on

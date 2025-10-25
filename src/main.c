@@ -8,6 +8,7 @@
 #include "game_loader/game_loader.h"
 #include "servers/render_context/render_context.h"
 #include "servers/render_server/render_server.h"
+#include "types/uid.h"
 #include "vfs/vfs.h"
 #include "servers/window_server/window_server.h"
 
@@ -42,6 +43,7 @@ int main(int argc, char** argv) {
 static void init(void) {
     memory_init();
     log_init();
+    uid_init();
     vfs_init();
     window_server_init();
     render_context_init();
@@ -53,6 +55,7 @@ static void exit_init(void) {
     render_context_exit();
     window_server_exit();
     vfs_exit();
+    uid_exit();
     log_exit();
     memory_exit();
 }
