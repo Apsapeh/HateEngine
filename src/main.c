@@ -39,7 +39,7 @@ int main(int argc, char** argv) {
     return 0;
 }
 
-// test code
+// Train train tRain TRain Поезд Поезда
 
 
 static void init(void) {
