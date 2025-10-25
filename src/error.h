@@ -38,7 +38,7 @@ typedef c_str Error;
 #define ERROR_ARG_CHECK(arg, to_return)                                                                 \
     do {                                                                                                \
         if (!(arg)) {                                                                                   \
-            LOG_ERROR("Invalid argument (is NULL): " #arg);                                             \
+            LOG_ERROR_OR_DEBUG_FATAL("Invalid argument (is NULL): " #arg);                                        \
             set_error(ERROR_INVALID_ARGUMENT);                                                          \
             to_return                                                                                   \
         }                                                                                               \

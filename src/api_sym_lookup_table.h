@@ -4,28 +4,28 @@
 #define HE_MEM_NO_MACRO
 //#include <extra/full_trace.h>
 
-#include "math/ivec2.h"
-#include "vfs/vfs.h"
-#include "platform/datetime.h"
-#include "object/object.h"
-#include "servers/render_server/render_server.h"
-#include "error.h"
-#include "types/string.h"
-#include "object/node/canvas_item/control/control.h"
-#include "object/node/node.h"
-#include "platform/mutex.h"
-#include "math/vec2.h"
-#include "servers/render_context/render_context.h"
-#include "platform/memory.h"
-#include "object/node/node3d/node3d.h"
-#include "object/node/canvas_item/canvas_item.h"
-#include "log.h"
 #include "servers/window_server/window_server.h"
-#include "types/uid.h"
+#include "servers/render_context/render_context.h"
+#include "platform/datetime.h"
+#include "object/node/node3d/node3d.h"
+#include "object/object.h"
+#include "vfs/vfs.h"
+#include "log.h"
+#include "object/node/node.h"
 #include "object/node/window/window.h"
-#include "object/node/canvas_item/control/viewport/viewport.h"
+#include "platform/mutex.h"
+#include "types/uid.h"
+#include "platform/memory.h"
+#include "servers/render_server/render_server.h"
 #include "math/mat4.h"
+#include "object/node/canvas_item/canvas_item.h"
+#include "object/node/canvas_item/control/viewport/viewport.h"
 #include "math/vec3.h"
+#include "types/string.h"
+#include "error.h"
+#include "object/node/canvas_item/control/control.h"
+#include "math/vec2.h"
+#include "math/ivec2.h"
 
 
 typedef struct {
@@ -34,7 +34,7 @@ typedef struct {
 } APIFunctionLookupTable;
 
 
-APIFunctionLookupTable api_function_lookup_table[] = {
+APIFunctionLookupTable g_apiFunctionLookupTable[] = {
     {"__he_update_full_trace_info", (void*)__he_update_full_trace_info},
     {"auto_free", (void*)auto_free},
     {"canvas_item_new", (void*)canvas_item_new},

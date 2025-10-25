@@ -55,10 +55,10 @@ GameFunctions load_game(void) {
 
 #include <api_sym_lookup_table.h>
 void* runtime_proc_loader(const char* name) {
-    for (usize i = 0; i < sizeof(api_function_lookup_table) / sizeof(api_function_lookup_table[0]);
+    for (usize i = 0; i < sizeof(g_apiFunctionLookupTable) / sizeof(g_apiFunctionLookupTable[0]);
          i++) {
-        if (strcmp(api_function_lookup_table[i].name, name) == 0) {
-            return api_function_lookup_table[i].ptr;
+        if (strcmp(g_apiFunctionLookupTable[i].name, name) == 0) {
+            return g_apiFunctionLookupTable[i].ptr;
         }
     }
     return NULL;
@@ -67,14 +67,14 @@ void* runtime_proc_loader(const char* name) {
 #include <api_sym_lookup_table.h>
 void* _runtime_proc_loader(const char* name) {
     usize left = 0;
-    usize right = sizeof(api_function_lookup_table) / sizeof(api_function_lookup_table[0]) - 1;
+    usize right = sizeof(g_apiFunctionLookupTable) / sizeof(g_apiFunctionLookupTable[0]) - 1;
 
     while (left <= right) {
         usize mid = left + (right - left) / 2;
-        int cmp = strcmp(api_function_lookup_table[mid].name, name);
+        int cmp = strcmp(g_apiFunctionLookupTable[mid].name, name);
 
         if (cmp == 0)
-            return api_function_lookup_table[mid].ptr;
+            return g_apiFunctionLookupTable[mid].ptr;
         else if (cmp < 0)
             left = mid + 1;
         else

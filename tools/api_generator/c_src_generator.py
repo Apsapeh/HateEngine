@@ -51,7 +51,7 @@ def api_fn_lookup_table_generator(data: ParseResult):
     
     table = api_fn_lookup_table
     to_replace = (
-        ("NAME", "api_function_lookup_table"),
+        ("NAME", "g_apiFunctionLookupTable"),
         ("FN_PTRS", api_function_lookup_table_main),
     )
 
