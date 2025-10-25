@@ -94,7 +94,7 @@ typedef c_str Error;
 #define ERROR_ARG_CHECK(arg, to_return)                                                                 \
     do {                                                                                                \
         if (!(arg)) {                                                                                   \
-            LOG_ERROR_OR_DEBUG_FATAL("Invalid argument (is NULL): " #arg);                                        \
+            LOG_ERROR_OR_DEBUG_FATAL("Invalid argument (is NULL): " #arg);                              \
             set_error(ERROR_INVALID_ARGUMENT);                                                          \
             to_return                                                                                   \
         }                                                                                               \
@@ -113,6 +113,16 @@ typedef c_str Error;
     ERROR_ARG_CHECK(b, end_block);                                                                      \
     ERROR_ARG_CHECK(c, end_block);                                                                      \
     ERROR_ARG_CHECK(d, end_block)
+
+
+#define ERROR_ALLOC_CHECK(arg, to_return)                                                               \
+    do {                                                                                                \
+        if (!(arg)) {                                                                                   \
+            LOG_ERROR_OR_DEBUG_FATAL("Memory allocation failed for '" #arg "'");                        \
+            set_error(ERROR_ALLOCATION_FAILED);                                                         \
+            to_return                                                                                   \
+        }                                                                                               \
+    } while (0)
 
 
 #define ERROR_ASSERT(error, ...) ERROR_ASSERT_FATAL(error, __VA_ARGS__)

@@ -15,6 +15,7 @@
     #include "memory.h"
     #include <pthread.h>
     #include <errno.h>
+    #include <error.h>
     #include <assert.h>
     #include "log.h"
 
@@ -32,13 +33,13 @@ struct mutex_handle {
 
 mutex_handle mutex_new(void) {
     mutex_handle handle = (mutex_handle) tmalloc(sizeof(struct mutex_handle));
-    HANDLE_CHECK(NULL);
+    ERROR_ALLOC_CHECK(handle, { return NULL; });
 
     // Initialize with default attributes
     int code = pthread_mutex_init(&handle->mutex, NULL);
     if (code != 0) {
         tfree(handle);
-        LOG_ERROR_NO_ALLOC("Mutex can't be initialized with Pthread code: %d");
+        LOG_ERROR_OR_DEBUG_FATAL_NO_ALLOC("Mutex can't be initialized with Pthread code: %d");
         return NULL;
     }
 
@@ -47,14 +48,14 @@ mutex_handle mutex_new(void) {
 
 mutex_handle mutex_new_recursive(void) {
     mutex_handle handle = (mutex_handle) tmalloc(sizeof(struct mutex_handle));
-    HANDLE_CHECK(NULL);
+    ERROR_ALLOC_CHECK(handle, { return NULL; });
 
     // Setup recursive mutex attributes
     pthread_mutexattr_t attr;
     int code = pthread_mutexattr_init(&attr);
     if (code != 0) {
         tfree(handle);
-        LOG_ERROR_NO_ALLOC("Mutex attributes can't be initialized with Pthread code: %d");
+        LOG_ERROR_OR_DEBUG_FATAL_NO_ALLOC("Mutex attributes can't be initialized with Pthread code: %d");
         return NULL;
     }
 
@@ -62,7 +63,7 @@ mutex_handle mutex_new_recursive(void) {
     if (code != 0) {
         pthread_mutexattr_destroy(&attr);
         tfree(handle);
-        LOG_ERROR_NO_ALLOC("Mutex attributes can't be setted with Pthread code: %d");
+        LOG_ERROR_OR_DEBUG_FATAL_NO_ALLOC("Mutex attributes can't be setted with Pthread code: %d");
         return NULL;
     }
 
@@ -71,7 +72,7 @@ mutex_handle mutex_new_recursive(void) {
     pthread_mutexattr_destroy(&attr);
     if (code != 0) {
         tfree(handle);
-        LOG_ERROR_NO_ALLOC("Mutex can't be initialized with Pthread code: %d");
+        LOG_ERROR_OR_DEBUG_FATAL_NO_ALLOC("Mutex can't be initialized with Pthread code: %d");
         return NULL;
     }
 
@@ -94,7 +95,7 @@ void mutex_lock(mutex_handle handle) {
 
     int code = pthread_mutex_lock(&handle->mutex);
     if (code != 0) {
-        LOG_ERROR_NO_ALLOC("Mutex lock failed with Pthread error code: %d", code);
+        LOG_ERROR_OR_DEBUG_FATAL_NO_ALLOC("Mutex lock failed with Pthread error code: %d", code);
     }
 }
 
@@ -109,7 +110,7 @@ boolean mutex_try_lock(mutex_handle handle) {
         return false; // already locked
     } else {
         // Unexpected error
-        LOG_ERROR_NO_ALLOC("Mutex try lock failed with Pthread error code: %d", code);
+        LOG_ERROR_OR_DEBUG_FATAL_NO_ALLOC("Mutex try lock failed with Pthread error code: %d", code);
         return false;
     }
 }
@@ -121,7 +122,7 @@ void mutex_unlock(mutex_handle handle) {
     if (code == EPERM) {
         LOG_ERROR_OR_DEBUG_FATAL_NO_ALLOC("Mutex can't be unlocked - is locked by other thread");
     } else if (code != 0) {
-        LOG_ERROR("Mutex lock failed with Pthread error code: %d", code);
+        LOG_ERROR_OR_DEBUG_FATAL_NO_ALLOC("Mutex lock failed with Pthread error code: %d", code);
     }
 }
 

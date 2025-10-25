@@ -59,6 +59,16 @@ typedef c_str Error;
     ERROR_ARG_CHECK(d, end_block)
 
 
+#define ERROR_ALLOC_CHECK(arg, to_return)                                                               \
+    do {                                                                                                \
+        if (!(arg)) {                                                                                   \
+            LOG_ERROR_OR_DEBUG_FATAL("Memory allocation failed for '" #arg "'");                        \
+            set_error(ERROR_ALLOCATION_FAILED);                                                         \
+            to_return                                                                                   \
+        }                                                                                               \
+    } while (0)
+
+
 #define ERROR_ASSERT(error, ...) ERROR_ASSERT_FATAL(error, __VA_ARGS__)
 
 #define ERROR_SUCCESS ((Error) NULL)

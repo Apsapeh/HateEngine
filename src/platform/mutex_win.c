@@ -67,7 +67,7 @@ boolean mutex_try_lock(mutex_handle handle) {
     return result != 0;
     #else
     // Win95/98/NT4 - нет try_lock
-    LOG_ERROR_NO_ALLOC("mutex_try_lock not supported on Windows 95/98/NT4");
+    LOG_ERROR_OR_DEBUG_FATAL_NO_ALLOC("mutex_try_lock not supported on Windows 95/98/NT4");
     return false;
     #endif
 }
