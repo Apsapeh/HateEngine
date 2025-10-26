@@ -16,9 +16,10 @@ typedef struct {
     (Vec3) {                                                                                            \
         .x = v_x, .y = v_y, .z = v_z                                                                    \
     }
-#define VEC3_ZERO_M VEC3_NEW_M(0.0f, 0.0f, 0.0f)
-#define VEC3_ONE_M VEC3_NEW_M(1.0f, 1.0f, 1.0f)
-#define VEC3_MINUS_ONE_M VEC3_NEW_M(1.0f, -1.0f, -1.0f)
+#define VEC3_NEW_VAL_M(v) VEC3_NEW_M(v, v, v)
+#define VEC3_ZERO_M VEC3_NEW_VAL_M(0.0f)
+#define VEC3_ONE_M VEC3_NEW_VAL_M(1.0f)
+#define VEC3_MINUS_ONE_M VEC3_NEW_VAL_M(-1.0f)
 // #define VEC3_MAX_M (Vec3){.x=I32_MAX, .y=I32_MAX}
 // #define VEC3_MIN_M (Vec3){.x=I32_MIN, .y=I32_MIN}
 // MACROS API END
