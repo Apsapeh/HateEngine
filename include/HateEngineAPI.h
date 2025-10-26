@@ -151,7 +151,6 @@ typedef c_str Error;
 
 
 
-
 // clang-format off
 #define MAT4_NEW_M(                                                                                     \
         v_m00, v_m01, v_m02, v_m03, v_m10, v_m11, v_m12, v_m13, v_m20, v_m21, v_m22, v_m23, v_m30,      \
@@ -297,6 +296,7 @@ typedef c_str Error;
 
 
 
+
 /**
  * DateTime handler for get UTC and local date and time
  *
@@ -309,15 +309,6 @@ typedef struct datetime_handle * datetime_handle;
  * @api
  */
 typedef struct mutex_handle * mutex_handle;
-
-/**
- * @brief Chunk memory allocator for elements with fixed type and size
- *
- * Specially optimized allocator for small types, like thousands allocations/freeing of int in each frame
- *
- * @api
- */
-typedef struct ChunkMemoryAllocator ChunkMemoryAllocator;
 
 /**
  * @api
@@ -447,6 +438,15 @@ typedef struct RenderContextBackend RenderContextBackend;
 typedef struct RenderServerBackend RenderServerBackend;
 
 /**
+ * @brief Chunk memory allocator for elements with fixed type and size
+ *
+ * Specially optimized allocator for small types, like thousands allocations/freeing of int in each frame
+ *
+ * @api
+ */
+typedef struct ChunkMemoryAllocator ChunkMemoryAllocator;
+
+/**
  * @brief Primitive 4x4 matrix
  *
  * Raw data - m
@@ -557,13 +557,6 @@ typedef struct Vec4 {
 } Vec4;
 
 /**
- * @brief Virtual memory ptr
- *
- * @api
- */
-typedef u32 chunk_mem_ptr;
-
-/**
  * 's' - Seek from start
  *
  * 'c' - Seek from current
@@ -602,6 +595,13 @@ typedef u8 WindowServerWindowVSync;
  * @api
  */
 typedef u8 WindowServerWindowMode;
+
+/**
+ * @brief Virtual memory ptr
+ *
+ * @api
+ */
+typedef u32 chunk_allocator_ptr;
 
 #define FS_SEEK_FROM_START 's'
 
@@ -2577,6 +2577,38 @@ extern boolean (*raw_render_server_backend_set_function)(RenderServerBackend * b
  * @api
  */
 extern fptr (*raw_render_server_backend_get_function)(RenderServerBackend * backend, const char * name);
+
+/**
+ * @param chunk_min_size Minimal size (in element) of a chunk. It will be aligned to 8. 27 -> 32; 95 -> 96; 256 -> 256
+ * 
+ * @api
+ */
+extern ChunkMemoryAllocator * (*raw_chunk_memory_allocator_new)(u32 element_size, u32 chunk_min_size);
+
+/**
+ * @api
+ */
+extern void (*raw_chunk_memory_allocator_free)(ChunkMemoryAllocator * this);
+
+/**
+ * @return 0 on failure
+ * 
+ * @api
+ */
+extern chunk_allocator_ptr (*raw_chunk_memory_allocator_alloc_mem)(ChunkMemoryAllocator * this);
+
+/**
+ * @api
+ */
+extern void (*raw_chunk_memory_allocator_free_mem)(ChunkMemoryAllocator * this, chunk_allocator_ptr ptr);
+
+/**
+ * @brief Return a real pointer to data
+ * @warning You to owned this pointer
+ * 
+ * @api
+ */
+extern void * (*raw_chunk_memory_allocator_get_real_ptr)(ChunkMemoryAllocator * this, chunk_allocator_ptr ptr);
 
 extern WindowServerWindow * (*raw_window_server_create_window)(const char * title, IVec2 size, WindowServerWindow * parent);
 
@@ -4555,6 +4587,38 @@ extern boolean (*render_server_backend_set_function)(RenderServerBackend * backe
  */
 extern fptr (*render_server_backend_get_function)(RenderServerBackend * backend, const char * name);
 
+/**
+ * @param chunk_min_size Minimal size (in element) of a chunk. It will be aligned to 8. 27 -> 32; 95 -> 96; 256 -> 256
+ * 
+ * @api
+ */
+extern ChunkMemoryAllocator * (*chunk_memory_allocator_new)(u32 element_size, u32 chunk_min_size);
+
+/**
+ * @api
+ */
+extern void (*chunk_memory_allocator_free)(ChunkMemoryAllocator * this);
+
+/**
+ * @return 0 on failure
+ * 
+ * @api
+ */
+extern chunk_allocator_ptr (*chunk_memory_allocator_alloc_mem)(ChunkMemoryAllocator * this);
+
+/**
+ * @api
+ */
+extern void (*chunk_memory_allocator_free_mem)(ChunkMemoryAllocator * this, chunk_allocator_ptr ptr);
+
+/**
+ * @brief Return a real pointer to data
+ * @warning You to owned this pointer
+ * 
+ * @api
+ */
+extern void * (*chunk_memory_allocator_get_real_ptr)(ChunkMemoryAllocator * this, chunk_allocator_ptr ptr);
+
 extern WindowServerWindow * (*window_server_create_window)(const char * title, IVec2 size, WindowServerWindow * parent);
 
 extern boolean (*window_server_destroy_window)(WindowServerWindow * this);
@@ -4844,6 +4908,11 @@ extern fptr (*render_context_get_proc_addr)(const char * proc);
     boolean (*raw_render_server_backend_free)(RenderServerBackend * backend);
     boolean (*raw_render_server_backend_set_function)(RenderServerBackend * backend, const char * name, fptr function);
     fptr (*raw_render_server_backend_get_function)(RenderServerBackend * backend, const char * name);
+    ChunkMemoryAllocator * (*raw_chunk_memory_allocator_new)(u32 element_size, u32 chunk_min_size);
+    void (*raw_chunk_memory_allocator_free)(ChunkMemoryAllocator * this);
+    chunk_allocator_ptr (*raw_chunk_memory_allocator_alloc_mem)(ChunkMemoryAllocator * this);
+    void (*raw_chunk_memory_allocator_free_mem)(ChunkMemoryAllocator * this, chunk_allocator_ptr ptr);
+    void * (*raw_chunk_memory_allocator_get_real_ptr)(ChunkMemoryAllocator * this, chunk_allocator_ptr ptr);
     WindowServerWindow * (*raw_window_server_create_window)(const char * title, IVec2 size, WindowServerWindow * parent);
     boolean (*raw_window_server_destroy_window)(WindowServerWindow * this);
     boolean (*raw_window_server_window_set_title)(WindowServerWindow * this, const char * title);
@@ -5117,6 +5186,11 @@ extern fptr (*render_context_get_proc_addr)(const char * proc);
     boolean (*render_server_backend_free)(RenderServerBackend * backend);
     boolean (*render_server_backend_set_function)(RenderServerBackend * backend, const char * name, fptr function);
     fptr (*render_server_backend_get_function)(RenderServerBackend * backend, const char * name);
+    ChunkMemoryAllocator * (*chunk_memory_allocator_new)(u32 element_size, u32 chunk_min_size);
+    void (*chunk_memory_allocator_free)(ChunkMemoryAllocator * this);
+    chunk_allocator_ptr (*chunk_memory_allocator_alloc_mem)(ChunkMemoryAllocator * this);
+    void (*chunk_memory_allocator_free_mem)(ChunkMemoryAllocator * this, chunk_allocator_ptr ptr);
+    void * (*chunk_memory_allocator_get_real_ptr)(ChunkMemoryAllocator * this, chunk_allocator_ptr ptr);
     WindowServerWindow * (*window_server_create_window)(const char * title, IVec2 size, WindowServerWindow * parent);
     boolean (*window_server_destroy_window)(WindowServerWindow * this);
     boolean (*window_server_window_set_title)(WindowServerWindow * this, const char * title);
@@ -5391,6 +5465,11 @@ extern fptr (*render_context_get_proc_addr)(const char * proc);
         raw_render_server_backend_free = (boolean (*)(RenderServerBackend *))proc_addr("render_server_backend_free");
         raw_render_server_backend_set_function = (boolean (*)(RenderServerBackend *, const char *, fptr))proc_addr("render_server_backend_set_function");
         raw_render_server_backend_get_function = (fptr (*)(RenderServerBackend *, const char *))proc_addr("render_server_backend_get_function");
+        raw_chunk_memory_allocator_new = (ChunkMemoryAllocator * (*)(u32, u32))proc_addr("chunk_memory_allocator_new");
+        raw_chunk_memory_allocator_free = (void (*)(ChunkMemoryAllocator *))proc_addr("chunk_memory_allocator_free");
+        raw_chunk_memory_allocator_alloc_mem = (chunk_allocator_ptr (*)(ChunkMemoryAllocator *))proc_addr("chunk_memory_allocator_alloc_mem");
+        raw_chunk_memory_allocator_free_mem = (void (*)(ChunkMemoryAllocator *, chunk_allocator_ptr))proc_addr("chunk_memory_allocator_free_mem");
+        raw_chunk_memory_allocator_get_real_ptr = (void * (*)(ChunkMemoryAllocator *, chunk_allocator_ptr))proc_addr("chunk_memory_allocator_get_real_ptr");
 
 
         #if !defined(HEAPI_FULL_TRACE)
@@ -5649,6 +5728,11 @@ extern fptr (*render_context_get_proc_addr)(const char * proc);
             render_server_backend_free = raw_render_server_backend_free;
             render_server_backend_set_function = raw_render_server_backend_set_function;
             render_server_backend_get_function = raw_render_server_backend_get_function;
+            chunk_memory_allocator_new = raw_chunk_memory_allocator_new;
+            chunk_memory_allocator_free = raw_chunk_memory_allocator_free;
+            chunk_memory_allocator_alloc_mem = raw_chunk_memory_allocator_alloc_mem;
+            chunk_memory_allocator_free_mem = raw_chunk_memory_allocator_free_mem;
+            chunk_memory_allocator_get_real_ptr = raw_chunk_memory_allocator_get_real_ptr;
 
         #endif
     }
@@ -5957,6 +6041,11 @@ RenderServerBackend * full_trace_render_server_backend_new(const char* ___file__
 boolean full_trace_render_server_backend_free(const char* ___file___, uint32_t ___line___, RenderServerBackend *);
 boolean full_trace_render_server_backend_set_function(const char* ___file___, uint32_t ___line___, RenderServerBackend *, const char *, fptr);
 fptr full_trace_render_server_backend_get_function(const char* ___file___, uint32_t ___line___, RenderServerBackend *, const char *);
+ChunkMemoryAllocator * full_trace_chunk_memory_allocator_new(const char* ___file___, uint32_t ___line___, u32, u32);
+void full_trace_chunk_memory_allocator_free(const char* ___file___, uint32_t ___line___, ChunkMemoryAllocator *);
+chunk_allocator_ptr full_trace_chunk_memory_allocator_alloc_mem(const char* ___file___, uint32_t ___line___, ChunkMemoryAllocator *);
+void full_trace_chunk_memory_allocator_free_mem(const char* ___file___, uint32_t ___line___, ChunkMemoryAllocator *, chunk_allocator_ptr);
+void * full_trace_chunk_memory_allocator_get_real_ptr(const char* ___file___, uint32_t ___line___, ChunkMemoryAllocator *, chunk_allocator_ptr);
 WindowServerWindow * full_trace_window_server_create_window(const char* ___file___, uint32_t ___line___, const char *, IVec2, WindowServerWindow *);
 boolean full_trace_window_server_destroy_window(const char* ___file___, uint32_t ___line___, WindowServerWindow *);
 boolean full_trace_window_server_window_set_title(const char* ___file___, uint32_t ___line___, WindowServerWindow *, const char *);
@@ -7644,6 +7733,39 @@ inline fptr full_trace_render_server_backend_get_function(const char* ___file___
     return result;
 }
 
+inline ChunkMemoryAllocator * full_trace_chunk_memory_allocator_new(const char* ___file___, uint32_t ___line___, u32 element_size, u32 chunk_min_size) {
+    raw___he_update_full_trace_info("chunk_memory_allocator_new", ___file___, ___line___);
+    ChunkMemoryAllocator * result = raw_chunk_memory_allocator_new(element_size, chunk_min_size);
+    raw___he_update_full_trace_info("", "", -1);
+    return result;
+}
+
+inline void full_trace_chunk_memory_allocator_free(const char* ___file___, uint32_t ___line___, ChunkMemoryAllocator * this) {
+    raw___he_update_full_trace_info("chunk_memory_allocator_free", ___file___, ___line___);
+    raw_chunk_memory_allocator_free(this);
+    raw___he_update_full_trace_info("", "", -1);
+}
+
+inline chunk_allocator_ptr full_trace_chunk_memory_allocator_alloc_mem(const char* ___file___, uint32_t ___line___, ChunkMemoryAllocator * this) {
+    raw___he_update_full_trace_info("chunk_memory_allocator_alloc_mem", ___file___, ___line___);
+    chunk_allocator_ptr result = raw_chunk_memory_allocator_alloc_mem(this);
+    raw___he_update_full_trace_info("", "", -1);
+    return result;
+}
+
+inline void full_trace_chunk_memory_allocator_free_mem(const char* ___file___, uint32_t ___line___, ChunkMemoryAllocator * this, chunk_allocator_ptr ptr) {
+    raw___he_update_full_trace_info("chunk_memory_allocator_free_mem", ___file___, ___line___);
+    raw_chunk_memory_allocator_free_mem(this, ptr);
+    raw___he_update_full_trace_info("", "", -1);
+}
+
+inline void * full_trace_chunk_memory_allocator_get_real_ptr(const char* ___file___, uint32_t ___line___, ChunkMemoryAllocator * this, chunk_allocator_ptr ptr) {
+    raw___he_update_full_trace_info("chunk_memory_allocator_get_real_ptr", ___file___, ___line___);
+    void * result = raw_chunk_memory_allocator_get_real_ptr(this, ptr);
+    raw___he_update_full_trace_info("", "", -1);
+    return result;
+}
+
 inline WindowServerWindow * full_trace_window_server_create_window(const char* ___file___, uint32_t ___line___, const char * title, IVec2 size, WindowServerWindow * parent) {
     raw___he_update_full_trace_info("window_server_create_window", ___file___, ___line___);
     WindowServerWindow * result = raw_window_server_create_window(title, size, parent);
@@ -8006,6 +8128,11 @@ inline fptr full_trace_render_context_get_proc_addr(const char* ___file___, uint
 #define render_server_backend_free(backend) full_trace_render_server_backend_free(__FILE__, __LINE__, backend)
 #define render_server_backend_set_function(backend, name, function) full_trace_render_server_backend_set_function(__FILE__, __LINE__, backend, name, function)
 #define render_server_backend_get_function(backend, name) full_trace_render_server_backend_get_function(__FILE__, __LINE__, backend, name)
+#define chunk_memory_allocator_new(element_size, chunk_min_size) full_trace_chunk_memory_allocator_new(__FILE__, __LINE__, element_size, chunk_min_size)
+#define chunk_memory_allocator_free(this) full_trace_chunk_memory_allocator_free(__FILE__, __LINE__, this)
+#define chunk_memory_allocator_alloc_mem(this) full_trace_chunk_memory_allocator_alloc_mem(__FILE__, __LINE__, this)
+#define chunk_memory_allocator_free_mem(this, ptr) full_trace_chunk_memory_allocator_free_mem(__FILE__, __LINE__, this, ptr)
+#define chunk_memory_allocator_get_real_ptr(this, ptr) full_trace_chunk_memory_allocator_get_real_ptr(__FILE__, __LINE__, this, ptr)
 #define window_server_create_window(title, size, parent) full_trace_window_server_create_window(__FILE__, __LINE__, title, size, parent)
 #define window_server_destroy_window(this) full_trace_window_server_destroy_window(__FILE__, __LINE__, this)
 #define window_server_window_set_title(this, title) full_trace_window_server_window_set_title(__FILE__, __LINE__, this, title)
