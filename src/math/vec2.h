@@ -15,9 +15,10 @@ typedef struct {
     (Vec2) {                                                                                            \
         .x = v_x, .y = v_y                                                                              \
     }
-#define VEC2_ZERO_M VEC2_NEW_M(0.0f, 0.0f)
-#define VEC2_ONE_M VEC2_NEW_M(1.0f, 1.0f)
-#define VEC2_MINUS_ONE_M VEC2_NEW_M(-1.0f, 1.0f)
+#define VEC2_NEW_VAL_M(v) VEC2_NEW_M(v, v)
+#define VEC2_ZERO_M VEC2_NEW_VAL_M(0.0f)
+#define VEC2_ONE_M VEC2_NEW_VAL_M(1.0f)
+#define VEC2_MINUS_ONE_M VEC2_NEW_VAL_M(-1.0f)
 // #define VEC2_MAX_M (Vec2){.x=I32_MAX, .y=I32_MAX}
 // #define VEC2_MIN_M (Vec2){.x=I32_MIN, .y=I32_MIN}
 

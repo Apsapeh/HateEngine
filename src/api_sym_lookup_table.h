@@ -4,26 +4,32 @@
 #define HE_MEM_NO_MACRO
 //#include <extra/full_trace.h>
 
-#include "platform/memory.h"
-#include "object/node/canvas_item/canvas_item.h"
-#include "types/uid.h"
-#include "math/vec3.h"
-#include "object/node/node3d/node3d.h"
-#include "platform/mutex.h"
-#include "servers/render_context/render_context.h"
-#include "math/vec2.h"
-#include "servers/render_server/render_server.h"
-#include "object/node/window/window.h"
-#include "platform/datetime.h"
-#include "object/node/node.h"
-#include "object/node/canvas_item/control/control.h"
-#include "object/object.h"
-#include "math/ivec2.h"
-#include "types/string.h"
-#include "math/mat4.h"
 #include "object/node/canvas_item/control/viewport/viewport.h"
-#include "servers/window_server/window_server.h"
+#include "servers/render_server/render_server.h"
+#include "math/vec4.h"
+#include "object/node/canvas_item/canvas_item.h"
+#include "object/node/node.h"
+#include "math/vec2.h"
+#include "math/ivec2.h"
+#include "math/ivec3.h"
+#include "platform/datetime.h"
 #include "vfs/vfs.h"
+#include "math/uvec2.h"
+#include "object/node/window/window.h"
+#include "types/uid.h"
+#include "platform/memory.h"
+#include "servers/render_context/render_context.h"
+#include "math/uvec4.h"
+#include "math/uvec3.h"
+#include "object/object.h"
+#include "math/ivec4.h"
+#include "object/node/node3d/node3d.h"
+#include "types/string.h"
+#include "platform/mutex.h"
+#include "servers/window_server/window_server.h"
+#include "math/vec3.h"
+#include "object/node/canvas_item/control/control.h"
+#include "math/mat4.h"
 #include "error.h"
 #include "log.h"
 
@@ -70,6 +76,31 @@ APIFunctionLookupTable g_apiFunctionLookupTable[] = {
     {"ivec2_scale_in", (void*)ivec2_scale_in},
     {"ivec2_sub", (void*)ivec2_sub},
     {"ivec2_sub_in", (void*)ivec2_sub_in},
+    {"ivec3_add", (void*)ivec3_add},
+    {"ivec3_add_in", (void*)ivec3_add_in},
+    {"ivec3_cross", (void*)ivec3_cross},
+    {"ivec3_distance", (void*)ivec3_distance},
+    {"ivec3_dot", (void*)ivec3_dot},
+    {"ivec3_init", (void*)ivec3_init},
+    {"ivec3_length", (void*)ivec3_length},
+    {"ivec3_normalize", (void*)ivec3_normalize},
+    {"ivec3_normalize_in", (void*)ivec3_normalize_in},
+    {"ivec3_scale", (void*)ivec3_scale},
+    {"ivec3_scale_in", (void*)ivec3_scale_in},
+    {"ivec3_sub", (void*)ivec3_sub},
+    {"ivec3_sub_in", (void*)ivec3_sub_in},
+    {"ivec4_add", (void*)ivec4_add},
+    {"ivec4_add_in", (void*)ivec4_add_in},
+    {"ivec4_distance", (void*)ivec4_distance},
+    {"ivec4_dot", (void*)ivec4_dot},
+    {"ivec4_init", (void*)ivec4_init},
+    {"ivec4_length", (void*)ivec4_length},
+    {"ivec4_normalize", (void*)ivec4_normalize},
+    {"ivec4_normalize_in", (void*)ivec4_normalize_in},
+    {"ivec4_scale", (void*)ivec4_scale},
+    {"ivec4_scale_in", (void*)ivec4_scale_in},
+    {"ivec4_sub", (void*)ivec4_sub},
+    {"ivec4_sub_in", (void*)ivec4_sub_in},
     {"mat4_add", (void*)mat4_add},
     {"mat4_clone", (void*)mat4_clone},
     {"mat4_from_array", (void*)mat4_from_array},
@@ -161,6 +192,43 @@ APIFunctionLookupTable g_apiFunctionLookupTable[] = {
     {"tmalloc", (void*)tmalloc},
     {"trealloc", (void*)trealloc},
     {"uid_new", (void*)uid_new},
+    {"uvec2_add", (void*)uvec2_add},
+    {"uvec2_add_in", (void*)uvec2_add_in},
+    {"uvec2_distance", (void*)uvec2_distance},
+    {"uvec2_dot", (void*)uvec2_dot},
+    {"uvec2_init", (void*)uvec2_init},
+    {"uvec2_length", (void*)uvec2_length},
+    {"uvec2_normalize", (void*)uvec2_normalize},
+    {"uvec2_normalize_in", (void*)uvec2_normalize_in},
+    {"uvec2_scale", (void*)uvec2_scale},
+    {"uvec2_scale_in", (void*)uvec2_scale_in},
+    {"uvec2_sub", (void*)uvec2_sub},
+    {"uvec2_sub_in", (void*)uvec2_sub_in},
+    {"uvec3_add", (void*)uvec3_add},
+    {"uvec3_add_in", (void*)uvec3_add_in},
+    {"uvec3_cross", (void*)uvec3_cross},
+    {"uvec3_distance", (void*)uvec3_distance},
+    {"uvec3_dot", (void*)uvec3_dot},
+    {"uvec3_init", (void*)uvec3_init},
+    {"uvec3_length", (void*)uvec3_length},
+    {"uvec3_normalize", (void*)uvec3_normalize},
+    {"uvec3_normalize_in", (void*)uvec3_normalize_in},
+    {"uvec3_scale", (void*)uvec3_scale},
+    {"uvec3_scale_in", (void*)uvec3_scale_in},
+    {"uvec3_sub", (void*)uvec3_sub},
+    {"uvec3_sub_in", (void*)uvec3_sub_in},
+    {"uvec4_add", (void*)uvec4_add},
+    {"uvec4_add_in", (void*)uvec4_add_in},
+    {"uvec4_distance", (void*)uvec4_distance},
+    {"uvec4_dot", (void*)uvec4_dot},
+    {"uvec4_init", (void*)uvec4_init},
+    {"uvec4_length", (void*)uvec4_length},
+    {"uvec4_normalize", (void*)uvec4_normalize},
+    {"uvec4_normalize_in", (void*)uvec4_normalize_in},
+    {"uvec4_scale", (void*)uvec4_scale},
+    {"uvec4_scale_in", (void*)uvec4_scale_in},
+    {"uvec4_sub", (void*)uvec4_sub},
+    {"uvec4_sub_in", (void*)uvec4_sub_in},
     {"vec2_add", (void*)vec2_add},
     {"vec2_add_in", (void*)vec2_add_in},
     {"vec2_distance", (void*)vec2_distance},
@@ -186,6 +254,18 @@ APIFunctionLookupTable g_apiFunctionLookupTable[] = {
     {"vec3_scale_in", (void*)vec3_scale_in},
     {"vec3_sub", (void*)vec3_sub},
     {"vec3_sub_in", (void*)vec3_sub_in},
+    {"vec4_add", (void*)vec4_add},
+    {"vec4_add_in", (void*)vec4_add_in},
+    {"vec4_distance", (void*)vec4_distance},
+    {"vec4_dot", (void*)vec4_dot},
+    {"vec4_init", (void*)vec4_init},
+    {"vec4_length", (void*)vec4_length},
+    {"vec4_normalize", (void*)vec4_normalize},
+    {"vec4_normalize_in", (void*)vec4_normalize_in},
+    {"vec4_scale", (void*)vec4_scale},
+    {"vec4_scale_in", (void*)vec4_scale_in},
+    {"vec4_sub", (void*)vec4_sub},
+    {"vec4_sub_in", (void*)vec4_sub_in},
     {"vfs_mount_res", (void*)vfs_mount_res},
     {"vfs_mount_rfs", (void*)vfs_mount_rfs},
     {"vfs_mount_rfs_whitelist", (void*)vfs_mount_rfs_whitelist},
