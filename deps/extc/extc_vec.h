@@ -131,13 +131,16 @@
     }\
     \
     fn_prefix unsigned char vec_##name##_erase_range(vec_##name * v, const unsigned long index, const unsigned long count) {\
+        if (count == 0) return 1; \
         if (index+count > v->size) return 0;\
         {\
             unsigned long i;\
             for (i = 0; i < count; ++i)\
                 if (v->free_func) v->free_func(&v->data[index+i]);\
         }\
-        VECTOR_MEMCPY(v->data+index, v->data+index+count, (v->size-index-count)*sizeof(type));\
+        if (index+count+1 != v->size) { \
+            VECTOR_MEMCPY(v->data+index, v->data+index+count, (v->size-index-count)*sizeof(type));\
+        }\
         v->size -= count;\
         return 1;\
     }\

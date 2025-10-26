@@ -151,16 +151,7 @@ typedef c_str Error;
 
 
 
-#define IVEC2_NEW_M(v_x, v_y)                                                                           \
-    (IVec2) {                                                                                           \
-        .x = v_x, .y = v_y                                                                              \
-    }
-#define IVEC2_NEW_VAL_M IVEC2_NEW_M(v, v)
-#define IVEC2_ZERO_M IVEC2_NEW_VAL_M(0)
-#define IVEC2_ONE_M IVEC2_NEW_VAL_M(1)
-#define IVEC2_MINUS_ONE_M IVEC2_NEW_VAL_M(-1)
-#define IVEC2_MAX_M IVEC2_NEW_VAL_M(I32_MAX)
-#define IVEC2_MIN_M IVEC2_NEW_VAL_M(I32_MIN)
+
 // clang-format off
 #define MAT4_NEW_M(                                                                                     \
         v_m00, v_m01, v_m02, v_m03, v_m10, v_m11, v_m12, v_m13, v_m20, v_m21, v_m22, v_m23, v_m30,      \
@@ -204,6 +195,62 @@ typedef c_str Error;
     )
 // clang-format on
 
+#define IVEC2_NEW_M(v_x, v_y)                                                                           \
+    (IVec2) {                                                                                           \
+        .x = v_x, .y = v_y                                                                              \
+    }
+#define IVEC2_NEW_VAL_M IVEC2_NEW_M(v, v)
+#define IVEC2_ZERO_M IVEC2_NEW_VAL_M(0)
+#define IVEC2_ONE_M IVEC2_NEW_VAL_M(1)
+#define IVEC2_MINUS_ONE_M IVEC2_NEW_VAL_M(-1)
+#define IVEC2_MAX_M IVEC2_NEW_VAL_M(I32_MAX)
+#define IVEC2_MIN_M IVEC2_NEW_VAL_M(I32_MIN)
+#define IVEC3_NEW_M(v_x, v_y, v_z)                                                                      \
+    (IVec3) {                                                                                           \
+        .x = v_x, .y = v_y, .z = v_z                                                                    \
+    }
+#define IVEC3_NEW_VAL_M(v) IVEC3_NEW_M(v, v, v)
+#define IVEC3_ZERO_M IVEC3_NEW_VAL_M(0)
+#define IVEC3_ONE_M IVEC3_NEW_VAL_M(1)
+#define IVEC3_MINUS_ONE_M IVEC3_NEW_VAL_M(-1)
+#define IVEC3_MAX_M IVEC3_NEW_VAL_M(I32_MAX)
+#define IVEC3_MIN_M IVEC3_NEW_VAL_M(I32_MIN)
+#define IVEC4_NEW_M(v_x, v_y, v_z, v_w)                                                                 \
+    (IVec4) {                                                                                           \
+        .x = v_x, .y = v_y, .z = v_z, .w = v_w                                                          \
+    }
+#define IVEC4_NEW_VAL_M(v) IVEC4_NEW_M(v, v, v, v)
+#define IVEC4_ZERO_M IVEC4_NEW_VAL_M(0);
+#define IVEC4_ONE_M IVEC4_NEW_VAL_M(1);
+#define IVEC4_MINUS_ONE_M IVEC4_NEW_VAL_M(-1);
+#define IVEC4_MAX_M IVEC4_NEW_VAL_M(I32_MAX);
+#define IVEC4_MIN_M IVEC4_NEW_VAL_M(I32_MIN);
+// #define IVEC4_MIN_M (IVec4){.x=I32_MIN, .y=I32_MIN}
+#define UVEC2_NEW_M(v_x, v_y)                                                                           \
+    (UVec2) {                                                                                           \
+        .x = v_x, .y = v_y                                                                              \
+    }
+#define UVEC2_NEW_VAL_M UVEC2_NEW_M(v, v)
+#define UVEC2_ZERO_M UVEC2_NEW_VAL_M(0)
+#define UVEC2_ONE_M UVEC2_NEW_VAL_M(1)
+#define UVEC2_MAX_M UVEC2_NEW_VAL_M(I32_MAX)
+#define UVEC3_NEW_M(v_x, v_y, v_z)                                                                      \
+    (UVec3) {                                                                                           \
+        .x = v_x, .y = v_y, .z = v_z                                                                    \
+    }
+#define UVEC3_NEW_VAL_M(v) UVEC3_NEW_M(v, v, v)
+#define UVEC3_ZERO_M UVEC3_NEW_VAL_M(0)
+#define UVEC3_ONE_M UVEC3_NEW_VAL_M(1)
+#define UVEC3_MAX_M UVEC3_NEW_VAL_M(U32_MAX)
+#define UVEC4_NEW_M(v_x, v_y, v_z, v_w)                                                                 \
+    (UVec4) {                                                                                           \
+        .x = v_x, .y = v_y, .z = v_z, .w = v_w                                                          \
+    }
+#define UVEC4_NEW_VAL_M(v) UVEC4_NEW_M(v, v, v, v)
+#define UVEC4_ZERO_M UVEC4_NEW_VAL_M(0);
+#define UVEC4_ONE_M UVEC4_NEW_VAL_M(1);
+#define UVEC4_MAX_M UVEC4_NEW_VAL_M(U32_MAX);
+// #define UVEC4_MIN_M (UVec4){.x=I32_MIN, .y=I32_MIN}
 #define VEC2_NEW_M(v_x, v_y)                                                                            \
     (Vec2) {                                                                                            \
         .x = v_x, .y = v_y                                                                              \
@@ -225,52 +272,6 @@ typedef c_str Error;
 #define VEC3_MINUS_ONE_M VEC3_NEW_VAL_M(-1.0f)
 // #define VEC3_MAX_M (Vec3){.x=I32_MAX, .y=I32_MAX}
 // #define VEC3_MIN_M (Vec3){.x=I32_MIN, .y=I32_MIN}
-#define UVEC3_NEW_M(v_x, v_y, v_z)                                                                       \
-    (UVec3) {                                                                                            \
-        .x = v_x, .y = v_y, .z = v_z                                                                    \
-    }
-#define UVEC3_NEW_VAL_M(v) UVEC3_NEW_M(v, v, v)
-#define UVEC3_ZERO_M UVEC3_NEW_VAL_M(0)
-#define UVEC3_ONE_M UVEC3_NEW_VAL_M(1)
-#define UVEC3_MAX_M UVEC3_NEW_VAL_M(U32_MAX)
-#define UVEC2_NEW_M(v_x, v_y)                                                                           \
-    (UVec2) {                                                                                           \
-        .x = v_x, .y = v_y                                                                              \
-    }
-#define UVEC2_NEW_VAL_M UVEC2_NEW_M(v, v)
-#define UVEC2_ZERO_M UVEC2_NEW_VAL_M(0)
-#define UVEC2_ONE_M UVEC2_NEW_VAL_M(1)
-#define UVEC2_MAX_M UVEC2_NEW_VAL_M(I32_MAX)
-#define IVEC4_NEW_M(v_x, v_y, v_z, v_w)                                                                  \
-    (IVec4) {                                                                                            \
-        .x = v_x, .y = v_y, .z = v_z, .w = v_w                                                          \
-    }
-#define IVEC4_NEW_VAL_M(v) IVEC4_NEW_M(v, v, v, v)
-#define IVEC4_ZERO_M IVEC4_NEW_VAL_M(0);
-#define IVEC4_ONE_M IVEC4_NEW_VAL_M(1);
-#define IVEC4_MINUS_ONE_M IVEC4_NEW_VAL_M(-1);
-#define IVEC4_MAX_M IVEC4_NEW_VAL_M(I32_MAX);
-#define IVEC4_MIN_M IVEC4_NEW_VAL_M(I32_MIN);
-// #define IVEC4_MIN_M (IVec4){.x=I32_MIN, .y=I32_MIN}
-#define UVEC4_NEW_M(v_x, v_y, v_z, v_w)                                                                  \
-    (UVec4) {                                                                                            \
-        .x = v_x, .y = v_y, .z = v_z, .w = v_w                                                          \
-    }
-#define UVEC4_NEW_VAL_M(v) UVEC4_NEW_M(v, v, v, v)
-#define UVEC4_ZERO_M UVEC4_NEW_VAL_M(0);
-#define UVEC4_ONE_M UVEC4_NEW_VAL_M(1);
-#define UVEC4_MAX_M UVEC4_NEW_VAL_M(U32_MAX);
-// #define UVEC4_MIN_M (UVec4){.x=I32_MIN, .y=I32_MIN}
-#define IVEC3_NEW_M(v_x, v_y, v_z)                                                                       \
-    (IVec3) {                                                                                            \
-        .x = v_x, .y = v_y, .z = v_z                                                                    \
-    }
-#define IVEC3_NEW_VAL_M(v) IVEC3_NEW_M(v, v, v)
-#define IVEC3_ZERO_M IVEC3_NEW_VAL_M(0)
-#define IVEC3_ONE_M IVEC3_NEW_VAL_M(1)
-#define IVEC3_MINUS_ONE_M IVEC3_NEW_VAL_M(-1)
-#define IVEC3_MAX_M IVEC3_NEW_VAL_M(I32_MAX)
-#define IVEC3_MIN_M IVEC3_NEW_VAL_M(I32_MIN)
 #define VEC4_NEW_M(v_x, v_y, v_z, v_w)                                                                  \
     (Vec4) {                                                                                            \
         .x = v_x, .y = v_y, .z = v_z, .w = v_w                                                          \
@@ -308,6 +309,15 @@ typedef struct datetime_handle * datetime_handle;
  * @api
  */
 typedef struct mutex_handle * mutex_handle;
+
+/**
+ * @brief Chunk memory allocator for elements with fixed type and size
+ *
+ * Specially optimized allocator for small types, like thousands allocations/freeing of int in each frame
+ *
+ * @api
+ */
+typedef struct ChunkMemoryAllocator ChunkMemoryAllocator;
 
 /**
  * @api
@@ -437,6 +447,17 @@ typedef struct RenderContextBackend RenderContextBackend;
 typedef struct RenderServerBackend RenderServerBackend;
 
 /**
+ * @brief Primitive 4x4 matrix
+ *
+ * Raw data - m
+ *
+ * @api forward
+ */
+typedef struct Mat4 {
+    float m[4];
+} Mat4;
+
+/**
  * @brief Primitive 2D vector
  *
  * @api forward
@@ -447,15 +468,60 @@ typedef struct IVec2 {
 } IVec2;
 
 /**
- * @brief Primitive 4x4 matrix
- *
- * Raw data - m
+ * @brief Primitive 3D vector
  *
  * @api forward
  */
-typedef struct Mat4 {
-    float m[4];
-} Mat4;
+typedef struct IVec3 {
+    i32 x;
+    i32 y;
+    i32 z;
+} IVec3;
+
+/**
+ * @brief Primitive 4D vector
+ *
+ * @api forward
+ */
+typedef struct IVec4 {
+    i32 x;
+    i32 y;
+    i32 z;
+    i32 w;
+} IVec4;
+
+/**
+ * @brief Primitive 2D vector
+ *
+ * @api forward
+ */
+typedef struct UVec2 {
+    u32 x;
+    u32 y;
+} UVec2;
+
+/**
+ * @brief Primitive 3D vector
+ *
+ * @api forward
+ */
+typedef struct UVec3 {
+    u32 x;
+    u32 y;
+    u32 z;
+} UVec3;
+
+/**
+ * @brief Primitive 4D vector
+ *
+ * @api forward
+ */
+typedef struct UVec4 {
+    u32 x;
+    u32 y;
+    u32 z;
+    u32 w;
+} UVec4;
 
 /**
  * @brief Primitive 2D vector
@@ -479,62 +545,6 @@ typedef struct Vec3 {
 } Vec3;
 
 /**
- * @brief Primitive 3D vector
- *
- * @api forward
- */
-typedef struct UVec3 {
-    u32 x;
-    u32 y;
-    u32 z;
-} UVec3;
-
-/**
- * @brief Primitive 2D vector
- *
- * @api forward
- */
-typedef struct UVec2 {
-    u32 x;
-    u32 y;
-} UVec2;
-
-/**
- * @brief Primitive 4D vector
- *
- * @api forward
- */
-typedef struct IVec4 {
-    i32 x;
-    i32 y;
-    i32 z;
-    i32 w;
-} IVec4;
-
-/**
- * @brief Primitive 4D vector
- *
- * @api forward
- */
-typedef struct UVec4 {
-    u32 x;
-    u32 y;
-    u32 z;
-    u32 w;
-} UVec4;
-
-/**
- * @brief Primitive 3D vector
- *
- * @api forward
- */
-typedef struct IVec3 {
-    i32 x;
-    i32 y;
-    i32 z;
-} IVec3;
-
-/**
  * @brief Primitive 4D vector
  *
  * @api forward
@@ -545,6 +555,13 @@ typedef struct Vec4 {
     float z;
     float w;
 } Vec4;
+
+/**
+ * @brief Virtual memory ptr
+ *
+ * @api
+ */
+typedef u32 chunk_mem_ptr;
 
 /**
  * 's' - Seek from start
@@ -989,85 +1006,6 @@ extern Control * (*raw_control_new)(const char * name);
 extern Viewport * (*raw_viewport_new)(const char * name);
 
 /**
- * @api
- */
-extern void (*raw_ivec2_init)(const i32 x, const i32 y, IVec2 *const out);
-
-/**
- * @api
- */
-extern void (*raw_ivec2_add)(const IVec2 *const a, const IVec2 *const b, IVec2 *const out);
-
-/**
- * @api
- */
-extern void (*raw_ivec2_sub)(const IVec2 *const a, const IVec2 *const b, IVec2 *const out);
-
-/**
- * @api
- */
-extern void (*raw_ivec2_scale)(const IVec2 *const a, const float factor, IVec2 *const out);
-
-/**
- * @api
- */
-extern float (*raw_ivec2_dot)(const IVec2 *const a, const IVec2 *const b);
-
-/**
- * @api
- */
-extern float (*raw_ivec2_length)(const IVec2 *const a);
-
-/**
- * @api
- */
-extern void (*raw_ivec2_normalize)(const IVec2 *const a, IVec2 *const out);
-
-/**
- * @api
- */
-extern float (*raw_ivec2_distance)(const IVec2 *const a, const IVec2 *const b);
-
-/**
- * @brief Add b to a
- *
- * @param[in/out] a
- * @param[in] b
- *
- * @api
- */
-extern void (*raw_ivec2_add_in)(IVec2 *const to, const IVec2 *const what);
-
-/**
- * @brief
- *
- * @param[in/out] from
- * @param[in] what
- *
- * @api
- */
-extern void (*raw_ivec2_sub_in)(IVec2 *const from, const IVec2 *const what);
-
-/**
- * @brief
- *
- * @param[in/out] to
- * @param[in] factor
- *
- * @api
- */
-extern void (*raw_ivec2_scale_in)(IVec2 *const to, const float factor);
-
-/**
- * @brief
- *
- * @param[in/out] a
- *
- * @api
- */
-extern void (*raw_ivec2_normalize_in)(IVec2 *const a);
-
-/**
  * @brief
  *
  * @param m00
@@ -1175,6 +1113,558 @@ extern void (*raw_mat4_transpose)(const Mat4 *const a, Mat4 *const out);
  * @api
  */
 extern void (*raw_mat4_inverse)(const Mat4 *const a, Mat4 *const out);
+
+/**
+ * @api
+ */
+extern void (*raw_ivec2_init)(const i32 x, const i32 y, IVec2 *const out);
+
+/**
+ * @api
+ */
+extern void (*raw_ivec2_add)(const IVec2 *const a, const IVec2 *const b, IVec2 *const out);
+
+/**
+ * @api
+ */
+extern void (*raw_ivec2_sub)(const IVec2 *const a, const IVec2 *const b, IVec2 *const out);
+
+/**
+ * @api
+ */
+extern void (*raw_ivec2_scale)(const IVec2 *const a, const float factor, IVec2 *const out);
+
+/**
+ * @api
+ */
+extern float (*raw_ivec2_dot)(const IVec2 *const a, const IVec2 *const b);
+
+/**
+ * @api
+ */
+extern float (*raw_ivec2_length)(const IVec2 *const a);
+
+/**
+ * @api
+ */
+extern void (*raw_ivec2_normalize)(const IVec2 *const a, IVec2 *const out);
+
+/**
+ * @api
+ */
+extern float (*raw_ivec2_distance)(const IVec2 *const a, const IVec2 *const b);
+
+/**
+ * @brief Add b to a
+ *
+ * @param[in/out] a
+ * @param[in] b
+ *
+ * @api
+ */
+extern void (*raw_ivec2_add_in)(IVec2 *const to, const IVec2 *const what);
+
+/**
+ * @brief
+ *
+ * @param[in/out] from
+ * @param[in] what
+ *
+ * @api
+ */
+extern void (*raw_ivec2_sub_in)(IVec2 *const from, const IVec2 *const what);
+
+/**
+ * @brief
+ *
+ * @param[in/out] to
+ * @param[in] factor
+ *
+ * @api
+ */
+extern void (*raw_ivec2_scale_in)(IVec2 *const to, const float factor);
+
+/**
+ * @brief
+ *
+ * @param[in/out] a
+ *
+ * @api
+ */
+extern void (*raw_ivec2_normalize_in)(IVec2 *const a);
+
+/**
+ * @brief
+ *
+ * @api
+ */
+extern void (*raw_ivec3_init)(i32 x, i32 y, i32 z, IVec3 *const out);
+
+/**
+ * @brief
+ *
+ * @api
+ */
+extern void (*raw_ivec3_add)(const IVec3 *const a, const IVec3 *const b, IVec3 *const out);
+
+/**
+ * @brief
+ *
+ * @api
+ */
+extern void (*raw_ivec3_sub)(const IVec3 *const a, const IVec3 *const b, IVec3 *const out);
+
+/**
+ * @brief
+ *
+ * @api
+ */
+extern void (*raw_ivec3_scale)(const IVec3 *const a, const float factor, IVec3 *const out);
+
+/**
+ * @brief
+ *
+ * @api
+ */
+extern void (*raw_ivec3_cross)(const IVec3 *const a, const IVec3 *const b, IVec3 *const out);
+
+/**
+ * @brief
+ *
+ * @api
+ */
+extern float (*raw_ivec3_dot)(const IVec3 *const a, const IVec3 *const b);
+
+/**
+ * @brief
+ *
+ * @api
+ */
+extern float (*raw_ivec3_length)(const IVec3 *const a);
+
+/**
+ * @brief
+ *
+ * @api
+ */
+extern void (*raw_ivec3_normalize)(const IVec3 *const a, IVec3 *const out);
+
+/**
+ * @brief
+ *
+ * @api
+ */
+extern float (*raw_ivec3_distance)(const IVec3 *const a, const IVec3 *const b);
+
+/**
+ * @brief Add b to a
+ *
+ * @param a
+ * @param b
+ *
+ * @api
+ */
+extern void (*raw_ivec3_add_in)(IVec3 *const to, const IVec3 *const what);
+
+/**
+ * @brief Subtrtact 'what' from 'from'
+ *
+ * @param from
+ * @param what
+ *
+ * @api
+ */
+extern void (*raw_ivec3_sub_in)(IVec3 *const from, const IVec3 *const what);
+
+/**
+ * @brief Scale vector 'to' by 'factor'
+ *
+ * @param to
+ * @param factor
+ *
+ * @api
+ */
+extern void (*raw_ivec3_scale_in)(IVec3 *const to, const float factor);
+
+/**
+ * @brief
+ *
+ * @param a
+ *
+ * @api
+ */
+extern void (*raw_ivec3_normalize_in)(IVec3 *const a);
+
+/**
+ * @brief
+ *
+ * @api
+ */
+extern void (*raw_ivec4_init)(i32 x, i32 y, i32 z, i32 w, IVec4 *const out);
+
+/**
+ * @brief
+ *
+ * @api
+ */
+extern void (*raw_ivec4_add)(const IVec4 *const a, const IVec4 *const b, IVec4 *const out);
+
+/**
+ * @brief
+ *
+ * @api
+ */
+extern void (*raw_ivec4_sub)(const IVec4 *const a, const IVec4 *const b, IVec4 *const out);
+
+/**
+ * @brief
+ *
+ * @api
+ */
+extern void (*raw_ivec4_scale)(const IVec4 *const a, const float factor, IVec4 *const out);
+
+/**
+ * @brief
+ *
+ * @api
+ */
+extern float (*raw_ivec4_dot)(const IVec4 *const a, const IVec4 *const b);
+
+/**
+ * @brief
+ *
+ * @api
+ */
+extern float (*raw_ivec4_length)(const IVec4 *const a);
+
+/**
+ * @brief
+ *
+ * @api
+ */
+extern void (*raw_ivec4_normalize)(const IVec4 *const a, IVec4 *const out);
+
+/**
+ * @brief
+ *
+ * @api
+ */
+extern float (*raw_ivec4_distance)(const IVec4 *const a, const IVec4 *const b);
+
+/**
+ * @brief Add b to a
+ *
+ * @param a
+ * @param b
+ *
+ * @api
+ */
+extern void (*raw_ivec4_add_in)(IVec4 *const to, const IVec4 *const what);
+
+/**
+ * @brief Subtrtact 'what' from 'from'
+ *
+ * @param from
+ * @param what
+ *
+ * @api
+ */
+extern void (*raw_ivec4_sub_in)(IVec4 *const from, const IVec4 *const what);
+
+/**
+ * @brief Scale vector 'to' by 'factor'
+ *
+ * @param to
+ * @param factor
+ *
+ * @api
+ */
+extern void (*raw_ivec4_scale_in)(IVec4 *const to, const float factor);
+
+/**
+ * @brief
+ *
+ * @param a
+ *
+ * @api
+ */
+extern void (*raw_ivec4_normalize_in)(IVec4 *const a);
+
+/**
+ * @api
+ */
+extern void (*raw_uvec2_init)(const u32 x, const u32 y, UVec2 *const out);
+
+/**
+ * @api
+ */
+extern void (*raw_uvec2_add)(const UVec2 *const a, const UVec2 *const b, UVec2 *const out);
+
+/**
+ * @api
+ */
+extern void (*raw_uvec2_sub)(const UVec2 *const a, const UVec2 *const b, UVec2 *const out);
+
+/**
+ * @api
+ */
+extern void (*raw_uvec2_scale)(const UVec2 *const a, const float factor, UVec2 *const out);
+
+/**
+ * @api
+ */
+extern float (*raw_uvec2_dot)(const UVec2 *const a, const UVec2 *const b);
+
+/**
+ * @api
+ */
+extern float (*raw_uvec2_length)(const UVec2 *const a);
+
+/**
+ * @api
+ */
+extern void (*raw_uvec2_normalize)(const UVec2 *const a, UVec2 *const out);
+
+/**
+ * @api
+ */
+extern float (*raw_uvec2_distance)(const UVec2 *const a, const UVec2 *const b);
+
+/**
+ * @brief Add b to a
+ *
+ * @param[in/out] a
+ * @param[in] b
+ *
+ * @api
+ */
+extern void (*raw_uvec2_add_in)(UVec2 *const to, const UVec2 *const what);
+
+/**
+ * @brief
+ *
+ * @param[in/out] from
+ * @param[in] what
+ *
+ * @api
+ */
+extern void (*raw_uvec2_sub_in)(UVec2 *const from, const UVec2 *const what);
+
+/**
+ * @brief
+ *
+ * @param[in/out] to
+ * @param[in] factor
+ *
+ * @api
+ */
+extern void (*raw_uvec2_scale_in)(UVec2 *const to, const float factor);
+
+/**
+ * @brief
+ *
+ * @param[in/out] a
+ *
+ * @api
+ */
+extern void (*raw_uvec2_normalize_in)(UVec2 *const a);
+
+/**
+ * @brief
+ *
+ * @api
+ */
+extern void (*raw_uvec3_init)(u32 x, u32 y, u32 z, UVec3 *const out);
+
+/**
+ * @brief
+ *
+ * @api
+ */
+extern void (*raw_uvec3_add)(const UVec3 *const a, const UVec3 *const b, UVec3 *const out);
+
+/**
+ * @brief
+ *
+ * @api
+ */
+extern void (*raw_uvec3_sub)(const UVec3 *const a, const UVec3 *const b, UVec3 *const out);
+
+/**
+ * @brief
+ *
+ * @api
+ */
+extern void (*raw_uvec3_scale)(const UVec3 *const a, const float factor, UVec3 *const out);
+
+/**
+ * @brief
+ *
+ * @api
+ */
+extern void (*raw_uvec3_cross)(const UVec3 *const a, const UVec3 *const b, UVec3 *const out);
+
+/**
+ * @brief
+ *
+ * @api
+ */
+extern float (*raw_uvec3_dot)(const UVec3 *const a, const UVec3 *const b);
+
+/**
+ * @brief
+ *
+ * @api
+ */
+extern float (*raw_uvec3_length)(const UVec3 *const a);
+
+/**
+ * @brief
+ *
+ * @api
+ */
+extern void (*raw_uvec3_normalize)(const UVec3 *const a, UVec3 *const out);
+
+/**
+ * @brief
+ *
+ * @api
+ */
+extern float (*raw_uvec3_distance)(const UVec3 *const a, const UVec3 *const b);
+
+/**
+ * @brief Add b to a
+ *
+ * @param a
+ * @param b
+ *
+ * @api
+ */
+extern void (*raw_uvec3_add_in)(UVec3 *const to, const UVec3 *const what);
+
+/**
+ * @brief Subtrtact 'what' from 'from'
+ *
+ * @param from
+ * @param what
+ *
+ * @api
+ */
+extern void (*raw_uvec3_sub_in)(UVec3 *const from, const UVec3 *const what);
+
+/**
+ * @brief Scale vector 'to' by 'factor'
+ *
+ * @param to
+ * @param factor
+ *
+ * @api
+ */
+extern void (*raw_uvec3_scale_in)(UVec3 *const to, const float factor);
+
+/**
+ * @brief
+ *
+ * @param a
+ *
+ * @api
+ */
+extern void (*raw_uvec3_normalize_in)(UVec3 *const a);
+
+/**
+ * @brief
+ *
+ * @api
+ */
+extern void (*raw_uvec4_init)(u32 x, u32 y, u32 z, u32 w, UVec4 *const out);
+
+/**
+ * @brief
+ *
+ * @api
+ */
+extern void (*raw_uvec4_add)(const UVec4 *const a, const UVec4 *const b, UVec4 *const out);
+
+/**
+ * @brief
+ *
+ * @api
+ */
+extern void (*raw_uvec4_sub)(const UVec4 *const a, const UVec4 *const b, UVec4 *const out);
+
+/**
+ * @brief
+ *
+ * @api
+ */
+extern void (*raw_uvec4_scale)(const UVec4 *const a, const float factor, UVec4 *const out);
+
+/**
+ * @brief
+ *
+ * @api
+ */
+extern float (*raw_uvec4_dot)(const UVec4 *const a, const UVec4 *const b);
+
+/**
+ * @brief
+ *
+ * @api
+ */
+extern float (*raw_uvec4_length)(const UVec4 *const a);
+
+/**
+ * @brief
+ *
+ * @api
+ */
+extern void (*raw_uvec4_normalize)(const UVec4 *const a, UVec4 *const out);
+
+/**
+ * @brief
+ *
+ * @api
+ */
+extern float (*raw_uvec4_distance)(const UVec4 *const a, const UVec4 *const b);
+
+/**
+ * @brief Add b to a
+ *
+ * @param a
+ * @param b
+ *
+ * @api
+ */
+extern void (*raw_uvec4_add_in)(UVec4 *const to, const UVec4 *const what);
+
+/**
+ * @brief Subtrtact 'what' from 'from'
+ *
+ * @param from
+ * @param what
+ *
+ * @api
+ */
+extern void (*raw_uvec4_sub_in)(UVec4 *const from, const UVec4 *const what);
+
+/**
+ * @brief Scale vector 'to' by 'factor'
+ *
+ * @param to
+ * @param factor
+ *
+ * @api
+ */
+extern void (*raw_uvec4_scale_in)(UVec4 *const to, const float factor);
+
+/**
+ * @brief
+ *
+ * @param a
+ *
+ * @api
+ */
+extern void (*raw_uvec4_normalize_in)(UVec4 *const a);
 
 /**
  * @api
@@ -1356,479 +1846,6 @@ extern void (*raw_vec3_scale_in)(Vec3 *const to, const float factor);
  * @api
  */
 extern void (*raw_vec3_normalize_in)(Vec3 *const a);
-
-/**
- * @brief
- *
- * @api
- */
-extern void (*raw_uvec3_init)(u32 x, u32 y, u32 z, UVec3 *const out);
-
-/**
- * @brief
- *
- * @api
- */
-extern void (*raw_uvec3_add)(const UVec3 *const a, const UVec3 *const b, UVec3 *const out);
-
-/**
- * @brief
- *
- * @api
- */
-extern void (*raw_uvec3_sub)(const UVec3 *const a, const UVec3 *const b, UVec3 *const out);
-
-/**
- * @brief
- *
- * @api
- */
-extern void (*raw_uvec3_scale)(const UVec3 *const a, const float factor, UVec3 *const out);
-
-/**
- * @brief
- *
- * @api
- */
-extern void (*raw_uvec3_cross)(const UVec3 *const a, const UVec3 *const b, UVec3 *const out);
-
-/**
- * @brief
- *
- * @api
- */
-extern float (*raw_uvec3_dot)(const UVec3 *const a, const UVec3 *const b);
-
-/**
- * @brief
- *
- * @api
- */
-extern float (*raw_uvec3_length)(const UVec3 *const a);
-
-/**
- * @brief
- *
- * @api
- */
-extern void (*raw_uvec3_normalize)(const UVec3 *const a, UVec3 *const out);
-
-/**
- * @brief
- *
- * @api
- */
-extern float (*raw_uvec3_distance)(const UVec3 *const a, const UVec3 *const b);
-
-/**
- * @brief Add b to a
- *
- * @param a
- * @param b
- *
- * @api
- */
-extern void (*raw_uvec3_add_in)(UVec3 *const to, const UVec3 *const what);
-
-/**
- * @brief Subtrtact 'what' from 'from'
- *
- * @param from
- * @param what
- *
- * @api
- */
-extern void (*raw_uvec3_sub_in)(UVec3 *const from, const UVec3 *const what);
-
-/**
- * @brief Scale vector 'to' by 'factor'
- *
- * @param to
- * @param factor
- *
- * @api
- */
-extern void (*raw_uvec3_scale_in)(UVec3 *const to, const float factor);
-
-/**
- * @brief
- *
- * @param a
- *
- * @api
- */
-extern void (*raw_uvec3_normalize_in)(UVec3 *const a);
-
-/**
- * @api
- */
-extern void (*raw_uvec2_init)(const u32 x, const u32 y, UVec2 *const out);
-
-/**
- * @api
- */
-extern void (*raw_uvec2_add)(const UVec2 *const a, const UVec2 *const b, UVec2 *const out);
-
-/**
- * @api
- */
-extern void (*raw_uvec2_sub)(const UVec2 *const a, const UVec2 *const b, UVec2 *const out);
-
-/**
- * @api
- */
-extern void (*raw_uvec2_scale)(const UVec2 *const a, const float factor, UVec2 *const out);
-
-/**
- * @api
- */
-extern float (*raw_uvec2_dot)(const UVec2 *const a, const UVec2 *const b);
-
-/**
- * @api
- */
-extern float (*raw_uvec2_length)(const UVec2 *const a);
-
-/**
- * @api
- */
-extern void (*raw_uvec2_normalize)(const UVec2 *const a, UVec2 *const out);
-
-/**
- * @api
- */
-extern float (*raw_uvec2_distance)(const UVec2 *const a, const UVec2 *const b);
-
-/**
- * @brief Add b to a
- *
- * @param[in/out] a
- * @param[in] b
- *
- * @api
- */
-extern void (*raw_uvec2_add_in)(UVec2 *const to, const UVec2 *const what);
-
-/**
- * @brief
- *
- * @param[in/out] from
- * @param[in] what
- *
- * @api
- */
-extern void (*raw_uvec2_sub_in)(UVec2 *const from, const UVec2 *const what);
-
-/**
- * @brief
- *
- * @param[in/out] to
- * @param[in] factor
- *
- * @api
- */
-extern void (*raw_uvec2_scale_in)(UVec2 *const to, const float factor);
-
-/**
- * @brief
- *
- * @param[in/out] a
- *
- * @api
- */
-extern void (*raw_uvec2_normalize_in)(UVec2 *const a);
-
-/**
- * @brief
- *
- * @api
- */
-extern void (*raw_ivec4_init)(i32 x, i32 y, i32 z, i32 w, IVec4 *const out);
-
-/**
- * @brief
- *
- * @api
- */
-extern void (*raw_ivec4_add)(const IVec4 *const a, const IVec4 *const b, IVec4 *const out);
-
-/**
- * @brief
- *
- * @api
- */
-extern void (*raw_ivec4_sub)(const IVec4 *const a, const IVec4 *const b, IVec4 *const out);
-
-/**
- * @brief
- *
- * @api
- */
-extern void (*raw_ivec4_scale)(const IVec4 *const a, const float factor, IVec4 *const out);
-
-/**
- * @brief
- *
- * @api
- */
-extern float (*raw_ivec4_dot)(const IVec4 *const a, const IVec4 *const b);
-
-/**
- * @brief
- *
- * @api
- */
-extern float (*raw_ivec4_length)(const IVec4 *const a);
-
-/**
- * @brief
- *
- * @api
- */
-extern void (*raw_ivec4_normalize)(const IVec4 *const a, IVec4 *const out);
-
-/**
- * @brief
- *
- * @api
- */
-extern float (*raw_ivec4_distance)(const IVec4 *const a, const IVec4 *const b);
-
-/**
- * @brief Add b to a
- *
- * @param a
- * @param b
- *
- * @api
- */
-extern void (*raw_ivec4_add_in)(IVec4 *const to, const IVec4 *const what);
-
-/**
- * @brief Subtrtact 'what' from 'from'
- *
- * @param from
- * @param what
- *
- * @api
- */
-extern void (*raw_ivec4_sub_in)(IVec4 *const from, const IVec4 *const what);
-
-/**
- * @brief Scale vector 'to' by 'factor'
- *
- * @param to
- * @param factor
- *
- * @api
- */
-extern void (*raw_ivec4_scale_in)(IVec4 *const to, const float factor);
-
-/**
- * @brief
- *
- * @param a
- *
- * @api
- */
-extern void (*raw_ivec4_normalize_in)(IVec4 *const a);
-
-/**
- * @brief
- *
- * @api
- */
-extern void (*raw_uvec4_init)(u32 x, u32 y, u32 z, u32 w, UVec4 *const out);
-
-/**
- * @brief
- *
- * @api
- */
-extern void (*raw_uvec4_add)(const UVec4 *const a, const UVec4 *const b, UVec4 *const out);
-
-/**
- * @brief
- *
- * @api
- */
-extern void (*raw_uvec4_sub)(const UVec4 *const a, const UVec4 *const b, UVec4 *const out);
-
-/**
- * @brief
- *
- * @api
- */
-extern void (*raw_uvec4_scale)(const UVec4 *const a, const float factor, UVec4 *const out);
-
-/**
- * @brief
- *
- * @api
- */
-extern float (*raw_uvec4_dot)(const UVec4 *const a, const UVec4 *const b);
-
-/**
- * @brief
- *
- * @api
- */
-extern float (*raw_uvec4_length)(const UVec4 *const a);
-
-/**
- * @brief
- *
- * @api
- */
-extern void (*raw_uvec4_normalize)(const UVec4 *const a, UVec4 *const out);
-
-/**
- * @brief
- *
- * @api
- */
-extern float (*raw_uvec4_distance)(const UVec4 *const a, const UVec4 *const b);
-
-/**
- * @brief Add b to a
- *
- * @param a
- * @param b
- *
- * @api
- */
-extern void (*raw_uvec4_add_in)(UVec4 *const to, const UVec4 *const what);
-
-/**
- * @brief Subtrtact 'what' from 'from'
- *
- * @param from
- * @param what
- *
- * @api
- */
-extern void (*raw_uvec4_sub_in)(UVec4 *const from, const UVec4 *const what);
-
-/**
- * @brief Scale vector 'to' by 'factor'
- *
- * @param to
- * @param factor
- *
- * @api
- */
-extern void (*raw_uvec4_scale_in)(UVec4 *const to, const float factor);
-
-/**
- * @brief
- *
- * @param a
- *
- * @api
- */
-extern void (*raw_uvec4_normalize_in)(UVec4 *const a);
-
-/**
- * @brief
- *
- * @api
- */
-extern void (*raw_ivec3_init)(i32 x, i32 y, i32 z, IVec3 *const out);
-
-/**
- * @brief
- *
- * @api
- */
-extern void (*raw_ivec3_add)(const IVec3 *const a, const IVec3 *const b, IVec3 *const out);
-
-/**
- * @brief
- *
- * @api
- */
-extern void (*raw_ivec3_sub)(const IVec3 *const a, const IVec3 *const b, IVec3 *const out);
-
-/**
- * @brief
- *
- * @api
- */
-extern void (*raw_ivec3_scale)(const IVec3 *const a, const float factor, IVec3 *const out);
-
-/**
- * @brief
- *
- * @api
- */
-extern void (*raw_ivec3_cross)(const IVec3 *const a, const IVec3 *const b, IVec3 *const out);
-
-/**
- * @brief
- *
- * @api
- */
-extern float (*raw_ivec3_dot)(const IVec3 *const a, const IVec3 *const b);
-
-/**
- * @brief
- *
- * @api
- */
-extern float (*raw_ivec3_length)(const IVec3 *const a);
-
-/**
- * @brief
- *
- * @api
- */
-extern void (*raw_ivec3_normalize)(const IVec3 *const a, IVec3 *const out);
-
-/**
- * @brief
- *
- * @api
- */
-extern float (*raw_ivec3_distance)(const IVec3 *const a, const IVec3 *const b);
-
-/**
- * @brief Add b to a
- *
- * @param a
- * @param b
- *
- * @api
- */
-extern void (*raw_ivec3_add_in)(IVec3 *const to, const IVec3 *const what);
-
-/**
- * @brief Subtrtact 'what' from 'from'
- *
- * @param from
- * @param what
- *
- * @api
- */
-extern void (*raw_ivec3_sub_in)(IVec3 *const from, const IVec3 *const what);
-
-/**
- * @brief Scale vector 'to' by 'factor'
- *
- * @param to
- * @param factor
- *
- * @api
- */
-extern void (*raw_ivec3_scale_in)(IVec3 *const to, const float factor);
-
-/**
- * @brief
- *
- * @param a
- *
- * @api
- */
-extern void (*raw_ivec3_normalize_in)(IVec3 *const a);
 
 /**
  * @brief
@@ -2966,85 +2983,6 @@ extern Control * (*control_new)(const char * name);
 extern Viewport * (*viewport_new)(const char * name);
 
 /**
- * @api
- */
-extern void (*ivec2_init)(const i32 x, const i32 y, IVec2 *const out);
-
-/**
- * @api
- */
-extern void (*ivec2_add)(const IVec2 *const a, const IVec2 *const b, IVec2 *const out);
-
-/**
- * @api
- */
-extern void (*ivec2_sub)(const IVec2 *const a, const IVec2 *const b, IVec2 *const out);
-
-/**
- * @api
- */
-extern void (*ivec2_scale)(const IVec2 *const a, const float factor, IVec2 *const out);
-
-/**
- * @api
- */
-extern float (*ivec2_dot)(const IVec2 *const a, const IVec2 *const b);
-
-/**
- * @api
- */
-extern float (*ivec2_length)(const IVec2 *const a);
-
-/**
- * @api
- */
-extern void (*ivec2_normalize)(const IVec2 *const a, IVec2 *const out);
-
-/**
- * @api
- */
-extern float (*ivec2_distance)(const IVec2 *const a, const IVec2 *const b);
-
-/**
- * @brief Add b to a
- *
- * @param[in/out] a
- * @param[in] b
- *
- * @api
- */
-extern void (*ivec2_add_in)(IVec2 *const to, const IVec2 *const what);
-
-/**
- * @brief
- *
- * @param[in/out] from
- * @param[in] what
- *
- * @api
- */
-extern void (*ivec2_sub_in)(IVec2 *const from, const IVec2 *const what);
-
-/**
- * @brief
- *
- * @param[in/out] to
- * @param[in] factor
- *
- * @api
- */
-extern void (*ivec2_scale_in)(IVec2 *const to, const float factor);
-
-/**
- * @brief
- *
- * @param[in/out] a
- *
- * @api
- */
-extern void (*ivec2_normalize_in)(IVec2 *const a);
-
-/**
  * @brief
  *
  * @param m00
@@ -3152,6 +3090,558 @@ extern void (*mat4_transpose)(const Mat4 *const a, Mat4 *const out);
  * @api
  */
 extern void (*mat4_inverse)(const Mat4 *const a, Mat4 *const out);
+
+/**
+ * @api
+ */
+extern void (*ivec2_init)(const i32 x, const i32 y, IVec2 *const out);
+
+/**
+ * @api
+ */
+extern void (*ivec2_add)(const IVec2 *const a, const IVec2 *const b, IVec2 *const out);
+
+/**
+ * @api
+ */
+extern void (*ivec2_sub)(const IVec2 *const a, const IVec2 *const b, IVec2 *const out);
+
+/**
+ * @api
+ */
+extern void (*ivec2_scale)(const IVec2 *const a, const float factor, IVec2 *const out);
+
+/**
+ * @api
+ */
+extern float (*ivec2_dot)(const IVec2 *const a, const IVec2 *const b);
+
+/**
+ * @api
+ */
+extern float (*ivec2_length)(const IVec2 *const a);
+
+/**
+ * @api
+ */
+extern void (*ivec2_normalize)(const IVec2 *const a, IVec2 *const out);
+
+/**
+ * @api
+ */
+extern float (*ivec2_distance)(const IVec2 *const a, const IVec2 *const b);
+
+/**
+ * @brief Add b to a
+ *
+ * @param[in/out] a
+ * @param[in] b
+ *
+ * @api
+ */
+extern void (*ivec2_add_in)(IVec2 *const to, const IVec2 *const what);
+
+/**
+ * @brief
+ *
+ * @param[in/out] from
+ * @param[in] what
+ *
+ * @api
+ */
+extern void (*ivec2_sub_in)(IVec2 *const from, const IVec2 *const what);
+
+/**
+ * @brief
+ *
+ * @param[in/out] to
+ * @param[in] factor
+ *
+ * @api
+ */
+extern void (*ivec2_scale_in)(IVec2 *const to, const float factor);
+
+/**
+ * @brief
+ *
+ * @param[in/out] a
+ *
+ * @api
+ */
+extern void (*ivec2_normalize_in)(IVec2 *const a);
+
+/**
+ * @brief
+ *
+ * @api
+ */
+extern void (*ivec3_init)(i32 x, i32 y, i32 z, IVec3 *const out);
+
+/**
+ * @brief
+ *
+ * @api
+ */
+extern void (*ivec3_add)(const IVec3 *const a, const IVec3 *const b, IVec3 *const out);
+
+/**
+ * @brief
+ *
+ * @api
+ */
+extern void (*ivec3_sub)(const IVec3 *const a, const IVec3 *const b, IVec3 *const out);
+
+/**
+ * @brief
+ *
+ * @api
+ */
+extern void (*ivec3_scale)(const IVec3 *const a, const float factor, IVec3 *const out);
+
+/**
+ * @brief
+ *
+ * @api
+ */
+extern void (*ivec3_cross)(const IVec3 *const a, const IVec3 *const b, IVec3 *const out);
+
+/**
+ * @brief
+ *
+ * @api
+ */
+extern float (*ivec3_dot)(const IVec3 *const a, const IVec3 *const b);
+
+/**
+ * @brief
+ *
+ * @api
+ */
+extern float (*ivec3_length)(const IVec3 *const a);
+
+/**
+ * @brief
+ *
+ * @api
+ */
+extern void (*ivec3_normalize)(const IVec3 *const a, IVec3 *const out);
+
+/**
+ * @brief
+ *
+ * @api
+ */
+extern float (*ivec3_distance)(const IVec3 *const a, const IVec3 *const b);
+
+/**
+ * @brief Add b to a
+ *
+ * @param a
+ * @param b
+ *
+ * @api
+ */
+extern void (*ivec3_add_in)(IVec3 *const to, const IVec3 *const what);
+
+/**
+ * @brief Subtrtact 'what' from 'from'
+ *
+ * @param from
+ * @param what
+ *
+ * @api
+ */
+extern void (*ivec3_sub_in)(IVec3 *const from, const IVec3 *const what);
+
+/**
+ * @brief Scale vector 'to' by 'factor'
+ *
+ * @param to
+ * @param factor
+ *
+ * @api
+ */
+extern void (*ivec3_scale_in)(IVec3 *const to, const float factor);
+
+/**
+ * @brief
+ *
+ * @param a
+ *
+ * @api
+ */
+extern void (*ivec3_normalize_in)(IVec3 *const a);
+
+/**
+ * @brief
+ *
+ * @api
+ */
+extern void (*ivec4_init)(i32 x, i32 y, i32 z, i32 w, IVec4 *const out);
+
+/**
+ * @brief
+ *
+ * @api
+ */
+extern void (*ivec4_add)(const IVec4 *const a, const IVec4 *const b, IVec4 *const out);
+
+/**
+ * @brief
+ *
+ * @api
+ */
+extern void (*ivec4_sub)(const IVec4 *const a, const IVec4 *const b, IVec4 *const out);
+
+/**
+ * @brief
+ *
+ * @api
+ */
+extern void (*ivec4_scale)(const IVec4 *const a, const float factor, IVec4 *const out);
+
+/**
+ * @brief
+ *
+ * @api
+ */
+extern float (*ivec4_dot)(const IVec4 *const a, const IVec4 *const b);
+
+/**
+ * @brief
+ *
+ * @api
+ */
+extern float (*ivec4_length)(const IVec4 *const a);
+
+/**
+ * @brief
+ *
+ * @api
+ */
+extern void (*ivec4_normalize)(const IVec4 *const a, IVec4 *const out);
+
+/**
+ * @brief
+ *
+ * @api
+ */
+extern float (*ivec4_distance)(const IVec4 *const a, const IVec4 *const b);
+
+/**
+ * @brief Add b to a
+ *
+ * @param a
+ * @param b
+ *
+ * @api
+ */
+extern void (*ivec4_add_in)(IVec4 *const to, const IVec4 *const what);
+
+/**
+ * @brief Subtrtact 'what' from 'from'
+ *
+ * @param from
+ * @param what
+ *
+ * @api
+ */
+extern void (*ivec4_sub_in)(IVec4 *const from, const IVec4 *const what);
+
+/**
+ * @brief Scale vector 'to' by 'factor'
+ *
+ * @param to
+ * @param factor
+ *
+ * @api
+ */
+extern void (*ivec4_scale_in)(IVec4 *const to, const float factor);
+
+/**
+ * @brief
+ *
+ * @param a
+ *
+ * @api
+ */
+extern void (*ivec4_normalize_in)(IVec4 *const a);
+
+/**
+ * @api
+ */
+extern void (*uvec2_init)(const u32 x, const u32 y, UVec2 *const out);
+
+/**
+ * @api
+ */
+extern void (*uvec2_add)(const UVec2 *const a, const UVec2 *const b, UVec2 *const out);
+
+/**
+ * @api
+ */
+extern void (*uvec2_sub)(const UVec2 *const a, const UVec2 *const b, UVec2 *const out);
+
+/**
+ * @api
+ */
+extern void (*uvec2_scale)(const UVec2 *const a, const float factor, UVec2 *const out);
+
+/**
+ * @api
+ */
+extern float (*uvec2_dot)(const UVec2 *const a, const UVec2 *const b);
+
+/**
+ * @api
+ */
+extern float (*uvec2_length)(const UVec2 *const a);
+
+/**
+ * @api
+ */
+extern void (*uvec2_normalize)(const UVec2 *const a, UVec2 *const out);
+
+/**
+ * @api
+ */
+extern float (*uvec2_distance)(const UVec2 *const a, const UVec2 *const b);
+
+/**
+ * @brief Add b to a
+ *
+ * @param[in/out] a
+ * @param[in] b
+ *
+ * @api
+ */
+extern void (*uvec2_add_in)(UVec2 *const to, const UVec2 *const what);
+
+/**
+ * @brief
+ *
+ * @param[in/out] from
+ * @param[in] what
+ *
+ * @api
+ */
+extern void (*uvec2_sub_in)(UVec2 *const from, const UVec2 *const what);
+
+/**
+ * @brief
+ *
+ * @param[in/out] to
+ * @param[in] factor
+ *
+ * @api
+ */
+extern void (*uvec2_scale_in)(UVec2 *const to, const float factor);
+
+/**
+ * @brief
+ *
+ * @param[in/out] a
+ *
+ * @api
+ */
+extern void (*uvec2_normalize_in)(UVec2 *const a);
+
+/**
+ * @brief
+ *
+ * @api
+ */
+extern void (*uvec3_init)(u32 x, u32 y, u32 z, UVec3 *const out);
+
+/**
+ * @brief
+ *
+ * @api
+ */
+extern void (*uvec3_add)(const UVec3 *const a, const UVec3 *const b, UVec3 *const out);
+
+/**
+ * @brief
+ *
+ * @api
+ */
+extern void (*uvec3_sub)(const UVec3 *const a, const UVec3 *const b, UVec3 *const out);
+
+/**
+ * @brief
+ *
+ * @api
+ */
+extern void (*uvec3_scale)(const UVec3 *const a, const float factor, UVec3 *const out);
+
+/**
+ * @brief
+ *
+ * @api
+ */
+extern void (*uvec3_cross)(const UVec3 *const a, const UVec3 *const b, UVec3 *const out);
+
+/**
+ * @brief
+ *
+ * @api
+ */
+extern float (*uvec3_dot)(const UVec3 *const a, const UVec3 *const b);
+
+/**
+ * @brief
+ *
+ * @api
+ */
+extern float (*uvec3_length)(const UVec3 *const a);
+
+/**
+ * @brief
+ *
+ * @api
+ */
+extern void (*uvec3_normalize)(const UVec3 *const a, UVec3 *const out);
+
+/**
+ * @brief
+ *
+ * @api
+ */
+extern float (*uvec3_distance)(const UVec3 *const a, const UVec3 *const b);
+
+/**
+ * @brief Add b to a
+ *
+ * @param a
+ * @param b
+ *
+ * @api
+ */
+extern void (*uvec3_add_in)(UVec3 *const to, const UVec3 *const what);
+
+/**
+ * @brief Subtrtact 'what' from 'from'
+ *
+ * @param from
+ * @param what
+ *
+ * @api
+ */
+extern void (*uvec3_sub_in)(UVec3 *const from, const UVec3 *const what);
+
+/**
+ * @brief Scale vector 'to' by 'factor'
+ *
+ * @param to
+ * @param factor
+ *
+ * @api
+ */
+extern void (*uvec3_scale_in)(UVec3 *const to, const float factor);
+
+/**
+ * @brief
+ *
+ * @param a
+ *
+ * @api
+ */
+extern void (*uvec3_normalize_in)(UVec3 *const a);
+
+/**
+ * @brief
+ *
+ * @api
+ */
+extern void (*uvec4_init)(u32 x, u32 y, u32 z, u32 w, UVec4 *const out);
+
+/**
+ * @brief
+ *
+ * @api
+ */
+extern void (*uvec4_add)(const UVec4 *const a, const UVec4 *const b, UVec4 *const out);
+
+/**
+ * @brief
+ *
+ * @api
+ */
+extern void (*uvec4_sub)(const UVec4 *const a, const UVec4 *const b, UVec4 *const out);
+
+/**
+ * @brief
+ *
+ * @api
+ */
+extern void (*uvec4_scale)(const UVec4 *const a, const float factor, UVec4 *const out);
+
+/**
+ * @brief
+ *
+ * @api
+ */
+extern float (*uvec4_dot)(const UVec4 *const a, const UVec4 *const b);
+
+/**
+ * @brief
+ *
+ * @api
+ */
+extern float (*uvec4_length)(const UVec4 *const a);
+
+/**
+ * @brief
+ *
+ * @api
+ */
+extern void (*uvec4_normalize)(const UVec4 *const a, UVec4 *const out);
+
+/**
+ * @brief
+ *
+ * @api
+ */
+extern float (*uvec4_distance)(const UVec4 *const a, const UVec4 *const b);
+
+/**
+ * @brief Add b to a
+ *
+ * @param a
+ * @param b
+ *
+ * @api
+ */
+extern void (*uvec4_add_in)(UVec4 *const to, const UVec4 *const what);
+
+/**
+ * @brief Subtrtact 'what' from 'from'
+ *
+ * @param from
+ * @param what
+ *
+ * @api
+ */
+extern void (*uvec4_sub_in)(UVec4 *const from, const UVec4 *const what);
+
+/**
+ * @brief Scale vector 'to' by 'factor'
+ *
+ * @param to
+ * @param factor
+ *
+ * @api
+ */
+extern void (*uvec4_scale_in)(UVec4 *const to, const float factor);
+
+/**
+ * @brief
+ *
+ * @param a
+ *
+ * @api
+ */
+extern void (*uvec4_normalize_in)(UVec4 *const a);
 
 /**
  * @api
@@ -3333,479 +3823,6 @@ extern void (*vec3_scale_in)(Vec3 *const to, const float factor);
  * @api
  */
 extern void (*vec3_normalize_in)(Vec3 *const a);
-
-/**
- * @brief
- *
- * @api
- */
-extern void (*uvec3_init)(u32 x, u32 y, u32 z, UVec3 *const out);
-
-/**
- * @brief
- *
- * @api
- */
-extern void (*uvec3_add)(const UVec3 *const a, const UVec3 *const b, UVec3 *const out);
-
-/**
- * @brief
- *
- * @api
- */
-extern void (*uvec3_sub)(const UVec3 *const a, const UVec3 *const b, UVec3 *const out);
-
-/**
- * @brief
- *
- * @api
- */
-extern void (*uvec3_scale)(const UVec3 *const a, const float factor, UVec3 *const out);
-
-/**
- * @brief
- *
- * @api
- */
-extern void (*uvec3_cross)(const UVec3 *const a, const UVec3 *const b, UVec3 *const out);
-
-/**
- * @brief
- *
- * @api
- */
-extern float (*uvec3_dot)(const UVec3 *const a, const UVec3 *const b);
-
-/**
- * @brief
- *
- * @api
- */
-extern float (*uvec3_length)(const UVec3 *const a);
-
-/**
- * @brief
- *
- * @api
- */
-extern void (*uvec3_normalize)(const UVec3 *const a, UVec3 *const out);
-
-/**
- * @brief
- *
- * @api
- */
-extern float (*uvec3_distance)(const UVec3 *const a, const UVec3 *const b);
-
-/**
- * @brief Add b to a
- *
- * @param a
- * @param b
- *
- * @api
- */
-extern void (*uvec3_add_in)(UVec3 *const to, const UVec3 *const what);
-
-/**
- * @brief Subtrtact 'what' from 'from'
- *
- * @param from
- * @param what
- *
- * @api
- */
-extern void (*uvec3_sub_in)(UVec3 *const from, const UVec3 *const what);
-
-/**
- * @brief Scale vector 'to' by 'factor'
- *
- * @param to
- * @param factor
- *
- * @api
- */
-extern void (*uvec3_scale_in)(UVec3 *const to, const float factor);
-
-/**
- * @brief
- *
- * @param a
- *
- * @api
- */
-extern void (*uvec3_normalize_in)(UVec3 *const a);
-
-/**
- * @api
- */
-extern void (*uvec2_init)(const u32 x, const u32 y, UVec2 *const out);
-
-/**
- * @api
- */
-extern void (*uvec2_add)(const UVec2 *const a, const UVec2 *const b, UVec2 *const out);
-
-/**
- * @api
- */
-extern void (*uvec2_sub)(const UVec2 *const a, const UVec2 *const b, UVec2 *const out);
-
-/**
- * @api
- */
-extern void (*uvec2_scale)(const UVec2 *const a, const float factor, UVec2 *const out);
-
-/**
- * @api
- */
-extern float (*uvec2_dot)(const UVec2 *const a, const UVec2 *const b);
-
-/**
- * @api
- */
-extern float (*uvec2_length)(const UVec2 *const a);
-
-/**
- * @api
- */
-extern void (*uvec2_normalize)(const UVec2 *const a, UVec2 *const out);
-
-/**
- * @api
- */
-extern float (*uvec2_distance)(const UVec2 *const a, const UVec2 *const b);
-
-/**
- * @brief Add b to a
- *
- * @param[in/out] a
- * @param[in] b
- *
- * @api
- */
-extern void (*uvec2_add_in)(UVec2 *const to, const UVec2 *const what);
-
-/**
- * @brief
- *
- * @param[in/out] from
- * @param[in] what
- *
- * @api
- */
-extern void (*uvec2_sub_in)(UVec2 *const from, const UVec2 *const what);
-
-/**
- * @brief
- *
- * @param[in/out] to
- * @param[in] factor
- *
- * @api
- */
-extern void (*uvec2_scale_in)(UVec2 *const to, const float factor);
-
-/**
- * @brief
- *
- * @param[in/out] a
- *
- * @api
- */
-extern void (*uvec2_normalize_in)(UVec2 *const a);
-
-/**
- * @brief
- *
- * @api
- */
-extern void (*ivec4_init)(i32 x, i32 y, i32 z, i32 w, IVec4 *const out);
-
-/**
- * @brief
- *
- * @api
- */
-extern void (*ivec4_add)(const IVec4 *const a, const IVec4 *const b, IVec4 *const out);
-
-/**
- * @brief
- *
- * @api
- */
-extern void (*ivec4_sub)(const IVec4 *const a, const IVec4 *const b, IVec4 *const out);
-
-/**
- * @brief
- *
- * @api
- */
-extern void (*ivec4_scale)(const IVec4 *const a, const float factor, IVec4 *const out);
-
-/**
- * @brief
- *
- * @api
- */
-extern float (*ivec4_dot)(const IVec4 *const a, const IVec4 *const b);
-
-/**
- * @brief
- *
- * @api
- */
-extern float (*ivec4_length)(const IVec4 *const a);
-
-/**
- * @brief
- *
- * @api
- */
-extern void (*ivec4_normalize)(const IVec4 *const a, IVec4 *const out);
-
-/**
- * @brief
- *
- * @api
- */
-extern float (*ivec4_distance)(const IVec4 *const a, const IVec4 *const b);
-
-/**
- * @brief Add b to a
- *
- * @param a
- * @param b
- *
- * @api
- */
-extern void (*ivec4_add_in)(IVec4 *const to, const IVec4 *const what);
-
-/**
- * @brief Subtrtact 'what' from 'from'
- *
- * @param from
- * @param what
- *
- * @api
- */
-extern void (*ivec4_sub_in)(IVec4 *const from, const IVec4 *const what);
-
-/**
- * @brief Scale vector 'to' by 'factor'
- *
- * @param to
- * @param factor
- *
- * @api
- */
-extern void (*ivec4_scale_in)(IVec4 *const to, const float factor);
-
-/**
- * @brief
- *
- * @param a
- *
- * @api
- */
-extern void (*ivec4_normalize_in)(IVec4 *const a);
-
-/**
- * @brief
- *
- * @api
- */
-extern void (*uvec4_init)(u32 x, u32 y, u32 z, u32 w, UVec4 *const out);
-
-/**
- * @brief
- *
- * @api
- */
-extern void (*uvec4_add)(const UVec4 *const a, const UVec4 *const b, UVec4 *const out);
-
-/**
- * @brief
- *
- * @api
- */
-extern void (*uvec4_sub)(const UVec4 *const a, const UVec4 *const b, UVec4 *const out);
-
-/**
- * @brief
- *
- * @api
- */
-extern void (*uvec4_scale)(const UVec4 *const a, const float factor, UVec4 *const out);
-
-/**
- * @brief
- *
- * @api
- */
-extern float (*uvec4_dot)(const UVec4 *const a, const UVec4 *const b);
-
-/**
- * @brief
- *
- * @api
- */
-extern float (*uvec4_length)(const UVec4 *const a);
-
-/**
- * @brief
- *
- * @api
- */
-extern void (*uvec4_normalize)(const UVec4 *const a, UVec4 *const out);
-
-/**
- * @brief
- *
- * @api
- */
-extern float (*uvec4_distance)(const UVec4 *const a, const UVec4 *const b);
-
-/**
- * @brief Add b to a
- *
- * @param a
- * @param b
- *
- * @api
- */
-extern void (*uvec4_add_in)(UVec4 *const to, const UVec4 *const what);
-
-/**
- * @brief Subtrtact 'what' from 'from'
- *
- * @param from
- * @param what
- *
- * @api
- */
-extern void (*uvec4_sub_in)(UVec4 *const from, const UVec4 *const what);
-
-/**
- * @brief Scale vector 'to' by 'factor'
- *
- * @param to
- * @param factor
- *
- * @api
- */
-extern void (*uvec4_scale_in)(UVec4 *const to, const float factor);
-
-/**
- * @brief
- *
- * @param a
- *
- * @api
- */
-extern void (*uvec4_normalize_in)(UVec4 *const a);
-
-/**
- * @brief
- *
- * @api
- */
-extern void (*ivec3_init)(i32 x, i32 y, i32 z, IVec3 *const out);
-
-/**
- * @brief
- *
- * @api
- */
-extern void (*ivec3_add)(const IVec3 *const a, const IVec3 *const b, IVec3 *const out);
-
-/**
- * @brief
- *
- * @api
- */
-extern void (*ivec3_sub)(const IVec3 *const a, const IVec3 *const b, IVec3 *const out);
-
-/**
- * @brief
- *
- * @api
- */
-extern void (*ivec3_scale)(const IVec3 *const a, const float factor, IVec3 *const out);
-
-/**
- * @brief
- *
- * @api
- */
-extern void (*ivec3_cross)(const IVec3 *const a, const IVec3 *const b, IVec3 *const out);
-
-/**
- * @brief
- *
- * @api
- */
-extern float (*ivec3_dot)(const IVec3 *const a, const IVec3 *const b);
-
-/**
- * @brief
- *
- * @api
- */
-extern float (*ivec3_length)(const IVec3 *const a);
-
-/**
- * @brief
- *
- * @api
- */
-extern void (*ivec3_normalize)(const IVec3 *const a, IVec3 *const out);
-
-/**
- * @brief
- *
- * @api
- */
-extern float (*ivec3_distance)(const IVec3 *const a, const IVec3 *const b);
-
-/**
- * @brief Add b to a
- *
- * @param a
- * @param b
- *
- * @api
- */
-extern void (*ivec3_add_in)(IVec3 *const to, const IVec3 *const what);
-
-/**
- * @brief Subtrtact 'what' from 'from'
- *
- * @param from
- * @param what
- *
- * @api
- */
-extern void (*ivec3_sub_in)(IVec3 *const from, const IVec3 *const what);
-
-/**
- * @brief Scale vector 'to' by 'factor'
- *
- * @param to
- * @param factor
- *
- * @api
- */
-extern void (*ivec3_scale_in)(IVec3 *const to, const float factor);
-
-/**
- * @brief
- *
- * @param a
- *
- * @api
- */
-extern void (*ivec3_normalize_in)(IVec3 *const a);
 
 /**
  * @brief
@@ -4620,6 +4637,15 @@ extern fptr (*render_context_get_proc_addr)(const char * proc);
     CanvasItem * (*raw_canvas_item_new)(const char * name);
     Control * (*raw_control_new)(const char * name);
     Viewport * (*raw_viewport_new)(const char * name);
+    void (*raw_mat4_init)(float m00, float m01, float m02, float m03, float m10, float m11, float m12, float m13, float m20, float m21, float m22, float m23, float m30, float m31, float m32, float m33, Mat4 *const out);
+    void (*raw_mat4_from_array)(const float *const array, Mat4 *const out);
+    void (*raw_mat4_clone)(const Mat4 *const a, Mat4 *const out);
+    void (*raw_mat4_add)(const Mat4 *const a, const Mat4 *const b, Mat4 *const out);
+    void (*raw_mat4_sub)(const Mat4 *const a, const Mat4 *const b, Mat4 *const out);
+    void (*raw_mat4_mul)(const Mat4 *const a, const Mat4 *const b, Mat4 *const out);
+    void (*raw_mat4_scale)(const Mat4 *const a, const float factor, Mat4 *const out);
+    void (*raw_mat4_transpose)(const Mat4 *const a, Mat4 *const out);
+    void (*raw_mat4_inverse)(const Mat4 *const a, Mat4 *const out);
     void (*raw_ivec2_init)(const i32 x, const i32 y, IVec2 *const out);
     void (*raw_ivec2_add)(const IVec2 *const a, const IVec2 *const b, IVec2 *const out);
     void (*raw_ivec2_sub)(const IVec2 *const a, const IVec2 *const b, IVec2 *const out);
@@ -4632,15 +4658,68 @@ extern fptr (*render_context_get_proc_addr)(const char * proc);
     void (*raw_ivec2_sub_in)(IVec2 *const from, const IVec2 *const what);
     void (*raw_ivec2_scale_in)(IVec2 *const to, const float factor);
     void (*raw_ivec2_normalize_in)(IVec2 *const a);
-    void (*raw_mat4_init)(float m00, float m01, float m02, float m03, float m10, float m11, float m12, float m13, float m20, float m21, float m22, float m23, float m30, float m31, float m32, float m33, Mat4 *const out);
-    void (*raw_mat4_from_array)(const float *const array, Mat4 *const out);
-    void (*raw_mat4_clone)(const Mat4 *const a, Mat4 *const out);
-    void (*raw_mat4_add)(const Mat4 *const a, const Mat4 *const b, Mat4 *const out);
-    void (*raw_mat4_sub)(const Mat4 *const a, const Mat4 *const b, Mat4 *const out);
-    void (*raw_mat4_mul)(const Mat4 *const a, const Mat4 *const b, Mat4 *const out);
-    void (*raw_mat4_scale)(const Mat4 *const a, const float factor, Mat4 *const out);
-    void (*raw_mat4_transpose)(const Mat4 *const a, Mat4 *const out);
-    void (*raw_mat4_inverse)(const Mat4 *const a, Mat4 *const out);
+    void (*raw_ivec3_init)(i32 x, i32 y, i32 z, IVec3 *const out);
+    void (*raw_ivec3_add)(const IVec3 *const a, const IVec3 *const b, IVec3 *const out);
+    void (*raw_ivec3_sub)(const IVec3 *const a, const IVec3 *const b, IVec3 *const out);
+    void (*raw_ivec3_scale)(const IVec3 *const a, const float factor, IVec3 *const out);
+    void (*raw_ivec3_cross)(const IVec3 *const a, const IVec3 *const b, IVec3 *const out);
+    float (*raw_ivec3_dot)(const IVec3 *const a, const IVec3 *const b);
+    float (*raw_ivec3_length)(const IVec3 *const a);
+    void (*raw_ivec3_normalize)(const IVec3 *const a, IVec3 *const out);
+    float (*raw_ivec3_distance)(const IVec3 *const a, const IVec3 *const b);
+    void (*raw_ivec3_add_in)(IVec3 *const to, const IVec3 *const what);
+    void (*raw_ivec3_sub_in)(IVec3 *const from, const IVec3 *const what);
+    void (*raw_ivec3_scale_in)(IVec3 *const to, const float factor);
+    void (*raw_ivec3_normalize_in)(IVec3 *const a);
+    void (*raw_ivec4_init)(i32 x, i32 y, i32 z, i32 w, IVec4 *const out);
+    void (*raw_ivec4_add)(const IVec4 *const a, const IVec4 *const b, IVec4 *const out);
+    void (*raw_ivec4_sub)(const IVec4 *const a, const IVec4 *const b, IVec4 *const out);
+    void (*raw_ivec4_scale)(const IVec4 *const a, const float factor, IVec4 *const out);
+    float (*raw_ivec4_dot)(const IVec4 *const a, const IVec4 *const b);
+    float (*raw_ivec4_length)(const IVec4 *const a);
+    void (*raw_ivec4_normalize)(const IVec4 *const a, IVec4 *const out);
+    float (*raw_ivec4_distance)(const IVec4 *const a, const IVec4 *const b);
+    void (*raw_ivec4_add_in)(IVec4 *const to, const IVec4 *const what);
+    void (*raw_ivec4_sub_in)(IVec4 *const from, const IVec4 *const what);
+    void (*raw_ivec4_scale_in)(IVec4 *const to, const float factor);
+    void (*raw_ivec4_normalize_in)(IVec4 *const a);
+    void (*raw_uvec2_init)(const u32 x, const u32 y, UVec2 *const out);
+    void (*raw_uvec2_add)(const UVec2 *const a, const UVec2 *const b, UVec2 *const out);
+    void (*raw_uvec2_sub)(const UVec2 *const a, const UVec2 *const b, UVec2 *const out);
+    void (*raw_uvec2_scale)(const UVec2 *const a, const float factor, UVec2 *const out);
+    float (*raw_uvec2_dot)(const UVec2 *const a, const UVec2 *const b);
+    float (*raw_uvec2_length)(const UVec2 *const a);
+    void (*raw_uvec2_normalize)(const UVec2 *const a, UVec2 *const out);
+    float (*raw_uvec2_distance)(const UVec2 *const a, const UVec2 *const b);
+    void (*raw_uvec2_add_in)(UVec2 *const to, const UVec2 *const what);
+    void (*raw_uvec2_sub_in)(UVec2 *const from, const UVec2 *const what);
+    void (*raw_uvec2_scale_in)(UVec2 *const to, const float factor);
+    void (*raw_uvec2_normalize_in)(UVec2 *const a);
+    void (*raw_uvec3_init)(u32 x, u32 y, u32 z, UVec3 *const out);
+    void (*raw_uvec3_add)(const UVec3 *const a, const UVec3 *const b, UVec3 *const out);
+    void (*raw_uvec3_sub)(const UVec3 *const a, const UVec3 *const b, UVec3 *const out);
+    void (*raw_uvec3_scale)(const UVec3 *const a, const float factor, UVec3 *const out);
+    void (*raw_uvec3_cross)(const UVec3 *const a, const UVec3 *const b, UVec3 *const out);
+    float (*raw_uvec3_dot)(const UVec3 *const a, const UVec3 *const b);
+    float (*raw_uvec3_length)(const UVec3 *const a);
+    void (*raw_uvec3_normalize)(const UVec3 *const a, UVec3 *const out);
+    float (*raw_uvec3_distance)(const UVec3 *const a, const UVec3 *const b);
+    void (*raw_uvec3_add_in)(UVec3 *const to, const UVec3 *const what);
+    void (*raw_uvec3_sub_in)(UVec3 *const from, const UVec3 *const what);
+    void (*raw_uvec3_scale_in)(UVec3 *const to, const float factor);
+    void (*raw_uvec3_normalize_in)(UVec3 *const a);
+    void (*raw_uvec4_init)(u32 x, u32 y, u32 z, u32 w, UVec4 *const out);
+    void (*raw_uvec4_add)(const UVec4 *const a, const UVec4 *const b, UVec4 *const out);
+    void (*raw_uvec4_sub)(const UVec4 *const a, const UVec4 *const b, UVec4 *const out);
+    void (*raw_uvec4_scale)(const UVec4 *const a, const float factor, UVec4 *const out);
+    float (*raw_uvec4_dot)(const UVec4 *const a, const UVec4 *const b);
+    float (*raw_uvec4_length)(const UVec4 *const a);
+    void (*raw_uvec4_normalize)(const UVec4 *const a, UVec4 *const out);
+    float (*raw_uvec4_distance)(const UVec4 *const a, const UVec4 *const b);
+    void (*raw_uvec4_add_in)(UVec4 *const to, const UVec4 *const what);
+    void (*raw_uvec4_sub_in)(UVec4 *const from, const UVec4 *const what);
+    void (*raw_uvec4_scale_in)(UVec4 *const to, const float factor);
+    void (*raw_uvec4_normalize_in)(UVec4 *const a);
     void (*raw_vec2_init)(const float x, const float y, Vec2 *const out);
     void (*raw_vec2_add)(const Vec2 *const a, const Vec2 *const b, Vec2 *const out);
     void (*raw_vec2_sub)(const Vec2 *const a, const Vec2 *const b, Vec2 *const out);
@@ -4666,68 +4745,6 @@ extern fptr (*render_context_get_proc_addr)(const char * proc);
     void (*raw_vec3_sub_in)(Vec3 *const from, const Vec3 *const what);
     void (*raw_vec3_scale_in)(Vec3 *const to, const float factor);
     void (*raw_vec3_normalize_in)(Vec3 *const a);
-    void (*raw_uvec3_init)(u32 x, u32 y, u32 z, UVec3 *const out);
-    void (*raw_uvec3_add)(const UVec3 *const a, const UVec3 *const b, UVec3 *const out);
-    void (*raw_uvec3_sub)(const UVec3 *const a, const UVec3 *const b, UVec3 *const out);
-    void (*raw_uvec3_scale)(const UVec3 *const a, const float factor, UVec3 *const out);
-    void (*raw_uvec3_cross)(const UVec3 *const a, const UVec3 *const b, UVec3 *const out);
-    float (*raw_uvec3_dot)(const UVec3 *const a, const UVec3 *const b);
-    float (*raw_uvec3_length)(const UVec3 *const a);
-    void (*raw_uvec3_normalize)(const UVec3 *const a, UVec3 *const out);
-    float (*raw_uvec3_distance)(const UVec3 *const a, const UVec3 *const b);
-    void (*raw_uvec3_add_in)(UVec3 *const to, const UVec3 *const what);
-    void (*raw_uvec3_sub_in)(UVec3 *const from, const UVec3 *const what);
-    void (*raw_uvec3_scale_in)(UVec3 *const to, const float factor);
-    void (*raw_uvec3_normalize_in)(UVec3 *const a);
-    void (*raw_uvec2_init)(const u32 x, const u32 y, UVec2 *const out);
-    void (*raw_uvec2_add)(const UVec2 *const a, const UVec2 *const b, UVec2 *const out);
-    void (*raw_uvec2_sub)(const UVec2 *const a, const UVec2 *const b, UVec2 *const out);
-    void (*raw_uvec2_scale)(const UVec2 *const a, const float factor, UVec2 *const out);
-    float (*raw_uvec2_dot)(const UVec2 *const a, const UVec2 *const b);
-    float (*raw_uvec2_length)(const UVec2 *const a);
-    void (*raw_uvec2_normalize)(const UVec2 *const a, UVec2 *const out);
-    float (*raw_uvec2_distance)(const UVec2 *const a, const UVec2 *const b);
-    void (*raw_uvec2_add_in)(UVec2 *const to, const UVec2 *const what);
-    void (*raw_uvec2_sub_in)(UVec2 *const from, const UVec2 *const what);
-    void (*raw_uvec2_scale_in)(UVec2 *const to, const float factor);
-    void (*raw_uvec2_normalize_in)(UVec2 *const a);
-    void (*raw_ivec4_init)(i32 x, i32 y, i32 z, i32 w, IVec4 *const out);
-    void (*raw_ivec4_add)(const IVec4 *const a, const IVec4 *const b, IVec4 *const out);
-    void (*raw_ivec4_sub)(const IVec4 *const a, const IVec4 *const b, IVec4 *const out);
-    void (*raw_ivec4_scale)(const IVec4 *const a, const float factor, IVec4 *const out);
-    float (*raw_ivec4_dot)(const IVec4 *const a, const IVec4 *const b);
-    float (*raw_ivec4_length)(const IVec4 *const a);
-    void (*raw_ivec4_normalize)(const IVec4 *const a, IVec4 *const out);
-    float (*raw_ivec4_distance)(const IVec4 *const a, const IVec4 *const b);
-    void (*raw_ivec4_add_in)(IVec4 *const to, const IVec4 *const what);
-    void (*raw_ivec4_sub_in)(IVec4 *const from, const IVec4 *const what);
-    void (*raw_ivec4_scale_in)(IVec4 *const to, const float factor);
-    void (*raw_ivec4_normalize_in)(IVec4 *const a);
-    void (*raw_uvec4_init)(u32 x, u32 y, u32 z, u32 w, UVec4 *const out);
-    void (*raw_uvec4_add)(const UVec4 *const a, const UVec4 *const b, UVec4 *const out);
-    void (*raw_uvec4_sub)(const UVec4 *const a, const UVec4 *const b, UVec4 *const out);
-    void (*raw_uvec4_scale)(const UVec4 *const a, const float factor, UVec4 *const out);
-    float (*raw_uvec4_dot)(const UVec4 *const a, const UVec4 *const b);
-    float (*raw_uvec4_length)(const UVec4 *const a);
-    void (*raw_uvec4_normalize)(const UVec4 *const a, UVec4 *const out);
-    float (*raw_uvec4_distance)(const UVec4 *const a, const UVec4 *const b);
-    void (*raw_uvec4_add_in)(UVec4 *const to, const UVec4 *const what);
-    void (*raw_uvec4_sub_in)(UVec4 *const from, const UVec4 *const what);
-    void (*raw_uvec4_scale_in)(UVec4 *const to, const float factor);
-    void (*raw_uvec4_normalize_in)(UVec4 *const a);
-    void (*raw_ivec3_init)(i32 x, i32 y, i32 z, IVec3 *const out);
-    void (*raw_ivec3_add)(const IVec3 *const a, const IVec3 *const b, IVec3 *const out);
-    void (*raw_ivec3_sub)(const IVec3 *const a, const IVec3 *const b, IVec3 *const out);
-    void (*raw_ivec3_scale)(const IVec3 *const a, const float factor, IVec3 *const out);
-    void (*raw_ivec3_cross)(const IVec3 *const a, const IVec3 *const b, IVec3 *const out);
-    float (*raw_ivec3_dot)(const IVec3 *const a, const IVec3 *const b);
-    float (*raw_ivec3_length)(const IVec3 *const a);
-    void (*raw_ivec3_normalize)(const IVec3 *const a, IVec3 *const out);
-    float (*raw_ivec3_distance)(const IVec3 *const a, const IVec3 *const b);
-    void (*raw_ivec3_add_in)(IVec3 *const to, const IVec3 *const what);
-    void (*raw_ivec3_sub_in)(IVec3 *const from, const IVec3 *const what);
-    void (*raw_ivec3_scale_in)(IVec3 *const to, const float factor);
-    void (*raw_ivec3_normalize_in)(IVec3 *const a);
     void (*raw_vec4_init)(float x, float y, float z, float w, Vec4 *const out);
     void (*raw_vec4_add)(const Vec4 *const a, const Vec4 *const b, Vec4 *const out);
     void (*raw_vec4_sub)(const Vec4 *const a, const Vec4 *const b, Vec4 *const out);
@@ -4893,6 +4910,15 @@ extern fptr (*render_context_get_proc_addr)(const char * proc);
     CanvasItem * (*canvas_item_new)(const char * name);
     Control * (*control_new)(const char * name);
     Viewport * (*viewport_new)(const char * name);
+    void (*mat4_init)(float m00, float m01, float m02, float m03, float m10, float m11, float m12, float m13, float m20, float m21, float m22, float m23, float m30, float m31, float m32, float m33, Mat4 *const out);
+    void (*mat4_from_array)(const float *const array, Mat4 *const out);
+    void (*mat4_clone)(const Mat4 *const a, Mat4 *const out);
+    void (*mat4_add)(const Mat4 *const a, const Mat4 *const b, Mat4 *const out);
+    void (*mat4_sub)(const Mat4 *const a, const Mat4 *const b, Mat4 *const out);
+    void (*mat4_mul)(const Mat4 *const a, const Mat4 *const b, Mat4 *const out);
+    void (*mat4_scale)(const Mat4 *const a, const float factor, Mat4 *const out);
+    void (*mat4_transpose)(const Mat4 *const a, Mat4 *const out);
+    void (*mat4_inverse)(const Mat4 *const a, Mat4 *const out);
     void (*ivec2_init)(const i32 x, const i32 y, IVec2 *const out);
     void (*ivec2_add)(const IVec2 *const a, const IVec2 *const b, IVec2 *const out);
     void (*ivec2_sub)(const IVec2 *const a, const IVec2 *const b, IVec2 *const out);
@@ -4905,15 +4931,68 @@ extern fptr (*render_context_get_proc_addr)(const char * proc);
     void (*ivec2_sub_in)(IVec2 *const from, const IVec2 *const what);
     void (*ivec2_scale_in)(IVec2 *const to, const float factor);
     void (*ivec2_normalize_in)(IVec2 *const a);
-    void (*mat4_init)(float m00, float m01, float m02, float m03, float m10, float m11, float m12, float m13, float m20, float m21, float m22, float m23, float m30, float m31, float m32, float m33, Mat4 *const out);
-    void (*mat4_from_array)(const float *const array, Mat4 *const out);
-    void (*mat4_clone)(const Mat4 *const a, Mat4 *const out);
-    void (*mat4_add)(const Mat4 *const a, const Mat4 *const b, Mat4 *const out);
-    void (*mat4_sub)(const Mat4 *const a, const Mat4 *const b, Mat4 *const out);
-    void (*mat4_mul)(const Mat4 *const a, const Mat4 *const b, Mat4 *const out);
-    void (*mat4_scale)(const Mat4 *const a, const float factor, Mat4 *const out);
-    void (*mat4_transpose)(const Mat4 *const a, Mat4 *const out);
-    void (*mat4_inverse)(const Mat4 *const a, Mat4 *const out);
+    void (*ivec3_init)(i32 x, i32 y, i32 z, IVec3 *const out);
+    void (*ivec3_add)(const IVec3 *const a, const IVec3 *const b, IVec3 *const out);
+    void (*ivec3_sub)(const IVec3 *const a, const IVec3 *const b, IVec3 *const out);
+    void (*ivec3_scale)(const IVec3 *const a, const float factor, IVec3 *const out);
+    void (*ivec3_cross)(const IVec3 *const a, const IVec3 *const b, IVec3 *const out);
+    float (*ivec3_dot)(const IVec3 *const a, const IVec3 *const b);
+    float (*ivec3_length)(const IVec3 *const a);
+    void (*ivec3_normalize)(const IVec3 *const a, IVec3 *const out);
+    float (*ivec3_distance)(const IVec3 *const a, const IVec3 *const b);
+    void (*ivec3_add_in)(IVec3 *const to, const IVec3 *const what);
+    void (*ivec3_sub_in)(IVec3 *const from, const IVec3 *const what);
+    void (*ivec3_scale_in)(IVec3 *const to, const float factor);
+    void (*ivec3_normalize_in)(IVec3 *const a);
+    void (*ivec4_init)(i32 x, i32 y, i32 z, i32 w, IVec4 *const out);
+    void (*ivec4_add)(const IVec4 *const a, const IVec4 *const b, IVec4 *const out);
+    void (*ivec4_sub)(const IVec4 *const a, const IVec4 *const b, IVec4 *const out);
+    void (*ivec4_scale)(const IVec4 *const a, const float factor, IVec4 *const out);
+    float (*ivec4_dot)(const IVec4 *const a, const IVec4 *const b);
+    float (*ivec4_length)(const IVec4 *const a);
+    void (*ivec4_normalize)(const IVec4 *const a, IVec4 *const out);
+    float (*ivec4_distance)(const IVec4 *const a, const IVec4 *const b);
+    void (*ivec4_add_in)(IVec4 *const to, const IVec4 *const what);
+    void (*ivec4_sub_in)(IVec4 *const from, const IVec4 *const what);
+    void (*ivec4_scale_in)(IVec4 *const to, const float factor);
+    void (*ivec4_normalize_in)(IVec4 *const a);
+    void (*uvec2_init)(const u32 x, const u32 y, UVec2 *const out);
+    void (*uvec2_add)(const UVec2 *const a, const UVec2 *const b, UVec2 *const out);
+    void (*uvec2_sub)(const UVec2 *const a, const UVec2 *const b, UVec2 *const out);
+    void (*uvec2_scale)(const UVec2 *const a, const float factor, UVec2 *const out);
+    float (*uvec2_dot)(const UVec2 *const a, const UVec2 *const b);
+    float (*uvec2_length)(const UVec2 *const a);
+    void (*uvec2_normalize)(const UVec2 *const a, UVec2 *const out);
+    float (*uvec2_distance)(const UVec2 *const a, const UVec2 *const b);
+    void (*uvec2_add_in)(UVec2 *const to, const UVec2 *const what);
+    void (*uvec2_sub_in)(UVec2 *const from, const UVec2 *const what);
+    void (*uvec2_scale_in)(UVec2 *const to, const float factor);
+    void (*uvec2_normalize_in)(UVec2 *const a);
+    void (*uvec3_init)(u32 x, u32 y, u32 z, UVec3 *const out);
+    void (*uvec3_add)(const UVec3 *const a, const UVec3 *const b, UVec3 *const out);
+    void (*uvec3_sub)(const UVec3 *const a, const UVec3 *const b, UVec3 *const out);
+    void (*uvec3_scale)(const UVec3 *const a, const float factor, UVec3 *const out);
+    void (*uvec3_cross)(const UVec3 *const a, const UVec3 *const b, UVec3 *const out);
+    float (*uvec3_dot)(const UVec3 *const a, const UVec3 *const b);
+    float (*uvec3_length)(const UVec3 *const a);
+    void (*uvec3_normalize)(const UVec3 *const a, UVec3 *const out);
+    float (*uvec3_distance)(const UVec3 *const a, const UVec3 *const b);
+    void (*uvec3_add_in)(UVec3 *const to, const UVec3 *const what);
+    void (*uvec3_sub_in)(UVec3 *const from, const UVec3 *const what);
+    void (*uvec3_scale_in)(UVec3 *const to, const float factor);
+    void (*uvec3_normalize_in)(UVec3 *const a);
+    void (*uvec4_init)(u32 x, u32 y, u32 z, u32 w, UVec4 *const out);
+    void (*uvec4_add)(const UVec4 *const a, const UVec4 *const b, UVec4 *const out);
+    void (*uvec4_sub)(const UVec4 *const a, const UVec4 *const b, UVec4 *const out);
+    void (*uvec4_scale)(const UVec4 *const a, const float factor, UVec4 *const out);
+    float (*uvec4_dot)(const UVec4 *const a, const UVec4 *const b);
+    float (*uvec4_length)(const UVec4 *const a);
+    void (*uvec4_normalize)(const UVec4 *const a, UVec4 *const out);
+    float (*uvec4_distance)(const UVec4 *const a, const UVec4 *const b);
+    void (*uvec4_add_in)(UVec4 *const to, const UVec4 *const what);
+    void (*uvec4_sub_in)(UVec4 *const from, const UVec4 *const what);
+    void (*uvec4_scale_in)(UVec4 *const to, const float factor);
+    void (*uvec4_normalize_in)(UVec4 *const a);
     void (*vec2_init)(const float x, const float y, Vec2 *const out);
     void (*vec2_add)(const Vec2 *const a, const Vec2 *const b, Vec2 *const out);
     void (*vec2_sub)(const Vec2 *const a, const Vec2 *const b, Vec2 *const out);
@@ -4939,68 +5018,6 @@ extern fptr (*render_context_get_proc_addr)(const char * proc);
     void (*vec3_sub_in)(Vec3 *const from, const Vec3 *const what);
     void (*vec3_scale_in)(Vec3 *const to, const float factor);
     void (*vec3_normalize_in)(Vec3 *const a);
-    void (*uvec3_init)(u32 x, u32 y, u32 z, UVec3 *const out);
-    void (*uvec3_add)(const UVec3 *const a, const UVec3 *const b, UVec3 *const out);
-    void (*uvec3_sub)(const UVec3 *const a, const UVec3 *const b, UVec3 *const out);
-    void (*uvec3_scale)(const UVec3 *const a, const float factor, UVec3 *const out);
-    void (*uvec3_cross)(const UVec3 *const a, const UVec3 *const b, UVec3 *const out);
-    float (*uvec3_dot)(const UVec3 *const a, const UVec3 *const b);
-    float (*uvec3_length)(const UVec3 *const a);
-    void (*uvec3_normalize)(const UVec3 *const a, UVec3 *const out);
-    float (*uvec3_distance)(const UVec3 *const a, const UVec3 *const b);
-    void (*uvec3_add_in)(UVec3 *const to, const UVec3 *const what);
-    void (*uvec3_sub_in)(UVec3 *const from, const UVec3 *const what);
-    void (*uvec3_scale_in)(UVec3 *const to, const float factor);
-    void (*uvec3_normalize_in)(UVec3 *const a);
-    void (*uvec2_init)(const u32 x, const u32 y, UVec2 *const out);
-    void (*uvec2_add)(const UVec2 *const a, const UVec2 *const b, UVec2 *const out);
-    void (*uvec2_sub)(const UVec2 *const a, const UVec2 *const b, UVec2 *const out);
-    void (*uvec2_scale)(const UVec2 *const a, const float factor, UVec2 *const out);
-    float (*uvec2_dot)(const UVec2 *const a, const UVec2 *const b);
-    float (*uvec2_length)(const UVec2 *const a);
-    void (*uvec2_normalize)(const UVec2 *const a, UVec2 *const out);
-    float (*uvec2_distance)(const UVec2 *const a, const UVec2 *const b);
-    void (*uvec2_add_in)(UVec2 *const to, const UVec2 *const what);
-    void (*uvec2_sub_in)(UVec2 *const from, const UVec2 *const what);
-    void (*uvec2_scale_in)(UVec2 *const to, const float factor);
-    void (*uvec2_normalize_in)(UVec2 *const a);
-    void (*ivec4_init)(i32 x, i32 y, i32 z, i32 w, IVec4 *const out);
-    void (*ivec4_add)(const IVec4 *const a, const IVec4 *const b, IVec4 *const out);
-    void (*ivec4_sub)(const IVec4 *const a, const IVec4 *const b, IVec4 *const out);
-    void (*ivec4_scale)(const IVec4 *const a, const float factor, IVec4 *const out);
-    float (*ivec4_dot)(const IVec4 *const a, const IVec4 *const b);
-    float (*ivec4_length)(const IVec4 *const a);
-    void (*ivec4_normalize)(const IVec4 *const a, IVec4 *const out);
-    float (*ivec4_distance)(const IVec4 *const a, const IVec4 *const b);
-    void (*ivec4_add_in)(IVec4 *const to, const IVec4 *const what);
-    void (*ivec4_sub_in)(IVec4 *const from, const IVec4 *const what);
-    void (*ivec4_scale_in)(IVec4 *const to, const float factor);
-    void (*ivec4_normalize_in)(IVec4 *const a);
-    void (*uvec4_init)(u32 x, u32 y, u32 z, u32 w, UVec4 *const out);
-    void (*uvec4_add)(const UVec4 *const a, const UVec4 *const b, UVec4 *const out);
-    void (*uvec4_sub)(const UVec4 *const a, const UVec4 *const b, UVec4 *const out);
-    void (*uvec4_scale)(const UVec4 *const a, const float factor, UVec4 *const out);
-    float (*uvec4_dot)(const UVec4 *const a, const UVec4 *const b);
-    float (*uvec4_length)(const UVec4 *const a);
-    void (*uvec4_normalize)(const UVec4 *const a, UVec4 *const out);
-    float (*uvec4_distance)(const UVec4 *const a, const UVec4 *const b);
-    void (*uvec4_add_in)(UVec4 *const to, const UVec4 *const what);
-    void (*uvec4_sub_in)(UVec4 *const from, const UVec4 *const what);
-    void (*uvec4_scale_in)(UVec4 *const to, const float factor);
-    void (*uvec4_normalize_in)(UVec4 *const a);
-    void (*ivec3_init)(i32 x, i32 y, i32 z, IVec3 *const out);
-    void (*ivec3_add)(const IVec3 *const a, const IVec3 *const b, IVec3 *const out);
-    void (*ivec3_sub)(const IVec3 *const a, const IVec3 *const b, IVec3 *const out);
-    void (*ivec3_scale)(const IVec3 *const a, const float factor, IVec3 *const out);
-    void (*ivec3_cross)(const IVec3 *const a, const IVec3 *const b, IVec3 *const out);
-    float (*ivec3_dot)(const IVec3 *const a, const IVec3 *const b);
-    float (*ivec3_length)(const IVec3 *const a);
-    void (*ivec3_normalize)(const IVec3 *const a, IVec3 *const out);
-    float (*ivec3_distance)(const IVec3 *const a, const IVec3 *const b);
-    void (*ivec3_add_in)(IVec3 *const to, const IVec3 *const what);
-    void (*ivec3_sub_in)(IVec3 *const from, const IVec3 *const what);
-    void (*ivec3_scale_in)(IVec3 *const to, const float factor);
-    void (*ivec3_normalize_in)(IVec3 *const a);
     void (*vec4_init)(float x, float y, float z, float w, Vec4 *const out);
     void (*vec4_add)(const Vec4 *const a, const Vec4 *const b, Vec4 *const out);
     void (*vec4_sub)(const Vec4 *const a, const Vec4 *const b, Vec4 *const out);
@@ -5167,6 +5184,15 @@ extern fptr (*render_context_get_proc_addr)(const char * proc);
         raw_canvas_item_new = (CanvasItem * (*)(const char *))proc_addr("canvas_item_new");
         raw_control_new = (Control * (*)(const char *))proc_addr("control_new");
         raw_viewport_new = (Viewport * (*)(const char *))proc_addr("viewport_new");
+        raw_mat4_init = (void (*)(float, float, float, float, float, float, float, float, float, float, float, float, float, float, float, float, Mat4 *const))proc_addr("mat4_init");
+        raw_mat4_from_array = (void (*)(const float *const, Mat4 *const))proc_addr("mat4_from_array");
+        raw_mat4_clone = (void (*)(const Mat4 *const, Mat4 *const))proc_addr("mat4_clone");
+        raw_mat4_add = (void (*)(const Mat4 *const, const Mat4 *const, Mat4 *const))proc_addr("mat4_add");
+        raw_mat4_sub = (void (*)(const Mat4 *const, const Mat4 *const, Mat4 *const))proc_addr("mat4_sub");
+        raw_mat4_mul = (void (*)(const Mat4 *const, const Mat4 *const, Mat4 *const))proc_addr("mat4_mul");
+        raw_mat4_scale = (void (*)(const Mat4 *const, const float, Mat4 *const))proc_addr("mat4_scale");
+        raw_mat4_transpose = (void (*)(const Mat4 *const, Mat4 *const))proc_addr("mat4_transpose");
+        raw_mat4_inverse = (void (*)(const Mat4 *const, Mat4 *const))proc_addr("mat4_inverse");
         raw_ivec2_init = (void (*)(const i32, const i32, IVec2 *const))proc_addr("ivec2_init");
         raw_ivec2_add = (void (*)(const IVec2 *const, const IVec2 *const, IVec2 *const))proc_addr("ivec2_add");
         raw_ivec2_sub = (void (*)(const IVec2 *const, const IVec2 *const, IVec2 *const))proc_addr("ivec2_sub");
@@ -5179,15 +5205,68 @@ extern fptr (*render_context_get_proc_addr)(const char * proc);
         raw_ivec2_sub_in = (void (*)(IVec2 *const, const IVec2 *const))proc_addr("ivec2_sub_in");
         raw_ivec2_scale_in = (void (*)(IVec2 *const, const float))proc_addr("ivec2_scale_in");
         raw_ivec2_normalize_in = (void (*)(IVec2 *const))proc_addr("ivec2_normalize_in");
-        raw_mat4_init = (void (*)(float, float, float, float, float, float, float, float, float, float, float, float, float, float, float, float, Mat4 *const))proc_addr("mat4_init");
-        raw_mat4_from_array = (void (*)(const float *const, Mat4 *const))proc_addr("mat4_from_array");
-        raw_mat4_clone = (void (*)(const Mat4 *const, Mat4 *const))proc_addr("mat4_clone");
-        raw_mat4_add = (void (*)(const Mat4 *const, const Mat4 *const, Mat4 *const))proc_addr("mat4_add");
-        raw_mat4_sub = (void (*)(const Mat4 *const, const Mat4 *const, Mat4 *const))proc_addr("mat4_sub");
-        raw_mat4_mul = (void (*)(const Mat4 *const, const Mat4 *const, Mat4 *const))proc_addr("mat4_mul");
-        raw_mat4_scale = (void (*)(const Mat4 *const, const float, Mat4 *const))proc_addr("mat4_scale");
-        raw_mat4_transpose = (void (*)(const Mat4 *const, Mat4 *const))proc_addr("mat4_transpose");
-        raw_mat4_inverse = (void (*)(const Mat4 *const, Mat4 *const))proc_addr("mat4_inverse");
+        raw_ivec3_init = (void (*)(i32, i32, i32, IVec3 *const))proc_addr("ivec3_init");
+        raw_ivec3_add = (void (*)(const IVec3 *const, const IVec3 *const, IVec3 *const))proc_addr("ivec3_add");
+        raw_ivec3_sub = (void (*)(const IVec3 *const, const IVec3 *const, IVec3 *const))proc_addr("ivec3_sub");
+        raw_ivec3_scale = (void (*)(const IVec3 *const, const float, IVec3 *const))proc_addr("ivec3_scale");
+        raw_ivec3_cross = (void (*)(const IVec3 *const, const IVec3 *const, IVec3 *const))proc_addr("ivec3_cross");
+        raw_ivec3_dot = (float (*)(const IVec3 *const, const IVec3 *const))proc_addr("ivec3_dot");
+        raw_ivec3_length = (float (*)(const IVec3 *const))proc_addr("ivec3_length");
+        raw_ivec3_normalize = (void (*)(const IVec3 *const, IVec3 *const))proc_addr("ivec3_normalize");
+        raw_ivec3_distance = (float (*)(const IVec3 *const, const IVec3 *const))proc_addr("ivec3_distance");
+        raw_ivec3_add_in = (void (*)(IVec3 *const, const IVec3 *const))proc_addr("ivec3_add_in");
+        raw_ivec3_sub_in = (void (*)(IVec3 *const, const IVec3 *const))proc_addr("ivec3_sub_in");
+        raw_ivec3_scale_in = (void (*)(IVec3 *const, const float))proc_addr("ivec3_scale_in");
+        raw_ivec3_normalize_in = (void (*)(IVec3 *const))proc_addr("ivec3_normalize_in");
+        raw_ivec4_init = (void (*)(i32, i32, i32, i32, IVec4 *const))proc_addr("ivec4_init");
+        raw_ivec4_add = (void (*)(const IVec4 *const, const IVec4 *const, IVec4 *const))proc_addr("ivec4_add");
+        raw_ivec4_sub = (void (*)(const IVec4 *const, const IVec4 *const, IVec4 *const))proc_addr("ivec4_sub");
+        raw_ivec4_scale = (void (*)(const IVec4 *const, const float, IVec4 *const))proc_addr("ivec4_scale");
+        raw_ivec4_dot = (float (*)(const IVec4 *const, const IVec4 *const))proc_addr("ivec4_dot");
+        raw_ivec4_length = (float (*)(const IVec4 *const))proc_addr("ivec4_length");
+        raw_ivec4_normalize = (void (*)(const IVec4 *const, IVec4 *const))proc_addr("ivec4_normalize");
+        raw_ivec4_distance = (float (*)(const IVec4 *const, const IVec4 *const))proc_addr("ivec4_distance");
+        raw_ivec4_add_in = (void (*)(IVec4 *const, const IVec4 *const))proc_addr("ivec4_add_in");
+        raw_ivec4_sub_in = (void (*)(IVec4 *const, const IVec4 *const))proc_addr("ivec4_sub_in");
+        raw_ivec4_scale_in = (void (*)(IVec4 *const, const float))proc_addr("ivec4_scale_in");
+        raw_ivec4_normalize_in = (void (*)(IVec4 *const))proc_addr("ivec4_normalize_in");
+        raw_uvec2_init = (void (*)(const u32, const u32, UVec2 *const))proc_addr("uvec2_init");
+        raw_uvec2_add = (void (*)(const UVec2 *const, const UVec2 *const, UVec2 *const))proc_addr("uvec2_add");
+        raw_uvec2_sub = (void (*)(const UVec2 *const, const UVec2 *const, UVec2 *const))proc_addr("uvec2_sub");
+        raw_uvec2_scale = (void (*)(const UVec2 *const, const float, UVec2 *const))proc_addr("uvec2_scale");
+        raw_uvec2_dot = (float (*)(const UVec2 *const, const UVec2 *const))proc_addr("uvec2_dot");
+        raw_uvec2_length = (float (*)(const UVec2 *const))proc_addr("uvec2_length");
+        raw_uvec2_normalize = (void (*)(const UVec2 *const, UVec2 *const))proc_addr("uvec2_normalize");
+        raw_uvec2_distance = (float (*)(const UVec2 *const, const UVec2 *const))proc_addr("uvec2_distance");
+        raw_uvec2_add_in = (void (*)(UVec2 *const, const UVec2 *const))proc_addr("uvec2_add_in");
+        raw_uvec2_sub_in = (void (*)(UVec2 *const, const UVec2 *const))proc_addr("uvec2_sub_in");
+        raw_uvec2_scale_in = (void (*)(UVec2 *const, const float))proc_addr("uvec2_scale_in");
+        raw_uvec2_normalize_in = (void (*)(UVec2 *const))proc_addr("uvec2_normalize_in");
+        raw_uvec3_init = (void (*)(u32, u32, u32, UVec3 *const))proc_addr("uvec3_init");
+        raw_uvec3_add = (void (*)(const UVec3 *const, const UVec3 *const, UVec3 *const))proc_addr("uvec3_add");
+        raw_uvec3_sub = (void (*)(const UVec3 *const, const UVec3 *const, UVec3 *const))proc_addr("uvec3_sub");
+        raw_uvec3_scale = (void (*)(const UVec3 *const, const float, UVec3 *const))proc_addr("uvec3_scale");
+        raw_uvec3_cross = (void (*)(const UVec3 *const, const UVec3 *const, UVec3 *const))proc_addr("uvec3_cross");
+        raw_uvec3_dot = (float (*)(const UVec3 *const, const UVec3 *const))proc_addr("uvec3_dot");
+        raw_uvec3_length = (float (*)(const UVec3 *const))proc_addr("uvec3_length");
+        raw_uvec3_normalize = (void (*)(const UVec3 *const, UVec3 *const))proc_addr("uvec3_normalize");
+        raw_uvec3_distance = (float (*)(const UVec3 *const, const UVec3 *const))proc_addr("uvec3_distance");
+        raw_uvec3_add_in = (void (*)(UVec3 *const, const UVec3 *const))proc_addr("uvec3_add_in");
+        raw_uvec3_sub_in = (void (*)(UVec3 *const, const UVec3 *const))proc_addr("uvec3_sub_in");
+        raw_uvec3_scale_in = (void (*)(UVec3 *const, const float))proc_addr("uvec3_scale_in");
+        raw_uvec3_normalize_in = (void (*)(UVec3 *const))proc_addr("uvec3_normalize_in");
+        raw_uvec4_init = (void (*)(u32, u32, u32, u32, UVec4 *const))proc_addr("uvec4_init");
+        raw_uvec4_add = (void (*)(const UVec4 *const, const UVec4 *const, UVec4 *const))proc_addr("uvec4_add");
+        raw_uvec4_sub = (void (*)(const UVec4 *const, const UVec4 *const, UVec4 *const))proc_addr("uvec4_sub");
+        raw_uvec4_scale = (void (*)(const UVec4 *const, const float, UVec4 *const))proc_addr("uvec4_scale");
+        raw_uvec4_dot = (float (*)(const UVec4 *const, const UVec4 *const))proc_addr("uvec4_dot");
+        raw_uvec4_length = (float (*)(const UVec4 *const))proc_addr("uvec4_length");
+        raw_uvec4_normalize = (void (*)(const UVec4 *const, UVec4 *const))proc_addr("uvec4_normalize");
+        raw_uvec4_distance = (float (*)(const UVec4 *const, const UVec4 *const))proc_addr("uvec4_distance");
+        raw_uvec4_add_in = (void (*)(UVec4 *const, const UVec4 *const))proc_addr("uvec4_add_in");
+        raw_uvec4_sub_in = (void (*)(UVec4 *const, const UVec4 *const))proc_addr("uvec4_sub_in");
+        raw_uvec4_scale_in = (void (*)(UVec4 *const, const float))proc_addr("uvec4_scale_in");
+        raw_uvec4_normalize_in = (void (*)(UVec4 *const))proc_addr("uvec4_normalize_in");
         raw_vec2_init = (void (*)(const float, const float, Vec2 *const))proc_addr("vec2_init");
         raw_vec2_add = (void (*)(const Vec2 *const, const Vec2 *const, Vec2 *const))proc_addr("vec2_add");
         raw_vec2_sub = (void (*)(const Vec2 *const, const Vec2 *const, Vec2 *const))proc_addr("vec2_sub");
@@ -5213,68 +5292,6 @@ extern fptr (*render_context_get_proc_addr)(const char * proc);
         raw_vec3_sub_in = (void (*)(Vec3 *const, const Vec3 *const))proc_addr("vec3_sub_in");
         raw_vec3_scale_in = (void (*)(Vec3 *const, const float))proc_addr("vec3_scale_in");
         raw_vec3_normalize_in = (void (*)(Vec3 *const))proc_addr("vec3_normalize_in");
-        raw_uvec3_init = (void (*)(u32, u32, u32, UVec3 *const))proc_addr("uvec3_init");
-        raw_uvec3_add = (void (*)(const UVec3 *const, const UVec3 *const, UVec3 *const))proc_addr("uvec3_add");
-        raw_uvec3_sub = (void (*)(const UVec3 *const, const UVec3 *const, UVec3 *const))proc_addr("uvec3_sub");
-        raw_uvec3_scale = (void (*)(const UVec3 *const, const float, UVec3 *const))proc_addr("uvec3_scale");
-        raw_uvec3_cross = (void (*)(const UVec3 *const, const UVec3 *const, UVec3 *const))proc_addr("uvec3_cross");
-        raw_uvec3_dot = (float (*)(const UVec3 *const, const UVec3 *const))proc_addr("uvec3_dot");
-        raw_uvec3_length = (float (*)(const UVec3 *const))proc_addr("uvec3_length");
-        raw_uvec3_normalize = (void (*)(const UVec3 *const, UVec3 *const))proc_addr("uvec3_normalize");
-        raw_uvec3_distance = (float (*)(const UVec3 *const, const UVec3 *const))proc_addr("uvec3_distance");
-        raw_uvec3_add_in = (void (*)(UVec3 *const, const UVec3 *const))proc_addr("uvec3_add_in");
-        raw_uvec3_sub_in = (void (*)(UVec3 *const, const UVec3 *const))proc_addr("uvec3_sub_in");
-        raw_uvec3_scale_in = (void (*)(UVec3 *const, const float))proc_addr("uvec3_scale_in");
-        raw_uvec3_normalize_in = (void (*)(UVec3 *const))proc_addr("uvec3_normalize_in");
-        raw_uvec2_init = (void (*)(const u32, const u32, UVec2 *const))proc_addr("uvec2_init");
-        raw_uvec2_add = (void (*)(const UVec2 *const, const UVec2 *const, UVec2 *const))proc_addr("uvec2_add");
-        raw_uvec2_sub = (void (*)(const UVec2 *const, const UVec2 *const, UVec2 *const))proc_addr("uvec2_sub");
-        raw_uvec2_scale = (void (*)(const UVec2 *const, const float, UVec2 *const))proc_addr("uvec2_scale");
-        raw_uvec2_dot = (float (*)(const UVec2 *const, const UVec2 *const))proc_addr("uvec2_dot");
-        raw_uvec2_length = (float (*)(const UVec2 *const))proc_addr("uvec2_length");
-        raw_uvec2_normalize = (void (*)(const UVec2 *const, UVec2 *const))proc_addr("uvec2_normalize");
-        raw_uvec2_distance = (float (*)(const UVec2 *const, const UVec2 *const))proc_addr("uvec2_distance");
-        raw_uvec2_add_in = (void (*)(UVec2 *const, const UVec2 *const))proc_addr("uvec2_add_in");
-        raw_uvec2_sub_in = (void (*)(UVec2 *const, const UVec2 *const))proc_addr("uvec2_sub_in");
-        raw_uvec2_scale_in = (void (*)(UVec2 *const, const float))proc_addr("uvec2_scale_in");
-        raw_uvec2_normalize_in = (void (*)(UVec2 *const))proc_addr("uvec2_normalize_in");
-        raw_ivec4_init = (void (*)(i32, i32, i32, i32, IVec4 *const))proc_addr("ivec4_init");
-        raw_ivec4_add = (void (*)(const IVec4 *const, const IVec4 *const, IVec4 *const))proc_addr("ivec4_add");
-        raw_ivec4_sub = (void (*)(const IVec4 *const, const IVec4 *const, IVec4 *const))proc_addr("ivec4_sub");
-        raw_ivec4_scale = (void (*)(const IVec4 *const, const float, IVec4 *const))proc_addr("ivec4_scale");
-        raw_ivec4_dot = (float (*)(const IVec4 *const, const IVec4 *const))proc_addr("ivec4_dot");
-        raw_ivec4_length = (float (*)(const IVec4 *const))proc_addr("ivec4_length");
-        raw_ivec4_normalize = (void (*)(const IVec4 *const, IVec4 *const))proc_addr("ivec4_normalize");
-        raw_ivec4_distance = (float (*)(const IVec4 *const, const IVec4 *const))proc_addr("ivec4_distance");
-        raw_ivec4_add_in = (void (*)(IVec4 *const, const IVec4 *const))proc_addr("ivec4_add_in");
-        raw_ivec4_sub_in = (void (*)(IVec4 *const, const IVec4 *const))proc_addr("ivec4_sub_in");
-        raw_ivec4_scale_in = (void (*)(IVec4 *const, const float))proc_addr("ivec4_scale_in");
-        raw_ivec4_normalize_in = (void (*)(IVec4 *const))proc_addr("ivec4_normalize_in");
-        raw_uvec4_init = (void (*)(u32, u32, u32, u32, UVec4 *const))proc_addr("uvec4_init");
-        raw_uvec4_add = (void (*)(const UVec4 *const, const UVec4 *const, UVec4 *const))proc_addr("uvec4_add");
-        raw_uvec4_sub = (void (*)(const UVec4 *const, const UVec4 *const, UVec4 *const))proc_addr("uvec4_sub");
-        raw_uvec4_scale = (void (*)(const UVec4 *const, const float, UVec4 *const))proc_addr("uvec4_scale");
-        raw_uvec4_dot = (float (*)(const UVec4 *const, const UVec4 *const))proc_addr("uvec4_dot");
-        raw_uvec4_length = (float (*)(const UVec4 *const))proc_addr("uvec4_length");
-        raw_uvec4_normalize = (void (*)(const UVec4 *const, UVec4 *const))proc_addr("uvec4_normalize");
-        raw_uvec4_distance = (float (*)(const UVec4 *const, const UVec4 *const))proc_addr("uvec4_distance");
-        raw_uvec4_add_in = (void (*)(UVec4 *const, const UVec4 *const))proc_addr("uvec4_add_in");
-        raw_uvec4_sub_in = (void (*)(UVec4 *const, const UVec4 *const))proc_addr("uvec4_sub_in");
-        raw_uvec4_scale_in = (void (*)(UVec4 *const, const float))proc_addr("uvec4_scale_in");
-        raw_uvec4_normalize_in = (void (*)(UVec4 *const))proc_addr("uvec4_normalize_in");
-        raw_ivec3_init = (void (*)(i32, i32, i32, IVec3 *const))proc_addr("ivec3_init");
-        raw_ivec3_add = (void (*)(const IVec3 *const, const IVec3 *const, IVec3 *const))proc_addr("ivec3_add");
-        raw_ivec3_sub = (void (*)(const IVec3 *const, const IVec3 *const, IVec3 *const))proc_addr("ivec3_sub");
-        raw_ivec3_scale = (void (*)(const IVec3 *const, const float, IVec3 *const))proc_addr("ivec3_scale");
-        raw_ivec3_cross = (void (*)(const IVec3 *const, const IVec3 *const, IVec3 *const))proc_addr("ivec3_cross");
-        raw_ivec3_dot = (float (*)(const IVec3 *const, const IVec3 *const))proc_addr("ivec3_dot");
-        raw_ivec3_length = (float (*)(const IVec3 *const))proc_addr("ivec3_length");
-        raw_ivec3_normalize = (void (*)(const IVec3 *const, IVec3 *const))proc_addr("ivec3_normalize");
-        raw_ivec3_distance = (float (*)(const IVec3 *const, const IVec3 *const))proc_addr("ivec3_distance");
-        raw_ivec3_add_in = (void (*)(IVec3 *const, const IVec3 *const))proc_addr("ivec3_add_in");
-        raw_ivec3_sub_in = (void (*)(IVec3 *const, const IVec3 *const))proc_addr("ivec3_sub_in");
-        raw_ivec3_scale_in = (void (*)(IVec3 *const, const float))proc_addr("ivec3_scale_in");
-        raw_ivec3_normalize_in = (void (*)(IVec3 *const))proc_addr("ivec3_normalize_in");
         raw_vec4_init = (void (*)(float, float, float, float, Vec4 *const))proc_addr("vec4_init");
         raw_vec4_add = (void (*)(const Vec4 *const, const Vec4 *const, Vec4 *const))proc_addr("vec4_add");
         raw_vec4_sub = (void (*)(const Vec4 *const, const Vec4 *const, Vec4 *const))proc_addr("vec4_sub");
@@ -5425,6 +5442,15 @@ extern fptr (*render_context_get_proc_addr)(const char * proc);
             canvas_item_new = raw_canvas_item_new;
             control_new = raw_control_new;
             viewport_new = raw_viewport_new;
+            mat4_init = raw_mat4_init;
+            mat4_from_array = raw_mat4_from_array;
+            mat4_clone = raw_mat4_clone;
+            mat4_add = raw_mat4_add;
+            mat4_sub = raw_mat4_sub;
+            mat4_mul = raw_mat4_mul;
+            mat4_scale = raw_mat4_scale;
+            mat4_transpose = raw_mat4_transpose;
+            mat4_inverse = raw_mat4_inverse;
             ivec2_init = raw_ivec2_init;
             ivec2_add = raw_ivec2_add;
             ivec2_sub = raw_ivec2_sub;
@@ -5437,15 +5463,68 @@ extern fptr (*render_context_get_proc_addr)(const char * proc);
             ivec2_sub_in = raw_ivec2_sub_in;
             ivec2_scale_in = raw_ivec2_scale_in;
             ivec2_normalize_in = raw_ivec2_normalize_in;
-            mat4_init = raw_mat4_init;
-            mat4_from_array = raw_mat4_from_array;
-            mat4_clone = raw_mat4_clone;
-            mat4_add = raw_mat4_add;
-            mat4_sub = raw_mat4_sub;
-            mat4_mul = raw_mat4_mul;
-            mat4_scale = raw_mat4_scale;
-            mat4_transpose = raw_mat4_transpose;
-            mat4_inverse = raw_mat4_inverse;
+            ivec3_init = raw_ivec3_init;
+            ivec3_add = raw_ivec3_add;
+            ivec3_sub = raw_ivec3_sub;
+            ivec3_scale = raw_ivec3_scale;
+            ivec3_cross = raw_ivec3_cross;
+            ivec3_dot = raw_ivec3_dot;
+            ivec3_length = raw_ivec3_length;
+            ivec3_normalize = raw_ivec3_normalize;
+            ivec3_distance = raw_ivec3_distance;
+            ivec3_add_in = raw_ivec3_add_in;
+            ivec3_sub_in = raw_ivec3_sub_in;
+            ivec3_scale_in = raw_ivec3_scale_in;
+            ivec3_normalize_in = raw_ivec3_normalize_in;
+            ivec4_init = raw_ivec4_init;
+            ivec4_add = raw_ivec4_add;
+            ivec4_sub = raw_ivec4_sub;
+            ivec4_scale = raw_ivec4_scale;
+            ivec4_dot = raw_ivec4_dot;
+            ivec4_length = raw_ivec4_length;
+            ivec4_normalize = raw_ivec4_normalize;
+            ivec4_distance = raw_ivec4_distance;
+            ivec4_add_in = raw_ivec4_add_in;
+            ivec4_sub_in = raw_ivec4_sub_in;
+            ivec4_scale_in = raw_ivec4_scale_in;
+            ivec4_normalize_in = raw_ivec4_normalize_in;
+            uvec2_init = raw_uvec2_init;
+            uvec2_add = raw_uvec2_add;
+            uvec2_sub = raw_uvec2_sub;
+            uvec2_scale = raw_uvec2_scale;
+            uvec2_dot = raw_uvec2_dot;
+            uvec2_length = raw_uvec2_length;
+            uvec2_normalize = raw_uvec2_normalize;
+            uvec2_distance = raw_uvec2_distance;
+            uvec2_add_in = raw_uvec2_add_in;
+            uvec2_sub_in = raw_uvec2_sub_in;
+            uvec2_scale_in = raw_uvec2_scale_in;
+            uvec2_normalize_in = raw_uvec2_normalize_in;
+            uvec3_init = raw_uvec3_init;
+            uvec3_add = raw_uvec3_add;
+            uvec3_sub = raw_uvec3_sub;
+            uvec3_scale = raw_uvec3_scale;
+            uvec3_cross = raw_uvec3_cross;
+            uvec3_dot = raw_uvec3_dot;
+            uvec3_length = raw_uvec3_length;
+            uvec3_normalize = raw_uvec3_normalize;
+            uvec3_distance = raw_uvec3_distance;
+            uvec3_add_in = raw_uvec3_add_in;
+            uvec3_sub_in = raw_uvec3_sub_in;
+            uvec3_scale_in = raw_uvec3_scale_in;
+            uvec3_normalize_in = raw_uvec3_normalize_in;
+            uvec4_init = raw_uvec4_init;
+            uvec4_add = raw_uvec4_add;
+            uvec4_sub = raw_uvec4_sub;
+            uvec4_scale = raw_uvec4_scale;
+            uvec4_dot = raw_uvec4_dot;
+            uvec4_length = raw_uvec4_length;
+            uvec4_normalize = raw_uvec4_normalize;
+            uvec4_distance = raw_uvec4_distance;
+            uvec4_add_in = raw_uvec4_add_in;
+            uvec4_sub_in = raw_uvec4_sub_in;
+            uvec4_scale_in = raw_uvec4_scale_in;
+            uvec4_normalize_in = raw_uvec4_normalize_in;
             vec2_init = raw_vec2_init;
             vec2_add = raw_vec2_add;
             vec2_sub = raw_vec2_sub;
@@ -5471,68 +5550,6 @@ extern fptr (*render_context_get_proc_addr)(const char * proc);
             vec3_sub_in = raw_vec3_sub_in;
             vec3_scale_in = raw_vec3_scale_in;
             vec3_normalize_in = raw_vec3_normalize_in;
-            uvec3_init = raw_uvec3_init;
-            uvec3_add = raw_uvec3_add;
-            uvec3_sub = raw_uvec3_sub;
-            uvec3_scale = raw_uvec3_scale;
-            uvec3_cross = raw_uvec3_cross;
-            uvec3_dot = raw_uvec3_dot;
-            uvec3_length = raw_uvec3_length;
-            uvec3_normalize = raw_uvec3_normalize;
-            uvec3_distance = raw_uvec3_distance;
-            uvec3_add_in = raw_uvec3_add_in;
-            uvec3_sub_in = raw_uvec3_sub_in;
-            uvec3_scale_in = raw_uvec3_scale_in;
-            uvec3_normalize_in = raw_uvec3_normalize_in;
-            uvec2_init = raw_uvec2_init;
-            uvec2_add = raw_uvec2_add;
-            uvec2_sub = raw_uvec2_sub;
-            uvec2_scale = raw_uvec2_scale;
-            uvec2_dot = raw_uvec2_dot;
-            uvec2_length = raw_uvec2_length;
-            uvec2_normalize = raw_uvec2_normalize;
-            uvec2_distance = raw_uvec2_distance;
-            uvec2_add_in = raw_uvec2_add_in;
-            uvec2_sub_in = raw_uvec2_sub_in;
-            uvec2_scale_in = raw_uvec2_scale_in;
-            uvec2_normalize_in = raw_uvec2_normalize_in;
-            ivec4_init = raw_ivec4_init;
-            ivec4_add = raw_ivec4_add;
-            ivec4_sub = raw_ivec4_sub;
-            ivec4_scale = raw_ivec4_scale;
-            ivec4_dot = raw_ivec4_dot;
-            ivec4_length = raw_ivec4_length;
-            ivec4_normalize = raw_ivec4_normalize;
-            ivec4_distance = raw_ivec4_distance;
-            ivec4_add_in = raw_ivec4_add_in;
-            ivec4_sub_in = raw_ivec4_sub_in;
-            ivec4_scale_in = raw_ivec4_scale_in;
-            ivec4_normalize_in = raw_ivec4_normalize_in;
-            uvec4_init = raw_uvec4_init;
-            uvec4_add = raw_uvec4_add;
-            uvec4_sub = raw_uvec4_sub;
-            uvec4_scale = raw_uvec4_scale;
-            uvec4_dot = raw_uvec4_dot;
-            uvec4_length = raw_uvec4_length;
-            uvec4_normalize = raw_uvec4_normalize;
-            uvec4_distance = raw_uvec4_distance;
-            uvec4_add_in = raw_uvec4_add_in;
-            uvec4_sub_in = raw_uvec4_sub_in;
-            uvec4_scale_in = raw_uvec4_scale_in;
-            uvec4_normalize_in = raw_uvec4_normalize_in;
-            ivec3_init = raw_ivec3_init;
-            ivec3_add = raw_ivec3_add;
-            ivec3_sub = raw_ivec3_sub;
-            ivec3_scale = raw_ivec3_scale;
-            ivec3_cross = raw_ivec3_cross;
-            ivec3_dot = raw_ivec3_dot;
-            ivec3_length = raw_ivec3_length;
-            ivec3_normalize = raw_ivec3_normalize;
-            ivec3_distance = raw_ivec3_distance;
-            ivec3_add_in = raw_ivec3_add_in;
-            ivec3_sub_in = raw_ivec3_sub_in;
-            ivec3_scale_in = raw_ivec3_scale_in;
-            ivec3_normalize_in = raw_ivec3_normalize_in;
             vec4_init = raw_vec4_init;
             vec4_add = raw_vec4_add;
             vec4_sub = raw_vec4_sub;
@@ -5733,6 +5750,15 @@ const char * full_trace_window_get_title(const char* ___file___, uint32_t ___lin
 CanvasItem * full_trace_canvas_item_new(const char* ___file___, uint32_t ___line___, const char *);
 Control * full_trace_control_new(const char* ___file___, uint32_t ___line___, const char *);
 Viewport * full_trace_viewport_new(const char* ___file___, uint32_t ___line___, const char *);
+void full_trace_mat4_init(const char* ___file___, uint32_t ___line___, float, float, float, float, float, float, float, float, float, float, float, float, float, float, float, float, Mat4 *const);
+void full_trace_mat4_from_array(const char* ___file___, uint32_t ___line___, const float *const, Mat4 *const);
+void full_trace_mat4_clone(const char* ___file___, uint32_t ___line___, const Mat4 *const, Mat4 *const);
+void full_trace_mat4_add(const char* ___file___, uint32_t ___line___, const Mat4 *const, const Mat4 *const, Mat4 *const);
+void full_trace_mat4_sub(const char* ___file___, uint32_t ___line___, const Mat4 *const, const Mat4 *const, Mat4 *const);
+void full_trace_mat4_mul(const char* ___file___, uint32_t ___line___, const Mat4 *const, const Mat4 *const, Mat4 *const);
+void full_trace_mat4_scale(const char* ___file___, uint32_t ___line___, const Mat4 *const, const float, Mat4 *const);
+void full_trace_mat4_transpose(const char* ___file___, uint32_t ___line___, const Mat4 *const, Mat4 *const);
+void full_trace_mat4_inverse(const char* ___file___, uint32_t ___line___, const Mat4 *const, Mat4 *const);
 void full_trace_ivec2_init(const char* ___file___, uint32_t ___line___, const i32, const i32, IVec2 *const);
 void full_trace_ivec2_add(const char* ___file___, uint32_t ___line___, const IVec2 *const, const IVec2 *const, IVec2 *const);
 void full_trace_ivec2_sub(const char* ___file___, uint32_t ___line___, const IVec2 *const, const IVec2 *const, IVec2 *const);
@@ -5745,15 +5771,68 @@ void full_trace_ivec2_add_in(const char* ___file___, uint32_t ___line___, IVec2 
 void full_trace_ivec2_sub_in(const char* ___file___, uint32_t ___line___, IVec2 *const, const IVec2 *const);
 void full_trace_ivec2_scale_in(const char* ___file___, uint32_t ___line___, IVec2 *const, const float);
 void full_trace_ivec2_normalize_in(const char* ___file___, uint32_t ___line___, IVec2 *const);
-void full_trace_mat4_init(const char* ___file___, uint32_t ___line___, float, float, float, float, float, float, float, float, float, float, float, float, float, float, float, float, Mat4 *const);
-void full_trace_mat4_from_array(const char* ___file___, uint32_t ___line___, const float *const, Mat4 *const);
-void full_trace_mat4_clone(const char* ___file___, uint32_t ___line___, const Mat4 *const, Mat4 *const);
-void full_trace_mat4_add(const char* ___file___, uint32_t ___line___, const Mat4 *const, const Mat4 *const, Mat4 *const);
-void full_trace_mat4_sub(const char* ___file___, uint32_t ___line___, const Mat4 *const, const Mat4 *const, Mat4 *const);
-void full_trace_mat4_mul(const char* ___file___, uint32_t ___line___, const Mat4 *const, const Mat4 *const, Mat4 *const);
-void full_trace_mat4_scale(const char* ___file___, uint32_t ___line___, const Mat4 *const, const float, Mat4 *const);
-void full_trace_mat4_transpose(const char* ___file___, uint32_t ___line___, const Mat4 *const, Mat4 *const);
-void full_trace_mat4_inverse(const char* ___file___, uint32_t ___line___, const Mat4 *const, Mat4 *const);
+void full_trace_ivec3_init(const char* ___file___, uint32_t ___line___, i32, i32, i32, IVec3 *const);
+void full_trace_ivec3_add(const char* ___file___, uint32_t ___line___, const IVec3 *const, const IVec3 *const, IVec3 *const);
+void full_trace_ivec3_sub(const char* ___file___, uint32_t ___line___, const IVec3 *const, const IVec3 *const, IVec3 *const);
+void full_trace_ivec3_scale(const char* ___file___, uint32_t ___line___, const IVec3 *const, const float, IVec3 *const);
+void full_trace_ivec3_cross(const char* ___file___, uint32_t ___line___, const IVec3 *const, const IVec3 *const, IVec3 *const);
+float full_trace_ivec3_dot(const char* ___file___, uint32_t ___line___, const IVec3 *const, const IVec3 *const);
+float full_trace_ivec3_length(const char* ___file___, uint32_t ___line___, const IVec3 *const);
+void full_trace_ivec3_normalize(const char* ___file___, uint32_t ___line___, const IVec3 *const, IVec3 *const);
+float full_trace_ivec3_distance(const char* ___file___, uint32_t ___line___, const IVec3 *const, const IVec3 *const);
+void full_trace_ivec3_add_in(const char* ___file___, uint32_t ___line___, IVec3 *const, const IVec3 *const);
+void full_trace_ivec3_sub_in(const char* ___file___, uint32_t ___line___, IVec3 *const, const IVec3 *const);
+void full_trace_ivec3_scale_in(const char* ___file___, uint32_t ___line___, IVec3 *const, const float);
+void full_trace_ivec3_normalize_in(const char* ___file___, uint32_t ___line___, IVec3 *const);
+void full_trace_ivec4_init(const char* ___file___, uint32_t ___line___, i32, i32, i32, i32, IVec4 *const);
+void full_trace_ivec4_add(const char* ___file___, uint32_t ___line___, const IVec4 *const, const IVec4 *const, IVec4 *const);
+void full_trace_ivec4_sub(const char* ___file___, uint32_t ___line___, const IVec4 *const, const IVec4 *const, IVec4 *const);
+void full_trace_ivec4_scale(const char* ___file___, uint32_t ___line___, const IVec4 *const, const float, IVec4 *const);
+float full_trace_ivec4_dot(const char* ___file___, uint32_t ___line___, const IVec4 *const, const IVec4 *const);
+float full_trace_ivec4_length(const char* ___file___, uint32_t ___line___, const IVec4 *const);
+void full_trace_ivec4_normalize(const char* ___file___, uint32_t ___line___, const IVec4 *const, IVec4 *const);
+float full_trace_ivec4_distance(const char* ___file___, uint32_t ___line___, const IVec4 *const, const IVec4 *const);
+void full_trace_ivec4_add_in(const char* ___file___, uint32_t ___line___, IVec4 *const, const IVec4 *const);
+void full_trace_ivec4_sub_in(const char* ___file___, uint32_t ___line___, IVec4 *const, const IVec4 *const);
+void full_trace_ivec4_scale_in(const char* ___file___, uint32_t ___line___, IVec4 *const, const float);
+void full_trace_ivec4_normalize_in(const char* ___file___, uint32_t ___line___, IVec4 *const);
+void full_trace_uvec2_init(const char* ___file___, uint32_t ___line___, const u32, const u32, UVec2 *const);
+void full_trace_uvec2_add(const char* ___file___, uint32_t ___line___, const UVec2 *const, const UVec2 *const, UVec2 *const);
+void full_trace_uvec2_sub(const char* ___file___, uint32_t ___line___, const UVec2 *const, const UVec2 *const, UVec2 *const);
+void full_trace_uvec2_scale(const char* ___file___, uint32_t ___line___, const UVec2 *const, const float, UVec2 *const);
+float full_trace_uvec2_dot(const char* ___file___, uint32_t ___line___, const UVec2 *const, const UVec2 *const);
+float full_trace_uvec2_length(const char* ___file___, uint32_t ___line___, const UVec2 *const);
+void full_trace_uvec2_normalize(const char* ___file___, uint32_t ___line___, const UVec2 *const, UVec2 *const);
+float full_trace_uvec2_distance(const char* ___file___, uint32_t ___line___, const UVec2 *const, const UVec2 *const);
+void full_trace_uvec2_add_in(const char* ___file___, uint32_t ___line___, UVec2 *const, const UVec2 *const);
+void full_trace_uvec2_sub_in(const char* ___file___, uint32_t ___line___, UVec2 *const, const UVec2 *const);
+void full_trace_uvec2_scale_in(const char* ___file___, uint32_t ___line___, UVec2 *const, const float);
+void full_trace_uvec2_normalize_in(const char* ___file___, uint32_t ___line___, UVec2 *const);
+void full_trace_uvec3_init(const char* ___file___, uint32_t ___line___, u32, u32, u32, UVec3 *const);
+void full_trace_uvec3_add(const char* ___file___, uint32_t ___line___, const UVec3 *const, const UVec3 *const, UVec3 *const);
+void full_trace_uvec3_sub(const char* ___file___, uint32_t ___line___, const UVec3 *const, const UVec3 *const, UVec3 *const);
+void full_trace_uvec3_scale(const char* ___file___, uint32_t ___line___, const UVec3 *const, const float, UVec3 *const);
+void full_trace_uvec3_cross(const char* ___file___, uint32_t ___line___, const UVec3 *const, const UVec3 *const, UVec3 *const);
+float full_trace_uvec3_dot(const char* ___file___, uint32_t ___line___, const UVec3 *const, const UVec3 *const);
+float full_trace_uvec3_length(const char* ___file___, uint32_t ___line___, const UVec3 *const);
+void full_trace_uvec3_normalize(const char* ___file___, uint32_t ___line___, const UVec3 *const, UVec3 *const);
+float full_trace_uvec3_distance(const char* ___file___, uint32_t ___line___, const UVec3 *const, const UVec3 *const);
+void full_trace_uvec3_add_in(const char* ___file___, uint32_t ___line___, UVec3 *const, const UVec3 *const);
+void full_trace_uvec3_sub_in(const char* ___file___, uint32_t ___line___, UVec3 *const, const UVec3 *const);
+void full_trace_uvec3_scale_in(const char* ___file___, uint32_t ___line___, UVec3 *const, const float);
+void full_trace_uvec3_normalize_in(const char* ___file___, uint32_t ___line___, UVec3 *const);
+void full_trace_uvec4_init(const char* ___file___, uint32_t ___line___, u32, u32, u32, u32, UVec4 *const);
+void full_trace_uvec4_add(const char* ___file___, uint32_t ___line___, const UVec4 *const, const UVec4 *const, UVec4 *const);
+void full_trace_uvec4_sub(const char* ___file___, uint32_t ___line___, const UVec4 *const, const UVec4 *const, UVec4 *const);
+void full_trace_uvec4_scale(const char* ___file___, uint32_t ___line___, const UVec4 *const, const float, UVec4 *const);
+float full_trace_uvec4_dot(const char* ___file___, uint32_t ___line___, const UVec4 *const, const UVec4 *const);
+float full_trace_uvec4_length(const char* ___file___, uint32_t ___line___, const UVec4 *const);
+void full_trace_uvec4_normalize(const char* ___file___, uint32_t ___line___, const UVec4 *const, UVec4 *const);
+float full_trace_uvec4_distance(const char* ___file___, uint32_t ___line___, const UVec4 *const, const UVec4 *const);
+void full_trace_uvec4_add_in(const char* ___file___, uint32_t ___line___, UVec4 *const, const UVec4 *const);
+void full_trace_uvec4_sub_in(const char* ___file___, uint32_t ___line___, UVec4 *const, const UVec4 *const);
+void full_trace_uvec4_scale_in(const char* ___file___, uint32_t ___line___, UVec4 *const, const float);
+void full_trace_uvec4_normalize_in(const char* ___file___, uint32_t ___line___, UVec4 *const);
 void full_trace_vec2_init(const char* ___file___, uint32_t ___line___, const float, const float, Vec2 *const);
 void full_trace_vec2_add(const char* ___file___, uint32_t ___line___, const Vec2 *const, const Vec2 *const, Vec2 *const);
 void full_trace_vec2_sub(const char* ___file___, uint32_t ___line___, const Vec2 *const, const Vec2 *const, Vec2 *const);
@@ -5779,68 +5858,6 @@ void full_trace_vec3_add_in(const char* ___file___, uint32_t ___line___, Vec3 *c
 void full_trace_vec3_sub_in(const char* ___file___, uint32_t ___line___, Vec3 *const, const Vec3 *const);
 void full_trace_vec3_scale_in(const char* ___file___, uint32_t ___line___, Vec3 *const, const float);
 void full_trace_vec3_normalize_in(const char* ___file___, uint32_t ___line___, Vec3 *const);
-void full_trace_uvec3_init(const char* ___file___, uint32_t ___line___, u32, u32, u32, UVec3 *const);
-void full_trace_uvec3_add(const char* ___file___, uint32_t ___line___, const UVec3 *const, const UVec3 *const, UVec3 *const);
-void full_trace_uvec3_sub(const char* ___file___, uint32_t ___line___, const UVec3 *const, const UVec3 *const, UVec3 *const);
-void full_trace_uvec3_scale(const char* ___file___, uint32_t ___line___, const UVec3 *const, const float, UVec3 *const);
-void full_trace_uvec3_cross(const char* ___file___, uint32_t ___line___, const UVec3 *const, const UVec3 *const, UVec3 *const);
-float full_trace_uvec3_dot(const char* ___file___, uint32_t ___line___, const UVec3 *const, const UVec3 *const);
-float full_trace_uvec3_length(const char* ___file___, uint32_t ___line___, const UVec3 *const);
-void full_trace_uvec3_normalize(const char* ___file___, uint32_t ___line___, const UVec3 *const, UVec3 *const);
-float full_trace_uvec3_distance(const char* ___file___, uint32_t ___line___, const UVec3 *const, const UVec3 *const);
-void full_trace_uvec3_add_in(const char* ___file___, uint32_t ___line___, UVec3 *const, const UVec3 *const);
-void full_trace_uvec3_sub_in(const char* ___file___, uint32_t ___line___, UVec3 *const, const UVec3 *const);
-void full_trace_uvec3_scale_in(const char* ___file___, uint32_t ___line___, UVec3 *const, const float);
-void full_trace_uvec3_normalize_in(const char* ___file___, uint32_t ___line___, UVec3 *const);
-void full_trace_uvec2_init(const char* ___file___, uint32_t ___line___, const u32, const u32, UVec2 *const);
-void full_trace_uvec2_add(const char* ___file___, uint32_t ___line___, const UVec2 *const, const UVec2 *const, UVec2 *const);
-void full_trace_uvec2_sub(const char* ___file___, uint32_t ___line___, const UVec2 *const, const UVec2 *const, UVec2 *const);
-void full_trace_uvec2_scale(const char* ___file___, uint32_t ___line___, const UVec2 *const, const float, UVec2 *const);
-float full_trace_uvec2_dot(const char* ___file___, uint32_t ___line___, const UVec2 *const, const UVec2 *const);
-float full_trace_uvec2_length(const char* ___file___, uint32_t ___line___, const UVec2 *const);
-void full_trace_uvec2_normalize(const char* ___file___, uint32_t ___line___, const UVec2 *const, UVec2 *const);
-float full_trace_uvec2_distance(const char* ___file___, uint32_t ___line___, const UVec2 *const, const UVec2 *const);
-void full_trace_uvec2_add_in(const char* ___file___, uint32_t ___line___, UVec2 *const, const UVec2 *const);
-void full_trace_uvec2_sub_in(const char* ___file___, uint32_t ___line___, UVec2 *const, const UVec2 *const);
-void full_trace_uvec2_scale_in(const char* ___file___, uint32_t ___line___, UVec2 *const, const float);
-void full_trace_uvec2_normalize_in(const char* ___file___, uint32_t ___line___, UVec2 *const);
-void full_trace_ivec4_init(const char* ___file___, uint32_t ___line___, i32, i32, i32, i32, IVec4 *const);
-void full_trace_ivec4_add(const char* ___file___, uint32_t ___line___, const IVec4 *const, const IVec4 *const, IVec4 *const);
-void full_trace_ivec4_sub(const char* ___file___, uint32_t ___line___, const IVec4 *const, const IVec4 *const, IVec4 *const);
-void full_trace_ivec4_scale(const char* ___file___, uint32_t ___line___, const IVec4 *const, const float, IVec4 *const);
-float full_trace_ivec4_dot(const char* ___file___, uint32_t ___line___, const IVec4 *const, const IVec4 *const);
-float full_trace_ivec4_length(const char* ___file___, uint32_t ___line___, const IVec4 *const);
-void full_trace_ivec4_normalize(const char* ___file___, uint32_t ___line___, const IVec4 *const, IVec4 *const);
-float full_trace_ivec4_distance(const char* ___file___, uint32_t ___line___, const IVec4 *const, const IVec4 *const);
-void full_trace_ivec4_add_in(const char* ___file___, uint32_t ___line___, IVec4 *const, const IVec4 *const);
-void full_trace_ivec4_sub_in(const char* ___file___, uint32_t ___line___, IVec4 *const, const IVec4 *const);
-void full_trace_ivec4_scale_in(const char* ___file___, uint32_t ___line___, IVec4 *const, const float);
-void full_trace_ivec4_normalize_in(const char* ___file___, uint32_t ___line___, IVec4 *const);
-void full_trace_uvec4_init(const char* ___file___, uint32_t ___line___, u32, u32, u32, u32, UVec4 *const);
-void full_trace_uvec4_add(const char* ___file___, uint32_t ___line___, const UVec4 *const, const UVec4 *const, UVec4 *const);
-void full_trace_uvec4_sub(const char* ___file___, uint32_t ___line___, const UVec4 *const, const UVec4 *const, UVec4 *const);
-void full_trace_uvec4_scale(const char* ___file___, uint32_t ___line___, const UVec4 *const, const float, UVec4 *const);
-float full_trace_uvec4_dot(const char* ___file___, uint32_t ___line___, const UVec4 *const, const UVec4 *const);
-float full_trace_uvec4_length(const char* ___file___, uint32_t ___line___, const UVec4 *const);
-void full_trace_uvec4_normalize(const char* ___file___, uint32_t ___line___, const UVec4 *const, UVec4 *const);
-float full_trace_uvec4_distance(const char* ___file___, uint32_t ___line___, const UVec4 *const, const UVec4 *const);
-void full_trace_uvec4_add_in(const char* ___file___, uint32_t ___line___, UVec4 *const, const UVec4 *const);
-void full_trace_uvec4_sub_in(const char* ___file___, uint32_t ___line___, UVec4 *const, const UVec4 *const);
-void full_trace_uvec4_scale_in(const char* ___file___, uint32_t ___line___, UVec4 *const, const float);
-void full_trace_uvec4_normalize_in(const char* ___file___, uint32_t ___line___, UVec4 *const);
-void full_trace_ivec3_init(const char* ___file___, uint32_t ___line___, i32, i32, i32, IVec3 *const);
-void full_trace_ivec3_add(const char* ___file___, uint32_t ___line___, const IVec3 *const, const IVec3 *const, IVec3 *const);
-void full_trace_ivec3_sub(const char* ___file___, uint32_t ___line___, const IVec3 *const, const IVec3 *const, IVec3 *const);
-void full_trace_ivec3_scale(const char* ___file___, uint32_t ___line___, const IVec3 *const, const float, IVec3 *const);
-void full_trace_ivec3_cross(const char* ___file___, uint32_t ___line___, const IVec3 *const, const IVec3 *const, IVec3 *const);
-float full_trace_ivec3_dot(const char* ___file___, uint32_t ___line___, const IVec3 *const, const IVec3 *const);
-float full_trace_ivec3_length(const char* ___file___, uint32_t ___line___, const IVec3 *const);
-void full_trace_ivec3_normalize(const char* ___file___, uint32_t ___line___, const IVec3 *const, IVec3 *const);
-float full_trace_ivec3_distance(const char* ___file___, uint32_t ___line___, const IVec3 *const, const IVec3 *const);
-void full_trace_ivec3_add_in(const char* ___file___, uint32_t ___line___, IVec3 *const, const IVec3 *const);
-void full_trace_ivec3_sub_in(const char* ___file___, uint32_t ___line___, IVec3 *const, const IVec3 *const);
-void full_trace_ivec3_scale_in(const char* ___file___, uint32_t ___line___, IVec3 *const, const float);
-void full_trace_ivec3_normalize_in(const char* ___file___, uint32_t ___line___, IVec3 *const);
 void full_trace_vec4_init(const char* ___file___, uint32_t ___line___, float, float, float, float, Vec4 *const);
 void full_trace_vec4_add(const char* ___file___, uint32_t ___line___, const Vec4 *const, const Vec4 *const, Vec4 *const);
 void full_trace_vec4_sub(const char* ___file___, uint32_t ___line___, const Vec4 *const, const Vec4 *const, Vec4 *const);
@@ -6276,6 +6293,60 @@ inline Viewport * full_trace_viewport_new(const char* ___file___, uint32_t ___li
     return result;
 }
 
+inline void full_trace_mat4_init(const char* ___file___, uint32_t ___line___, float m00, float m01, float m02, float m03, float m10, float m11, float m12, float m13, float m20, float m21, float m22, float m23, float m30, float m31, float m32, float m33, Mat4 *const out) {
+    raw___he_update_full_trace_info("mat4_init", ___file___, ___line___);
+    raw_mat4_init(m00, m01, m02, m03, m10, m11, m12, m13, m20, m21, m22, m23, m30, m31, m32, m33, out);
+    raw___he_update_full_trace_info("", "", -1);
+}
+
+inline void full_trace_mat4_from_array(const char* ___file___, uint32_t ___line___, const float *const array, Mat4 *const out) {
+    raw___he_update_full_trace_info("mat4_from_array", ___file___, ___line___);
+    raw_mat4_from_array(array, out);
+    raw___he_update_full_trace_info("", "", -1);
+}
+
+inline void full_trace_mat4_clone(const char* ___file___, uint32_t ___line___, const Mat4 *const a, Mat4 *const out) {
+    raw___he_update_full_trace_info("mat4_clone", ___file___, ___line___);
+    raw_mat4_clone(a, out);
+    raw___he_update_full_trace_info("", "", -1);
+}
+
+inline void full_trace_mat4_add(const char* ___file___, uint32_t ___line___, const Mat4 *const a, const Mat4 *const b, Mat4 *const out) {
+    raw___he_update_full_trace_info("mat4_add", ___file___, ___line___);
+    raw_mat4_add(a, b, out);
+    raw___he_update_full_trace_info("", "", -1);
+}
+
+inline void full_trace_mat4_sub(const char* ___file___, uint32_t ___line___, const Mat4 *const a, const Mat4 *const b, Mat4 *const out) {
+    raw___he_update_full_trace_info("mat4_sub", ___file___, ___line___);
+    raw_mat4_sub(a, b, out);
+    raw___he_update_full_trace_info("", "", -1);
+}
+
+inline void full_trace_mat4_mul(const char* ___file___, uint32_t ___line___, const Mat4 *const a, const Mat4 *const b, Mat4 *const out) {
+    raw___he_update_full_trace_info("mat4_mul", ___file___, ___line___);
+    raw_mat4_mul(a, b, out);
+    raw___he_update_full_trace_info("", "", -1);
+}
+
+inline void full_trace_mat4_scale(const char* ___file___, uint32_t ___line___, const Mat4 *const a, const float factor, Mat4 *const out) {
+    raw___he_update_full_trace_info("mat4_scale", ___file___, ___line___);
+    raw_mat4_scale(a, factor, out);
+    raw___he_update_full_trace_info("", "", -1);
+}
+
+inline void full_trace_mat4_transpose(const char* ___file___, uint32_t ___line___, const Mat4 *const a, Mat4 *const out) {
+    raw___he_update_full_trace_info("mat4_transpose", ___file___, ___line___);
+    raw_mat4_transpose(a, out);
+    raw___he_update_full_trace_info("", "", -1);
+}
+
+inline void full_trace_mat4_inverse(const char* ___file___, uint32_t ___line___, const Mat4 *const a, Mat4 *const out) {
+    raw___he_update_full_trace_info("mat4_inverse", ___file___, ___line___);
+    raw_mat4_inverse(a, out);
+    raw___he_update_full_trace_info("", "", -1);
+}
+
 inline void full_trace_ivec2_init(const char* ___file___, uint32_t ___line___, const i32 x, const i32 y, IVec2 *const out) {
     raw___he_update_full_trace_info("ivec2_init", ___file___, ___line___);
     raw_ivec2_init(x, y, out);
@@ -6351,57 +6422,390 @@ inline void full_trace_ivec2_normalize_in(const char* ___file___, uint32_t ___li
     raw___he_update_full_trace_info("", "", -1);
 }
 
-inline void full_trace_mat4_init(const char* ___file___, uint32_t ___line___, float m00, float m01, float m02, float m03, float m10, float m11, float m12, float m13, float m20, float m21, float m22, float m23, float m30, float m31, float m32, float m33, Mat4 *const out) {
-    raw___he_update_full_trace_info("mat4_init", ___file___, ___line___);
-    raw_mat4_init(m00, m01, m02, m03, m10, m11, m12, m13, m20, m21, m22, m23, m30, m31, m32, m33, out);
+inline void full_trace_ivec3_init(const char* ___file___, uint32_t ___line___, i32 x, i32 y, i32 z, IVec3 *const out) {
+    raw___he_update_full_trace_info("ivec3_init", ___file___, ___line___);
+    raw_ivec3_init(x, y, z, out);
     raw___he_update_full_trace_info("", "", -1);
 }
 
-inline void full_trace_mat4_from_array(const char* ___file___, uint32_t ___line___, const float *const array, Mat4 *const out) {
-    raw___he_update_full_trace_info("mat4_from_array", ___file___, ___line___);
-    raw_mat4_from_array(array, out);
+inline void full_trace_ivec3_add(const char* ___file___, uint32_t ___line___, const IVec3 *const a, const IVec3 *const b, IVec3 *const out) {
+    raw___he_update_full_trace_info("ivec3_add", ___file___, ___line___);
+    raw_ivec3_add(a, b, out);
     raw___he_update_full_trace_info("", "", -1);
 }
 
-inline void full_trace_mat4_clone(const char* ___file___, uint32_t ___line___, const Mat4 *const a, Mat4 *const out) {
-    raw___he_update_full_trace_info("mat4_clone", ___file___, ___line___);
-    raw_mat4_clone(a, out);
+inline void full_trace_ivec3_sub(const char* ___file___, uint32_t ___line___, const IVec3 *const a, const IVec3 *const b, IVec3 *const out) {
+    raw___he_update_full_trace_info("ivec3_sub", ___file___, ___line___);
+    raw_ivec3_sub(a, b, out);
     raw___he_update_full_trace_info("", "", -1);
 }
 
-inline void full_trace_mat4_add(const char* ___file___, uint32_t ___line___, const Mat4 *const a, const Mat4 *const b, Mat4 *const out) {
-    raw___he_update_full_trace_info("mat4_add", ___file___, ___line___);
-    raw_mat4_add(a, b, out);
+inline void full_trace_ivec3_scale(const char* ___file___, uint32_t ___line___, const IVec3 *const a, const float factor, IVec3 *const out) {
+    raw___he_update_full_trace_info("ivec3_scale", ___file___, ___line___);
+    raw_ivec3_scale(a, factor, out);
     raw___he_update_full_trace_info("", "", -1);
 }
 
-inline void full_trace_mat4_sub(const char* ___file___, uint32_t ___line___, const Mat4 *const a, const Mat4 *const b, Mat4 *const out) {
-    raw___he_update_full_trace_info("mat4_sub", ___file___, ___line___);
-    raw_mat4_sub(a, b, out);
+inline void full_trace_ivec3_cross(const char* ___file___, uint32_t ___line___, const IVec3 *const a, const IVec3 *const b, IVec3 *const out) {
+    raw___he_update_full_trace_info("ivec3_cross", ___file___, ___line___);
+    raw_ivec3_cross(a, b, out);
     raw___he_update_full_trace_info("", "", -1);
 }
 
-inline void full_trace_mat4_mul(const char* ___file___, uint32_t ___line___, const Mat4 *const a, const Mat4 *const b, Mat4 *const out) {
-    raw___he_update_full_trace_info("mat4_mul", ___file___, ___line___);
-    raw_mat4_mul(a, b, out);
+inline float full_trace_ivec3_dot(const char* ___file___, uint32_t ___line___, const IVec3 *const a, const IVec3 *const b) {
+    raw___he_update_full_trace_info("ivec3_dot", ___file___, ___line___);
+    float result = raw_ivec3_dot(a, b);
+    raw___he_update_full_trace_info("", "", -1);
+    return result;
+}
+
+inline float full_trace_ivec3_length(const char* ___file___, uint32_t ___line___, const IVec3 *const a) {
+    raw___he_update_full_trace_info("ivec3_length", ___file___, ___line___);
+    float result = raw_ivec3_length(a);
+    raw___he_update_full_trace_info("", "", -1);
+    return result;
+}
+
+inline void full_trace_ivec3_normalize(const char* ___file___, uint32_t ___line___, const IVec3 *const a, IVec3 *const out) {
+    raw___he_update_full_trace_info("ivec3_normalize", ___file___, ___line___);
+    raw_ivec3_normalize(a, out);
     raw___he_update_full_trace_info("", "", -1);
 }
 
-inline void full_trace_mat4_scale(const char* ___file___, uint32_t ___line___, const Mat4 *const a, const float factor, Mat4 *const out) {
-    raw___he_update_full_trace_info("mat4_scale", ___file___, ___line___);
-    raw_mat4_scale(a, factor, out);
+inline float full_trace_ivec3_distance(const char* ___file___, uint32_t ___line___, const IVec3 *const a, const IVec3 *const b) {
+    raw___he_update_full_trace_info("ivec3_distance", ___file___, ___line___);
+    float result = raw_ivec3_distance(a, b);
+    raw___he_update_full_trace_info("", "", -1);
+    return result;
+}
+
+inline void full_trace_ivec3_add_in(const char* ___file___, uint32_t ___line___, IVec3 *const to, const IVec3 *const what) {
+    raw___he_update_full_trace_info("ivec3_add_in", ___file___, ___line___);
+    raw_ivec3_add_in(to, what);
     raw___he_update_full_trace_info("", "", -1);
 }
 
-inline void full_trace_mat4_transpose(const char* ___file___, uint32_t ___line___, const Mat4 *const a, Mat4 *const out) {
-    raw___he_update_full_trace_info("mat4_transpose", ___file___, ___line___);
-    raw_mat4_transpose(a, out);
+inline void full_trace_ivec3_sub_in(const char* ___file___, uint32_t ___line___, IVec3 *const from, const IVec3 *const what) {
+    raw___he_update_full_trace_info("ivec3_sub_in", ___file___, ___line___);
+    raw_ivec3_sub_in(from, what);
     raw___he_update_full_trace_info("", "", -1);
 }
 
-inline void full_trace_mat4_inverse(const char* ___file___, uint32_t ___line___, const Mat4 *const a, Mat4 *const out) {
-    raw___he_update_full_trace_info("mat4_inverse", ___file___, ___line___);
-    raw_mat4_inverse(a, out);
+inline void full_trace_ivec3_scale_in(const char* ___file___, uint32_t ___line___, IVec3 *const to, const float factor) {
+    raw___he_update_full_trace_info("ivec3_scale_in", ___file___, ___line___);
+    raw_ivec3_scale_in(to, factor);
+    raw___he_update_full_trace_info("", "", -1);
+}
+
+inline void full_trace_ivec3_normalize_in(const char* ___file___, uint32_t ___line___, IVec3 *const a) {
+    raw___he_update_full_trace_info("ivec3_normalize_in", ___file___, ___line___);
+    raw_ivec3_normalize_in(a);
+    raw___he_update_full_trace_info("", "", -1);
+}
+
+inline void full_trace_ivec4_init(const char* ___file___, uint32_t ___line___, i32 x, i32 y, i32 z, i32 w, IVec4 *const out) {
+    raw___he_update_full_trace_info("ivec4_init", ___file___, ___line___);
+    raw_ivec4_init(x, y, z, w, out);
+    raw___he_update_full_trace_info("", "", -1);
+}
+
+inline void full_trace_ivec4_add(const char* ___file___, uint32_t ___line___, const IVec4 *const a, const IVec4 *const b, IVec4 *const out) {
+    raw___he_update_full_trace_info("ivec4_add", ___file___, ___line___);
+    raw_ivec4_add(a, b, out);
+    raw___he_update_full_trace_info("", "", -1);
+}
+
+inline void full_trace_ivec4_sub(const char* ___file___, uint32_t ___line___, const IVec4 *const a, const IVec4 *const b, IVec4 *const out) {
+    raw___he_update_full_trace_info("ivec4_sub", ___file___, ___line___);
+    raw_ivec4_sub(a, b, out);
+    raw___he_update_full_trace_info("", "", -1);
+}
+
+inline void full_trace_ivec4_scale(const char* ___file___, uint32_t ___line___, const IVec4 *const a, const float factor, IVec4 *const out) {
+    raw___he_update_full_trace_info("ivec4_scale", ___file___, ___line___);
+    raw_ivec4_scale(a, factor, out);
+    raw___he_update_full_trace_info("", "", -1);
+}
+
+inline float full_trace_ivec4_dot(const char* ___file___, uint32_t ___line___, const IVec4 *const a, const IVec4 *const b) {
+    raw___he_update_full_trace_info("ivec4_dot", ___file___, ___line___);
+    float result = raw_ivec4_dot(a, b);
+    raw___he_update_full_trace_info("", "", -1);
+    return result;
+}
+
+inline float full_trace_ivec4_length(const char* ___file___, uint32_t ___line___, const IVec4 *const a) {
+    raw___he_update_full_trace_info("ivec4_length", ___file___, ___line___);
+    float result = raw_ivec4_length(a);
+    raw___he_update_full_trace_info("", "", -1);
+    return result;
+}
+
+inline void full_trace_ivec4_normalize(const char* ___file___, uint32_t ___line___, const IVec4 *const a, IVec4 *const out) {
+    raw___he_update_full_trace_info("ivec4_normalize", ___file___, ___line___);
+    raw_ivec4_normalize(a, out);
+    raw___he_update_full_trace_info("", "", -1);
+}
+
+inline float full_trace_ivec4_distance(const char* ___file___, uint32_t ___line___, const IVec4 *const a, const IVec4 *const b) {
+    raw___he_update_full_trace_info("ivec4_distance", ___file___, ___line___);
+    float result = raw_ivec4_distance(a, b);
+    raw___he_update_full_trace_info("", "", -1);
+    return result;
+}
+
+inline void full_trace_ivec4_add_in(const char* ___file___, uint32_t ___line___, IVec4 *const to, const IVec4 *const what) {
+    raw___he_update_full_trace_info("ivec4_add_in", ___file___, ___line___);
+    raw_ivec4_add_in(to, what);
+    raw___he_update_full_trace_info("", "", -1);
+}
+
+inline void full_trace_ivec4_sub_in(const char* ___file___, uint32_t ___line___, IVec4 *const from, const IVec4 *const what) {
+    raw___he_update_full_trace_info("ivec4_sub_in", ___file___, ___line___);
+    raw_ivec4_sub_in(from, what);
+    raw___he_update_full_trace_info("", "", -1);
+}
+
+inline void full_trace_ivec4_scale_in(const char* ___file___, uint32_t ___line___, IVec4 *const to, const float factor) {
+    raw___he_update_full_trace_info("ivec4_scale_in", ___file___, ___line___);
+    raw_ivec4_scale_in(to, factor);
+    raw___he_update_full_trace_info("", "", -1);
+}
+
+inline void full_trace_ivec4_normalize_in(const char* ___file___, uint32_t ___line___, IVec4 *const a) {
+    raw___he_update_full_trace_info("ivec4_normalize_in", ___file___, ___line___);
+    raw_ivec4_normalize_in(a);
+    raw___he_update_full_trace_info("", "", -1);
+}
+
+inline void full_trace_uvec2_init(const char* ___file___, uint32_t ___line___, const u32 x, const u32 y, UVec2 *const out) {
+    raw___he_update_full_trace_info("uvec2_init", ___file___, ___line___);
+    raw_uvec2_init(x, y, out);
+    raw___he_update_full_trace_info("", "", -1);
+}
+
+inline void full_trace_uvec2_add(const char* ___file___, uint32_t ___line___, const UVec2 *const a, const UVec2 *const b, UVec2 *const out) {
+    raw___he_update_full_trace_info("uvec2_add", ___file___, ___line___);
+    raw_uvec2_add(a, b, out);
+    raw___he_update_full_trace_info("", "", -1);
+}
+
+inline void full_trace_uvec2_sub(const char* ___file___, uint32_t ___line___, const UVec2 *const a, const UVec2 *const b, UVec2 *const out) {
+    raw___he_update_full_trace_info("uvec2_sub", ___file___, ___line___);
+    raw_uvec2_sub(a, b, out);
+    raw___he_update_full_trace_info("", "", -1);
+}
+
+inline void full_trace_uvec2_scale(const char* ___file___, uint32_t ___line___, const UVec2 *const a, const float factor, UVec2 *const out) {
+    raw___he_update_full_trace_info("uvec2_scale", ___file___, ___line___);
+    raw_uvec2_scale(a, factor, out);
+    raw___he_update_full_trace_info("", "", -1);
+}
+
+inline float full_trace_uvec2_dot(const char* ___file___, uint32_t ___line___, const UVec2 *const a, const UVec2 *const b) {
+    raw___he_update_full_trace_info("uvec2_dot", ___file___, ___line___);
+    float result = raw_uvec2_dot(a, b);
+    raw___he_update_full_trace_info("", "", -1);
+    return result;
+}
+
+inline float full_trace_uvec2_length(const char* ___file___, uint32_t ___line___, const UVec2 *const a) {
+    raw___he_update_full_trace_info("uvec2_length", ___file___, ___line___);
+    float result = raw_uvec2_length(a);
+    raw___he_update_full_trace_info("", "", -1);
+    return result;
+}
+
+inline void full_trace_uvec2_normalize(const char* ___file___, uint32_t ___line___, const UVec2 *const a, UVec2 *const out) {
+    raw___he_update_full_trace_info("uvec2_normalize", ___file___, ___line___);
+    raw_uvec2_normalize(a, out);
+    raw___he_update_full_trace_info("", "", -1);
+}
+
+inline float full_trace_uvec2_distance(const char* ___file___, uint32_t ___line___, const UVec2 *const a, const UVec2 *const b) {
+    raw___he_update_full_trace_info("uvec2_distance", ___file___, ___line___);
+    float result = raw_uvec2_distance(a, b);
+    raw___he_update_full_trace_info("", "", -1);
+    return result;
+}
+
+inline void full_trace_uvec2_add_in(const char* ___file___, uint32_t ___line___, UVec2 *const to, const UVec2 *const what) {
+    raw___he_update_full_trace_info("uvec2_add_in", ___file___, ___line___);
+    raw_uvec2_add_in(to, what);
+    raw___he_update_full_trace_info("", "", -1);
+}
+
+inline void full_trace_uvec2_sub_in(const char* ___file___, uint32_t ___line___, UVec2 *const from, const UVec2 *const what) {
+    raw___he_update_full_trace_info("uvec2_sub_in", ___file___, ___line___);
+    raw_uvec2_sub_in(from, what);
+    raw___he_update_full_trace_info("", "", -1);
+}
+
+inline void full_trace_uvec2_scale_in(const char* ___file___, uint32_t ___line___, UVec2 *const to, const float factor) {
+    raw___he_update_full_trace_info("uvec2_scale_in", ___file___, ___line___);
+    raw_uvec2_scale_in(to, factor);
+    raw___he_update_full_trace_info("", "", -1);
+}
+
+inline void full_trace_uvec2_normalize_in(const char* ___file___, uint32_t ___line___, UVec2 *const a) {
+    raw___he_update_full_trace_info("uvec2_normalize_in", ___file___, ___line___);
+    raw_uvec2_normalize_in(a);
+    raw___he_update_full_trace_info("", "", -1);
+}
+
+inline void full_trace_uvec3_init(const char* ___file___, uint32_t ___line___, u32 x, u32 y, u32 z, UVec3 *const out) {
+    raw___he_update_full_trace_info("uvec3_init", ___file___, ___line___);
+    raw_uvec3_init(x, y, z, out);
+    raw___he_update_full_trace_info("", "", -1);
+}
+
+inline void full_trace_uvec3_add(const char* ___file___, uint32_t ___line___, const UVec3 *const a, const UVec3 *const b, UVec3 *const out) {
+    raw___he_update_full_trace_info("uvec3_add", ___file___, ___line___);
+    raw_uvec3_add(a, b, out);
+    raw___he_update_full_trace_info("", "", -1);
+}
+
+inline void full_trace_uvec3_sub(const char* ___file___, uint32_t ___line___, const UVec3 *const a, const UVec3 *const b, UVec3 *const out) {
+    raw___he_update_full_trace_info("uvec3_sub", ___file___, ___line___);
+    raw_uvec3_sub(a, b, out);
+    raw___he_update_full_trace_info("", "", -1);
+}
+
+inline void full_trace_uvec3_scale(const char* ___file___, uint32_t ___line___, const UVec3 *const a, const float factor, UVec3 *const out) {
+    raw___he_update_full_trace_info("uvec3_scale", ___file___, ___line___);
+    raw_uvec3_scale(a, factor, out);
+    raw___he_update_full_trace_info("", "", -1);
+}
+
+inline void full_trace_uvec3_cross(const char* ___file___, uint32_t ___line___, const UVec3 *const a, const UVec3 *const b, UVec3 *const out) {
+    raw___he_update_full_trace_info("uvec3_cross", ___file___, ___line___);
+    raw_uvec3_cross(a, b, out);
+    raw___he_update_full_trace_info("", "", -1);
+}
+
+inline float full_trace_uvec3_dot(const char* ___file___, uint32_t ___line___, const UVec3 *const a, const UVec3 *const b) {
+    raw___he_update_full_trace_info("uvec3_dot", ___file___, ___line___);
+    float result = raw_uvec3_dot(a, b);
+    raw___he_update_full_trace_info("", "", -1);
+    return result;
+}
+
+inline float full_trace_uvec3_length(const char* ___file___, uint32_t ___line___, const UVec3 *const a) {
+    raw___he_update_full_trace_info("uvec3_length", ___file___, ___line___);
+    float result = raw_uvec3_length(a);
+    raw___he_update_full_trace_info("", "", -1);
+    return result;
+}
+
+inline void full_trace_uvec3_normalize(const char* ___file___, uint32_t ___line___, const UVec3 *const a, UVec3 *const out) {
+    raw___he_update_full_trace_info("uvec3_normalize", ___file___, ___line___);
+    raw_uvec3_normalize(a, out);
+    raw___he_update_full_trace_info("", "", -1);
+}
+
+inline float full_trace_uvec3_distance(const char* ___file___, uint32_t ___line___, const UVec3 *const a, const UVec3 *const b) {
+    raw___he_update_full_trace_info("uvec3_distance", ___file___, ___line___);
+    float result = raw_uvec3_distance(a, b);
+    raw___he_update_full_trace_info("", "", -1);
+    return result;
+}
+
+inline void full_trace_uvec3_add_in(const char* ___file___, uint32_t ___line___, UVec3 *const to, const UVec3 *const what) {
+    raw___he_update_full_trace_info("uvec3_add_in", ___file___, ___line___);
+    raw_uvec3_add_in(to, what);
+    raw___he_update_full_trace_info("", "", -1);
+}
+
+inline void full_trace_uvec3_sub_in(const char* ___file___, uint32_t ___line___, UVec3 *const from, const UVec3 *const what) {
+    raw___he_update_full_trace_info("uvec3_sub_in", ___file___, ___line___);
+    raw_uvec3_sub_in(from, what);
+    raw___he_update_full_trace_info("", "", -1);
+}
+
+inline void full_trace_uvec3_scale_in(const char* ___file___, uint32_t ___line___, UVec3 *const to, const float factor) {
+    raw___he_update_full_trace_info("uvec3_scale_in", ___file___, ___line___);
+    raw_uvec3_scale_in(to, factor);
+    raw___he_update_full_trace_info("", "", -1);
+}
+
+inline void full_trace_uvec3_normalize_in(const char* ___file___, uint32_t ___line___, UVec3 *const a) {
+    raw___he_update_full_trace_info("uvec3_normalize_in", ___file___, ___line___);
+    raw_uvec3_normalize_in(a);
+    raw___he_update_full_trace_info("", "", -1);
+}
+
+inline void full_trace_uvec4_init(const char* ___file___, uint32_t ___line___, u32 x, u32 y, u32 z, u32 w, UVec4 *const out) {
+    raw___he_update_full_trace_info("uvec4_init", ___file___, ___line___);
+    raw_uvec4_init(x, y, z, w, out);
+    raw___he_update_full_trace_info("", "", -1);
+}
+
+inline void full_trace_uvec4_add(const char* ___file___, uint32_t ___line___, const UVec4 *const a, const UVec4 *const b, UVec4 *const out) {
+    raw___he_update_full_trace_info("uvec4_add", ___file___, ___line___);
+    raw_uvec4_add(a, b, out);
+    raw___he_update_full_trace_info("", "", -1);
+}
+
+inline void full_trace_uvec4_sub(const char* ___file___, uint32_t ___line___, const UVec4 *const a, const UVec4 *const b, UVec4 *const out) {
+    raw___he_update_full_trace_info("uvec4_sub", ___file___, ___line___);
+    raw_uvec4_sub(a, b, out);
+    raw___he_update_full_trace_info("", "", -1);
+}
+
+inline void full_trace_uvec4_scale(const char* ___file___, uint32_t ___line___, const UVec4 *const a, const float factor, UVec4 *const out) {
+    raw___he_update_full_trace_info("uvec4_scale", ___file___, ___line___);
+    raw_uvec4_scale(a, factor, out);
+    raw___he_update_full_trace_info("", "", -1);
+}
+
+inline float full_trace_uvec4_dot(const char* ___file___, uint32_t ___line___, const UVec4 *const a, const UVec4 *const b) {
+    raw___he_update_full_trace_info("uvec4_dot", ___file___, ___line___);
+    float result = raw_uvec4_dot(a, b);
+    raw___he_update_full_trace_info("", "", -1);
+    return result;
+}
+
+inline float full_trace_uvec4_length(const char* ___file___, uint32_t ___line___, const UVec4 *const a) {
+    raw___he_update_full_trace_info("uvec4_length", ___file___, ___line___);
+    float result = raw_uvec4_length(a);
+    raw___he_update_full_trace_info("", "", -1);
+    return result;
+}
+
+inline void full_trace_uvec4_normalize(const char* ___file___, uint32_t ___line___, const UVec4 *const a, UVec4 *const out) {
+    raw___he_update_full_trace_info("uvec4_normalize", ___file___, ___line___);
+    raw_uvec4_normalize(a, out);
+    raw___he_update_full_trace_info("", "", -1);
+}
+
+inline float full_trace_uvec4_distance(const char* ___file___, uint32_t ___line___, const UVec4 *const a, const UVec4 *const b) {
+    raw___he_update_full_trace_info("uvec4_distance", ___file___, ___line___);
+    float result = raw_uvec4_distance(a, b);
+    raw___he_update_full_trace_info("", "", -1);
+    return result;
+}
+
+inline void full_trace_uvec4_add_in(const char* ___file___, uint32_t ___line___, UVec4 *const to, const UVec4 *const what) {
+    raw___he_update_full_trace_info("uvec4_add_in", ___file___, ___line___);
+    raw_uvec4_add_in(to, what);
+    raw___he_update_full_trace_info("", "", -1);
+}
+
+inline void full_trace_uvec4_sub_in(const char* ___file___, uint32_t ___line___, UVec4 *const from, const UVec4 *const what) {
+    raw___he_update_full_trace_info("uvec4_sub_in", ___file___, ___line___);
+    raw_uvec4_sub_in(from, what);
+    raw___he_update_full_trace_info("", "", -1);
+}
+
+inline void full_trace_uvec4_scale_in(const char* ___file___, uint32_t ___line___, UVec4 *const to, const float factor) {
+    raw___he_update_full_trace_info("uvec4_scale_in", ___file___, ___line___);
+    raw_uvec4_scale_in(to, factor);
+    raw___he_update_full_trace_info("", "", -1);
+}
+
+inline void full_trace_uvec4_normalize_in(const char* ___file___, uint32_t ___line___, UVec4 *const a) {
+    raw___he_update_full_trace_info("uvec4_normalize_in", ___file___, ___line___);
+    raw_uvec4_normalize_in(a);
     raw___he_update_full_trace_info("", "", -1);
 }
 
@@ -6558,393 +6962,6 @@ inline void full_trace_vec3_scale_in(const char* ___file___, uint32_t ___line___
 inline void full_trace_vec3_normalize_in(const char* ___file___, uint32_t ___line___, Vec3 *const a) {
     raw___he_update_full_trace_info("vec3_normalize_in", ___file___, ___line___);
     raw_vec3_normalize_in(a);
-    raw___he_update_full_trace_info("", "", -1);
-}
-
-inline void full_trace_uvec3_init(const char* ___file___, uint32_t ___line___, u32 x, u32 y, u32 z, UVec3 *const out) {
-    raw___he_update_full_trace_info("uvec3_init", ___file___, ___line___);
-    raw_uvec3_init(x, y, z, out);
-    raw___he_update_full_trace_info("", "", -1);
-}
-
-inline void full_trace_uvec3_add(const char* ___file___, uint32_t ___line___, const UVec3 *const a, const UVec3 *const b, UVec3 *const out) {
-    raw___he_update_full_trace_info("uvec3_add", ___file___, ___line___);
-    raw_uvec3_add(a, b, out);
-    raw___he_update_full_trace_info("", "", -1);
-}
-
-inline void full_trace_uvec3_sub(const char* ___file___, uint32_t ___line___, const UVec3 *const a, const UVec3 *const b, UVec3 *const out) {
-    raw___he_update_full_trace_info("uvec3_sub", ___file___, ___line___);
-    raw_uvec3_sub(a, b, out);
-    raw___he_update_full_trace_info("", "", -1);
-}
-
-inline void full_trace_uvec3_scale(const char* ___file___, uint32_t ___line___, const UVec3 *const a, const float factor, UVec3 *const out) {
-    raw___he_update_full_trace_info("uvec3_scale", ___file___, ___line___);
-    raw_uvec3_scale(a, factor, out);
-    raw___he_update_full_trace_info("", "", -1);
-}
-
-inline void full_trace_uvec3_cross(const char* ___file___, uint32_t ___line___, const UVec3 *const a, const UVec3 *const b, UVec3 *const out) {
-    raw___he_update_full_trace_info("uvec3_cross", ___file___, ___line___);
-    raw_uvec3_cross(a, b, out);
-    raw___he_update_full_trace_info("", "", -1);
-}
-
-inline float full_trace_uvec3_dot(const char* ___file___, uint32_t ___line___, const UVec3 *const a, const UVec3 *const b) {
-    raw___he_update_full_trace_info("uvec3_dot", ___file___, ___line___);
-    float result = raw_uvec3_dot(a, b);
-    raw___he_update_full_trace_info("", "", -1);
-    return result;
-}
-
-inline float full_trace_uvec3_length(const char* ___file___, uint32_t ___line___, const UVec3 *const a) {
-    raw___he_update_full_trace_info("uvec3_length", ___file___, ___line___);
-    float result = raw_uvec3_length(a);
-    raw___he_update_full_trace_info("", "", -1);
-    return result;
-}
-
-inline void full_trace_uvec3_normalize(const char* ___file___, uint32_t ___line___, const UVec3 *const a, UVec3 *const out) {
-    raw___he_update_full_trace_info("uvec3_normalize", ___file___, ___line___);
-    raw_uvec3_normalize(a, out);
-    raw___he_update_full_trace_info("", "", -1);
-}
-
-inline float full_trace_uvec3_distance(const char* ___file___, uint32_t ___line___, const UVec3 *const a, const UVec3 *const b) {
-    raw___he_update_full_trace_info("uvec3_distance", ___file___, ___line___);
-    float result = raw_uvec3_distance(a, b);
-    raw___he_update_full_trace_info("", "", -1);
-    return result;
-}
-
-inline void full_trace_uvec3_add_in(const char* ___file___, uint32_t ___line___, UVec3 *const to, const UVec3 *const what) {
-    raw___he_update_full_trace_info("uvec3_add_in", ___file___, ___line___);
-    raw_uvec3_add_in(to, what);
-    raw___he_update_full_trace_info("", "", -1);
-}
-
-inline void full_trace_uvec3_sub_in(const char* ___file___, uint32_t ___line___, UVec3 *const from, const UVec3 *const what) {
-    raw___he_update_full_trace_info("uvec3_sub_in", ___file___, ___line___);
-    raw_uvec3_sub_in(from, what);
-    raw___he_update_full_trace_info("", "", -1);
-}
-
-inline void full_trace_uvec3_scale_in(const char* ___file___, uint32_t ___line___, UVec3 *const to, const float factor) {
-    raw___he_update_full_trace_info("uvec3_scale_in", ___file___, ___line___);
-    raw_uvec3_scale_in(to, factor);
-    raw___he_update_full_trace_info("", "", -1);
-}
-
-inline void full_trace_uvec3_normalize_in(const char* ___file___, uint32_t ___line___, UVec3 *const a) {
-    raw___he_update_full_trace_info("uvec3_normalize_in", ___file___, ___line___);
-    raw_uvec3_normalize_in(a);
-    raw___he_update_full_trace_info("", "", -1);
-}
-
-inline void full_trace_uvec2_init(const char* ___file___, uint32_t ___line___, const u32 x, const u32 y, UVec2 *const out) {
-    raw___he_update_full_trace_info("uvec2_init", ___file___, ___line___);
-    raw_uvec2_init(x, y, out);
-    raw___he_update_full_trace_info("", "", -1);
-}
-
-inline void full_trace_uvec2_add(const char* ___file___, uint32_t ___line___, const UVec2 *const a, const UVec2 *const b, UVec2 *const out) {
-    raw___he_update_full_trace_info("uvec2_add", ___file___, ___line___);
-    raw_uvec2_add(a, b, out);
-    raw___he_update_full_trace_info("", "", -1);
-}
-
-inline void full_trace_uvec2_sub(const char* ___file___, uint32_t ___line___, const UVec2 *const a, const UVec2 *const b, UVec2 *const out) {
-    raw___he_update_full_trace_info("uvec2_sub", ___file___, ___line___);
-    raw_uvec2_sub(a, b, out);
-    raw___he_update_full_trace_info("", "", -1);
-}
-
-inline void full_trace_uvec2_scale(const char* ___file___, uint32_t ___line___, const UVec2 *const a, const float factor, UVec2 *const out) {
-    raw___he_update_full_trace_info("uvec2_scale", ___file___, ___line___);
-    raw_uvec2_scale(a, factor, out);
-    raw___he_update_full_trace_info("", "", -1);
-}
-
-inline float full_trace_uvec2_dot(const char* ___file___, uint32_t ___line___, const UVec2 *const a, const UVec2 *const b) {
-    raw___he_update_full_trace_info("uvec2_dot", ___file___, ___line___);
-    float result = raw_uvec2_dot(a, b);
-    raw___he_update_full_trace_info("", "", -1);
-    return result;
-}
-
-inline float full_trace_uvec2_length(const char* ___file___, uint32_t ___line___, const UVec2 *const a) {
-    raw___he_update_full_trace_info("uvec2_length", ___file___, ___line___);
-    float result = raw_uvec2_length(a);
-    raw___he_update_full_trace_info("", "", -1);
-    return result;
-}
-
-inline void full_trace_uvec2_normalize(const char* ___file___, uint32_t ___line___, const UVec2 *const a, UVec2 *const out) {
-    raw___he_update_full_trace_info("uvec2_normalize", ___file___, ___line___);
-    raw_uvec2_normalize(a, out);
-    raw___he_update_full_trace_info("", "", -1);
-}
-
-inline float full_trace_uvec2_distance(const char* ___file___, uint32_t ___line___, const UVec2 *const a, const UVec2 *const b) {
-    raw___he_update_full_trace_info("uvec2_distance", ___file___, ___line___);
-    float result = raw_uvec2_distance(a, b);
-    raw___he_update_full_trace_info("", "", -1);
-    return result;
-}
-
-inline void full_trace_uvec2_add_in(const char* ___file___, uint32_t ___line___, UVec2 *const to, const UVec2 *const what) {
-    raw___he_update_full_trace_info("uvec2_add_in", ___file___, ___line___);
-    raw_uvec2_add_in(to, what);
-    raw___he_update_full_trace_info("", "", -1);
-}
-
-inline void full_trace_uvec2_sub_in(const char* ___file___, uint32_t ___line___, UVec2 *const from, const UVec2 *const what) {
-    raw___he_update_full_trace_info("uvec2_sub_in", ___file___, ___line___);
-    raw_uvec2_sub_in(from, what);
-    raw___he_update_full_trace_info("", "", -1);
-}
-
-inline void full_trace_uvec2_scale_in(const char* ___file___, uint32_t ___line___, UVec2 *const to, const float factor) {
-    raw___he_update_full_trace_info("uvec2_scale_in", ___file___, ___line___);
-    raw_uvec2_scale_in(to, factor);
-    raw___he_update_full_trace_info("", "", -1);
-}
-
-inline void full_trace_uvec2_normalize_in(const char* ___file___, uint32_t ___line___, UVec2 *const a) {
-    raw___he_update_full_trace_info("uvec2_normalize_in", ___file___, ___line___);
-    raw_uvec2_normalize_in(a);
-    raw___he_update_full_trace_info("", "", -1);
-}
-
-inline void full_trace_ivec4_init(const char* ___file___, uint32_t ___line___, i32 x, i32 y, i32 z, i32 w, IVec4 *const out) {
-    raw___he_update_full_trace_info("ivec4_init", ___file___, ___line___);
-    raw_ivec4_init(x, y, z, w, out);
-    raw___he_update_full_trace_info("", "", -1);
-}
-
-inline void full_trace_ivec4_add(const char* ___file___, uint32_t ___line___, const IVec4 *const a, const IVec4 *const b, IVec4 *const out) {
-    raw___he_update_full_trace_info("ivec4_add", ___file___, ___line___);
-    raw_ivec4_add(a, b, out);
-    raw___he_update_full_trace_info("", "", -1);
-}
-
-inline void full_trace_ivec4_sub(const char* ___file___, uint32_t ___line___, const IVec4 *const a, const IVec4 *const b, IVec4 *const out) {
-    raw___he_update_full_trace_info("ivec4_sub", ___file___, ___line___);
-    raw_ivec4_sub(a, b, out);
-    raw___he_update_full_trace_info("", "", -1);
-}
-
-inline void full_trace_ivec4_scale(const char* ___file___, uint32_t ___line___, const IVec4 *const a, const float factor, IVec4 *const out) {
-    raw___he_update_full_trace_info("ivec4_scale", ___file___, ___line___);
-    raw_ivec4_scale(a, factor, out);
-    raw___he_update_full_trace_info("", "", -1);
-}
-
-inline float full_trace_ivec4_dot(const char* ___file___, uint32_t ___line___, const IVec4 *const a, const IVec4 *const b) {
-    raw___he_update_full_trace_info("ivec4_dot", ___file___, ___line___);
-    float result = raw_ivec4_dot(a, b);
-    raw___he_update_full_trace_info("", "", -1);
-    return result;
-}
-
-inline float full_trace_ivec4_length(const char* ___file___, uint32_t ___line___, const IVec4 *const a) {
-    raw___he_update_full_trace_info("ivec4_length", ___file___, ___line___);
-    float result = raw_ivec4_length(a);
-    raw___he_update_full_trace_info("", "", -1);
-    return result;
-}
-
-inline void full_trace_ivec4_normalize(const char* ___file___, uint32_t ___line___, const IVec4 *const a, IVec4 *const out) {
-    raw___he_update_full_trace_info("ivec4_normalize", ___file___, ___line___);
-    raw_ivec4_normalize(a, out);
-    raw___he_update_full_trace_info("", "", -1);
-}
-
-inline float full_trace_ivec4_distance(const char* ___file___, uint32_t ___line___, const IVec4 *const a, const IVec4 *const b) {
-    raw___he_update_full_trace_info("ivec4_distance", ___file___, ___line___);
-    float result = raw_ivec4_distance(a, b);
-    raw___he_update_full_trace_info("", "", -1);
-    return result;
-}
-
-inline void full_trace_ivec4_add_in(const char* ___file___, uint32_t ___line___, IVec4 *const to, const IVec4 *const what) {
-    raw___he_update_full_trace_info("ivec4_add_in", ___file___, ___line___);
-    raw_ivec4_add_in(to, what);
-    raw___he_update_full_trace_info("", "", -1);
-}
-
-inline void full_trace_ivec4_sub_in(const char* ___file___, uint32_t ___line___, IVec4 *const from, const IVec4 *const what) {
-    raw___he_update_full_trace_info("ivec4_sub_in", ___file___, ___line___);
-    raw_ivec4_sub_in(from, what);
-    raw___he_update_full_trace_info("", "", -1);
-}
-
-inline void full_trace_ivec4_scale_in(const char* ___file___, uint32_t ___line___, IVec4 *const to, const float factor) {
-    raw___he_update_full_trace_info("ivec4_scale_in", ___file___, ___line___);
-    raw_ivec4_scale_in(to, factor);
-    raw___he_update_full_trace_info("", "", -1);
-}
-
-inline void full_trace_ivec4_normalize_in(const char* ___file___, uint32_t ___line___, IVec4 *const a) {
-    raw___he_update_full_trace_info("ivec4_normalize_in", ___file___, ___line___);
-    raw_ivec4_normalize_in(a);
-    raw___he_update_full_trace_info("", "", -1);
-}
-
-inline void full_trace_uvec4_init(const char* ___file___, uint32_t ___line___, u32 x, u32 y, u32 z, u32 w, UVec4 *const out) {
-    raw___he_update_full_trace_info("uvec4_init", ___file___, ___line___);
-    raw_uvec4_init(x, y, z, w, out);
-    raw___he_update_full_trace_info("", "", -1);
-}
-
-inline void full_trace_uvec4_add(const char* ___file___, uint32_t ___line___, const UVec4 *const a, const UVec4 *const b, UVec4 *const out) {
-    raw___he_update_full_trace_info("uvec4_add", ___file___, ___line___);
-    raw_uvec4_add(a, b, out);
-    raw___he_update_full_trace_info("", "", -1);
-}
-
-inline void full_trace_uvec4_sub(const char* ___file___, uint32_t ___line___, const UVec4 *const a, const UVec4 *const b, UVec4 *const out) {
-    raw___he_update_full_trace_info("uvec4_sub", ___file___, ___line___);
-    raw_uvec4_sub(a, b, out);
-    raw___he_update_full_trace_info("", "", -1);
-}
-
-inline void full_trace_uvec4_scale(const char* ___file___, uint32_t ___line___, const UVec4 *const a, const float factor, UVec4 *const out) {
-    raw___he_update_full_trace_info("uvec4_scale", ___file___, ___line___);
-    raw_uvec4_scale(a, factor, out);
-    raw___he_update_full_trace_info("", "", -1);
-}
-
-inline float full_trace_uvec4_dot(const char* ___file___, uint32_t ___line___, const UVec4 *const a, const UVec4 *const b) {
-    raw___he_update_full_trace_info("uvec4_dot", ___file___, ___line___);
-    float result = raw_uvec4_dot(a, b);
-    raw___he_update_full_trace_info("", "", -1);
-    return result;
-}
-
-inline float full_trace_uvec4_length(const char* ___file___, uint32_t ___line___, const UVec4 *const a) {
-    raw___he_update_full_trace_info("uvec4_length", ___file___, ___line___);
-    float result = raw_uvec4_length(a);
-    raw___he_update_full_trace_info("", "", -1);
-    return result;
-}
-
-inline void full_trace_uvec4_normalize(const char* ___file___, uint32_t ___line___, const UVec4 *const a, UVec4 *const out) {
-    raw___he_update_full_trace_info("uvec4_normalize", ___file___, ___line___);
-    raw_uvec4_normalize(a, out);
-    raw___he_update_full_trace_info("", "", -1);
-}
-
-inline float full_trace_uvec4_distance(const char* ___file___, uint32_t ___line___, const UVec4 *const a, const UVec4 *const b) {
-    raw___he_update_full_trace_info("uvec4_distance", ___file___, ___line___);
-    float result = raw_uvec4_distance(a, b);
-    raw___he_update_full_trace_info("", "", -1);
-    return result;
-}
-
-inline void full_trace_uvec4_add_in(const char* ___file___, uint32_t ___line___, UVec4 *const to, const UVec4 *const what) {
-    raw___he_update_full_trace_info("uvec4_add_in", ___file___, ___line___);
-    raw_uvec4_add_in(to, what);
-    raw___he_update_full_trace_info("", "", -1);
-}
-
-inline void full_trace_uvec4_sub_in(const char* ___file___, uint32_t ___line___, UVec4 *const from, const UVec4 *const what) {
-    raw___he_update_full_trace_info("uvec4_sub_in", ___file___, ___line___);
-    raw_uvec4_sub_in(from, what);
-    raw___he_update_full_trace_info("", "", -1);
-}
-
-inline void full_trace_uvec4_scale_in(const char* ___file___, uint32_t ___line___, UVec4 *const to, const float factor) {
-    raw___he_update_full_trace_info("uvec4_scale_in", ___file___, ___line___);
-    raw_uvec4_scale_in(to, factor);
-    raw___he_update_full_trace_info("", "", -1);
-}
-
-inline void full_trace_uvec4_normalize_in(const char* ___file___, uint32_t ___line___, UVec4 *const a) {
-    raw___he_update_full_trace_info("uvec4_normalize_in", ___file___, ___line___);
-    raw_uvec4_normalize_in(a);
-    raw___he_update_full_trace_info("", "", -1);
-}
-
-inline void full_trace_ivec3_init(const char* ___file___, uint32_t ___line___, i32 x, i32 y, i32 z, IVec3 *const out) {
-    raw___he_update_full_trace_info("ivec3_init", ___file___, ___line___);
-    raw_ivec3_init(x, y, z, out);
-    raw___he_update_full_trace_info("", "", -1);
-}
-
-inline void full_trace_ivec3_add(const char* ___file___, uint32_t ___line___, const IVec3 *const a, const IVec3 *const b, IVec3 *const out) {
-    raw___he_update_full_trace_info("ivec3_add", ___file___, ___line___);
-    raw_ivec3_add(a, b, out);
-    raw___he_update_full_trace_info("", "", -1);
-}
-
-inline void full_trace_ivec3_sub(const char* ___file___, uint32_t ___line___, const IVec3 *const a, const IVec3 *const b, IVec3 *const out) {
-    raw___he_update_full_trace_info("ivec3_sub", ___file___, ___line___);
-    raw_ivec3_sub(a, b, out);
-    raw___he_update_full_trace_info("", "", -1);
-}
-
-inline void full_trace_ivec3_scale(const char* ___file___, uint32_t ___line___, const IVec3 *const a, const float factor, IVec3 *const out) {
-    raw___he_update_full_trace_info("ivec3_scale", ___file___, ___line___);
-    raw_ivec3_scale(a, factor, out);
-    raw___he_update_full_trace_info("", "", -1);
-}
-
-inline void full_trace_ivec3_cross(const char* ___file___, uint32_t ___line___, const IVec3 *const a, const IVec3 *const b, IVec3 *const out) {
-    raw___he_update_full_trace_info("ivec3_cross", ___file___, ___line___);
-    raw_ivec3_cross(a, b, out);
-    raw___he_update_full_trace_info("", "", -1);
-}
-
-inline float full_trace_ivec3_dot(const char* ___file___, uint32_t ___line___, const IVec3 *const a, const IVec3 *const b) {
-    raw___he_update_full_trace_info("ivec3_dot", ___file___, ___line___);
-    float result = raw_ivec3_dot(a, b);
-    raw___he_update_full_trace_info("", "", -1);
-    return result;
-}
-
-inline float full_trace_ivec3_length(const char* ___file___, uint32_t ___line___, const IVec3 *const a) {
-    raw___he_update_full_trace_info("ivec3_length", ___file___, ___line___);
-    float result = raw_ivec3_length(a);
-    raw___he_update_full_trace_info("", "", -1);
-    return result;
-}
-
-inline void full_trace_ivec3_normalize(const char* ___file___, uint32_t ___line___, const IVec3 *const a, IVec3 *const out) {
-    raw___he_update_full_trace_info("ivec3_normalize", ___file___, ___line___);
-    raw_ivec3_normalize(a, out);
-    raw___he_update_full_trace_info("", "", -1);
-}
-
-inline float full_trace_ivec3_distance(const char* ___file___, uint32_t ___line___, const IVec3 *const a, const IVec3 *const b) {
-    raw___he_update_full_trace_info("ivec3_distance", ___file___, ___line___);
-    float result = raw_ivec3_distance(a, b);
-    raw___he_update_full_trace_info("", "", -1);
-    return result;
-}
-
-inline void full_trace_ivec3_add_in(const char* ___file___, uint32_t ___line___, IVec3 *const to, const IVec3 *const what) {
-    raw___he_update_full_trace_info("ivec3_add_in", ___file___, ___line___);
-    raw_ivec3_add_in(to, what);
-    raw___he_update_full_trace_info("", "", -1);
-}
-
-inline void full_trace_ivec3_sub_in(const char* ___file___, uint32_t ___line___, IVec3 *const from, const IVec3 *const what) {
-    raw___he_update_full_trace_info("ivec3_sub_in", ___file___, ___line___);
-    raw_ivec3_sub_in(from, what);
-    raw___he_update_full_trace_info("", "", -1);
-}
-
-inline void full_trace_ivec3_scale_in(const char* ___file___, uint32_t ___line___, IVec3 *const to, const float factor) {
-    raw___he_update_full_trace_info("ivec3_scale_in", ___file___, ___line___);
-    raw_ivec3_scale_in(to, factor);
-    raw___he_update_full_trace_info("", "", -1);
-}
-
-inline void full_trace_ivec3_normalize_in(const char* ___file___, uint32_t ___line___, IVec3 *const a) {
-    raw___he_update_full_trace_info("ivec3_normalize_in", ___file___, ___line___);
-    raw_ivec3_normalize_in(a);
     raw___he_update_full_trace_info("", "", -1);
 }
 
@@ -7782,6 +7799,15 @@ inline fptr full_trace_render_context_get_proc_addr(const char* ___file___, uint
 #define canvas_item_new(name) full_trace_canvas_item_new(__FILE__, __LINE__, name)
 #define control_new(name) full_trace_control_new(__FILE__, __LINE__, name)
 #define viewport_new(name) full_trace_viewport_new(__FILE__, __LINE__, name)
+#define mat4_init(m00, m01, m02, m03, m10, m11, m12, m13, m20, m21, m22, m23, m30, m31, m32, m33, out) full_trace_mat4_init(__FILE__, __LINE__, m00, m01, m02, m03, m10, m11, m12, m13, m20, m21, m22, m23, m30, m31, m32, m33, out)
+#define mat4_from_array(array, out) full_trace_mat4_from_array(__FILE__, __LINE__, array, out)
+#define mat4_clone(a, out) full_trace_mat4_clone(__FILE__, __LINE__, a, out)
+#define mat4_add(a, b, out) full_trace_mat4_add(__FILE__, __LINE__, a, b, out)
+#define mat4_sub(a, b, out) full_trace_mat4_sub(__FILE__, __LINE__, a, b, out)
+#define mat4_mul(a, b, out) full_trace_mat4_mul(__FILE__, __LINE__, a, b, out)
+#define mat4_scale(a, factor, out) full_trace_mat4_scale(__FILE__, __LINE__, a, factor, out)
+#define mat4_transpose(a, out) full_trace_mat4_transpose(__FILE__, __LINE__, a, out)
+#define mat4_inverse(a, out) full_trace_mat4_inverse(__FILE__, __LINE__, a, out)
 #define ivec2_init(x, y, out) full_trace_ivec2_init(__FILE__, __LINE__, x, y, out)
 #define ivec2_add(a, b, out) full_trace_ivec2_add(__FILE__, __LINE__, a, b, out)
 #define ivec2_sub(a, b, out) full_trace_ivec2_sub(__FILE__, __LINE__, a, b, out)
@@ -7794,15 +7820,68 @@ inline fptr full_trace_render_context_get_proc_addr(const char* ___file___, uint
 #define ivec2_sub_in(from, what) full_trace_ivec2_sub_in(__FILE__, __LINE__, from, what)
 #define ivec2_scale_in(to, factor) full_trace_ivec2_scale_in(__FILE__, __LINE__, to, factor)
 #define ivec2_normalize_in(a) full_trace_ivec2_normalize_in(__FILE__, __LINE__, a)
-#define mat4_init(m00, m01, m02, m03, m10, m11, m12, m13, m20, m21, m22, m23, m30, m31, m32, m33, out) full_trace_mat4_init(__FILE__, __LINE__, m00, m01, m02, m03, m10, m11, m12, m13, m20, m21, m22, m23, m30, m31, m32, m33, out)
-#define mat4_from_array(array, out) full_trace_mat4_from_array(__FILE__, __LINE__, array, out)
-#define mat4_clone(a, out) full_trace_mat4_clone(__FILE__, __LINE__, a, out)
-#define mat4_add(a, b, out) full_trace_mat4_add(__FILE__, __LINE__, a, b, out)
-#define mat4_sub(a, b, out) full_trace_mat4_sub(__FILE__, __LINE__, a, b, out)
-#define mat4_mul(a, b, out) full_trace_mat4_mul(__FILE__, __LINE__, a, b, out)
-#define mat4_scale(a, factor, out) full_trace_mat4_scale(__FILE__, __LINE__, a, factor, out)
-#define mat4_transpose(a, out) full_trace_mat4_transpose(__FILE__, __LINE__, a, out)
-#define mat4_inverse(a, out) full_trace_mat4_inverse(__FILE__, __LINE__, a, out)
+#define ivec3_init(x, y, z, out) full_trace_ivec3_init(__FILE__, __LINE__, x, y, z, out)
+#define ivec3_add(a, b, out) full_trace_ivec3_add(__FILE__, __LINE__, a, b, out)
+#define ivec3_sub(a, b, out) full_trace_ivec3_sub(__FILE__, __LINE__, a, b, out)
+#define ivec3_scale(a, factor, out) full_trace_ivec3_scale(__FILE__, __LINE__, a, factor, out)
+#define ivec3_cross(a, b, out) full_trace_ivec3_cross(__FILE__, __LINE__, a, b, out)
+#define ivec3_dot(a, b) full_trace_ivec3_dot(__FILE__, __LINE__, a, b)
+#define ivec3_length(a) full_trace_ivec3_length(__FILE__, __LINE__, a)
+#define ivec3_normalize(a, out) full_trace_ivec3_normalize(__FILE__, __LINE__, a, out)
+#define ivec3_distance(a, b) full_trace_ivec3_distance(__FILE__, __LINE__, a, b)
+#define ivec3_add_in(to, what) full_trace_ivec3_add_in(__FILE__, __LINE__, to, what)
+#define ivec3_sub_in(from, what) full_trace_ivec3_sub_in(__FILE__, __LINE__, from, what)
+#define ivec3_scale_in(to, factor) full_trace_ivec3_scale_in(__FILE__, __LINE__, to, factor)
+#define ivec3_normalize_in(a) full_trace_ivec3_normalize_in(__FILE__, __LINE__, a)
+#define ivec4_init(x, y, z, w, out) full_trace_ivec4_init(__FILE__, __LINE__, x, y, z, w, out)
+#define ivec4_add(a, b, out) full_trace_ivec4_add(__FILE__, __LINE__, a, b, out)
+#define ivec4_sub(a, b, out) full_trace_ivec4_sub(__FILE__, __LINE__, a, b, out)
+#define ivec4_scale(a, factor, out) full_trace_ivec4_scale(__FILE__, __LINE__, a, factor, out)
+#define ivec4_dot(a, b) full_trace_ivec4_dot(__FILE__, __LINE__, a, b)
+#define ivec4_length(a) full_trace_ivec4_length(__FILE__, __LINE__, a)
+#define ivec4_normalize(a, out) full_trace_ivec4_normalize(__FILE__, __LINE__, a, out)
+#define ivec4_distance(a, b) full_trace_ivec4_distance(__FILE__, __LINE__, a, b)
+#define ivec4_add_in(to, what) full_trace_ivec4_add_in(__FILE__, __LINE__, to, what)
+#define ivec4_sub_in(from, what) full_trace_ivec4_sub_in(__FILE__, __LINE__, from, what)
+#define ivec4_scale_in(to, factor) full_trace_ivec4_scale_in(__FILE__, __LINE__, to, factor)
+#define ivec4_normalize_in(a) full_trace_ivec4_normalize_in(__FILE__, __LINE__, a)
+#define uvec2_init(x, y, out) full_trace_uvec2_init(__FILE__, __LINE__, x, y, out)
+#define uvec2_add(a, b, out) full_trace_uvec2_add(__FILE__, __LINE__, a, b, out)
+#define uvec2_sub(a, b, out) full_trace_uvec2_sub(__FILE__, __LINE__, a, b, out)
+#define uvec2_scale(a, factor, out) full_trace_uvec2_scale(__FILE__, __LINE__, a, factor, out)
+#define uvec2_dot(a, b) full_trace_uvec2_dot(__FILE__, __LINE__, a, b)
+#define uvec2_length(a) full_trace_uvec2_length(__FILE__, __LINE__, a)
+#define uvec2_normalize(a, out) full_trace_uvec2_normalize(__FILE__, __LINE__, a, out)
+#define uvec2_distance(a, b) full_trace_uvec2_distance(__FILE__, __LINE__, a, b)
+#define uvec2_add_in(to, what) full_trace_uvec2_add_in(__FILE__, __LINE__, to, what)
+#define uvec2_sub_in(from, what) full_trace_uvec2_sub_in(__FILE__, __LINE__, from, what)
+#define uvec2_scale_in(to, factor) full_trace_uvec2_scale_in(__FILE__, __LINE__, to, factor)
+#define uvec2_normalize_in(a) full_trace_uvec2_normalize_in(__FILE__, __LINE__, a)
+#define uvec3_init(x, y, z, out) full_trace_uvec3_init(__FILE__, __LINE__, x, y, z, out)
+#define uvec3_add(a, b, out) full_trace_uvec3_add(__FILE__, __LINE__, a, b, out)
+#define uvec3_sub(a, b, out) full_trace_uvec3_sub(__FILE__, __LINE__, a, b, out)
+#define uvec3_scale(a, factor, out) full_trace_uvec3_scale(__FILE__, __LINE__, a, factor, out)
+#define uvec3_cross(a, b, out) full_trace_uvec3_cross(__FILE__, __LINE__, a, b, out)
+#define uvec3_dot(a, b) full_trace_uvec3_dot(__FILE__, __LINE__, a, b)
+#define uvec3_length(a) full_trace_uvec3_length(__FILE__, __LINE__, a)
+#define uvec3_normalize(a, out) full_trace_uvec3_normalize(__FILE__, __LINE__, a, out)
+#define uvec3_distance(a, b) full_trace_uvec3_distance(__FILE__, __LINE__, a, b)
+#define uvec3_add_in(to, what) full_trace_uvec3_add_in(__FILE__, __LINE__, to, what)
+#define uvec3_sub_in(from, what) full_trace_uvec3_sub_in(__FILE__, __LINE__, from, what)
+#define uvec3_scale_in(to, factor) full_trace_uvec3_scale_in(__FILE__, __LINE__, to, factor)
+#define uvec3_normalize_in(a) full_trace_uvec3_normalize_in(__FILE__, __LINE__, a)
+#define uvec4_init(x, y, z, w, out) full_trace_uvec4_init(__FILE__, __LINE__, x, y, z, w, out)
+#define uvec4_add(a, b, out) full_trace_uvec4_add(__FILE__, __LINE__, a, b, out)
+#define uvec4_sub(a, b, out) full_trace_uvec4_sub(__FILE__, __LINE__, a, b, out)
+#define uvec4_scale(a, factor, out) full_trace_uvec4_scale(__FILE__, __LINE__, a, factor, out)
+#define uvec4_dot(a, b) full_trace_uvec4_dot(__FILE__, __LINE__, a, b)
+#define uvec4_length(a) full_trace_uvec4_length(__FILE__, __LINE__, a)
+#define uvec4_normalize(a, out) full_trace_uvec4_normalize(__FILE__, __LINE__, a, out)
+#define uvec4_distance(a, b) full_trace_uvec4_distance(__FILE__, __LINE__, a, b)
+#define uvec4_add_in(to, what) full_trace_uvec4_add_in(__FILE__, __LINE__, to, what)
+#define uvec4_sub_in(from, what) full_trace_uvec4_sub_in(__FILE__, __LINE__, from, what)
+#define uvec4_scale_in(to, factor) full_trace_uvec4_scale_in(__FILE__, __LINE__, to, factor)
+#define uvec4_normalize_in(a) full_trace_uvec4_normalize_in(__FILE__, __LINE__, a)
 #define vec2_init(x, y, out) full_trace_vec2_init(__FILE__, __LINE__, x, y, out)
 #define vec2_add(a, b, out) full_trace_vec2_add(__FILE__, __LINE__, a, b, out)
 #define vec2_sub(a, b, out) full_trace_vec2_sub(__FILE__, __LINE__, a, b, out)
@@ -7828,68 +7907,6 @@ inline fptr full_trace_render_context_get_proc_addr(const char* ___file___, uint
 #define vec3_sub_in(from, what) full_trace_vec3_sub_in(__FILE__, __LINE__, from, what)
 #define vec3_scale_in(to, factor) full_trace_vec3_scale_in(__FILE__, __LINE__, to, factor)
 #define vec3_normalize_in(a) full_trace_vec3_normalize_in(__FILE__, __LINE__, a)
-#define uvec3_init(x, y, z, out) full_trace_uvec3_init(__FILE__, __LINE__, x, y, z, out)
-#define uvec3_add(a, b, out) full_trace_uvec3_add(__FILE__, __LINE__, a, b, out)
-#define uvec3_sub(a, b, out) full_trace_uvec3_sub(__FILE__, __LINE__, a, b, out)
-#define uvec3_scale(a, factor, out) full_trace_uvec3_scale(__FILE__, __LINE__, a, factor, out)
-#define uvec3_cross(a, b, out) full_trace_uvec3_cross(__FILE__, __LINE__, a, b, out)
-#define uvec3_dot(a, b) full_trace_uvec3_dot(__FILE__, __LINE__, a, b)
-#define uvec3_length(a) full_trace_uvec3_length(__FILE__, __LINE__, a)
-#define uvec3_normalize(a, out) full_trace_uvec3_normalize(__FILE__, __LINE__, a, out)
-#define uvec3_distance(a, b) full_trace_uvec3_distance(__FILE__, __LINE__, a, b)
-#define uvec3_add_in(to, what) full_trace_uvec3_add_in(__FILE__, __LINE__, to, what)
-#define uvec3_sub_in(from, what) full_trace_uvec3_sub_in(__FILE__, __LINE__, from, what)
-#define uvec3_scale_in(to, factor) full_trace_uvec3_scale_in(__FILE__, __LINE__, to, factor)
-#define uvec3_normalize_in(a) full_trace_uvec3_normalize_in(__FILE__, __LINE__, a)
-#define uvec2_init(x, y, out) full_trace_uvec2_init(__FILE__, __LINE__, x, y, out)
-#define uvec2_add(a, b, out) full_trace_uvec2_add(__FILE__, __LINE__, a, b, out)
-#define uvec2_sub(a, b, out) full_trace_uvec2_sub(__FILE__, __LINE__, a, b, out)
-#define uvec2_scale(a, factor, out) full_trace_uvec2_scale(__FILE__, __LINE__, a, factor, out)
-#define uvec2_dot(a, b) full_trace_uvec2_dot(__FILE__, __LINE__, a, b)
-#define uvec2_length(a) full_trace_uvec2_length(__FILE__, __LINE__, a)
-#define uvec2_normalize(a, out) full_trace_uvec2_normalize(__FILE__, __LINE__, a, out)
-#define uvec2_distance(a, b) full_trace_uvec2_distance(__FILE__, __LINE__, a, b)
-#define uvec2_add_in(to, what) full_trace_uvec2_add_in(__FILE__, __LINE__, to, what)
-#define uvec2_sub_in(from, what) full_trace_uvec2_sub_in(__FILE__, __LINE__, from, what)
-#define uvec2_scale_in(to, factor) full_trace_uvec2_scale_in(__FILE__, __LINE__, to, factor)
-#define uvec2_normalize_in(a) full_trace_uvec2_normalize_in(__FILE__, __LINE__, a)
-#define ivec4_init(x, y, z, w, out) full_trace_ivec4_init(__FILE__, __LINE__, x, y, z, w, out)
-#define ivec4_add(a, b, out) full_trace_ivec4_add(__FILE__, __LINE__, a, b, out)
-#define ivec4_sub(a, b, out) full_trace_ivec4_sub(__FILE__, __LINE__, a, b, out)
-#define ivec4_scale(a, factor, out) full_trace_ivec4_scale(__FILE__, __LINE__, a, factor, out)
-#define ivec4_dot(a, b) full_trace_ivec4_dot(__FILE__, __LINE__, a, b)
-#define ivec4_length(a) full_trace_ivec4_length(__FILE__, __LINE__, a)
-#define ivec4_normalize(a, out) full_trace_ivec4_normalize(__FILE__, __LINE__, a, out)
-#define ivec4_distance(a, b) full_trace_ivec4_distance(__FILE__, __LINE__, a, b)
-#define ivec4_add_in(to, what) full_trace_ivec4_add_in(__FILE__, __LINE__, to, what)
-#define ivec4_sub_in(from, what) full_trace_ivec4_sub_in(__FILE__, __LINE__, from, what)
-#define ivec4_scale_in(to, factor) full_trace_ivec4_scale_in(__FILE__, __LINE__, to, factor)
-#define ivec4_normalize_in(a) full_trace_ivec4_normalize_in(__FILE__, __LINE__, a)
-#define uvec4_init(x, y, z, w, out) full_trace_uvec4_init(__FILE__, __LINE__, x, y, z, w, out)
-#define uvec4_add(a, b, out) full_trace_uvec4_add(__FILE__, __LINE__, a, b, out)
-#define uvec4_sub(a, b, out) full_trace_uvec4_sub(__FILE__, __LINE__, a, b, out)
-#define uvec4_scale(a, factor, out) full_trace_uvec4_scale(__FILE__, __LINE__, a, factor, out)
-#define uvec4_dot(a, b) full_trace_uvec4_dot(__FILE__, __LINE__, a, b)
-#define uvec4_length(a) full_trace_uvec4_length(__FILE__, __LINE__, a)
-#define uvec4_normalize(a, out) full_trace_uvec4_normalize(__FILE__, __LINE__, a, out)
-#define uvec4_distance(a, b) full_trace_uvec4_distance(__FILE__, __LINE__, a, b)
-#define uvec4_add_in(to, what) full_trace_uvec4_add_in(__FILE__, __LINE__, to, what)
-#define uvec4_sub_in(from, what) full_trace_uvec4_sub_in(__FILE__, __LINE__, from, what)
-#define uvec4_scale_in(to, factor) full_trace_uvec4_scale_in(__FILE__, __LINE__, to, factor)
-#define uvec4_normalize_in(a) full_trace_uvec4_normalize_in(__FILE__, __LINE__, a)
-#define ivec3_init(x, y, z, out) full_trace_ivec3_init(__FILE__, __LINE__, x, y, z, out)
-#define ivec3_add(a, b, out) full_trace_ivec3_add(__FILE__, __LINE__, a, b, out)
-#define ivec3_sub(a, b, out) full_trace_ivec3_sub(__FILE__, __LINE__, a, b, out)
-#define ivec3_scale(a, factor, out) full_trace_ivec3_scale(__FILE__, __LINE__, a, factor, out)
-#define ivec3_cross(a, b, out) full_trace_ivec3_cross(__FILE__, __LINE__, a, b, out)
-#define ivec3_dot(a, b) full_trace_ivec3_dot(__FILE__, __LINE__, a, b)
-#define ivec3_length(a) full_trace_ivec3_length(__FILE__, __LINE__, a)
-#define ivec3_normalize(a, out) full_trace_ivec3_normalize(__FILE__, __LINE__, a, out)
-#define ivec3_distance(a, b) full_trace_ivec3_distance(__FILE__, __LINE__, a, b)
-#define ivec3_add_in(to, what) full_trace_ivec3_add_in(__FILE__, __LINE__, to, what)
-#define ivec3_sub_in(from, what) full_trace_ivec3_sub_in(__FILE__, __LINE__, from, what)
-#define ivec3_scale_in(to, factor) full_trace_ivec3_scale_in(__FILE__, __LINE__, to, factor)
-#define ivec3_normalize_in(a) full_trace_ivec3_normalize_in(__FILE__, __LINE__, a)
 #define vec4_init(x, y, z, w, out) full_trace_vec4_init(__FILE__, __LINE__, x, y, z, w, out)
 #define vec4_add(a, b, out) full_trace_vec4_add(__FILE__, __LINE__, a, b, out)
 #define vec4_sub(a, b, out) full_trace_vec4_sub(__FILE__, __LINE__, a, b, out)

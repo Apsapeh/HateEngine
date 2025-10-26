@@ -1,5 +1,6 @@
 #pragma once
 
+#include "log.h"
 #include "types/types.h"
 
 // API START
