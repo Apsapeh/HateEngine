@@ -4,34 +4,34 @@
 #define HE_MEM_NO_MACRO
 //#include <extra/full_trace.h>
 
-#include "object/node/canvas_item/control/viewport/viewport.h"
-#include "servers/render_server/render_server.h"
-#include "math/vec4.h"
-#include "object/node/canvas_item/canvas_item.h"
-#include "object/node/node.h"
-#include "math/vec2.h"
 #include "math/ivec2.h"
-#include "math/ivec3.h"
-#include "platform/datetime.h"
-#include "vfs/vfs.h"
+#include "servers/window_server/window_server.h"
+#include "object/node/node.h"
+#include "platform/mutex.h"
 #include "math/uvec2.h"
 #include "object/node/window/window.h"
-#include "types/uid.h"
-#include "platform/memory.h"
-#include "servers/render_context/render_context.h"
-#include "math/uvec4.h"
+#include "object/node/node3d/node3d.h"
+#include "math/ivec3.h"
+#include "object/node/canvas_item/canvas_item.h"
 #include "math/uvec3.h"
+#include "object/node/canvas_item/control/viewport/viewport.h"
+#include "error.h"
+#include "types/uid.h"
+#include "platform/datetime.h"
 #include "object/object.h"
 #include "math/ivec4.h"
-#include "object/node/node3d/node3d.h"
-#include "types/string.h"
-#include "platform/mutex.h"
-#include "servers/window_server/window_server.h"
-#include "math/vec3.h"
 #include "object/node/canvas_item/control/control.h"
-#include "math/mat4.h"
-#include "error.h"
+#include "math/vec2.h"
+#include "math/vec3.h"
 #include "log.h"
+#include "platform/memory.h"
+#include "math/uvec4.h"
+#include "math/mat4.h"
+#include "servers/render_server/render_server.h"
+#include "math/vec4.h"
+#include "types/string.h"
+#include "vfs/vfs.h"
+#include "servers/render_context/render_context.h"
 
 
 typedef struct {
@@ -148,18 +148,13 @@ APIFunctionLookupTable g_apiFunctionLookupTable[] = {
     {"string_free", (void*)string_free},
     {"string_from", (void*)string_from},
     {"string_from_slice", (void*)string_from_slice},
-    {"string_get_itr", (void*)string_get_itr},
     {"string_get_slice", (void*)string_get_slice},
     {"string_insert", (void*)string_insert},
     {"string_insert_by_byte", (void*)string_insert_by_byte},
     {"string_insert_cstr", (void*)string_insert_cstr},
     {"string_insert_cstr_by_byte", (void*)string_insert_cstr_by_byte},
-    {"string_insert_cstr_ex", (void*)string_insert_cstr_ex},
     {"string_insert_slice", (void*)string_insert_slice},
     {"string_insert_slice_by_byte", (void*)string_insert_slice_by_byte},
-    {"string_insert_slice_ex", (void*)string_insert_slice_ex},
-    {"string_itr_free", (void*)string_itr_free},
-    {"string_itr_next", (void*)string_itr_next},
     {"string_len", (void*)string_len},
     {"string_new", (void*)string_new},
     {"string_push_back", (void*)string_push_back},
@@ -174,6 +169,7 @@ APIFunctionLookupTable g_apiFunctionLookupTable[] = {
     {"string_remove_n_by_byte", (void*)string_remove_n_by_byte},
     {"string_set", (void*)string_set},
     {"string_set_cstr", (void*)string_set_cstr},
+    {"string_set_cstr_len", (void*)string_set_cstr_len},
     {"string_set_slice", (void*)string_set_slice},
     {"string_size", (void*)string_size},
     {"string_slice_free", (void*)string_slice_free},

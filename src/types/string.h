@@ -27,7 +27,7 @@ typedef struct {
 typedef struct {
     u8* s;
     usize len;
-} string_slice;
+} StringSlice;
 
 /**
  * @api
@@ -185,90 +185,92 @@ String* string_remove_n_by_byte(String* self, const usize b, const usize b_n);
 
 /**
  * @api
+ * @brief check on equality Strings
+ * @param str1 fisrt String
+ * @param str2 second String
  */
-// test
 boolean string_equals(const String* str1, const String* str2);
 
 /**
  * @api
+ * @brief check on equality String and char*
+ * @param str checking String
+ * @param c_str checking char*
  */
-// test
-boolean string_equals_cstr(const String* str, const char* cstr);
+boolean string_equals_cstr(const String* str, const char* c_str);
 
 /**
  * @api
+ * @brief free memory of passed String
  */
-void string_free(String* str);
+void string_free(String* self);
 
 /**
  * @api
+ * @brief get StringSlice from String
+ * @param s start point
+ * @param e end point
  */
-void string_itr_free(string_itr* str_itr);
+StringSlice* string_get_slice(const String* self, const usize s, const usize e);
 
 /**
  * @api
+ * @brief String from StringSlice
  */
-string_itr* string_get_itr(const String* c_str);
+String* string_from_slice(const StringSlice* self);
 
 /**
  * @api
+ * @brief check on equality StringsSlice
+ * @param str_sl_1 fisrt StringSlice
+ * @param str_sl_2 second StringSlice
  */
-u8 string_itr_next(string_itr* str_itr);
+boolean string_equals_slice(StringSlice* str_sl_1, StringSlice* str_sl_2);
 
 /**
  * @api
+ * @brief copy data str_sl in self
+ * @param str_sl StringSLice which from take data
  */
-string_slice* string_get_slice(const String* str, const usize s, const usize e);
+StringSlice* string_set_slice(StringSlice* self, const StringSlice* str_sl);
 
 /**
  * @api
+ * @brief add StringSlice in last of self-String
+ * @param src StringSlice that will be added
  */
-String* string_from_slice(const string_slice* str_sl);
+String* string_push_back_slice(String* self, const StringSlice* src);
 
 /**
  * @api
+ * @brief add StringSlice in front of self-String
+ * @param src StringSlice that will be added
  */
-boolean string_equals_slice(string_slice* str_sl_1, string_slice* str_sl_2);
+String* string_push_front_slice(String* self, const StringSlice* src);
+
+String* string_insert_slice_ex(String* self, const StringSlice* src, const usize i);
 
 /**
  * @api
+ * @brief insert StringSlice in String under symbol index i
+ * @param src StringSlice that will be inserted
+ * @param i   symbol index
  */
-string_slice* string_set_slice(string_slice* self, const string_slice* str_sl);
+String* string_insert_slice(String* self, const StringSlice* src, const usize i);
 
 /**
  * @api
+ * @brief insert StringSlice in String under byte index b\
+ * @param src StringSlice that will be inserted
+ * @param b   byte index
  */
-// test
-String* string_push_back_slice(String* dest, const string_slice* src);
+String* string_insert_slice_by_byte(String* self, const StringSlice* src, const usize b);
 
 /**
  * @api
+ * @brief free memory of passed StringSLice
  */
-// test
-String* string_push_front_slice(String* dest, const string_slice* src);
-
-/**
- * @api
- */
-// test
-String* string_insert_slice_ex(String* dest, const string_slice* src, const usize i);
-
-/**
- * @api
- */
-// test
-String* string_insert_slice(String* dest, const string_slice* src, const usize i);
-
-/**
- * @api
- */
-// test
-String* string_insert_slice_by_byte(String* dest, const string_slice* src, const usize b);
-
-/**
- * @api
- */
-void string_slice_free(string_slice* str_sl);
+void string_slice_free(StringSlice* self);
 
 //<--------------------------- UTF-8 --------------------------->
 
