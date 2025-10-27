@@ -1,0 +1,2 @@
+include/HateEngineAPI.h -diff -merge
+src/api_sym_lookup_table.h -diff -merge

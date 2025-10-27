@@ -597,11 +597,44 @@ typedef u8 WindowServerWindowVSync;
 typedef u8 WindowServerWindowMode;
 
 /**
+ * '\0' or 'c' - Data may be copied, may be not, depending on the backend implementation. RenderServer will own this data
+ *
+ * 'b' - Data will be borrowed. RenderServer will own this data
+ *
+ * 'p' - Data can be stored as a pointer without copying. Render server is not ownes data
+ *
+ * @api
+ */
+typedef u8 RenderServerDataOwnMode;
+
+/**
  * @brief Virtual memory ptr
  *
  * @api
  */
 typedef u32 chunk_allocator_ptr;
+
+/**
+ * @api
+ */
+typedef chunk_allocator_ptr RenderServerInstanceCPtr;
+
+/**
+ * @api
+ */
+typedef chunk_allocator_ptr RenderServerMeshCPtr;
+
+/**
+ * @api
+ */
+typedef chunk_allocator_ptr RenderServerMaterialCPtr;
+
+/**
+ * @brief 
+ * 
+ * @api
+ */
+typedef chunk_allocator_ptr RenderServerTextureCPtr;
 
 #define FS_SEEK_FROM_START 's'
 
@@ -625,6 +658,12 @@ typedef u32 chunk_allocator_ptr;
 
 #define WINDOW_SERVER_WINDOW_MODE_BORDERLESS_FULLSCREEN 'b'
 
+#define RENDER_SERVER_DATA_OWN_MODE_COPY '\0'
+
+#define RENDER_SERVER_DATA_OWN_MODE_BORROW 'w'
+
+#define RENDER_SERVER_DATA_OWN_MODE_PTR 'f'
+
 
 
 #if defined(HEAPI_COMPILE_TIME)
@@ -633,6 +672,18 @@ typedef u32 chunk_allocator_ptr;
 
 
 #else
+
+/**
+ * @brief Inner function to update the full trace info. Used for tracing with HEAPI_FULL_TRACE. Don't use
+ directly
+ *
+ * @param func function_name, "" for reset
+ * @param file "" for reset
+ * @param line -1 for reset
+
+ * @api
+ */
+extern void (*raw___he_update_full_trace_info)(const char * func, const char * file, i32 line);
 
 /**
  * @brief Set a last error that occurred on the current thread.
@@ -647,18 +698,6 @@ extern void (*raw_set_error)(Error err);
  * @api
  */
 extern Error (*raw_get_error)(void);
-
-/**
- * @brief Inner function to update the full trace info. Used for tracing with HEAPI_FULL_TRACE. Don't use
- directly
- *
- * @param func function_name, "" for reset
- * @param file "" for reset
- * @param line -1 for reset
-
- * @api
- */
-extern void (*raw___he_update_full_trace_info)(const char * func, const char * file, i32 line);
 
 /**
  * @brief Create time instance and init with current time
@@ -2640,10 +2679,48 @@ extern boolean (*raw_render_context_surface_present)(RenderContextSurface * surf
 
 extern fptr (*raw_render_context_get_proc_addr)(const char * proc);
 
+extern boolean (*raw_render_server_frame_begin)(void);
+
+extern boolean (*raw_render_server_frame_end)(void);
+
+extern RenderServerInstanceCPtr (*raw_render_server_instance_create)(void);
+
+extern boolean (*raw_render_server_instance_destroy)(RenderServerInstanceCPtr instance);
+
+extern RenderServerMeshCPtr (*raw_render_server_mesh_create)(void);
+
+extern boolean (*raw_render_server_mesh_set_vertices)(RenderServerMeshCPtr ptr, const u8 *const data, u64 size, RenderServerDataOwnMode data_own_mode);
+
+extern boolean (*raw_render_server_mesh_destroy)(RenderServerMeshCPtr ptr);
+
+extern RenderServerMaterialCPtr (*raw_render_server_material_create)(void);
+
+extern boolean (*raw_render_server_material_set_albedo_texture)(RenderServerMaterialCPtr ptr, RenderServerTextureCPtr texture_rid);
+
+extern boolean (*raw_render_server_material_destroy)(RenderServerMaterialCPtr ptr);
+
+extern RenderServerTextureCPtr (*raw_render_server_texture_create)(void);
+
+extern boolean (*raw_render_server_texture_set_data)(RenderServerTextureCPtr ptr, const u8 *const data, IVec2 dimensions, RenderServerDataOwnMode data_own_mode);
+
+extern boolean (*raw_render_server_texture_destroy)(RenderServerTextureCPtr ptr);
+
 
 
 #if !defined(HEAPI_FULL_TRACE)
     /**
+ * @brief Inner function to update the full trace info. Used for tracing with HEAPI_FULL_TRACE. Don't use
+ directly
+ *
+ * @param func function_name, "" for reset
+ * @param file "" for reset
+ * @param line -1 for reset
+
+ * @api
+ */
+extern void (*__he_update_full_trace_info)(const char * func, const char * file, i32 line);
+
+/**
  * @brief Set a last error that occurred on the current thread.
  *
  * @api
@@ -2656,18 +2733,6 @@ extern void (*set_error)(Error err);
  * @api
  */
 extern Error (*get_error)(void);
-
-/**
- * @brief Inner function to update the full trace info. Used for tracing with HEAPI_FULL_TRACE. Don't use
- directly
- *
- * @param func function_name, "" for reset
- * @param file "" for reset
- * @param line -1 for reset
-
- * @api
- */
-extern void (*__he_update_full_trace_info)(const char * func, const char * file, i32 line);
 
 /**
  * @brief Create time instance and init with current time
@@ -4649,13 +4714,39 @@ extern boolean (*render_context_surface_present)(RenderContextSurface * surface)
 
 extern fptr (*render_context_get_proc_addr)(const char * proc);
 
+extern boolean (*render_server_frame_begin)(void);
+
+extern boolean (*render_server_frame_end)(void);
+
+extern RenderServerInstanceCPtr (*render_server_instance_create)(void);
+
+extern boolean (*render_server_instance_destroy)(RenderServerInstanceCPtr instance);
+
+extern RenderServerMeshCPtr (*render_server_mesh_create)(void);
+
+extern boolean (*render_server_mesh_set_vertices)(RenderServerMeshCPtr ptr, const u8 *const data, u64 size, RenderServerDataOwnMode data_own_mode);
+
+extern boolean (*render_server_mesh_destroy)(RenderServerMeshCPtr ptr);
+
+extern RenderServerMaterialCPtr (*render_server_material_create)(void);
+
+extern boolean (*render_server_material_set_albedo_texture)(RenderServerMaterialCPtr ptr, RenderServerTextureCPtr texture_rid);
+
+extern boolean (*render_server_material_destroy)(RenderServerMaterialCPtr ptr);
+
+extern RenderServerTextureCPtr (*render_server_texture_create)(void);
+
+extern boolean (*render_server_texture_set_data)(RenderServerTextureCPtr ptr, const u8 *const data, IVec2 dimensions, RenderServerDataOwnMode data_own_mode);
+
+extern boolean (*render_server_texture_destroy)(RenderServerTextureCPtr ptr);
+
 
 #endif
 
 #if defined(HEAPI_LOAD_IMPL)
-        void (*raw_set_error)(Error err);
+        void (*raw___he_update_full_trace_info)(const char * func, const char * file, i32 line);
+    void (*raw_set_error)(Error err);
     Error (*raw_get_error)(void);
-    void (*raw___he_update_full_trace_info)(const char * func, const char * file, i32 line);
     datetime_handle (*raw_datetime_new)(void);
     void (*raw_datetime_free)(datetime_handle handle);
     void (*raw_datetime_update)(datetime_handle handle);
@@ -4928,12 +5019,25 @@ extern fptr (*render_context_get_proc_addr)(const char * proc);
     boolean (*raw_render_context_surface_make_current)(RenderContextSurface * surface);
     boolean (*raw_render_context_surface_present)(RenderContextSurface * surface);
     fptr (*raw_render_context_get_proc_addr)(const char * proc);
+    boolean (*raw_render_server_frame_begin)(void);
+    boolean (*raw_render_server_frame_end)(void);
+    RenderServerInstanceCPtr (*raw_render_server_instance_create)(void);
+    boolean (*raw_render_server_instance_destroy)(RenderServerInstanceCPtr instance);
+    RenderServerMeshCPtr (*raw_render_server_mesh_create)(void);
+    boolean (*raw_render_server_mesh_set_vertices)(RenderServerMeshCPtr ptr, const u8 *const data, u64 size, RenderServerDataOwnMode data_own_mode);
+    boolean (*raw_render_server_mesh_destroy)(RenderServerMeshCPtr ptr);
+    RenderServerMaterialCPtr (*raw_render_server_material_create)(void);
+    boolean (*raw_render_server_material_set_albedo_texture)(RenderServerMaterialCPtr ptr, RenderServerTextureCPtr texture_rid);
+    boolean (*raw_render_server_material_destroy)(RenderServerMaterialCPtr ptr);
+    RenderServerTextureCPtr (*raw_render_server_texture_create)(void);
+    boolean (*raw_render_server_texture_set_data)(RenderServerTextureCPtr ptr, const u8 *const data, IVec2 dimensions, RenderServerDataOwnMode data_own_mode);
+    boolean (*raw_render_server_texture_destroy)(RenderServerTextureCPtr ptr);
 
 
     #if !defined(HEAPI_FULL_TRACE)
-            void (*set_error)(Error err);
+            void (*__he_update_full_trace_info)(const char * func, const char * file, i32 line);
+    void (*set_error)(Error err);
     Error (*get_error)(void);
-    void (*__he_update_full_trace_info)(const char * func, const char * file, i32 line);
     datetime_handle (*datetime_new)(void);
     void (*datetime_free)(datetime_handle handle);
     void (*datetime_update)(datetime_handle handle);
@@ -5206,13 +5310,26 @@ extern fptr (*render_context_get_proc_addr)(const char * proc);
     boolean (*render_context_surface_make_current)(RenderContextSurface * surface);
     boolean (*render_context_surface_present)(RenderContextSurface * surface);
     fptr (*render_context_get_proc_addr)(const char * proc);
+    boolean (*render_server_frame_begin)(void);
+    boolean (*render_server_frame_end)(void);
+    RenderServerInstanceCPtr (*render_server_instance_create)(void);
+    boolean (*render_server_instance_destroy)(RenderServerInstanceCPtr instance);
+    RenderServerMeshCPtr (*render_server_mesh_create)(void);
+    boolean (*render_server_mesh_set_vertices)(RenderServerMeshCPtr ptr, const u8 *const data, u64 size, RenderServerDataOwnMode data_own_mode);
+    boolean (*render_server_mesh_destroy)(RenderServerMeshCPtr ptr);
+    RenderServerMaterialCPtr (*render_server_material_create)(void);
+    boolean (*render_server_material_set_albedo_texture)(RenderServerMaterialCPtr ptr, RenderServerTextureCPtr texture_rid);
+    boolean (*render_server_material_destroy)(RenderServerMaterialCPtr ptr);
+    RenderServerTextureCPtr (*render_server_texture_create)(void);
+    boolean (*render_server_texture_set_data)(RenderServerTextureCPtr ptr, const u8 *const data, IVec2 dimensions, RenderServerDataOwnMode data_own_mode);
+    boolean (*render_server_texture_destroy)(RenderServerTextureCPtr ptr);
 
     #endif
 
     void ___hate_engine_runtime_init(void* (*proc_addr)(const char* name)) {
-                raw_set_error = (void (*)(Error))proc_addr("set_error");
+                raw___he_update_full_trace_info = (void (*)(const char *, const char *, i32))proc_addr("__he_update_full_trace_info");
+        raw_set_error = (void (*)(Error))proc_addr("set_error");
         raw_get_error = (Error (*)(void))proc_addr("get_error");
-        raw___he_update_full_trace_info = (void (*)(const char *, const char *, i32))proc_addr("__he_update_full_trace_info");
         raw_datetime_new = (datetime_handle (*)(void))proc_addr("datetime_new");
         raw_datetime_free = (void (*)(datetime_handle))proc_addr("datetime_free");
         raw_datetime_update = (void (*)(datetime_handle))proc_addr("datetime_update");
@@ -5473,9 +5590,9 @@ extern fptr (*render_context_get_proc_addr)(const char * proc);
 
 
         #if !defined(HEAPI_FULL_TRACE)
-                        set_error = raw_set_error;
+                        __he_update_full_trace_info = raw___he_update_full_trace_info;
+            set_error = raw_set_error;
             get_error = raw_get_error;
-            __he_update_full_trace_info = raw___he_update_full_trace_info;
             datetime_new = raw_datetime_new;
             datetime_free = raw_datetime_free;
             datetime_update = raw_datetime_update;
@@ -5778,7 +5895,33 @@ extern fptr (*render_context_get_proc_addr)(const char * proc);
     }
 
     void ___hate_engine_runtime_init_render_server(RenderServerBackend* backend) {
+        raw_render_server_frame_begin = (boolean (*)(void))raw_render_server_backend_get_function(backend, "frame_begin");
+        raw_render_server_frame_end = (boolean (*)(void))raw_render_server_backend_get_function(backend, "frame_end");
+        raw_render_server_instance_create = (RenderServerInstanceCPtr (*)(void))raw_render_server_backend_get_function(backend, "instance_create");
+        raw_render_server_instance_destroy = (boolean (*)(RenderServerInstanceCPtr))raw_render_server_backend_get_function(backend, "instance_destroy");
+        raw_render_server_mesh_create = (RenderServerMeshCPtr (*)(void))raw_render_server_backend_get_function(backend, "mesh_create");
+        raw_render_server_mesh_set_vertices = (boolean (*)(RenderServerMeshCPtr, const u8 *const, u64, RenderServerDataOwnMode))raw_render_server_backend_get_function(backend, "mesh_set_vertices");
+        raw_render_server_mesh_destroy = (boolean (*)(RenderServerMeshCPtr))raw_render_server_backend_get_function(backend, "mesh_destroy");
+        raw_render_server_material_create = (RenderServerMaterialCPtr (*)(void))raw_render_server_backend_get_function(backend, "material_create");
+        raw_render_server_material_set_albedo_texture = (boolean (*)(RenderServerMaterialCPtr, RenderServerTextureCPtr))raw_render_server_backend_get_function(backend, "material_set_albedo_texture");
+        raw_render_server_material_destroy = (boolean (*)(RenderServerMaterialCPtr))raw_render_server_backend_get_function(backend, "material_destroy");
+        raw_render_server_texture_create = (RenderServerTextureCPtr (*)(void))raw_render_server_backend_get_function(backend, "texture_create");
+        raw_render_server_texture_set_data = (boolean (*)(RenderServerTextureCPtr, const u8 *const, IVec2, RenderServerDataOwnMode))raw_render_server_backend_get_function(backend, "texture_set_data");
+        raw_render_server_texture_destroy = (boolean (*)(RenderServerTextureCPtr))raw_render_server_backend_get_function(backend, "texture_destroy");
         #if !defined(HEAPI_FULL_TRACE)
+            render_server_frame_begin = raw_render_server_frame_begin;
+            render_server_frame_end = raw_render_server_frame_end;
+            render_server_instance_create = raw_render_server_instance_create;
+            render_server_instance_destroy = raw_render_server_instance_destroy;
+            render_server_mesh_create = raw_render_server_mesh_create;
+            render_server_mesh_set_vertices = raw_render_server_mesh_set_vertices;
+            render_server_mesh_destroy = raw_render_server_mesh_destroy;
+            render_server_material_create = raw_render_server_material_create;
+            render_server_material_set_albedo_texture = raw_render_server_material_set_albedo_texture;
+            render_server_material_destroy = raw_render_server_material_destroy;
+            render_server_texture_create = raw_render_server_texture_create;
+            render_server_texture_set_data = raw_render_server_texture_set_data;
+            render_server_texture_destroy = raw_render_server_texture_destroy;
         #endif
     }
 
@@ -6061,6 +6204,19 @@ boolean full_trace_render_context_destroy_surface(const char* ___file___, uint32
 boolean full_trace_render_context_surface_make_current(const char* ___file___, uint32_t ___line___, RenderContextSurface *);
 boolean full_trace_render_context_surface_present(const char* ___file___, uint32_t ___line___, RenderContextSurface *);
 fptr full_trace_render_context_get_proc_addr(const char* ___file___, uint32_t ___line___, const char *);
+boolean full_trace_render_server_frame_begin(const char* ___file___, uint32_t ___line___);
+boolean full_trace_render_server_frame_end(const char* ___file___, uint32_t ___line___);
+RenderServerInstanceCPtr full_trace_render_server_instance_create(const char* ___file___, uint32_t ___line___);
+boolean full_trace_render_server_instance_destroy(const char* ___file___, uint32_t ___line___, RenderServerInstanceCPtr);
+RenderServerMeshCPtr full_trace_render_server_mesh_create(const char* ___file___, uint32_t ___line___);
+boolean full_trace_render_server_mesh_set_vertices(const char* ___file___, uint32_t ___line___, RenderServerMeshCPtr, const u8 *const, u64, RenderServerDataOwnMode);
+boolean full_trace_render_server_mesh_destroy(const char* ___file___, uint32_t ___line___, RenderServerMeshCPtr);
+RenderServerMaterialCPtr full_trace_render_server_material_create(const char* ___file___, uint32_t ___line___);
+boolean full_trace_render_server_material_set_albedo_texture(const char* ___file___, uint32_t ___line___, RenderServerMaterialCPtr, RenderServerTextureCPtr);
+boolean full_trace_render_server_material_destroy(const char* ___file___, uint32_t ___line___, RenderServerMaterialCPtr);
+RenderServerTextureCPtr full_trace_render_server_texture_create(const char* ___file___, uint32_t ___line___);
+boolean full_trace_render_server_texture_set_data(const char* ___file___, uint32_t ___line___, RenderServerTextureCPtr, const u8 *const, IVec2, RenderServerDataOwnMode);
+boolean full_trace_render_server_texture_destroy(const char* ___file___, uint32_t ___line___, RenderServerTextureCPtr);
 
 
 #if defined(HEAPI_LOAD_IMPL)
@@ -7871,6 +8027,97 @@ inline fptr full_trace_render_context_get_proc_addr(const char* ___file___, uint
     return result;
 }
 
+inline boolean full_trace_render_server_frame_begin(const char* ___file___, uint32_t ___line___) {
+    raw___he_update_full_trace_info("render_server_frame_begin", ___file___, ___line___);
+    boolean result = raw_render_server_frame_begin();
+    raw___he_update_full_trace_info("", "", -1);
+    return result;
+}
+
+inline boolean full_trace_render_server_frame_end(const char* ___file___, uint32_t ___line___) {
+    raw___he_update_full_trace_info("render_server_frame_end", ___file___, ___line___);
+    boolean result = raw_render_server_frame_end();
+    raw___he_update_full_trace_info("", "", -1);
+    return result;
+}
+
+inline RenderServerInstanceCPtr full_trace_render_server_instance_create(const char* ___file___, uint32_t ___line___) {
+    raw___he_update_full_trace_info("render_server_instance_create", ___file___, ___line___);
+    RenderServerInstanceCPtr result = raw_render_server_instance_create();
+    raw___he_update_full_trace_info("", "", -1);
+    return result;
+}
+
+inline boolean full_trace_render_server_instance_destroy(const char* ___file___, uint32_t ___line___, RenderServerInstanceCPtr instance) {
+    raw___he_update_full_trace_info("render_server_instance_destroy", ___file___, ___line___);
+    boolean result = raw_render_server_instance_destroy(instance);
+    raw___he_update_full_trace_info("", "", -1);
+    return result;
+}
+
+inline RenderServerMeshCPtr full_trace_render_server_mesh_create(const char* ___file___, uint32_t ___line___) {
+    raw___he_update_full_trace_info("render_server_mesh_create", ___file___, ___line___);
+    RenderServerMeshCPtr result = raw_render_server_mesh_create();
+    raw___he_update_full_trace_info("", "", -1);
+    return result;
+}
+
+inline boolean full_trace_render_server_mesh_set_vertices(const char* ___file___, uint32_t ___line___, RenderServerMeshCPtr ptr, const u8 *const data, u64 size, RenderServerDataOwnMode data_own_mode) {
+    raw___he_update_full_trace_info("render_server_mesh_set_vertices", ___file___, ___line___);
+    boolean result = raw_render_server_mesh_set_vertices(ptr, data, size, data_own_mode);
+    raw___he_update_full_trace_info("", "", -1);
+    return result;
+}
+
+inline boolean full_trace_render_server_mesh_destroy(const char* ___file___, uint32_t ___line___, RenderServerMeshCPtr ptr) {
+    raw___he_update_full_trace_info("render_server_mesh_destroy", ___file___, ___line___);
+    boolean result = raw_render_server_mesh_destroy(ptr);
+    raw___he_update_full_trace_info("", "", -1);
+    return result;
+}
+
+inline RenderServerMaterialCPtr full_trace_render_server_material_create(const char* ___file___, uint32_t ___line___) {
+    raw___he_update_full_trace_info("render_server_material_create", ___file___, ___line___);
+    RenderServerMaterialCPtr result = raw_render_server_material_create();
+    raw___he_update_full_trace_info("", "", -1);
+    return result;
+}
+
+inline boolean full_trace_render_server_material_set_albedo_texture(const char* ___file___, uint32_t ___line___, RenderServerMaterialCPtr ptr, RenderServerTextureCPtr texture_rid) {
+    raw___he_update_full_trace_info("render_server_material_set_albedo_texture", ___file___, ___line___);
+    boolean result = raw_render_server_material_set_albedo_texture(ptr, texture_rid);
+    raw___he_update_full_trace_info("", "", -1);
+    return result;
+}
+
+inline boolean full_trace_render_server_material_destroy(const char* ___file___, uint32_t ___line___, RenderServerMaterialCPtr ptr) {
+    raw___he_update_full_trace_info("render_server_material_destroy", ___file___, ___line___);
+    boolean result = raw_render_server_material_destroy(ptr);
+    raw___he_update_full_trace_info("", "", -1);
+    return result;
+}
+
+inline RenderServerTextureCPtr full_trace_render_server_texture_create(const char* ___file___, uint32_t ___line___) {
+    raw___he_update_full_trace_info("render_server_texture_create", ___file___, ___line___);
+    RenderServerTextureCPtr result = raw_render_server_texture_create();
+    raw___he_update_full_trace_info("", "", -1);
+    return result;
+}
+
+inline boolean full_trace_render_server_texture_set_data(const char* ___file___, uint32_t ___line___, RenderServerTextureCPtr ptr, const u8 *const data, IVec2 dimensions, RenderServerDataOwnMode data_own_mode) {
+    raw___he_update_full_trace_info("render_server_texture_set_data", ___file___, ___line___);
+    boolean result = raw_render_server_texture_set_data(ptr, data, dimensions, data_own_mode);
+    raw___he_update_full_trace_info("", "", -1);
+    return result;
+}
+
+inline boolean full_trace_render_server_texture_destroy(const char* ___file___, uint32_t ___line___, RenderServerTextureCPtr ptr) {
+    raw___he_update_full_trace_info("render_server_texture_destroy", ___file___, ___line___);
+    boolean result = raw_render_server_texture_destroy(ptr);
+    raw___he_update_full_trace_info("", "", -1);
+    return result;
+}
+
 
 #endif
 
@@ -8148,6 +8395,19 @@ inline fptr full_trace_render_context_get_proc_addr(const char* ___file___, uint
 #define render_context_surface_make_current(surface) full_trace_render_context_surface_make_current(__FILE__, __LINE__, surface)
 #define render_context_surface_present(surface) full_trace_render_context_surface_present(__FILE__, __LINE__, surface)
 #define render_context_get_proc_addr(proc) full_trace_render_context_get_proc_addr(__FILE__, __LINE__, proc)
+#define render_server_frame_begin() full_trace_render_server_frame_begin(__FILE__, __LINE__)
+#define render_server_frame_end() full_trace_render_server_frame_end(__FILE__, __LINE__)
+#define render_server_instance_create() full_trace_render_server_instance_create(__FILE__, __LINE__)
+#define render_server_instance_destroy(instance) full_trace_render_server_instance_destroy(__FILE__, __LINE__, instance)
+#define render_server_mesh_create() full_trace_render_server_mesh_create(__FILE__, __LINE__)
+#define render_server_mesh_set_vertices(ptr, data, size, data_own_mode) full_trace_render_server_mesh_set_vertices(__FILE__, __LINE__, ptr, data, size, data_own_mode)
+#define render_server_mesh_destroy(ptr) full_trace_render_server_mesh_destroy(__FILE__, __LINE__, ptr)
+#define render_server_material_create() full_trace_render_server_material_create(__FILE__, __LINE__)
+#define render_server_material_set_albedo_texture(ptr, texture_rid) full_trace_render_server_material_set_albedo_texture(__FILE__, __LINE__, ptr, texture_rid)
+#define render_server_material_destroy(ptr) full_trace_render_server_material_destroy(__FILE__, __LINE__, ptr)
+#define render_server_texture_create() full_trace_render_server_texture_create(__FILE__, __LINE__)
+#define render_server_texture_set_data(ptr, data, dimensions, data_own_mode) full_trace_render_server_texture_set_data(__FILE__, __LINE__, ptr, data, dimensions, data_own_mode)
+#define render_server_texture_destroy(ptr) full_trace_render_server_texture_destroy(__FILE__, __LINE__, ptr)
 
 #endif
 

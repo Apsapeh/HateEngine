@@ -2,6 +2,59 @@
 
 #include <error.h>
 #include <types/types.h>
+#include "math/ivec2.h"
+#include "math/vec4.h"
+#include "ex_alloc/chunk_allocator.h"
+
+
+/*
+API ENUM {
+        "name": "RenderServerDataOwnMode",
+        "type": "char",
+        "values": [
+                ["Copy", "'\\0'"],
+                ["Borrow", "'w'"],
+                ["Ptr", "'f'"]
+        ]
+}
+*/
+
+#define RENDER_SERVER_DATA_OWN_MODE_COPY '\0'
+#define RENDER_SERVER_DATA_OWN_MODE_BORROW 'w'
+#define RENDER_SERVER_DATA_OWN_MODE_PTR 'f'
+
+/**
+ * '\0' or 'c' - Data may be copied, may be not, depending on the backend implementation. RenderServer will own this data
+ *
+ * 'b' - Data will be borrowed. RenderServer will own this data
+ *
+ * 'p' - Data can be stored as a pointer without copying. Render server is not ownes data
+ *
+ * @api
+ */
+typedef u8 RenderServerDataOwnMode;
+
+/**
+ * @api
+ */
+typedef chunk_allocator_ptr RenderServerInstanceCPtr;
+
+/**
+ * @api
+ */
+typedef chunk_allocator_ptr RenderServerMeshCPtr;
+
+/**
+ * @api
+ */
+typedef chunk_allocator_ptr RenderServerMaterialCPtr;
+
+/**
+ * @brief 
+ * 
+ * @api
+ */
+typedef chunk_allocator_ptr RenderServerTextureCPtr;
 
 /**
  * @api server
@@ -13,6 +66,34 @@
 typedef struct {
     boolean (*_init)(void);
     boolean (*_quit)(void);
+    
+    boolean (*frame_begin)(void);
+    boolean (*frame_end)(void);
+    
+    // Environment
+    //RID (*environment_create)(void);
+    //boolean (*environment_set_ambient_color)(RID rid, Vec4 color);
+    //boolean (*environment_destroy)(RID rid);
+    
+    // Instance
+    RenderServerInstanceCPtr (*instance_create)(void);
+    boolean (*instance_destroy)(RenderServerInstanceCPtr instance);
+    
+    // Mesh
+    RenderServerMeshCPtr (*mesh_create)(void);
+    boolean (*mesh_set_vertices)(RenderServerMeshCPtr ptr, const u8* const data, u64 size, RenderServerDataOwnMode data_own_mode);
+    boolean (*mesh_destroy)(RenderServerMeshCPtr ptr);
+    
+    // Material
+    RenderServerMaterialCPtr (*material_create)(void);
+    boolean (*material_set_albedo_texture)(RenderServerMaterialCPtr ptr, RenderServerTextureCPtr texture_rid);
+    boolean (*material_destroy)(RenderServerMaterialCPtr ptr);
+        
+    // Texture
+    RenderServerTextureCPtr (*texture_create)(void);
+    boolean (*texture_set_data)(RenderServerTextureCPtr ptr, const u8* const data, IVec2 dimensions, RenderServerDataOwnMode data_own_mode);
+    boolean (*texture_destroy)(RenderServerTextureCPtr ptr);
+    
 } RenderServerBackend;
 
 
