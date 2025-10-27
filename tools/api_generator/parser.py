@@ -41,7 +41,31 @@ def parse() -> ParseResult:
             result.extend(r)
 
 
-    #print(json.dumps(dict(result), indent=4))
+    # Сортируем typedefs по зависимостям
+    typedefs_need_to_sort = []
+    sorted_typedefs = []
+
+    for typedef in result.typedefs:
+        if typedef.type in ("u8", "u16", "u32", "u64", "i8", "i16", "i32", "i64", "f32", "f64", "void", "char"):
+            sorted_typedefs.append(typedef)
+        else:
+            typedefs_need_to_sort.append(typedef)
+    
+    while len(typedefs_need_to_sort) > 0:
+        new_need_to_sort = []
+        for typedef in typedefs_need_to_sort:
+            if any(t.name == typedef.type for t in typedefs_need_to_sort):
+                new_need_to_sort.append(typedef)
+            else:
+                sorted_typedefs.append(typedef)
+
+        if new_need_to_sort == typedefs_need_to_sort:
+            error.error("Cyclic typedefs detected in typedefs")
+
+        typedefs_need_to_sort = new_need_to_sort
+    
+    result.typedefs = sorted_typedefs
+
     return result
 
 
