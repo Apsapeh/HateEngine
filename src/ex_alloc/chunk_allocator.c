@@ -71,7 +71,6 @@ ChunkMemoryAllocator* chunk_memory_allocator_new(u32 element_size, u32 chunk_min
 
     // Init bitfield array
     allocator->chunks_bitfield_usage = vec_chunkUsageBitfieldPlain_init();
-    // const usize chunk_bitfield_size = allocator->chunk_bitfield_size >> 3;
     vec_chunkUsageBitfieldPlain_reserve(
             &allocator->chunks_bitfield_usage, CHUNK_COUNT_DEFAULT * allocator->chunk_bitfield_size
     );
@@ -88,7 +87,9 @@ ChunkMemoryAllocator* chunk_memory_allocator_new(u32 element_size, u32 chunk_min
  */
 void chunk_memory_allocator_free(ChunkMemoryAllocator* this) {
     for (usize i = 0; i < this->chunks.size; i++) {
-        tfree(this->chunks.data[i]);
+        if (this->chunks.data[i]) // free(NULL) is safe by standard, but can fail on exotic systems
+                                  // (PalmOS, 3BSD)
+            tfree(this->chunks.data[i]);
     }
     vec_ptr_free(&this->chunks);
     vec_chunkUsageBitfieldPlain_free(&this->chunks_bitfield_usage);
@@ -102,6 +103,13 @@ chunk_allocator_ptr chunk_memory_allocator_alloc_mem(ChunkMemoryAllocator* this)
     ERROR_ARG_CHECK(this, return 0;);
     // Find a free chunk
     for (usize c_i = 0; c_i < this->chunks.size; c_i++) {
+        if (this->chunks.data[c_i] == NULL) {
+            this->chunks.data[c_i] = tmalloc(this->chunk_element_count * this->element_size);
+            ERROR_ALLOC_CHECK(this->chunks.data[c_i], { return 0; });
+            this->chunks_bitfield_usage.data[c_i * this->chunk_bitfield_size] = 1;
+            return c_i * this->chunk_element_count + 1;
+        }
+
         u8* bitfield = &this->chunks_bitfield_usage.data[c_i * this->chunk_bitfield_size];
         for (usize b_i = 0; b_i < this->chunk_bitfield_size; b_i++) {
             if (bitfield[b_i] != 0xFF) {
@@ -174,19 +182,30 @@ void chunk_memory_allocator_free_mem(ChunkMemoryAllocator* this, chunk_allocator
 
     this->chunks_bitfield_usage.data[bitfield_index + byte_index] &= ~bit_mask;
 
+    boolean is_mid_of_chunks = false;
     for (usize c_i = this->chunks.size; c_i-- > CHUNK_COUNT_DEFAULT;) {
         boolean is_empty = true;
         for (usize i = 0; i < this->chunk_bitfield_size; ++i) {
             if (this->chunks_bitfield_usage.data[c_i * this->chunk_bitfield_size + i] != 0) {
                 is_empty = false;
+                is_mid_of_chunks = true;
                 break;
             }
         }
 
         if (!is_empty)
-            break;
+            continue;
 
-        tfree(this->chunks.data[c_i]);
+        // Free chunk, but don't remove it from the array
+        if (this->chunks.data[c_i] != NULL) { // If chunk yet is not freed
+            tfree(this->chunks.data[c_i]);
+            this->chunks.data[c_i] = NULL;
+        }
+
+        if (is_mid_of_chunks)
+            continue;
+
+        // If chunk is last in array, remove it
         vec_ptr_pop_back(&this->chunks);
         vec_chunkUsageBitfieldPlain_erase_range(
                 &this->chunks_bitfield_usage, c_i * this->chunk_bitfield_size, this->chunk_bitfield_size
