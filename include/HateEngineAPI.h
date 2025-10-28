@@ -422,12 +422,7 @@ typedef struct StringSlice StringSlice;
 /**
  * @api
  */
-typedef struct string_utf8 string_utf8;
-
-/**
- * @api
- */
-typedef struct string_itr_utf8 string_itr_utf8;
+typedef struct StringUTF8 StringUTF8;
 
 /**
  * @brief
@@ -618,6 +613,18 @@ typedef u64 UID;
 #else
 
 /**
+ * @brief Inner function to update the full trace info. Used for tracing with HEAPI_FULL_TRACE. Don't use
+ directly
+ *
+ * @param func function_name, "" for reset
+ * @param file "" for reset
+ * @param line -1 for reset
+
+ * @api
+ */
+extern void (*raw___he_update_full_trace_info)(const char * func, const char * file, i32 line);
+
+/**
  * @brief Set a last error that occurred on the current thread.
  *
  * @api
@@ -630,18 +637,6 @@ extern void (*raw_set_error)(Error err);
  * @api
  */
 extern Error (*raw_get_error)(void);
-
-/**
- * @brief Inner function to update the full trace info. Used for tracing with HEAPI_FULL_TRACE. Don't use
- directly
- *
- * @param func function_name, "" for reset
- * @param file "" for reset
- * @param line -1 for reset
-
- * @api
- */
-extern void (*raw___he_update_full_trace_info)(const char * func, const char * file, i32 line);
 
 /**
  * @api
@@ -2231,6 +2226,7 @@ extern String * (*raw_string_remove_by_byte)(String * self, const usize b);
 /**
  * @api
  * @brief remove n of symbols since symbol  under symbol index
+ * @warning perhaps being bag, need check
  * @param i symbol index
  * @param n count removed symbols
  */
@@ -2333,58 +2329,118 @@ extern void (*raw_string_slice_free)(StringSlice * self);
 
 /**
  * @api
+ * @brief create empty StringUTF8 with null-terminator
  */
-extern Error (*raw_string_utf8_new)(string_utf8 ** str);
+extern StringUTF8 * (*raw_string_utf8_new)(void);
+
+/**
+ * @api
+ * @brief create StringUTF8 by char*
+ * @param c_str input data
+ */
+extern StringUTF8 * (*raw_string_utf8_from)(const char * c_str);
+
+/**
+ * @api
+ * @brief convert StringUTF8 to String
+ */
+extern String * (*raw_string_utf8_to_string)(const StringUTF8 * self);
+
+/**
+ * @api
+ * @brief get len of passed StringUTF8
+ */
+extern usize (*raw_string_utf8_len)(const StringUTF8 * self);
+
+/**
+ * @api
+ * @brief get size of passed StringUTF8
+ */
+extern usize (*raw_string_utf8_size)(const StringUTF8 * self);
+
+/**
+ * @api
+ * @brief get copy StringUTF8
+ */
+extern StringUTF8 * (*raw_string_utf8_clone)(const StringUTF8 * self);
+
+/**
+ * @api
+ * @brief add char* in last of  StringUTF8
+ * @param src input data by way char*
+ */
+extern StringUTF8 * (*raw_string_utf8_push_back_cstr)(StringUTF8 * self, char * src);
+
+/**
+ * @api
+ * @brief add StringUTF8 in last of StringUTF8
+ * @param src input data by way StringUTF8
+ */
+extern StringUTF8 * (*raw_string_utf8_push_back)(StringUTF8 * self, const StringUTF8 * src);
+
+/**
+ * @api
+ * @brief add 'src' by way StringUTF8 in 'self' under symbol index
+ * @param src input data by way StringUTF8
+ * @param i   symbol index
+ */
+extern StringUTF8 * (*raw_string_utf8_insert)(StringUTF8 * self, const StringUTF8 * src, const usize i);
+
+/**
+ * @api
+ * @brief add StringUTF8 in front of StringUTF8
+ * @param src input data by way StringUTF8
+ */
+extern StringUTF8 * (*raw_string_utf8_push_front)(StringUTF8 * self, const StringUTF8 * src);
+
+/**
+ * @api
+ * @brief add char* in front of  StringUTF8
+ * @param src input data by way char*
+ */
+extern StringUTF8 * (*raw_string_utf8_push_front_cstr)(StringUTF8 * self, char * src);
+
+/**
+ * @api
+ * @brief add 'src' by way char* in 'self' under symbol index
+ * @param src input data by way char*
+ * @param i   symbol index
+ */
+extern StringUTF8 * (*raw_string_utf8_insert_cstr)(StringUTF8 * self, const char * src, const usize i);
+
+/**
+ * @api
+ * @brief remove symbol under symbol index
+ * @param i symbol index
+ */
+extern StringUTF8 * (*raw_string_utf8_remove)(StringUTF8 * self, const usize i);
+
+/**
+ * @api
+ * @brief remove n of symbols since symbol under symbol index
+ * @param i symbol index
+ * @param n count removed symbols
+ */
+extern StringUTF8 * (*raw_string_utf8_remove_n)(StringUTF8 * self, const usize i, const usize n);
+
+/**
+ * @api
+ * @brief converting String to StrinfUTF8
+ */
+extern StringUTF8 * (*raw_string_utf8_by_string)(const String * self);
+
+/**
+ * @api
+ * @brief check on equality Strings-UTF8
+ * @param str1 fisrt StringUTF8
+ * @param str2 second StringUTF8
+ */
+extern boolean (*raw_string_utf8_equals)(const StringUTF8 * str1, const StringUTF8 * str2);
 
 /**
  * @api
  */
-extern Error (*raw_string_utf8_to_string)(String ** dest, const string_utf8 * str);
-
-/**
- * @api
- */
-extern Error (*raw_string_utf8_from)(string_utf8 ** str, const char * c_str);
-
-/**
- * @api
- */
-extern Error (*raw_string_utf8_len)(usize * len, const string_utf8 * c_str);
-
-/**
- * @api
- */
-extern Error (*raw_string_utf8_size)(usize * size, const string_utf8 * c_str);
-
-/**
- * @api
- */
-extern Error (*raw_string_utf8_clone)(string_utf8 ** str, const string_utf8 * c_str);
-
-/**
- * @api
- */
-extern Error (*raw_string_utf8_push_back_cstr)(string_utf8 * dest, const char * src);
-
-/**
- * @api
- */
-extern Error (*raw_string_utf8_push_back)(string_utf8 * dest, const string_utf8 * src);
-
-/**
- * @api
- */
-extern Error (*raw_string_utf8_insert)(string_utf8 * dest, const string_utf8 * src, const usize i);
-
-/**
- * @api
- */
-extern Error (*raw_string_utf8_push_front)(string_utf8 * dest, const string_utf8 * src);
-
-/**
- * @api
- */
-extern void (*raw_string_utf8_free)(string_utf8 * str);
+extern void (*raw_string_utf8_free)(StringUTF8 * self);
 
 /**
  * @brief Mount Resource File (*.hefs) to Virtual File System
@@ -2645,6 +2701,18 @@ extern boolean (*raw_window_server_window_get_position)(WindowServerWindow * thi
 
 #if !defined(HEAPI_FULL_TRACE)
     /**
+ * @brief Inner function to update the full trace info. Used for tracing with HEAPI_FULL_TRACE. Don't use
+ directly
+ *
+ * @param func function_name, "" for reset
+ * @param file "" for reset
+ * @param line -1 for reset
+
+ * @api
+ */
+extern void (*__he_update_full_trace_info)(const char * func, const char * file, i32 line);
+
+/**
  * @brief Set a last error that occurred on the current thread.
  *
  * @api
@@ -2657,18 +2725,6 @@ extern void (*set_error)(Error err);
  * @api
  */
 extern Error (*get_error)(void);
-
-/**
- * @brief Inner function to update the full trace info. Used for tracing with HEAPI_FULL_TRACE. Don't use
- directly
- *
- * @param func function_name, "" for reset
- * @param file "" for reset
- * @param line -1 for reset
-
- * @api
- */
-extern void (*__he_update_full_trace_info)(const char * func, const char * file, i32 line);
 
 /**
  * @api
@@ -4258,6 +4314,7 @@ extern String * (*string_remove_by_byte)(String * self, const usize b);
 /**
  * @api
  * @brief remove n of symbols since symbol  under symbol index
+ * @warning perhaps being bag, need check
  * @param i symbol index
  * @param n count removed symbols
  */
@@ -4360,58 +4417,118 @@ extern void (*string_slice_free)(StringSlice * self);
 
 /**
  * @api
+ * @brief create empty StringUTF8 with null-terminator
  */
-extern Error (*string_utf8_new)(string_utf8 ** str);
+extern StringUTF8 * (*string_utf8_new)(void);
+
+/**
+ * @api
+ * @brief create StringUTF8 by char*
+ * @param c_str input data
+ */
+extern StringUTF8 * (*string_utf8_from)(const char * c_str);
+
+/**
+ * @api
+ * @brief convert StringUTF8 to String
+ */
+extern String * (*string_utf8_to_string)(const StringUTF8 * self);
+
+/**
+ * @api
+ * @brief get len of passed StringUTF8
+ */
+extern usize (*string_utf8_len)(const StringUTF8 * self);
+
+/**
+ * @api
+ * @brief get size of passed StringUTF8
+ */
+extern usize (*string_utf8_size)(const StringUTF8 * self);
+
+/**
+ * @api
+ * @brief get copy StringUTF8
+ */
+extern StringUTF8 * (*string_utf8_clone)(const StringUTF8 * self);
+
+/**
+ * @api
+ * @brief add char* in last of  StringUTF8
+ * @param src input data by way char*
+ */
+extern StringUTF8 * (*string_utf8_push_back_cstr)(StringUTF8 * self, char * src);
+
+/**
+ * @api
+ * @brief add StringUTF8 in last of StringUTF8
+ * @param src input data by way StringUTF8
+ */
+extern StringUTF8 * (*string_utf8_push_back)(StringUTF8 * self, const StringUTF8 * src);
+
+/**
+ * @api
+ * @brief add 'src' by way StringUTF8 in 'self' under symbol index
+ * @param src input data by way StringUTF8
+ * @param i   symbol index
+ */
+extern StringUTF8 * (*string_utf8_insert)(StringUTF8 * self, const StringUTF8 * src, const usize i);
+
+/**
+ * @api
+ * @brief add StringUTF8 in front of StringUTF8
+ * @param src input data by way StringUTF8
+ */
+extern StringUTF8 * (*string_utf8_push_front)(StringUTF8 * self, const StringUTF8 * src);
+
+/**
+ * @api
+ * @brief add char* in front of  StringUTF8
+ * @param src input data by way char*
+ */
+extern StringUTF8 * (*string_utf8_push_front_cstr)(StringUTF8 * self, char * src);
+
+/**
+ * @api
+ * @brief add 'src' by way char* in 'self' under symbol index
+ * @param src input data by way char*
+ * @param i   symbol index
+ */
+extern StringUTF8 * (*string_utf8_insert_cstr)(StringUTF8 * self, const char * src, const usize i);
+
+/**
+ * @api
+ * @brief remove symbol under symbol index
+ * @param i symbol index
+ */
+extern StringUTF8 * (*string_utf8_remove)(StringUTF8 * self, const usize i);
+
+/**
+ * @api
+ * @brief remove n of symbols since symbol under symbol index
+ * @param i symbol index
+ * @param n count removed symbols
+ */
+extern StringUTF8 * (*string_utf8_remove_n)(StringUTF8 * self, const usize i, const usize n);
+
+/**
+ * @api
+ * @brief converting String to StrinfUTF8
+ */
+extern StringUTF8 * (*string_utf8_by_string)(const String * self);
+
+/**
+ * @api
+ * @brief check on equality Strings-UTF8
+ * @param str1 fisrt StringUTF8
+ * @param str2 second StringUTF8
+ */
+extern boolean (*string_utf8_equals)(const StringUTF8 * str1, const StringUTF8 * str2);
 
 /**
  * @api
  */
-extern Error (*string_utf8_to_string)(String ** dest, const string_utf8 * str);
-
-/**
- * @api
- */
-extern Error (*string_utf8_from)(string_utf8 ** str, const char * c_str);
-
-/**
- * @api
- */
-extern Error (*string_utf8_len)(usize * len, const string_utf8 * c_str);
-
-/**
- * @api
- */
-extern Error (*string_utf8_size)(usize * size, const string_utf8 * c_str);
-
-/**
- * @api
- */
-extern Error (*string_utf8_clone)(string_utf8 ** str, const string_utf8 * c_str);
-
-/**
- * @api
- */
-extern Error (*string_utf8_push_back_cstr)(string_utf8 * dest, const char * src);
-
-/**
- * @api
- */
-extern Error (*string_utf8_push_back)(string_utf8 * dest, const string_utf8 * src);
-
-/**
- * @api
- */
-extern Error (*string_utf8_insert)(string_utf8 * dest, const string_utf8 * src, const usize i);
-
-/**
- * @api
- */
-extern Error (*string_utf8_push_front)(string_utf8 * dest, const string_utf8 * src);
-
-/**
- * @api
- */
-extern void (*string_utf8_free)(string_utf8 * str);
+extern void (*string_utf8_free)(StringUTF8 * self);
 
 /**
  * @brief Mount Resource File (*.hefs) to Virtual File System
@@ -4672,9 +4789,9 @@ extern boolean (*window_server_window_get_position)(WindowServerWindow * this, I
 #endif
 
 #if defined(HEAPI_LOAD_IMPL)
-        void (*raw_set_error)(Error err);
+        void (*raw___he_update_full_trace_info)(const char * func, const char * file, i32 line);
+    void (*raw_set_error)(Error err);
     Error (*raw_get_error)(void);
-    void (*raw___he_update_full_trace_info)(const char * func, const char * file, i32 line);
     void (*raw_ivec2_init)(const i32 x, const i32 y, IVec2 *const out);
     void (*raw_ivec2_add)(const IVec2 *const a, const IVec2 *const b, IVec2 *const out);
     void (*raw_ivec2_sub)(const IVec2 *const a, const IVec2 *const b, IVec2 *const out);
@@ -4892,17 +5009,23 @@ extern boolean (*window_server_window_get_position)(WindowServerWindow * this, I
     String * (*raw_string_insert_slice)(String * self, const StringSlice * src, const usize i);
     String * (*raw_string_insert_slice_by_byte)(String * self, const StringSlice * src, const usize b);
     void (*raw_string_slice_free)(StringSlice * self);
-    Error (*raw_string_utf8_new)(string_utf8 ** str);
-    Error (*raw_string_utf8_to_string)(String ** dest, const string_utf8 * str);
-    Error (*raw_string_utf8_from)(string_utf8 ** str, const char * c_str);
-    Error (*raw_string_utf8_len)(usize * len, const string_utf8 * c_str);
-    Error (*raw_string_utf8_size)(usize * size, const string_utf8 * c_str);
-    Error (*raw_string_utf8_clone)(string_utf8 ** str, const string_utf8 * c_str);
-    Error (*raw_string_utf8_push_back_cstr)(string_utf8 * dest, const char * src);
-    Error (*raw_string_utf8_push_back)(string_utf8 * dest, const string_utf8 * src);
-    Error (*raw_string_utf8_insert)(string_utf8 * dest, const string_utf8 * src, const usize i);
-    Error (*raw_string_utf8_push_front)(string_utf8 * dest, const string_utf8 * src);
-    void (*raw_string_utf8_free)(string_utf8 * str);
+    StringUTF8 * (*raw_string_utf8_new)(void);
+    StringUTF8 * (*raw_string_utf8_from)(const char * c_str);
+    String * (*raw_string_utf8_to_string)(const StringUTF8 * self);
+    usize (*raw_string_utf8_len)(const StringUTF8 * self);
+    usize (*raw_string_utf8_size)(const StringUTF8 * self);
+    StringUTF8 * (*raw_string_utf8_clone)(const StringUTF8 * self);
+    StringUTF8 * (*raw_string_utf8_push_back_cstr)(StringUTF8 * self, char * src);
+    StringUTF8 * (*raw_string_utf8_push_back)(StringUTF8 * self, const StringUTF8 * src);
+    StringUTF8 * (*raw_string_utf8_insert)(StringUTF8 * self, const StringUTF8 * src, const usize i);
+    StringUTF8 * (*raw_string_utf8_push_front)(StringUTF8 * self, const StringUTF8 * src);
+    StringUTF8 * (*raw_string_utf8_push_front_cstr)(StringUTF8 * self, char * src);
+    StringUTF8 * (*raw_string_utf8_insert_cstr)(StringUTF8 * self, const char * src, const usize i);
+    StringUTF8 * (*raw_string_utf8_remove)(StringUTF8 * self, const usize i);
+    StringUTF8 * (*raw_string_utf8_remove_n)(StringUTF8 * self, const usize i, const usize n);
+    StringUTF8 * (*raw_string_utf8_by_string)(const String * self);
+    boolean (*raw_string_utf8_equals)(const StringUTF8 * str1, const StringUTF8 * str2);
+    void (*raw_string_utf8_free)(StringUTF8 * self);
     boolean (*raw_vfs_mount_res)(const char * path, const char * mount_point);
     boolean (*raw_vfs_unmount_res)(const char * mount_point);
     boolean (*raw_vfs_mount_rfs)(const char * mount_point);
@@ -4941,9 +5064,9 @@ extern boolean (*window_server_window_get_position)(WindowServerWindow * this, I
 
 
     #if !defined(HEAPI_FULL_TRACE)
-            void (*set_error)(Error err);
+            void (*__he_update_full_trace_info)(const char * func, const char * file, i32 line);
+    void (*set_error)(Error err);
     Error (*get_error)(void);
-    void (*__he_update_full_trace_info)(const char * func, const char * file, i32 line);
     void (*ivec2_init)(const i32 x, const i32 y, IVec2 *const out);
     void (*ivec2_add)(const IVec2 *const a, const IVec2 *const b, IVec2 *const out);
     void (*ivec2_sub)(const IVec2 *const a, const IVec2 *const b, IVec2 *const out);
@@ -5161,17 +5284,23 @@ extern boolean (*window_server_window_get_position)(WindowServerWindow * this, I
     String * (*string_insert_slice)(String * self, const StringSlice * src, const usize i);
     String * (*string_insert_slice_by_byte)(String * self, const StringSlice * src, const usize b);
     void (*string_slice_free)(StringSlice * self);
-    Error (*string_utf8_new)(string_utf8 ** str);
-    Error (*string_utf8_to_string)(String ** dest, const string_utf8 * str);
-    Error (*string_utf8_from)(string_utf8 ** str, const char * c_str);
-    Error (*string_utf8_len)(usize * len, const string_utf8 * c_str);
-    Error (*string_utf8_size)(usize * size, const string_utf8 * c_str);
-    Error (*string_utf8_clone)(string_utf8 ** str, const string_utf8 * c_str);
-    Error (*string_utf8_push_back_cstr)(string_utf8 * dest, const char * src);
-    Error (*string_utf8_push_back)(string_utf8 * dest, const string_utf8 * src);
-    Error (*string_utf8_insert)(string_utf8 * dest, const string_utf8 * src, const usize i);
-    Error (*string_utf8_push_front)(string_utf8 * dest, const string_utf8 * src);
-    void (*string_utf8_free)(string_utf8 * str);
+    StringUTF8 * (*string_utf8_new)(void);
+    StringUTF8 * (*string_utf8_from)(const char * c_str);
+    String * (*string_utf8_to_string)(const StringUTF8 * self);
+    usize (*string_utf8_len)(const StringUTF8 * self);
+    usize (*string_utf8_size)(const StringUTF8 * self);
+    StringUTF8 * (*string_utf8_clone)(const StringUTF8 * self);
+    StringUTF8 * (*string_utf8_push_back_cstr)(StringUTF8 * self, char * src);
+    StringUTF8 * (*string_utf8_push_back)(StringUTF8 * self, const StringUTF8 * src);
+    StringUTF8 * (*string_utf8_insert)(StringUTF8 * self, const StringUTF8 * src, const usize i);
+    StringUTF8 * (*string_utf8_push_front)(StringUTF8 * self, const StringUTF8 * src);
+    StringUTF8 * (*string_utf8_push_front_cstr)(StringUTF8 * self, char * src);
+    StringUTF8 * (*string_utf8_insert_cstr)(StringUTF8 * self, const char * src, const usize i);
+    StringUTF8 * (*string_utf8_remove)(StringUTF8 * self, const usize i);
+    StringUTF8 * (*string_utf8_remove_n)(StringUTF8 * self, const usize i, const usize n);
+    StringUTF8 * (*string_utf8_by_string)(const String * self);
+    boolean (*string_utf8_equals)(const StringUTF8 * str1, const StringUTF8 * str2);
+    void (*string_utf8_free)(StringUTF8 * self);
     boolean (*vfs_mount_res)(const char * path, const char * mount_point);
     boolean (*vfs_unmount_res)(const char * mount_point);
     boolean (*vfs_mount_rfs)(const char * mount_point);
@@ -5211,9 +5340,9 @@ extern boolean (*window_server_window_get_position)(WindowServerWindow * this, I
     #endif
 
     void ___hate_engine_runtime_init(void* (*proc_addr)(const char* name)) {
-                raw_set_error = (void (*)(Error))proc_addr("set_error");
+                raw___he_update_full_trace_info = (void (*)(const char *, const char *, i32))proc_addr("__he_update_full_trace_info");
+        raw_set_error = (void (*)(Error))proc_addr("set_error");
         raw_get_error = (Error (*)(void))proc_addr("get_error");
-        raw___he_update_full_trace_info = (void (*)(const char *, const char *, i32))proc_addr("__he_update_full_trace_info");
         raw_ivec2_init = (void (*)(const i32, const i32, IVec2 *const))proc_addr("ivec2_init");
         raw_ivec2_add = (void (*)(const IVec2 *const, const IVec2 *const, IVec2 *const))proc_addr("ivec2_add");
         raw_ivec2_sub = (void (*)(const IVec2 *const, const IVec2 *const, IVec2 *const))proc_addr("ivec2_sub");
@@ -5431,17 +5560,23 @@ extern boolean (*window_server_window_get_position)(WindowServerWindow * this, I
         raw_string_insert_slice = (String * (*)(String *, const StringSlice *, const usize))proc_addr("string_insert_slice");
         raw_string_insert_slice_by_byte = (String * (*)(String *, const StringSlice *, const usize))proc_addr("string_insert_slice_by_byte");
         raw_string_slice_free = (void (*)(StringSlice *))proc_addr("string_slice_free");
-        raw_string_utf8_new = (Error (*)(string_utf8 **))proc_addr("string_utf8_new");
-        raw_string_utf8_to_string = (Error (*)(String **, const string_utf8 *))proc_addr("string_utf8_to_string");
-        raw_string_utf8_from = (Error (*)(string_utf8 **, const char *))proc_addr("string_utf8_from");
-        raw_string_utf8_len = (Error (*)(usize *, const string_utf8 *))proc_addr("string_utf8_len");
-        raw_string_utf8_size = (Error (*)(usize *, const string_utf8 *))proc_addr("string_utf8_size");
-        raw_string_utf8_clone = (Error (*)(string_utf8 **, const string_utf8 *))proc_addr("string_utf8_clone");
-        raw_string_utf8_push_back_cstr = (Error (*)(string_utf8 *, const char *))proc_addr("string_utf8_push_back_cstr");
-        raw_string_utf8_push_back = (Error (*)(string_utf8 *, const string_utf8 *))proc_addr("string_utf8_push_back");
-        raw_string_utf8_insert = (Error (*)(string_utf8 *, const string_utf8 *, const usize))proc_addr("string_utf8_insert");
-        raw_string_utf8_push_front = (Error (*)(string_utf8 *, const string_utf8 *))proc_addr("string_utf8_push_front");
-        raw_string_utf8_free = (void (*)(string_utf8 *))proc_addr("string_utf8_free");
+        raw_string_utf8_new = (StringUTF8 * (*)(void))proc_addr("string_utf8_new");
+        raw_string_utf8_from = (StringUTF8 * (*)(const char *))proc_addr("string_utf8_from");
+        raw_string_utf8_to_string = (String * (*)(const StringUTF8 *))proc_addr("string_utf8_to_string");
+        raw_string_utf8_len = (usize (*)(const StringUTF8 *))proc_addr("string_utf8_len");
+        raw_string_utf8_size = (usize (*)(const StringUTF8 *))proc_addr("string_utf8_size");
+        raw_string_utf8_clone = (StringUTF8 * (*)(const StringUTF8 *))proc_addr("string_utf8_clone");
+        raw_string_utf8_push_back_cstr = (StringUTF8 * (*)(StringUTF8 *, char *))proc_addr("string_utf8_push_back_cstr");
+        raw_string_utf8_push_back = (StringUTF8 * (*)(StringUTF8 *, const StringUTF8 *))proc_addr("string_utf8_push_back");
+        raw_string_utf8_insert = (StringUTF8 * (*)(StringUTF8 *, const StringUTF8 *, const usize))proc_addr("string_utf8_insert");
+        raw_string_utf8_push_front = (StringUTF8 * (*)(StringUTF8 *, const StringUTF8 *))proc_addr("string_utf8_push_front");
+        raw_string_utf8_push_front_cstr = (StringUTF8 * (*)(StringUTF8 *, char *))proc_addr("string_utf8_push_front_cstr");
+        raw_string_utf8_insert_cstr = (StringUTF8 * (*)(StringUTF8 *, const char *, const usize))proc_addr("string_utf8_insert_cstr");
+        raw_string_utf8_remove = (StringUTF8 * (*)(StringUTF8 *, const usize))proc_addr("string_utf8_remove");
+        raw_string_utf8_remove_n = (StringUTF8 * (*)(StringUTF8 *, const usize, const usize))proc_addr("string_utf8_remove_n");
+        raw_string_utf8_by_string = (StringUTF8 * (*)(const String *))proc_addr("string_utf8_by_string");
+        raw_string_utf8_equals = (boolean (*)(const StringUTF8 *, const StringUTF8 *))proc_addr("string_utf8_equals");
+        raw_string_utf8_free = (void (*)(StringUTF8 *))proc_addr("string_utf8_free");
         raw_vfs_mount_res = (boolean (*)(const char *, const char *))proc_addr("vfs_mount_res");
         raw_vfs_unmount_res = (boolean (*)(const char *))proc_addr("vfs_unmount_res");
         raw_vfs_mount_rfs = (boolean (*)(const char *))proc_addr("vfs_mount_rfs");
@@ -5465,9 +5600,9 @@ extern boolean (*window_server_window_get_position)(WindowServerWindow * this, I
 
 
         #if !defined(HEAPI_FULL_TRACE)
-                        set_error = raw_set_error;
+                        __he_update_full_trace_info = raw___he_update_full_trace_info;
+            set_error = raw_set_error;
             get_error = raw_get_error;
-            __he_update_full_trace_info = raw___he_update_full_trace_info;
             ivec2_init = raw_ivec2_init;
             ivec2_add = raw_ivec2_add;
             ivec2_sub = raw_ivec2_sub;
@@ -5686,8 +5821,8 @@ extern boolean (*window_server_window_get_position)(WindowServerWindow * this, I
             string_insert_slice_by_byte = raw_string_insert_slice_by_byte;
             string_slice_free = raw_string_slice_free;
             string_utf8_new = raw_string_utf8_new;
-            string_utf8_to_string = raw_string_utf8_to_string;
             string_utf8_from = raw_string_utf8_from;
+            string_utf8_to_string = raw_string_utf8_to_string;
             string_utf8_len = raw_string_utf8_len;
             string_utf8_size = raw_string_utf8_size;
             string_utf8_clone = raw_string_utf8_clone;
@@ -5695,6 +5830,12 @@ extern boolean (*window_server_window_get_position)(WindowServerWindow * this, I
             string_utf8_push_back = raw_string_utf8_push_back;
             string_utf8_insert = raw_string_utf8_insert;
             string_utf8_push_front = raw_string_utf8_push_front;
+            string_utf8_push_front_cstr = raw_string_utf8_push_front_cstr;
+            string_utf8_insert_cstr = raw_string_utf8_insert_cstr;
+            string_utf8_remove = raw_string_utf8_remove;
+            string_utf8_remove_n = raw_string_utf8_remove_n;
+            string_utf8_by_string = raw_string_utf8_by_string;
+            string_utf8_equals = raw_string_utf8_equals;
             string_utf8_free = raw_string_utf8_free;
             vfs_mount_res = raw_vfs_mount_res;
             vfs_unmount_res = raw_vfs_unmount_res;
@@ -5989,17 +6130,23 @@ String * full_trace_string_push_front_slice(const char* ___file___, uint32_t ___
 String * full_trace_string_insert_slice(const char* ___file___, uint32_t ___line___, String *, const StringSlice *, const usize);
 String * full_trace_string_insert_slice_by_byte(const char* ___file___, uint32_t ___line___, String *, const StringSlice *, const usize);
 void full_trace_string_slice_free(const char* ___file___, uint32_t ___line___, StringSlice *);
-Error full_trace_string_utf8_new(const char* ___file___, uint32_t ___line___, string_utf8 **);
-Error full_trace_string_utf8_to_string(const char* ___file___, uint32_t ___line___, String **, const string_utf8 *);
-Error full_trace_string_utf8_from(const char* ___file___, uint32_t ___line___, string_utf8 **, const char *);
-Error full_trace_string_utf8_len(const char* ___file___, uint32_t ___line___, usize *, const string_utf8 *);
-Error full_trace_string_utf8_size(const char* ___file___, uint32_t ___line___, usize *, const string_utf8 *);
-Error full_trace_string_utf8_clone(const char* ___file___, uint32_t ___line___, string_utf8 **, const string_utf8 *);
-Error full_trace_string_utf8_push_back_cstr(const char* ___file___, uint32_t ___line___, string_utf8 *, const char *);
-Error full_trace_string_utf8_push_back(const char* ___file___, uint32_t ___line___, string_utf8 *, const string_utf8 *);
-Error full_trace_string_utf8_insert(const char* ___file___, uint32_t ___line___, string_utf8 *, const string_utf8 *, const usize);
-Error full_trace_string_utf8_push_front(const char* ___file___, uint32_t ___line___, string_utf8 *, const string_utf8 *);
-void full_trace_string_utf8_free(const char* ___file___, uint32_t ___line___, string_utf8 *);
+StringUTF8 * full_trace_string_utf8_new(const char* ___file___, uint32_t ___line___);
+StringUTF8 * full_trace_string_utf8_from(const char* ___file___, uint32_t ___line___, const char *);
+String * full_trace_string_utf8_to_string(const char* ___file___, uint32_t ___line___, const StringUTF8 *);
+usize full_trace_string_utf8_len(const char* ___file___, uint32_t ___line___, const StringUTF8 *);
+usize full_trace_string_utf8_size(const char* ___file___, uint32_t ___line___, const StringUTF8 *);
+StringUTF8 * full_trace_string_utf8_clone(const char* ___file___, uint32_t ___line___, const StringUTF8 *);
+StringUTF8 * full_trace_string_utf8_push_back_cstr(const char* ___file___, uint32_t ___line___, StringUTF8 *, char *);
+StringUTF8 * full_trace_string_utf8_push_back(const char* ___file___, uint32_t ___line___, StringUTF8 *, const StringUTF8 *);
+StringUTF8 * full_trace_string_utf8_insert(const char* ___file___, uint32_t ___line___, StringUTF8 *, const StringUTF8 *, const usize);
+StringUTF8 * full_trace_string_utf8_push_front(const char* ___file___, uint32_t ___line___, StringUTF8 *, const StringUTF8 *);
+StringUTF8 * full_trace_string_utf8_push_front_cstr(const char* ___file___, uint32_t ___line___, StringUTF8 *, char *);
+StringUTF8 * full_trace_string_utf8_insert_cstr(const char* ___file___, uint32_t ___line___, StringUTF8 *, const char *, const usize);
+StringUTF8 * full_trace_string_utf8_remove(const char* ___file___, uint32_t ___line___, StringUTF8 *, const usize);
+StringUTF8 * full_trace_string_utf8_remove_n(const char* ___file___, uint32_t ___line___, StringUTF8 *, const usize, const usize);
+StringUTF8 * full_trace_string_utf8_by_string(const char* ___file___, uint32_t ___line___, const String *);
+boolean full_trace_string_utf8_equals(const char* ___file___, uint32_t ___line___, const StringUTF8 *, const StringUTF8 *);
+void full_trace_string_utf8_free(const char* ___file___, uint32_t ___line___, StringUTF8 *);
 boolean full_trace_vfs_mount_res(const char* ___file___, uint32_t ___line___, const char *, const char *);
 boolean full_trace_vfs_unmount_res(const char* ___file___, uint32_t ___line___, const char *);
 boolean full_trace_vfs_mount_rfs(const char* ___file___, uint32_t ___line___, const char *);
@@ -7465,79 +7612,121 @@ inline void full_trace_string_slice_free(const char* ___file___, uint32_t ___lin
     raw___he_update_full_trace_info("", "", -1);
 }
 
-inline Error full_trace_string_utf8_new(const char* ___file___, uint32_t ___line___, string_utf8 ** str) {
+inline StringUTF8 * full_trace_string_utf8_new(const char* ___file___, uint32_t ___line___) {
     raw___he_update_full_trace_info("string_utf8_new", ___file___, ___line___);
-    Error result = raw_string_utf8_new(str);
+    StringUTF8 * result = raw_string_utf8_new();
     raw___he_update_full_trace_info("", "", -1);
     return result;
 }
 
-inline Error full_trace_string_utf8_to_string(const char* ___file___, uint32_t ___line___, String ** dest, const string_utf8 * str) {
-    raw___he_update_full_trace_info("string_utf8_to_string", ___file___, ___line___);
-    Error result = raw_string_utf8_to_string(dest, str);
-    raw___he_update_full_trace_info("", "", -1);
-    return result;
-}
-
-inline Error full_trace_string_utf8_from(const char* ___file___, uint32_t ___line___, string_utf8 ** str, const char * c_str) {
+inline StringUTF8 * full_trace_string_utf8_from(const char* ___file___, uint32_t ___line___, const char * c_str) {
     raw___he_update_full_trace_info("string_utf8_from", ___file___, ___line___);
-    Error result = raw_string_utf8_from(str, c_str);
+    StringUTF8 * result = raw_string_utf8_from(c_str);
     raw___he_update_full_trace_info("", "", -1);
     return result;
 }
 
-inline Error full_trace_string_utf8_len(const char* ___file___, uint32_t ___line___, usize * len, const string_utf8 * c_str) {
+inline String * full_trace_string_utf8_to_string(const char* ___file___, uint32_t ___line___, const StringUTF8 * self) {
+    raw___he_update_full_trace_info("string_utf8_to_string", ___file___, ___line___);
+    String * result = raw_string_utf8_to_string(self);
+    raw___he_update_full_trace_info("", "", -1);
+    return result;
+}
+
+inline usize full_trace_string_utf8_len(const char* ___file___, uint32_t ___line___, const StringUTF8 * self) {
     raw___he_update_full_trace_info("string_utf8_len", ___file___, ___line___);
-    Error result = raw_string_utf8_len(len, c_str);
+    usize result = raw_string_utf8_len(self);
     raw___he_update_full_trace_info("", "", -1);
     return result;
 }
 
-inline Error full_trace_string_utf8_size(const char* ___file___, uint32_t ___line___, usize * size, const string_utf8 * c_str) {
+inline usize full_trace_string_utf8_size(const char* ___file___, uint32_t ___line___, const StringUTF8 * self) {
     raw___he_update_full_trace_info("string_utf8_size", ___file___, ___line___);
-    Error result = raw_string_utf8_size(size, c_str);
+    usize result = raw_string_utf8_size(self);
     raw___he_update_full_trace_info("", "", -1);
     return result;
 }
 
-inline Error full_trace_string_utf8_clone(const char* ___file___, uint32_t ___line___, string_utf8 ** str, const string_utf8 * c_str) {
+inline StringUTF8 * full_trace_string_utf8_clone(const char* ___file___, uint32_t ___line___, const StringUTF8 * self) {
     raw___he_update_full_trace_info("string_utf8_clone", ___file___, ___line___);
-    Error result = raw_string_utf8_clone(str, c_str);
+    StringUTF8 * result = raw_string_utf8_clone(self);
     raw___he_update_full_trace_info("", "", -1);
     return result;
 }
 
-inline Error full_trace_string_utf8_push_back_cstr(const char* ___file___, uint32_t ___line___, string_utf8 * dest, const char * src) {
+inline StringUTF8 * full_trace_string_utf8_push_back_cstr(const char* ___file___, uint32_t ___line___, StringUTF8 * self, char * src) {
     raw___he_update_full_trace_info("string_utf8_push_back_cstr", ___file___, ___line___);
-    Error result = raw_string_utf8_push_back_cstr(dest, src);
+    StringUTF8 * result = raw_string_utf8_push_back_cstr(self, src);
     raw___he_update_full_trace_info("", "", -1);
     return result;
 }
 
-inline Error full_trace_string_utf8_push_back(const char* ___file___, uint32_t ___line___, string_utf8 * dest, const string_utf8 * src) {
+inline StringUTF8 * full_trace_string_utf8_push_back(const char* ___file___, uint32_t ___line___, StringUTF8 * self, const StringUTF8 * src) {
     raw___he_update_full_trace_info("string_utf8_push_back", ___file___, ___line___);
-    Error result = raw_string_utf8_push_back(dest, src);
+    StringUTF8 * result = raw_string_utf8_push_back(self, src);
     raw___he_update_full_trace_info("", "", -1);
     return result;
 }
 
-inline Error full_trace_string_utf8_insert(const char* ___file___, uint32_t ___line___, string_utf8 * dest, const string_utf8 * src, const usize i) {
+inline StringUTF8 * full_trace_string_utf8_insert(const char* ___file___, uint32_t ___line___, StringUTF8 * self, const StringUTF8 * src, const usize i) {
     raw___he_update_full_trace_info("string_utf8_insert", ___file___, ___line___);
-    Error result = raw_string_utf8_insert(dest, src, i);
+    StringUTF8 * result = raw_string_utf8_insert(self, src, i);
     raw___he_update_full_trace_info("", "", -1);
     return result;
 }
 
-inline Error full_trace_string_utf8_push_front(const char* ___file___, uint32_t ___line___, string_utf8 * dest, const string_utf8 * src) {
+inline StringUTF8 * full_trace_string_utf8_push_front(const char* ___file___, uint32_t ___line___, StringUTF8 * self, const StringUTF8 * src) {
     raw___he_update_full_trace_info("string_utf8_push_front", ___file___, ___line___);
-    Error result = raw_string_utf8_push_front(dest, src);
+    StringUTF8 * result = raw_string_utf8_push_front(self, src);
     raw___he_update_full_trace_info("", "", -1);
     return result;
 }
 
-inline void full_trace_string_utf8_free(const char* ___file___, uint32_t ___line___, string_utf8 * str) {
+inline StringUTF8 * full_trace_string_utf8_push_front_cstr(const char* ___file___, uint32_t ___line___, StringUTF8 * self, char * src) {
+    raw___he_update_full_trace_info("string_utf8_push_front_cstr", ___file___, ___line___);
+    StringUTF8 * result = raw_string_utf8_push_front_cstr(self, src);
+    raw___he_update_full_trace_info("", "", -1);
+    return result;
+}
+
+inline StringUTF8 * full_trace_string_utf8_insert_cstr(const char* ___file___, uint32_t ___line___, StringUTF8 * self, const char * src, const usize i) {
+    raw___he_update_full_trace_info("string_utf8_insert_cstr", ___file___, ___line___);
+    StringUTF8 * result = raw_string_utf8_insert_cstr(self, src, i);
+    raw___he_update_full_trace_info("", "", -1);
+    return result;
+}
+
+inline StringUTF8 * full_trace_string_utf8_remove(const char* ___file___, uint32_t ___line___, StringUTF8 * self, const usize i) {
+    raw___he_update_full_trace_info("string_utf8_remove", ___file___, ___line___);
+    StringUTF8 * result = raw_string_utf8_remove(self, i);
+    raw___he_update_full_trace_info("", "", -1);
+    return result;
+}
+
+inline StringUTF8 * full_trace_string_utf8_remove_n(const char* ___file___, uint32_t ___line___, StringUTF8 * self, const usize i, const usize n) {
+    raw___he_update_full_trace_info("string_utf8_remove_n", ___file___, ___line___);
+    StringUTF8 * result = raw_string_utf8_remove_n(self, i, n);
+    raw___he_update_full_trace_info("", "", -1);
+    return result;
+}
+
+inline StringUTF8 * full_trace_string_utf8_by_string(const char* ___file___, uint32_t ___line___, const String * self) {
+    raw___he_update_full_trace_info("string_utf8_by_string", ___file___, ___line___);
+    StringUTF8 * result = raw_string_utf8_by_string(self);
+    raw___he_update_full_trace_info("", "", -1);
+    return result;
+}
+
+inline boolean full_trace_string_utf8_equals(const char* ___file___, uint32_t ___line___, const StringUTF8 * str1, const StringUTF8 * str2) {
+    raw___he_update_full_trace_info("string_utf8_equals", ___file___, ___line___);
+    boolean result = raw_string_utf8_equals(str1, str2);
+    raw___he_update_full_trace_info("", "", -1);
+    return result;
+}
+
+inline void full_trace_string_utf8_free(const char* ___file___, uint32_t ___line___, StringUTF8 * self) {
     raw___he_update_full_trace_info("string_utf8_free", ___file___, ___line___);
-    raw_string_utf8_free(str);
+    raw_string_utf8_free(self);
     raw___he_update_full_trace_info("", "", -1);
 }
 
@@ -8007,17 +8196,23 @@ inline boolean full_trace_window_server_window_get_position(const char* ___file_
 #define string_insert_slice(self, src, i) full_trace_string_insert_slice(__FILE__, __LINE__, self, src, i)
 #define string_insert_slice_by_byte(self, src, b) full_trace_string_insert_slice_by_byte(__FILE__, __LINE__, self, src, b)
 #define string_slice_free(self) full_trace_string_slice_free(__FILE__, __LINE__, self)
-#define string_utf8_new(str) full_trace_string_utf8_new(__FILE__, __LINE__, str)
-#define string_utf8_to_string(dest, str) full_trace_string_utf8_to_string(__FILE__, __LINE__, dest, str)
-#define string_utf8_from(str, c_str) full_trace_string_utf8_from(__FILE__, __LINE__, str, c_str)
-#define string_utf8_len(len, c_str) full_trace_string_utf8_len(__FILE__, __LINE__, len, c_str)
-#define string_utf8_size(size, c_str) full_trace_string_utf8_size(__FILE__, __LINE__, size, c_str)
-#define string_utf8_clone(str, c_str) full_trace_string_utf8_clone(__FILE__, __LINE__, str, c_str)
-#define string_utf8_push_back_cstr(dest, src) full_trace_string_utf8_push_back_cstr(__FILE__, __LINE__, dest, src)
-#define string_utf8_push_back(dest, src) full_trace_string_utf8_push_back(__FILE__, __LINE__, dest, src)
-#define string_utf8_insert(dest, src, i) full_trace_string_utf8_insert(__FILE__, __LINE__, dest, src, i)
-#define string_utf8_push_front(dest, src) full_trace_string_utf8_push_front(__FILE__, __LINE__, dest, src)
-#define string_utf8_free(str) full_trace_string_utf8_free(__FILE__, __LINE__, str)
+#define string_utf8_new() full_trace_string_utf8_new(__FILE__, __LINE__)
+#define string_utf8_from(c_str) full_trace_string_utf8_from(__FILE__, __LINE__, c_str)
+#define string_utf8_to_string(self) full_trace_string_utf8_to_string(__FILE__, __LINE__, self)
+#define string_utf8_len(self) full_trace_string_utf8_len(__FILE__, __LINE__, self)
+#define string_utf8_size(self) full_trace_string_utf8_size(__FILE__, __LINE__, self)
+#define string_utf8_clone(self) full_trace_string_utf8_clone(__FILE__, __LINE__, self)
+#define string_utf8_push_back_cstr(self, src) full_trace_string_utf8_push_back_cstr(__FILE__, __LINE__, self, src)
+#define string_utf8_push_back(self, src) full_trace_string_utf8_push_back(__FILE__, __LINE__, self, src)
+#define string_utf8_insert(self, src, i) full_trace_string_utf8_insert(__FILE__, __LINE__, self, src, i)
+#define string_utf8_push_front(self, src) full_trace_string_utf8_push_front(__FILE__, __LINE__, self, src)
+#define string_utf8_push_front_cstr(self, src) full_trace_string_utf8_push_front_cstr(__FILE__, __LINE__, self, src)
+#define string_utf8_insert_cstr(self, src, i) full_trace_string_utf8_insert_cstr(__FILE__, __LINE__, self, src, i)
+#define string_utf8_remove(self, i) full_trace_string_utf8_remove(__FILE__, __LINE__, self, i)
+#define string_utf8_remove_n(self, i, n) full_trace_string_utf8_remove_n(__FILE__, __LINE__, self, i, n)
+#define string_utf8_by_string(self) full_trace_string_utf8_by_string(__FILE__, __LINE__, self)
+#define string_utf8_equals(str1, str2) full_trace_string_utf8_equals(__FILE__, __LINE__, str1, str2)
+#define string_utf8_free(self) full_trace_string_utf8_free(__FILE__, __LINE__, self)
 #define vfs_mount_res(path, mount_point) full_trace_vfs_mount_res(__FILE__, __LINE__, path, mount_point)
 #define vfs_unmount_res(mount_point) full_trace_vfs_unmount_res(__FILE__, __LINE__, mount_point)
 #define vfs_mount_rfs(mount_point) full_trace_vfs_mount_rfs(__FILE__, __LINE__, mount_point)

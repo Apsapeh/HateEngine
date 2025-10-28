@@ -26,9 +26,9 @@ String* string_from(const char* c_str) {
 
     usize c_str_len = strlen(c_str);
     str->ptr = tmalloc(c_str_len + 1);
-    ERROR_ALLOC_CHECK(str->ptr, { 
+    ERROR_ALLOC_CHECK(str->ptr, {
         tfree(str);
-        return NULL; 
+        return NULL;
     });
 
     str->len = c_str_len;
@@ -44,9 +44,9 @@ String* string_clone(const String* str) {
     ERROR_ALLOC_CHECK(str_new, { return NULL; });
 
     str_new->ptr = tmalloc(str->len + 1);
-    ERROR_ALLOC_CHECK(str_new->ptr, { 
+    ERROR_ALLOC_CHECK(str_new->ptr, {
         tfree(str_new);
-        return NULL; 
+        return NULL;
     });
 
     str_new->len = str->len;
@@ -226,7 +226,6 @@ String* string_remove_by_byte(String* self, const usize b) {
 }
 
 String* string_remove_n(String* self, const usize i, const usize n) {
-    LOG_DEBUG("1\n");
     if (n == 0)
         return string_remove(self, i);
 
@@ -238,19 +237,18 @@ String* string_remove_n(String* self, const usize i, const usize n) {
         return NULL;
     }
 
-    LOG_DEBUG("2\n");
     u8* tmp_ptr;
-    
+
     if (i + n == self->len - 1) { // если мы удаляем до конца строки начиная с i-индекса
-        tmp_ptr = trealloc(self->ptr, i + 1); // в этом случае просто оставляем место для i кол-во символов
+        tmp_ptr =
+                trealloc(self->ptr, i + 1); // в этом случае просто оставляем место для i кол-во символов
         ERROR_ALLOC_CHECK(tmp_ptr, { return NULL; });
         *(tmp_ptr + i) = '\0';
-        LOG_DEBUG("2.1\n");
     } else {
         usize len_cache = self->len - i - n;
-        u8 *cache = tmalloc(len_cache);
+        u8* cache = tmalloc(len_cache);
         ERROR_ALLOC_CHECK(cache, { return NULL; });
-    
+
         memcpy(cache, self->ptr + i + n + 1, len_cache);
         tmp_ptr = trealloc(self->ptr, i + len_cache);
         ERROR_ALLOC_CHECK(tmp_ptr, {
@@ -260,15 +258,10 @@ String* string_remove_n(String* self, const usize i, const usize n) {
 
         memcpy(tmp_ptr + i, cache, len_cache);
         tfree(cache);
-        LOG_DEBUG("2.2\n");
     }
-
-    LOG_DEBUG("3\n");
 
     self->ptr = tmp_ptr;
     self->len -= n + 1;
-
-    LOG_DEBUG("4\n");
 
     return self;
 }
@@ -279,7 +272,7 @@ String* string_remove_n_by_byte(String* self, const usize b, const usize b_n) {
 
 boolean string_equals(const String* str1, const String* str2) {
     ERROR_ARGS_CHECK_2(str1, str2, { return false; });
-    if (!str1->len != str2->len)
+    if (str1->len != str2->len)
         return false;
 
     return strcmp(string_cstr(str1), string_cstr(str2)) ? false : true;
@@ -438,211 +431,392 @@ void string_slice_free(StringSlice* self) {
 
 //<--------------------------- UTF-8 --------------------------->
 
-Error string_utf8_new(string_utf8** str) {
-    ERROR_ARG_CHECK(str, { return ERROR_INVALID_ARGUMENT; });
-
-    string_utf8* str_new = tmalloc(sizeof(string_utf8));
-    ERROR_ARG_CHECK(str_new, { return ERROR_INVALID_ARGUMENT; });
+StringUTF8* string_utf8_new(void) {
+    StringUTF8* str_new = tmalloc(sizeof(StringUTF8));
+    ERROR_ALLOC_CHECK(str_new, { return NULL; });
 
     str_new->ptr = tmalloc(1);
-    ERROR_ARG_CHECK(str_new->ptr, { return ERROR_INVALID_ARGUMENT; });
+    ERROR_ALLOC_CHECK(str_new->ptr, { return NULL; });
 
     *(u8*) str_new->ptr = '\0';
     str_new->len = 0;
-    *str = str_new;
 
-    return ERROR_SUCCESS;
+    return str_new;
 }
 
-static Error string_utf8_dec(string_utf8** str, const u8* c_str) {
-    usize len_c_cstr = strlen((char*) c_str);
-    if (len_c_cstr == 0) {
-        return string_utf8_new(str);
+
+static StringUTF8* string_utf8_dec(const u8* c_str, const usize len_c_str) {
+    if (len_c_str == 0) {
+        return string_utf8_new();
     }
 
-    u32 cache[4 * len_c_cstr + 1];
+    u32* cache = tmalloc(4 * len_c_str + 1);
+    ERROR_ALLOC_CHECK(cache, { return NULL; });
+
+    StringUTF8* str_new = tmalloc(sizeof(StringUTF8));
+    ERROR_ALLOC_CHECK(str_new, { return NULL; });
+
     u32* tmp_ptr = cache;
 
-    while (*c_str != 0) {
-        if ((*c_str & 0x80) == 0) {
-            *(tmp_ptr++) = *(c_str++);
-        } else if ((c_str[0] & 0xE0) == 0xC0 && (c_str[1] & 0xC0) == 0x80) {
-            memcpy(tmp_ptr++, c_str, 2);
-            c_str += 2;
-        } else if ((c_str[0] & 0xF0) == 0xE0 && (c_str[1] & 0xC0) == 0x80 && (c_str[2] & 0xC0) == 0x80) {
-            memcpy(tmp_ptr++, c_str, 3);
+    while (*c_str != 0) { // итерируемся до '\0'
+        if ((*c_str & 0x80) == 0) { // маска для 1 байта
+            *(tmp_ptr) = *(c_str++);
+            memset((u8*) (tmp_ptr++) + 1, 0, 3);
+        } else if ((c_str[0] & 0xE0) == 0xC0 && (c_str[1] & 0xC0) == 0x80) { // маска для 2 байт
+            memcpy(tmp_ptr, c_str, 2);
+            memset((u8*) (tmp_ptr++) + 2, 0, 2);
+            c_str += 2; // это сдвиг на кол-во добавляемых байтов
+        } else if ((c_str[0] & 0xF0) == 0xE0 && (c_str[1] & 0xC0) == 0x80 &&
+                   (c_str[2] & 0xC0) == 0x80) { // маска для 3 байт
+            memcpy(tmp_ptr, c_str, 3);
+            memset((u8*) (tmp_ptr++) + 3, 0, 1);
             c_str += 3;
         } else if ((c_str[0] & 0xF8) == 0xF0 && (c_str[1] & 0xC0) == 0x80 && (c_str[2] & 0xC0) == 0x80 &&
-                   (c_str[3] & 0xC0) == 0x80) {
+                   (c_str[3] & 0xC0) == 0x80) { // маска для 4 байт
             memcpy(tmp_ptr++, c_str, 4);
             c_str += 4;
         } else {
-            LOG_ERROR("Invalid argument %s: Incorrect utf8 format", c_str);
-            return ERROR_INVALID_ARGUMENT;
+            LOG_ERROR_OR_DEBUG_FATAL("Invalid argument 'c_str': Incorrect UTF8-format");
+            set_error(ERROR_INVALID_ARGUMENT);
+            tfree(cache);
+            tfree(str_new);
+            return NULL;
         }
     }
-    *(u8*) tmp_ptr = '\0';
+    *(u8*) tmp_ptr = '\0'; // не забываем про '\0', он не был добавлен так как мы до него итерировались
 
-    string_utf8* str_new = tmalloc(sizeof(string_utf8));
-    ERROR_ARG_CHECK(str_new, { return ERROR_INVALID_ARGUMENT; });
-
-    usize size_new_str = 4 * (tmp_ptr - cache) + 1;
+    usize size_new_str = 4 * (tmp_ptr - cache) + 1; // размер получившейся строки в байтах
     str_new->ptr = tmalloc(size_new_str);
-    ERROR_ARG_CHECK(str_new->ptr, { return ERROR_INVALID_ARGUMENT; });
+    ERROR_ALLOC_CHECK(str_new->ptr, {
+        tfree(cache);
+        tfree(str_new);
+        return NULL;
+    });
+
     str_new->len = tmp_ptr - cache;
+    memcpy(str_new->ptr, cache, size_new_str); // копируем из 'cache' добавленную инфу
+    tfree(cache);
 
-    memcpy(str_new->ptr, cache, size_new_str);
-    *str = str_new;
-
-    return ERROR_SUCCESS;
+    return str_new;
 }
 
-Error string_utf8_to_string(String** dest, const string_utf8* str) {
-    ERROR_ARGS_CHECK_2(dest, str, { return ERROR_INVALID_ARGUMENT; });
+StringUTF8* string_utf8_from(const char* c_str) {
+    ERROR_ARG_CHECK(c_str, { return NULL; });
+    return string_utf8_dec((u8*) c_str, strlen(c_str));
+}
 
-    usize len_str;
-    string_utf8_len(&len_str, str);
-    if (len_str == 0)
-        return NULL;//string_new(dest);
+String* string_utf8_to_string(const StringUTF8* self) {
+    ERROR_ARG_CHECK(self, { return NULL; });
 
-    usize size_str;
-    string_utf8_size(&size_str, str);
+    usize len_str = self->len;
+    if (len_str == 0) // если кол-во элементов равно 0, то можно просто вызвать 'string_new'
+        return string_new();
 
-    u8 cache[size_str];
+    usize size_str = 4 * self->len + 1;
+
+    u8* cache = tmalloc(size_str); // тут я очень упрощенно создаю кеш, взяв худшую ситуацию, что у нас
+                                   // элементы все по 4 байта (без лишних)
+    ERROR_ALLOC_CHECK(cache, { return NULL; });
+
     u8* tmp_ptr = cache;
 
+    String* str_new = tmalloc(sizeof(String));
+    ERROR_ALLOC_CHECK(str_new, {
+        tfree(cache);
+        return NULL;
+    });
+
     for (usize i = 0; i < len_str; i++) {
-        u8 c = *(u8*) (str->ptr + i);
+        u8 c = *(u8*) (self->ptr + i); // получаем байт в текущей итерации
 
-        u8 b7 = (c & 0x80) >> 7;
-        u8 b6 = (c & 0x40) >> 6;
-        u8 b5 = (c & 0x20) >> 5;
-        u8 b4 = (c & 0x10) >> 4;
+        /*
+            у нас есть 4 ситуации, когда символ требует 1, 2, 3, 4 байта;
+            чтобы итерироваться быстрее, будем брать старший байт и по нему определять кол-во байтов для
+           символа; так как в 'string_decode' я использую memcpy для вставки то меня не волнует вопрос о
+           little или big endian, потому что это гарантиурет что старший байт будет первым; остается
+           только научиться определять кол-во символов по старшему байту, для этого надо почитать по ним
+           доку, тогда все станет ясно пример (кол-во единиц говорит о кол-ве байт): [0]100 0101 -> 1
+           byte [110]1 0101 -> 2 byte [1110] 0101 -> 3 byte [11110] 101 -> 4 byte
 
+            также подчеркну что последующие байты после старшего (кроме символа равному 1 байту) будут
+           иметь маску [10]** **** можно было бы исползовать условия, но мне кажется это медленнее чем
+           расчетный способ
+        */
+        u8 b7 = (c & 0x80) >> 7; // получение 7 бита (отсчет с нуля)
+        u8 b6 = (c & 0x40) >> 6; // получение 6 бита
+        u8 b5 = (c & 0x20) >> 5; // получение 5 бита
+        u8 b4 = (c & 0x10) >> 4; // получение 4 бита
+
+        /*
+            cnt (count) - кол-во байт в числе
+
+            если мы просто сложим биты то это может привести к неправильному определению
+            пример:
+
+            7654 3210 (индексы)
+            [0101] 0000
+
+            как видно у нас символ должен хранить байт, но неправильный способ скажет что у нас 2 байта
+            я решил считать биты не просто так, а именно слева на право
+            в случае с верхним примером мы поступим так:
+            1) добавим b7 (чтобы данные правильно интерпретировались, надо вместо него сложить 1)
+            2) затем будем добавлять другие биты, но умножим все их на b7, это приводит к тому, что если
+           7 бит равен 0,то он просто обнулит остальные
+        */
         u8 cnt = 1 + b7 * (b6 + b6 * (b5 + b5 * b4));
 
-        memcpy(tmp_ptr, str->ptr + i, cnt);
+        memcpy(tmp_ptr, self->ptr + i, cnt);
         tmp_ptr += cnt;
     }
     *tmp_ptr = '\0';
 
-    String* str_new = tmalloc(sizeof(String));
-    ERROR_ARG_CHECK(str_new, { return ERROR_INVALID_ARGUMENT; });
-
     usize size_new_str = tmp_ptr - cache + 1;
     str_new->ptr = tmalloc(size_new_str);
-    ERROR_ARG_CHECK(str_new->ptr, { return ERROR_INVALID_ARGUMENT; });
+    ERROR_ALLOC_CHECK(str_new, {
+        tfree(cache);
+        tfree(str_new);
+        return NULL;
+    });
+
     str_new->len = size_new_str - 1;
-
     memcpy(str_new->ptr, cache, size_new_str);
-    *dest = str_new;
 
-    return ERROR_SUCCESS;
-}
-
-Error string_utf8_from(string_utf8** str, const char* c_str) {
-    ERROR_ARGS_CHECK_2(str, c_str, { return ERROR_INVALID_ARGUMENT; });
-    return string_utf8_dec(str, (u8*) c_str);
+    tfree(cache);
+    return str_new;
 }
 
 
-Error string_utf8_len(usize* len, const string_utf8* c_str) {
-    ERROR_ARGS_CHECK_2(len, c_str, { return ERROR_INVALID_ARGUMENT; });
-    *len = c_str->len;
-    return ERROR_SUCCESS;
+usize string_utf8_len(const StringUTF8* self) {
+    return self->len;
 }
 
-Error string_utf8_size(usize* size, const string_utf8* c_str) {
-    ERROR_ARGS_CHECK_2(size, c_str, { return ERROR_INVALID_ARGUMENT; });
-    *size = 4 * c_str->len + 1;
-    return ERROR_SUCCESS;
+usize string_utf8_size(const StringUTF8* self) {
+    return 4 * self->len + 1;
 }
 
-Error string_utf8_clone(string_utf8** str, const string_utf8* c_str) {
-    ERROR_ARGS_CHECK_2(str, c_str, { return ERROR_INVALID_ARGUMENT; });
 
-    string_utf8* str_new = tmalloc(sizeof(String));
-    ERROR_ARG_CHECK(str_new, { return ERROR_INVALID_ARGUMENT; });
+StringUTF8* string_utf8_clone(const StringUTF8* self) {
+    ERROR_ARG_CHECK(self, { return NULL; });
 
-    usize size_c_str = 4 * c_str->len + 1;
-    str_new->ptr = tmalloc(size_c_str);
-    ERROR_ARG_CHECK(str_new->ptr, { return ERROR_INVALID_ARGUMENT; });
-    str_new->len = c_str->len;
-    memcpy(str_new->ptr, c_str->ptr, size_c_str);
-    *str = str_new;
+    StringUTF8* str_new = tmalloc(sizeof(String));
+    ERROR_ALLOC_CHECK(str_new, { return NULL; });
 
-    return ERROR_SUCCESS;
+    usize size_self = string_utf8_size(self);
+    str_new->ptr = tmalloc(size_self);
+    ERROR_ALLOC_CHECK(str_new->ptr, {
+        tfree(str_new);
+        return NULL;
+    });
+
+    str_new->len = self->len;
+    memcpy(str_new->ptr, self->ptr, size_self);
+
+    return str_new;
 }
 
-Error string_utf8_push_back_cstr(string_utf8* dest, const char* src) {
-    ERROR_ARGS_CHECK_2(dest, src, { return ERROR_INVALID_ARGUMENT; });
 
-    string_utf8* str_new;
-    if (string_utf8_dec(&str_new, (u8*) src)) {
-        LOG_ERROR("Invalid argument: error dec");
-        return ERROR_INVALID_ARGUMENT;
-    }
+StringUTF8* string_utf8_push_back_cstr(StringUTF8* self, char* src) {
+    ERROR_ARGS_CHECK_2(self, src, { return NULL; });
 
-    if (string_utf8_push_back(dest, str_new)) {
-        LOG_ERROR("Invalid argument: error push_back");
-        return ERROR_INVALID_ARGUMENT;
-    }
+    StringUTF8* str_new = string_utf8_dec((u8*) src, strlen(src));
+    ERROR_ALLOC_CHECK(str_new, { return NULL; });
 
+    StringUTF8* out = string_utf8_push_back(self, str_new);
     string_utf8_free(str_new);
-    return ERROR_SUCCESS;
+    ERROR_ALLOC_CHECK(out, { return NULL; });
+
+    return out;
 }
 
-Error string_utf8_push_back(string_utf8* dest, const string_utf8* src) {
-    ERROR_ARGS_CHECK_2(dest, src, { return ERROR_INVALID_ARGUMENT; });
 
-    usize size_dest = 4 * dest->len + 1;
-    usize size_src = 4 * src->len + 1;
-    u32* tmp_ptr = trealloc(dest->ptr, size_dest + size_src - 1);
-    ERROR_ARG_CHECK(tmp_ptr, { return ERROR_INVALID_ARGUMENT; });
+StringUTF8* string_utf8_push_back(StringUTF8* self, const StringUTF8* src) {
+    ERROR_ARGS_CHECK_2(self, src, { return NULL; });
 
-    dest->ptr = tmp_ptr;
-    memcpy(dest->ptr + dest->len, src->ptr, size_src);
-    dest->len += src->len;
+    usize size_dest = string_utf8_size(self);
+    usize size_src = string_utf8_size(src);
 
-    return ERROR_SUCCESS;
+    u32* tmp_ptr = trealloc(self->ptr, size_dest + size_src - 1);
+    ERROR_ALLOC_CHECK(tmp_ptr, { return NULL; });
+
+    self->ptr = tmp_ptr;
+    memcpy(self->ptr + self->len, src->ptr, size_src);
+    self->len += src->len;
+
+    return self;
 }
 
-Error string_utf8_push_front(string_utf8* dest, const string_utf8* src) {
-    ERROR_ARGS_CHECK_2(dest, src, { return ERROR_INVALID_ARGUMENT; });
-
-    usize size_dest = 4 * dest->len + 1;
-    usize size_src = 4 * src->len + 1;
-    u32* tmp_ptr = trealloc(dest->ptr, size_dest + size_src - 1);
-    ERROR_ARG_CHECK(tmp_ptr, { return ERROR_INVALID_ARGUMENT; });
-
-    dest->ptr = tmp_ptr;
-    memcpy(dest->ptr + src->len, dest->ptr, size_dest);
-    memcpy(dest->ptr, src->ptr, size_src - 1);
-    dest->len += src->len;
-
-    return ERROR_SUCCESS;
-}
-
-Error string_utf8_insert(string_utf8* dest, const string_utf8* src, const usize i) {
-    ERROR_ARGS_CHECK_2(dest, src, { return ERROR_INVALID_ARGUMENT; });
+StringUTF8* string_utf8_insert(StringUTF8* self, const StringUTF8* src, const usize i) {
+    ERROR_ARGS_CHECK_2(self, src, { return NULL; });
 
     if (i == 0)
-        return string_utf8_push_front(dest, src);
+        return string_utf8_push_front(self, src);
 
-    usize size_dest = 4 * dest->len + 1;
-    usize size_src = 4 * src->len + 1;
-    u32* tmp_ptr = trealloc(dest->ptr, size_dest + size_src - 1);
-    ERROR_ARG_CHECK(tmp_ptr, { return ERROR_INVALID_ARGUMENT; });
+    if (i < 0 || i >= self->len) {
+        LOG_ERROR_OR_DEBUG_FATAL("Invalid argument (output for boundary): i");
+        set_error(ERROR_INVALID_ARGUMENT);
+        return NULL;
+    }
 
-    dest->ptr = tmp_ptr;
-    memcpy(dest->ptr + src->len + i, dest->ptr + i, 4 * (dest->len - i + 1));
-    memcpy(dest->ptr + i, src->ptr, size_src - 1);
-    dest->len += src->len;
+    usize size_dest = string_utf8_size(self);
+    usize size_src = string_utf8_size(src);
 
-    return ERROR_SUCCESS;
+    u32* tmp_ptr = trealloc(self->ptr, size_dest + size_src - 1);
+    ERROR_ALLOC_CHECK(tmp_ptr, { return NULL; });
+
+    self->ptr = tmp_ptr;
+    memcpy(self->ptr + src->len + i, self->ptr + i, 4 * (self->len - i + 1));
+    memcpy(self->ptr + i, src->ptr, size_src - 1);
+    self->len += src->len;
+
+    return self;
 }
 
-void string_utf8_free(string_utf8* c_pstr) {
-    tfree(c_pstr->ptr);
-    tfree(c_pstr);
+StringUTF8* string_utf8_push_front(StringUTF8* self, const StringUTF8* src) {
+    ERROR_ARGS_CHECK_2(self, src, { return NULL; });
+
+    usize size_dest = string_utf8_size(self);
+    usize size_src = string_utf8_size(src);
+
+    u32* tmp_ptr = trealloc(self->ptr, size_dest + size_src - 1);
+    ERROR_ALLOC_CHECK(tmp_ptr, { return NULL; });
+
+    self->ptr = tmp_ptr;
+    memcpy(self->ptr + src->len, self->ptr, size_dest);
+    memcpy(self->ptr, src->ptr, size_src - 1);
+    self->len += src->len;
+
+    return self;
+}
+
+
+StringUTF8* string_utf8_push_front_cstr(StringUTF8* self, char* src) {
+    ERROR_ARGS_CHECK_2(self, src, { return NULL; });
+
+    StringUTF8* str_new = string_utf8_dec((u8*) src, strlen(src));
+    ERROR_ALLOC_CHECK(str_new, { return NULL; });
+
+    StringUTF8* out = string_utf8_push_front(self, str_new);
+    string_utf8_free(str_new);
+    ERROR_ALLOC_CHECK(out, { return NULL; });
+
+    return out;
+}
+
+StringUTF8* string_utf8_insert_cstr(StringUTF8* self, const char* src, const usize i) {
+    ERROR_ARGS_CHECK_2(self, src, { return NULL; });
+
+    StringUTF8* str_new = string_utf8_dec((u8*) src, strlen(src));
+    ERROR_ALLOC_CHECK(str_new, { return NULL; });
+
+    StringUTF8* out = string_utf8_insert(self, str_new, i);
+    string_utf8_free(str_new);
+    ERROR_ALLOC_CHECK(out, { return NULL; });
+
+    return out;
+}
+
+StringUTF8* string_utf8_remove(StringUTF8* self, const usize i) {
+    ERROR_ARG_CHECK(self, { return NULL; });
+
+    if (i < 0 || i >= self->len) {
+        LOG_ERROR_OR_DEBUG_FATAL("Invalid argument (output for boundary): i");
+        set_error(ERROR_INVALID_ARGUMENT);
+        return NULL;
+    }
+
+    if (i == (self->len - 1)) {
+        u32* tmp_ptr = trealloc(self->ptr, string_utf8_size(self) - 4);
+        ERROR_ALLOC_CHECK(tmp_ptr, { return NULL; });
+
+        self->ptr = tmp_ptr;
+        self->len -= 1;
+        *((u8*) (self->ptr + string_utf8_len(self))) = '\0';
+    } else {
+        u32 cache = *((u8*) (self->ptr + string_utf8_len(self)) - 3);
+        u32* tmp_ptr = trealloc(self->ptr, string_utf8_size(self) - 4);
+        ERROR_ALLOC_CHECK(tmp_ptr, { return NULL; });
+
+        self->ptr = tmp_ptr;
+        memcpy(self->ptr + i, self->ptr + i + 1, string_utf8_size(self) - 4 * (i + 1) - 4);
+        self->len -= 1;
+        *((u8*) (self->ptr + string_utf8_len(self)) - 3) = cache;
+    }
+
+    return self;
+}
+
+StringUTF8* string_utf8_remove_n(StringUTF8* self, const usize i, const usize n) {
+    if (n == 0)
+        return string_utf8_remove(self, i);
+
+    ERROR_ARG_CHECK(self, { return NULL; });
+
+    if (i < 0 || i >= self->len || n < 0 || i + n >= self->len) {
+        LOG_ERROR_OR_DEBUG_FATAL("Invalid arguments (output for boundary): i or n");
+        set_error(ERROR_INVALID_ARGUMENT);
+        return NULL;
+    }
+
+    u32* tmp_ptr;
+
+    if (i + n == self->len - 1) {
+        tmp_ptr = trealloc(self->ptr, 4 * i + 1);
+        ERROR_ALLOC_CHECK(tmp_ptr, { return NULL; });
+        *(u8*) (tmp_ptr + i) = '\0';
+    } else {
+        usize size = string_utf8_size(self);
+        usize len = self->len;
+        usize cnt_del_el = n + 1; // кол-во удаляемых элементов
+        usize aft_del_el_off = i + n + 1; // смещение на даные после удалямых элементов
+        usize cnt_el_aft_del_el = len - aft_del_el_off; // кол-во элементов после удаляемых элементов
+        usize end_off = len;
+        usize len_cache;
+
+        if (cnt_el_aft_del_el < cnt_del_el)
+            len_cache = cnt_el_aft_del_el;
+        else
+            len_cache = cnt_del_el;
+
+        u32* cache = tmalloc(4 * len_cache);
+        ERROR_ALLOC_CHECK(cache, { return NULL; });
+
+        memcpy(cache, self->ptr + end_off - len_cache, 4 * len_cache);
+
+        tmp_ptr = trealloc(self->ptr, size - 4 * cnt_del_el);
+        ERROR_ALLOC_CHECK(tmp_ptr, {
+            tfree(cache);
+            return NULL;
+        });
+
+        memcpy(tmp_ptr + i, tmp_ptr + aft_del_el_off, 4 * (cnt_el_aft_del_el - len_cache));
+        memcpy(tmp_ptr + i + cnt_el_aft_del_el - len_cache, cache, 4 * len_cache);
+        *(u8*) (tmp_ptr + end_off - len_cache) = '\0';
+        tfree(cache);
+    }
+
+    self->ptr = tmp_ptr;
+    self->len -= n + 1;
+
+    return self;
+}
+
+StringUTF8* string_utf8_by_string(const String* self) {
+    ERROR_ARG_CHECK(self, { return NULL; });
+
+    return string_utf8_dec(self->ptr, self->len);
+}
+
+boolean string_utf8_equals(const StringUTF8* str1, const StringUTF8* str2) {
+    ERROR_ARGS_CHECK_2(str1, str2, { return false; });
+
+    if (str1->len != str2->len)
+        return false;
+
+    // return strcmp((char*) str1->ptr, (char*) str2->ptr) ? false : true;
+    return memcmp(str1->ptr, str2->ptr, string_utf8_size(str1)) ? false : true;
+}
+
+void string_utf8_free(StringUTF8* self) {
+    tfree(self->ptr);
+    tfree(self);
 }

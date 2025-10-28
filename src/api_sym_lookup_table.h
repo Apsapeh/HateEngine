@@ -4,34 +4,34 @@
 #define HE_MEM_NO_MACRO
 //#include <extra/full_trace.h>
 
-#include "math/ivec2.h"
-#include "servers/window_server/window_server.h"
 #include "object/node/node.h"
+#include "vfs/vfs.h"
+#include "types/uid.h"
 #include "platform/mutex.h"
-#include "math/uvec2.h"
-#include "object/node/window/window.h"
-#include "object/node/node3d/node3d.h"
-#include "math/ivec3.h"
-#include "object/node/canvas_item/canvas_item.h"
+#include "object/node/canvas_item/control/control.h"
+#include "platform/memory.h"
 #include "math/uvec3.h"
+#include "math/vec3.h"
+#include "servers/render_server/render_server.h"
+#include "platform/datetime.h"
+#include "servers/render_context/render_context.h"
+#include "object/node/node3d/node3d.h"
+#include "math/vec4.h"
 #include "object/node/canvas_item/control/viewport/viewport.h"
 #include "error.h"
-#include "types/uid.h"
-#include "platform/datetime.h"
-#include "object/object.h"
-#include "math/ivec4.h"
-#include "object/node/canvas_item/control/control.h"
-#include "math/vec2.h"
-#include "math/vec3.h"
-#include "log.h"
-#include "platform/memory.h"
-#include "math/uvec4.h"
 #include "math/mat4.h"
-#include "servers/render_server/render_server.h"
-#include "math/vec4.h"
+#include "object/object.h"
+#include "math/vec2.h"
+#include "log.h"
 #include "types/string.h"
-#include "vfs/vfs.h"
-#include "servers/render_context/render_context.h"
+#include "servers/window_server/window_server.h"
+#include "object/node/window/window.h"
+#include "math/uvec4.h"
+#include "object/node/canvas_item/canvas_item.h"
+#include "math/ivec3.h"
+#include "math/uvec2.h"
+#include "math/ivec2.h"
+#include "math/ivec4.h"
 
 
 typedef struct {
@@ -173,15 +173,21 @@ APIFunctionLookupTable g_apiFunctionLookupTable[] = {
     {"string_set_slice", (void*)string_set_slice},
     {"string_size", (void*)string_size},
     {"string_slice_free", (void*)string_slice_free},
+    {"string_utf8_by_string", (void*)string_utf8_by_string},
     {"string_utf8_clone", (void*)string_utf8_clone},
+    {"string_utf8_equals", (void*)string_utf8_equals},
     {"string_utf8_free", (void*)string_utf8_free},
     {"string_utf8_from", (void*)string_utf8_from},
     {"string_utf8_insert", (void*)string_utf8_insert},
+    {"string_utf8_insert_cstr", (void*)string_utf8_insert_cstr},
     {"string_utf8_len", (void*)string_utf8_len},
     {"string_utf8_new", (void*)string_utf8_new},
     {"string_utf8_push_back", (void*)string_utf8_push_back},
     {"string_utf8_push_back_cstr", (void*)string_utf8_push_back_cstr},
     {"string_utf8_push_front", (void*)string_utf8_push_front},
+    {"string_utf8_push_front_cstr", (void*)string_utf8_push_front_cstr},
+    {"string_utf8_remove", (void*)string_utf8_remove},
+    {"string_utf8_remove_n", (void*)string_utf8_remove_n},
     {"string_utf8_size", (void*)string_utf8_size},
     {"string_utf8_to_string", (void*)string_utf8_to_string},
     {"tfree", (void*)tfree},

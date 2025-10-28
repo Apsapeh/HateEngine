@@ -47,6 +47,7 @@ String* string_from(const char* c_str);
  */
 String* string_clone(const String* c_str);
 
+
 /**
  * @api
  * @brief update String by char* knowing its len
@@ -170,6 +171,7 @@ String* string_remove_by_byte(String* self, const usize b);
 /**
  * @api
  * @brief remove n of symbols since symbol  under symbol index
+ * @warning perhaps being bag, need check
  * @param i symbol index
  * @param n count removed symbols
  */
@@ -280,75 +282,124 @@ void string_slice_free(StringSlice* self);
 typedef struct {
     u32* ptr;
     usize len;
-} string_utf8;
+} StringUTF8;
+
+static StringUTF8* string_utf8_dec(const u8* c_str, const usize len_c_str);
+
+/**
+ * @api
+ * @brief create empty StringUTF8 with null-terminator
+ */
+StringUTF8* string_utf8_new(void);
+
+/**
+ * @api
+ * @brief create StringUTF8 by char*
+ * @param c_str input data
+ */
+StringUTF8* string_utf8_from(const char* c_str);
+
+/**
+ * @api
+ * @brief convert StringUTF8 to String
+ */
+String* string_utf8_to_string(const StringUTF8* self);
+
+/**
+ * @api
+ * @brief get len of passed StringUTF8
+ */
+usize string_utf8_len(const StringUTF8* self);
+
+/**
+ * @api
+ * @brief get size of passed StringUTF8
+ */
+usize string_utf8_size(const StringUTF8* self);
+
+
+/**
+ * @api
+ * @brief get copy StringUTF8
+ */
+StringUTF8* string_utf8_clone(const StringUTF8* self);
+
+
+/**
+ * @api
+ * @brief add char* in last of  StringUTF8
+ * @param src input data by way char*
+ */
+StringUTF8* string_utf8_push_back_cstr(StringUTF8* self, char* src);
+
+/**
+ * @api
+ * @brief add StringUTF8 in last of StringUTF8
+ * @param src input data by way StringUTF8
+ */
+StringUTF8* string_utf8_push_back(StringUTF8* self, const StringUTF8* src);
+
+
+/**
+ * @api
+ * @brief add 'src' by way StringUTF8 in 'self' under symbol index
+ * @param src input data by way StringUTF8
+ * @param i   symbol index
+ */
+StringUTF8* string_utf8_insert(StringUTF8* self, const StringUTF8* src, const usize i);
+
+/**
+ * @api
+ * @brief add StringUTF8 in front of StringUTF8
+ * @param src input data by way StringUTF8
+ */
+StringUTF8* string_utf8_push_front(StringUTF8* self, const StringUTF8* src);
+
+/**
+ * @api
+ * @brief add char* in front of  StringUTF8
+ * @param src input data by way char*
+ */
+StringUTF8* string_utf8_push_front_cstr(StringUTF8* self, char* src);
+
+/**
+ * @api
+ * @brief add 'src' by way char* in 'self' under symbol index
+ * @param src input data by way char*
+ * @param i   symbol index
+ */
+StringUTF8* string_utf8_insert_cstr(StringUTF8* self, const char* src, const usize i);
+
+/**
+ * @api
+ * @brief remove symbol under symbol index
+ * @param i symbol index
+ */
+StringUTF8* string_utf8_remove(StringUTF8* self, const usize i);
+
+/**
+ * @api
+ * @brief remove n of symbols since symbol under symbol index
+ * @param i symbol index
+ * @param n count removed symbols
+ */
+StringUTF8* string_utf8_remove_n(StringUTF8* self, const usize i, const usize n);
+
+/**
+ * @api
+ * @brief converting String to StrinfUTF8
+ */
+StringUTF8* string_utf8_by_string(const String* self);
+
+/**
+ * @api
+ * @brief check on equality Strings-UTF8
+ * @param str1 fisrt StringUTF8
+ * @param str2 second StringUTF8
+ */
+boolean string_utf8_equals(const StringUTF8* str1, const StringUTF8* str2);
 
 /**
  * @api
  */
-typedef struct {
-    u8* start;
-    usize len;
-} string_itr_utf8;
-
-static Error string_utf8_dec(string_utf8** str, const u8* c_str);
-
-/**
- * @api
- */
-Error string_utf8_new(string_utf8** str);
-
-/**
- * @api
- */
-Error string_utf8_to_string(String** dest, const string_utf8* str);
-
-/**
- * @api
- */
-Error string_utf8_from(string_utf8** str, const char* c_str);
-
-/**
- * @api
- */
-// test
-Error string_utf8_len(usize* len, const string_utf8* c_str);
-
-/**
- * @api
- */
-// test
-Error string_utf8_size(usize* size, const string_utf8* c_str);
-
-/**
- * @api
- */
-Error string_utf8_clone(string_utf8** str, const string_utf8* c_str);
-
-/**
- * @api
- */
-// test
-Error string_utf8_push_back_cstr(string_utf8* dest, const char* src);
-
-/**
- * @api
- */
-// test
-Error string_utf8_push_back(string_utf8* dest, const string_utf8* src);
-
-/**
- * @api
- */
-// test
-Error string_utf8_insert(string_utf8* dest, const string_utf8* src, const usize i);
-
-/**
- * @api
- */
-// test
-Error string_utf8_push_front(string_utf8* dest, const string_utf8* src);
-
-/**
- * @api
- */
-void string_utf8_free(string_utf8* str);
+void string_utf8_free(StringUTF8* self);
