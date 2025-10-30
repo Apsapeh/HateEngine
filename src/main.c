@@ -1,3 +1,4 @@
+#include <stdio.h>
 #include <stdlib.h>
 
 #include "SDL3/SDL_events.h"
@@ -15,10 +16,17 @@
 #include <SDL3/SDL.h>
 #include <SDL3/SDL_main.h>
 
+#include "args.h"
+
 static void init(void);
 static void exit_init(void);
 
-int main(int argc, char** argv) {
+int main(int argc, char* argv[]) {
+    system("pwd");
+    if (!parse_cli_args(argc, argv)) {
+        return 0;
+    }
+
     init();
     atexit(exit_init);
 

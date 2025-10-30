@@ -107,6 +107,15 @@ class Typedef:
         yield 'line', self.line
         yield 'doc', self.doc
 
+class TypedefFunctionPointer(Function):
+    pass
+
+#class TypedefPointer(Typedef):
+#    pass
+
+class TypedefStructPointer(Struct):
+    pass
+
 class ApiEnumValue:
     def __init__(self, name: str, value: str):
         self.name = name
@@ -139,6 +148,9 @@ class ParseResult:
         self.forward_structs: list[StructForward] = []
         self.servers: list[Server] = []
         self.typedefs: list[Typedef] = []
+        self.typedef_functions: list[TypedefFunctionPointer] = []
+        #self.typedef_pointers: list[TypedefPointer] = []
+        self.typedef_struct_pointers: list[TypedefStructPointer] = []
         self.api_enums: list[ApiEnum] = []
 
     def extend(self, other):
@@ -146,7 +158,10 @@ class ParseResult:
         self.structs.extend(other.structs)
         self.forward_structs.extend(other.forward_structs)
         self.servers.extend(other.servers)
-        self.typedefs.extend(other.typedefs)
+        self.typedefs.extend(other.typedefs)    
+        self.typedef_functions.extend(other.typedef_functions)
+        #self.typedef_pointers.extend(other.typedef_pointers)
+        self.typedef_struct_pointers.extend(other.typedef_struct_pointers)
         self.api_enums.extend(other.api_enums)
 
     def add_function(self, function: Function):
@@ -164,6 +179,15 @@ class ParseResult:
     def add_typedef(self, typedef: Typedef):
         self.typedefs.append(typedef)
 
+    def add_typedef_function(self, typedef_function: TypedefFunctionPointer):
+        self.typedef_functions.append(typedef_function)
+
+    #def add_typedef_pointer(self, typedef_pointer: TypedefPointer):
+    #    self.typedef_pointers.append(typedef_pointer)
+
+    def add_typedef_struct_pointer(self, typedef_struct_pointer: TypedefStructPointer):
+        self.typedef_struct_pointers.append(typedef_struct_pointer)
+
     def add_api_enum(self, api_enum: ApiEnum):
         self.api_enums.append(api_enum)
 
@@ -173,4 +197,7 @@ class ParseResult:
         yield 'forward_structs', [dict(forward_struct) for forward_struct in self.forward_structs]
         yield 'servers', [dict(server) for server in self.servers]
         yield 'typedefs', [dict(typedef) for typedef in self.typedefs]
+        yield 'typedef_functions', [dict(typedef_function) for typedef_function in self.typedef_functions]
+        #yield 'typedef_pointers', [dict(typedef_pointer) for typedef_pointer in self.typedef_pointers]
+        yield 'typedef_struct_pointers', [dict(typedef_struct_pointer) for typedef_struct_pointer in self.typedef_struct_pointers]
         yield 'api_enums', [dict(api_enum) for api_enum in self.api_enums]

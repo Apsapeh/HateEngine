@@ -9,6 +9,31 @@ API_HEADER = """
 #include <stdint.h>
 #include <stdbool.h>
 
+#if defined(_WIN32) || defined(__CYGWIN__)
+  #ifdef BUILDING_DLL
+    #ifdef __GNUC__
+      #define PUBLIC __attribute__((dllexport))
+    #else
+      #define PUBLIC __declspec(dllexport)
+    #endif
+  #else
+    #ifdef __GNUC__
+      #define PUBLIC __attribute__((dllimport))
+    #else
+      #define PUBLIC __declspec(dllimport)
+    #endif
+  #endif
+  #define LOCAL
+#else
+  #if __GNUC__ >= 4
+    #define PUBLIC __attribute__((visibility("default")))
+    #define LOCAL  __attribute__((visibility("hidden")))
+  #else
+    #define PUBLIC
+    #define LOCAL
+  #endif
+#endif
+
 INCLUDE_TYPES
 
 INCLUDE_ERROR
@@ -37,7 +62,7 @@ RAW_FN_PTRS_DECL
         NORM_FN_PTRS_IMPL
     #endif
 
-    void ___hate_engine_runtime_init(void* (*proc_addr)(const char* name)) {
+    PUBLIC void ___hate_engine_runtime_init(void* (*proc_addr)(const char* name)) {
         RAW_FN_PTRS_LOAD
 
         #if !defined(HEAPI_FULL_TRACE)
@@ -92,6 +117,21 @@ def run(data: ParseResult):
         types += f"typedef {general.get_correct_variable(typedef.type, typedef.name)};\n\n"
         pass
 
+    for typedef_function in data.typedef_functions:
+        if typedef_function.doc != "":
+            types += f"{typedef_function.doc}\n"
+        args = ", ".join([general.get_correct_variable(arg._type, arg.name) for arg in typedef_function.args])
+        if args == "":
+            args = "void"
+        types += f"typedef {typedef_function.return_type} (*{typedef_function.name})({args});\n\n"
+        pass
+
+    for typedef_struct_pointer in data.typedef_struct_pointers:
+        if typedef_struct_pointer.doc != "":
+            types += f"{typedef_struct_pointer.doc}\n"
+        types += f"typedef struct {typedef_struct_pointer.name}* {typedef_struct_pointer.name};\n\n"
+        pass
+
     for enum in data.api_enums:
         for value in enum.values:
             name = camel_to_upper_snake_case(enum.name + value.name)
@@ -141,7 +181,7 @@ def run(data: ParseResult):
 
     servers_init = ""
     for server in data.servers:
-        servers_init += f"    void {server.init_method}({server.name}* backend) {{\n"
+        servers_init += f"    PUBLIC void {server.init_method}({server.name}* backend) {{\n"
 
         norm_methods_init = ""
 
