@@ -5,6 +5,31 @@
 #include <stdint.h>
 #include <stdbool.h>
 
+#if defined(_WIN32) || defined(__CYGWIN__)
+  #ifdef BUILDING_DLL
+    #ifdef __GNUC__
+      #define PUBLIC __attribute__((dllexport))
+    #else
+      #define PUBLIC __declspec(dllexport)
+    #endif
+  #else
+    #ifdef __GNUC__
+      #define PUBLIC __attribute__((dllimport))
+    #else
+      #define PUBLIC __declspec(dllimport)
+    #endif
+  #endif
+  #define LOCAL
+#else
+  #if __GNUC__ >= 4
+    #define PUBLIC __attribute__((visibility("default")))
+    #define LOCAL  __attribute__((visibility("hidden")))
+  #else
+    #define PUBLIC
+    #define LOCAL
+  #endif
+#endif
+
 typedef uint8_t u8;
 typedef uint16_t u16;
 typedef uint32_t u32;
@@ -128,6 +153,7 @@ typedef c_str Error;
 #define ERROR_NOT_FOUND "NotFound"
 #define ERROR_INVALID_STATE "InvalidState"
 #define ERROR_ALLOCATION_FAILED "AllocationFailed"
+
 
 
 
@@ -297,18 +323,6 @@ typedef c_str Error;
 
 
 
-/**
- * DateTime handler for get UTC and local date and time
- *
- * @api
- */
-typedef struct datetime_handle * datetime_handle;
-
-/**
- * @brief Opaque mutex handle
- * @api
- */
-typedef struct mutex_handle * mutex_handle;
 
 /**
  * @api
@@ -381,6 +395,17 @@ typedef struct string_utf8 string_utf8;
  * @api
  */
 typedef struct string_itr_utf8 string_itr_utf8;
+
+/**
+ * @brief It's just a signal
+ *
+ * I don't know what I should write here, it's intuitively understandable.
+ * You can connect some functions (callbacks) to the signal. Then in other piece of code, you can emit
+ * the signal with your args and all callbacks will be executed.
+ *
+ * @api
+ */
+typedef struct Signal Signal;
 
 /**
  * @brief
@@ -572,7 +597,12 @@ typedef char FSSeekFrom;
  *
  * @api
  */
-typedef u64 UID;
+typedef uint64_t UID;
+
+/**
+ * @api
+ */
+typedef u32 SignalCallbackHandler;
 
 /**
  * 'd' - disabled
@@ -583,7 +613,7 @@ typedef u64 UID;
  *
  * @api
  */
-typedef u8 WindowServerWindowVSync;
+typedef uint8_t WindowServerWindowVSync;
 
 /**
  * 'w' - windowed
@@ -594,14 +624,36 @@ typedef u8 WindowServerWindowVSync;
  *
  * @api
  */
-typedef u8 WindowServerWindowMode;
+typedef uint8_t WindowServerWindowMode;
 
 /**
  * @brief Virtual memory ptr
  *
+ * @warning 0 is not valid value
+ *
  * @api
  */
-typedef u32 chunk_allocator_ptr;
+typedef uint32_t chunk_allocator_ptr;
+
+/**
+ * @breif Signal callback template
+ *
+ * @api
+ */
+typedef void (*SignalCallbackFunc)(void * args, void * ctx);
+
+/**
+ * DateTime handler for get UTC and local date and time
+ *
+ * @api
+ */
+typedef struct datetime_handle* datetime_handle;
+
+/**
+ * @brief Opaque mutex handle
+ * @api
+ */
+typedef struct mutex_handle* mutex_handle;
 
 #define FS_SEEK_FROM_START 's'
 
@@ -635,6 +687,18 @@ typedef u32 chunk_allocator_ptr;
 #else
 
 /**
+ * @brief Inner function to update the full trace info. Used for tracing with HEAPI_FULL_TRACE. Don't use
+ directly
+ *
+ * @param func function_name, "" for reset
+ * @param file "" for reset
+ * @param line -1 for reset
+
+ * @api
+ */
+extern void (*raw___he_update_full_trace_info)(const char * func, const char * file, i32 line);
+
+/**
  * @brief Set a last error that occurred on the current thread.
  *
  * @api
@@ -647,18 +711,6 @@ extern void (*raw_set_error)(Error err);
  * @api
  */
 extern Error (*raw_get_error)(void);
-
-/**
- * @brief Inner function to update the full trace info. Used for tracing with HEAPI_FULL_TRACE. Don't use
- directly
- *
- * @param func function_name, "" for reset
- * @param file "" for reset
- * @param line -1 for reset
-
- * @api
- */
-extern void (*raw___he_update_full_trace_info)(const char * func, const char * file, i32 line);
 
 /**
  * @brief Create time instance and init with current time
@@ -2190,6 +2242,57 @@ extern void (*raw_string_utf8_free)(string_utf8 * str);
 extern UID (*raw_uid_new)(void);
 
 /**
+ * @brief Create a Signal instance.
+ *
+ * @error "InvalidArgument"
+ * @error "AllocationFailed"
+ * @api
+ */
+extern Signal * (*raw_signal_new)(void);
+
+/**
+ * @brief Create a Signal instance with custom ChunkMemoryAllocator parameters
+ *
+ * @error "InvalidArgument"
+ * @error "AllocationFailed"
+ * @api
+ */
+extern Signal * (*raw_signal_new_with_params)(const u32 chunk_min_size, const u8 minimal_chunks_count);
+
+/**
+ * @brief Free Signal instance
+ *
+ * @error "InvalidArgument"
+ * @api
+ */
+extern boolean (*raw_signal_free)(Signal * self);
+
+/**
+ * @brief Emit signal. All callbacks will be executed.
+ *
+ * @error "InvalidArgument"
+ * @api
+ */
+extern boolean (*raw_signal_emit)(Signal * self, void * args);
+
+/**
+ * @breif Connect callback to the signal. It will be executed, when the signal is emitted.
+ *
+ * @error "InvalidArgument"
+ * @error "AllocationFailed"
+ * @api
+ */
+extern SignalCallbackHandler (*raw_signal_connect)(Signal * self, SignalCallbackFunc func, void * ctx);
+
+/**
+ * @brief Disconnect callback from the signal.
+ *
+ * @error "InvalidArgument"
+ * @api
+ */
+extern boolean (*raw_signal_disconnect)(Signal * self, SignalCallbackHandler handler);
+
+/**
  * @brief Mount Resource File (*.hefs) to Virtual File System
  *
  * @param path Path to resource file
@@ -2579,33 +2682,47 @@ extern boolean (*raw_render_server_backend_set_function)(RenderServerBackend * b
 extern fptr (*raw_render_server_backend_get_function)(RenderServerBackend * backend, const char * name);
 
 /**
- * @param chunk_min_size Minimal size (in element) of a chunk. It will be aligned to 8. 27 -> 32; 95 -> 96; 256 -> 256
- * 
+ * @param chunk_min_size Minimal size (in element) of a chunk. It will be aligned to 8. 27 -> 32;
+ * 95 -> 96; 256 -> 256
+ *
+ * @param minimal_chunks_count Count of chunks will never be lower than that value
+ *
+ * @return Pointer to allocated memory on succes, 0 on failure
+ *
+ * @error "InvalidArgument"
+ * @error "AllocationFailed"
  * @api
  */
-extern ChunkMemoryAllocator * (*raw_chunk_memory_allocator_new)(u32 element_size, u32 chunk_min_size);
+extern ChunkMemoryAllocator * (*raw_chunk_memory_allocator_new)(const u32 element_size, const u32 chunk_min_size, const u8 minimal_chunks_count);
 
 /**
+ *
+ * @error "InvalidArgument"
  * @api
  */
-extern void (*raw_chunk_memory_allocator_free)(ChunkMemoryAllocator * this);
+extern boolean (*raw_chunk_memory_allocator_free)(ChunkMemoryAllocator * this);
 
 /**
  * @return 0 on failure
- * 
+ *
+ *
+ * @error "InvalidArgument"
+ * @error "AllocationFailed" Real memory can't be allocated
  * @api
  */
 extern chunk_allocator_ptr (*raw_chunk_memory_allocator_alloc_mem)(ChunkMemoryAllocator * this);
 
 /**
+ * @error "InvalidArgument"
  * @api
  */
-extern void (*raw_chunk_memory_allocator_free_mem)(ChunkMemoryAllocator * this, chunk_allocator_ptr ptr);
+extern boolean (*raw_chunk_memory_allocator_free_mem)(ChunkMemoryAllocator * this, chunk_allocator_ptr ptr);
 
 /**
  * @brief Return a real pointer to data
  * @warning You to owned this pointer
- * 
+ *
+ * @error "InvalidArgument"
  * @api
  */
 extern void * (*raw_chunk_memory_allocator_get_real_ptr)(ChunkMemoryAllocator * this, chunk_allocator_ptr ptr);
@@ -2644,6 +2761,18 @@ extern fptr (*raw_render_context_get_proc_addr)(const char * proc);
 
 #if !defined(HEAPI_FULL_TRACE)
     /**
+ * @brief Inner function to update the full trace info. Used for tracing with HEAPI_FULL_TRACE. Don't use
+ directly
+ *
+ * @param func function_name, "" for reset
+ * @param file "" for reset
+ * @param line -1 for reset
+
+ * @api
+ */
+extern void (*__he_update_full_trace_info)(const char * func, const char * file, i32 line);
+
+/**
  * @brief Set a last error that occurred on the current thread.
  *
  * @api
@@ -2656,18 +2785,6 @@ extern void (*set_error)(Error err);
  * @api
  */
 extern Error (*get_error)(void);
-
-/**
- * @brief Inner function to update the full trace info. Used for tracing with HEAPI_FULL_TRACE. Don't use
- directly
- *
- * @param func function_name, "" for reset
- * @param file "" for reset
- * @param line -1 for reset
-
- * @api
- */
-extern void (*__he_update_full_trace_info)(const char * func, const char * file, i32 line);
 
 /**
  * @brief Create time instance and init with current time
@@ -4199,6 +4316,57 @@ extern void (*string_utf8_free)(string_utf8 * str);
 extern UID (*uid_new)(void);
 
 /**
+ * @brief Create a Signal instance.
+ *
+ * @error "InvalidArgument"
+ * @error "AllocationFailed"
+ * @api
+ */
+extern Signal * (*signal_new)(void);
+
+/**
+ * @brief Create a Signal instance with custom ChunkMemoryAllocator parameters
+ *
+ * @error "InvalidArgument"
+ * @error "AllocationFailed"
+ * @api
+ */
+extern Signal * (*signal_new_with_params)(const u32 chunk_min_size, const u8 minimal_chunks_count);
+
+/**
+ * @brief Free Signal instance
+ *
+ * @error "InvalidArgument"
+ * @api
+ */
+extern boolean (*signal_free)(Signal * self);
+
+/**
+ * @brief Emit signal. All callbacks will be executed.
+ *
+ * @error "InvalidArgument"
+ * @api
+ */
+extern boolean (*signal_emit)(Signal * self, void * args);
+
+/**
+ * @breif Connect callback to the signal. It will be executed, when the signal is emitted.
+ *
+ * @error "InvalidArgument"
+ * @error "AllocationFailed"
+ * @api
+ */
+extern SignalCallbackHandler (*signal_connect)(Signal * self, SignalCallbackFunc func, void * ctx);
+
+/**
+ * @brief Disconnect callback from the signal.
+ *
+ * @error "InvalidArgument"
+ * @api
+ */
+extern boolean (*signal_disconnect)(Signal * self, SignalCallbackHandler handler);
+
+/**
  * @brief Mount Resource File (*.hefs) to Virtual File System
  *
  * @param path Path to resource file
@@ -4588,33 +4756,47 @@ extern boolean (*render_server_backend_set_function)(RenderServerBackend * backe
 extern fptr (*render_server_backend_get_function)(RenderServerBackend * backend, const char * name);
 
 /**
- * @param chunk_min_size Minimal size (in element) of a chunk. It will be aligned to 8. 27 -> 32; 95 -> 96; 256 -> 256
- * 
+ * @param chunk_min_size Minimal size (in element) of a chunk. It will be aligned to 8. 27 -> 32;
+ * 95 -> 96; 256 -> 256
+ *
+ * @param minimal_chunks_count Count of chunks will never be lower than that value
+ *
+ * @return Pointer to allocated memory on succes, 0 on failure
+ *
+ * @error "InvalidArgument"
+ * @error "AllocationFailed"
  * @api
  */
-extern ChunkMemoryAllocator * (*chunk_memory_allocator_new)(u32 element_size, u32 chunk_min_size);
+extern ChunkMemoryAllocator * (*chunk_memory_allocator_new)(const u32 element_size, const u32 chunk_min_size, const u8 minimal_chunks_count);
 
 /**
+ *
+ * @error "InvalidArgument"
  * @api
  */
-extern void (*chunk_memory_allocator_free)(ChunkMemoryAllocator * this);
+extern boolean (*chunk_memory_allocator_free)(ChunkMemoryAllocator * this);
 
 /**
  * @return 0 on failure
- * 
+ *
+ *
+ * @error "InvalidArgument"
+ * @error "AllocationFailed" Real memory can't be allocated
  * @api
  */
 extern chunk_allocator_ptr (*chunk_memory_allocator_alloc_mem)(ChunkMemoryAllocator * this);
 
 /**
+ * @error "InvalidArgument"
  * @api
  */
-extern void (*chunk_memory_allocator_free_mem)(ChunkMemoryAllocator * this, chunk_allocator_ptr ptr);
+extern boolean (*chunk_memory_allocator_free_mem)(ChunkMemoryAllocator * this, chunk_allocator_ptr ptr);
 
 /**
  * @brief Return a real pointer to data
  * @warning You to owned this pointer
- * 
+ *
+ * @error "InvalidArgument"
  * @api
  */
 extern void * (*chunk_memory_allocator_get_real_ptr)(ChunkMemoryAllocator * this, chunk_allocator_ptr ptr);
@@ -4653,9 +4835,9 @@ extern fptr (*render_context_get_proc_addr)(const char * proc);
 #endif
 
 #if defined(HEAPI_LOAD_IMPL)
-        void (*raw_set_error)(Error err);
+        void (*raw___he_update_full_trace_info)(const char * func, const char * file, i32 line);
+    void (*raw_set_error)(Error err);
     Error (*raw_get_error)(void);
-    void (*raw___he_update_full_trace_info)(const char * func, const char * file, i32 line);
     datetime_handle (*raw_datetime_new)(void);
     void (*raw_datetime_free)(datetime_handle handle);
     void (*raw_datetime_update)(datetime_handle handle);
@@ -4870,6 +5052,12 @@ extern fptr (*render_context_get_proc_addr)(const char * proc);
     Error (*raw_string_utf8_push_front)(string_utf8 * dest, const string_utf8 * src);
     void (*raw_string_utf8_free)(string_utf8 * str);
     UID (*raw_uid_new)(void);
+    Signal * (*raw_signal_new)(void);
+    Signal * (*raw_signal_new_with_params)(const u32 chunk_min_size, const u8 minimal_chunks_count);
+    boolean (*raw_signal_free)(Signal * self);
+    boolean (*raw_signal_emit)(Signal * self, void * args);
+    SignalCallbackHandler (*raw_signal_connect)(Signal * self, SignalCallbackFunc func, void * ctx);
+    boolean (*raw_signal_disconnect)(Signal * self, SignalCallbackHandler handler);
     boolean (*raw_vfs_mount_res)(const char * path, const char * mount_point);
     boolean (*raw_vfs_unmount_res)(const char * mount_point);
     boolean (*raw_vfs_mount_rfs)(const char * mount_point);
@@ -4908,10 +5096,10 @@ extern fptr (*render_context_get_proc_addr)(const char * proc);
     boolean (*raw_render_server_backend_free)(RenderServerBackend * backend);
     boolean (*raw_render_server_backend_set_function)(RenderServerBackend * backend, const char * name, fptr function);
     fptr (*raw_render_server_backend_get_function)(RenderServerBackend * backend, const char * name);
-    ChunkMemoryAllocator * (*raw_chunk_memory_allocator_new)(u32 element_size, u32 chunk_min_size);
-    void (*raw_chunk_memory_allocator_free)(ChunkMemoryAllocator * this);
+    ChunkMemoryAllocator * (*raw_chunk_memory_allocator_new)(const u32 element_size, const u32 chunk_min_size, const u8 minimal_chunks_count);
+    boolean (*raw_chunk_memory_allocator_free)(ChunkMemoryAllocator * this);
     chunk_allocator_ptr (*raw_chunk_memory_allocator_alloc_mem)(ChunkMemoryAllocator * this);
-    void (*raw_chunk_memory_allocator_free_mem)(ChunkMemoryAllocator * this, chunk_allocator_ptr ptr);
+    boolean (*raw_chunk_memory_allocator_free_mem)(ChunkMemoryAllocator * this, chunk_allocator_ptr ptr);
     void * (*raw_chunk_memory_allocator_get_real_ptr)(ChunkMemoryAllocator * this, chunk_allocator_ptr ptr);
     WindowServerWindow * (*raw_window_server_create_window)(const char * title, IVec2 size, WindowServerWindow * parent);
     boolean (*raw_window_server_destroy_window)(WindowServerWindow * this);
@@ -4931,9 +5119,9 @@ extern fptr (*render_context_get_proc_addr)(const char * proc);
 
 
     #if !defined(HEAPI_FULL_TRACE)
-            void (*set_error)(Error err);
+            void (*__he_update_full_trace_info)(const char * func, const char * file, i32 line);
+    void (*set_error)(Error err);
     Error (*get_error)(void);
-    void (*__he_update_full_trace_info)(const char * func, const char * file, i32 line);
     datetime_handle (*datetime_new)(void);
     void (*datetime_free)(datetime_handle handle);
     void (*datetime_update)(datetime_handle handle);
@@ -5148,6 +5336,12 @@ extern fptr (*render_context_get_proc_addr)(const char * proc);
     Error (*string_utf8_push_front)(string_utf8 * dest, const string_utf8 * src);
     void (*string_utf8_free)(string_utf8 * str);
     UID (*uid_new)(void);
+    Signal * (*signal_new)(void);
+    Signal * (*signal_new_with_params)(const u32 chunk_min_size, const u8 minimal_chunks_count);
+    boolean (*signal_free)(Signal * self);
+    boolean (*signal_emit)(Signal * self, void * args);
+    SignalCallbackHandler (*signal_connect)(Signal * self, SignalCallbackFunc func, void * ctx);
+    boolean (*signal_disconnect)(Signal * self, SignalCallbackHandler handler);
     boolean (*vfs_mount_res)(const char * path, const char * mount_point);
     boolean (*vfs_unmount_res)(const char * mount_point);
     boolean (*vfs_mount_rfs)(const char * mount_point);
@@ -5186,10 +5380,10 @@ extern fptr (*render_context_get_proc_addr)(const char * proc);
     boolean (*render_server_backend_free)(RenderServerBackend * backend);
     boolean (*render_server_backend_set_function)(RenderServerBackend * backend, const char * name, fptr function);
     fptr (*render_server_backend_get_function)(RenderServerBackend * backend, const char * name);
-    ChunkMemoryAllocator * (*chunk_memory_allocator_new)(u32 element_size, u32 chunk_min_size);
-    void (*chunk_memory_allocator_free)(ChunkMemoryAllocator * this);
+    ChunkMemoryAllocator * (*chunk_memory_allocator_new)(const u32 element_size, const u32 chunk_min_size, const u8 minimal_chunks_count);
+    boolean (*chunk_memory_allocator_free)(ChunkMemoryAllocator * this);
     chunk_allocator_ptr (*chunk_memory_allocator_alloc_mem)(ChunkMemoryAllocator * this);
-    void (*chunk_memory_allocator_free_mem)(ChunkMemoryAllocator * this, chunk_allocator_ptr ptr);
+    boolean (*chunk_memory_allocator_free_mem)(ChunkMemoryAllocator * this, chunk_allocator_ptr ptr);
     void * (*chunk_memory_allocator_get_real_ptr)(ChunkMemoryAllocator * this, chunk_allocator_ptr ptr);
     WindowServerWindow * (*window_server_create_window)(const char * title, IVec2 size, WindowServerWindow * parent);
     boolean (*window_server_destroy_window)(WindowServerWindow * this);
@@ -5209,10 +5403,10 @@ extern fptr (*render_context_get_proc_addr)(const char * proc);
 
     #endif
 
-    void ___hate_engine_runtime_init(void* (*proc_addr)(const char* name)) {
-                raw_set_error = (void (*)(Error))proc_addr("set_error");
+    PUBLIC void ___hate_engine_runtime_init(void* (*proc_addr)(const char* name)) {
+                raw___he_update_full_trace_info = (void (*)(const char *, const char *, i32))proc_addr("__he_update_full_trace_info");
+        raw_set_error = (void (*)(Error))proc_addr("set_error");
         raw_get_error = (Error (*)(void))proc_addr("get_error");
-        raw___he_update_full_trace_info = (void (*)(const char *, const char *, i32))proc_addr("__he_update_full_trace_info");
         raw_datetime_new = (datetime_handle (*)(void))proc_addr("datetime_new");
         raw_datetime_free = (void (*)(datetime_handle))proc_addr("datetime_free");
         raw_datetime_update = (void (*)(datetime_handle))proc_addr("datetime_update");
@@ -5427,6 +5621,12 @@ extern fptr (*render_context_get_proc_addr)(const char * proc);
         raw_string_utf8_push_front = (Error (*)(string_utf8 *, const string_utf8 *))proc_addr("string_utf8_push_front");
         raw_string_utf8_free = (void (*)(string_utf8 *))proc_addr("string_utf8_free");
         raw_uid_new = (UID (*)(void))proc_addr("uid_new");
+        raw_signal_new = (Signal * (*)(void))proc_addr("signal_new");
+        raw_signal_new_with_params = (Signal * (*)(const u32, const u8))proc_addr("signal_new_with_params");
+        raw_signal_free = (boolean (*)(Signal *))proc_addr("signal_free");
+        raw_signal_emit = (boolean (*)(Signal *, void *))proc_addr("signal_emit");
+        raw_signal_connect = (SignalCallbackHandler (*)(Signal *, SignalCallbackFunc, void *))proc_addr("signal_connect");
+        raw_signal_disconnect = (boolean (*)(Signal *, SignalCallbackHandler))proc_addr("signal_disconnect");
         raw_vfs_mount_res = (boolean (*)(const char *, const char *))proc_addr("vfs_mount_res");
         raw_vfs_unmount_res = (boolean (*)(const char *))proc_addr("vfs_unmount_res");
         raw_vfs_mount_rfs = (boolean (*)(const char *))proc_addr("vfs_mount_rfs");
@@ -5465,17 +5665,17 @@ extern fptr (*render_context_get_proc_addr)(const char * proc);
         raw_render_server_backend_free = (boolean (*)(RenderServerBackend *))proc_addr("render_server_backend_free");
         raw_render_server_backend_set_function = (boolean (*)(RenderServerBackend *, const char *, fptr))proc_addr("render_server_backend_set_function");
         raw_render_server_backend_get_function = (fptr (*)(RenderServerBackend *, const char *))proc_addr("render_server_backend_get_function");
-        raw_chunk_memory_allocator_new = (ChunkMemoryAllocator * (*)(u32, u32))proc_addr("chunk_memory_allocator_new");
-        raw_chunk_memory_allocator_free = (void (*)(ChunkMemoryAllocator *))proc_addr("chunk_memory_allocator_free");
+        raw_chunk_memory_allocator_new = (ChunkMemoryAllocator * (*)(const u32, const u32, const u8))proc_addr("chunk_memory_allocator_new");
+        raw_chunk_memory_allocator_free = (boolean (*)(ChunkMemoryAllocator *))proc_addr("chunk_memory_allocator_free");
         raw_chunk_memory_allocator_alloc_mem = (chunk_allocator_ptr (*)(ChunkMemoryAllocator *))proc_addr("chunk_memory_allocator_alloc_mem");
-        raw_chunk_memory_allocator_free_mem = (void (*)(ChunkMemoryAllocator *, chunk_allocator_ptr))proc_addr("chunk_memory_allocator_free_mem");
+        raw_chunk_memory_allocator_free_mem = (boolean (*)(ChunkMemoryAllocator *, chunk_allocator_ptr))proc_addr("chunk_memory_allocator_free_mem");
         raw_chunk_memory_allocator_get_real_ptr = (void * (*)(ChunkMemoryAllocator *, chunk_allocator_ptr))proc_addr("chunk_memory_allocator_get_real_ptr");
 
 
         #if !defined(HEAPI_FULL_TRACE)
-                        set_error = raw_set_error;
+                        __he_update_full_trace_info = raw___he_update_full_trace_info;
+            set_error = raw_set_error;
             get_error = raw_get_error;
-            __he_update_full_trace_info = raw___he_update_full_trace_info;
             datetime_new = raw_datetime_new;
             datetime_free = raw_datetime_free;
             datetime_update = raw_datetime_update;
@@ -5690,6 +5890,12 @@ extern fptr (*render_context_get_proc_addr)(const char * proc);
             string_utf8_push_front = raw_string_utf8_push_front;
             string_utf8_free = raw_string_utf8_free;
             uid_new = raw_uid_new;
+            signal_new = raw_signal_new;
+            signal_new_with_params = raw_signal_new_with_params;
+            signal_free = raw_signal_free;
+            signal_emit = raw_signal_emit;
+            signal_connect = raw_signal_connect;
+            signal_disconnect = raw_signal_disconnect;
             vfs_mount_res = raw_vfs_mount_res;
             vfs_unmount_res = raw_vfs_unmount_res;
             vfs_mount_rfs = raw_vfs_mount_rfs;
@@ -5737,7 +5943,7 @@ extern fptr (*render_context_get_proc_addr)(const char * proc);
         #endif
     }
 
-    void ___hate_engine_runtime_init_window_server(WindowServerBackend* backend) {
+    PUBLIC void ___hate_engine_runtime_init_window_server(WindowServerBackend* backend) {
         raw_window_server_create_window = (WindowServerWindow * (*)(const char *, IVec2, WindowServerWindow *))raw_window_server_backend_get_function(backend, "create_window");
         raw_window_server_destroy_window = (boolean (*)(WindowServerWindow *))raw_window_server_backend_get_function(backend, "destroy_window");
         raw_window_server_window_set_title = (boolean (*)(WindowServerWindow *, const char *))raw_window_server_backend_get_function(backend, "window_set_title");
@@ -5762,7 +5968,7 @@ extern fptr (*render_context_get_proc_addr)(const char * proc);
         #endif
     }
 
-    void ___hate_engine_runtime_init_render_context(RenderContextBackend* backend) {
+    PUBLIC void ___hate_engine_runtime_init_render_context(RenderContextBackend* backend) {
         raw_render_context_create_surface = (RenderContextSurface * (*)(WindowServerWindow *))raw_render_context_backend_get_function(backend, "create_surface");
         raw_render_context_destroy_surface = (boolean (*)(RenderContextSurface *))raw_render_context_backend_get_function(backend, "destroy_surface");
         raw_render_context_surface_make_current = (boolean (*)(RenderContextSurface *))raw_render_context_backend_get_function(backend, "surface_make_current");
@@ -5777,7 +5983,7 @@ extern fptr (*render_context_get_proc_addr)(const char * proc);
         #endif
     }
 
-    void ___hate_engine_runtime_init_render_server(RenderServerBackend* backend) {
+    PUBLIC void ___hate_engine_runtime_init_render_server(RenderServerBackend* backend) {
         #if !defined(HEAPI_FULL_TRACE)
         #endif
     }
@@ -6003,6 +6209,12 @@ Error full_trace_string_utf8_insert(const char* ___file___, uint32_t ___line___,
 Error full_trace_string_utf8_push_front(const char* ___file___, uint32_t ___line___, string_utf8 *, const string_utf8 *);
 void full_trace_string_utf8_free(const char* ___file___, uint32_t ___line___, string_utf8 *);
 UID full_trace_uid_new(const char* ___file___, uint32_t ___line___);
+Signal * full_trace_signal_new(const char* ___file___, uint32_t ___line___);
+Signal * full_trace_signal_new_with_params(const char* ___file___, uint32_t ___line___, const u32, const u8);
+boolean full_trace_signal_free(const char* ___file___, uint32_t ___line___, Signal *);
+boolean full_trace_signal_emit(const char* ___file___, uint32_t ___line___, Signal *, void *);
+SignalCallbackHandler full_trace_signal_connect(const char* ___file___, uint32_t ___line___, Signal *, SignalCallbackFunc, void *);
+boolean full_trace_signal_disconnect(const char* ___file___, uint32_t ___line___, Signal *, SignalCallbackHandler);
 boolean full_trace_vfs_mount_res(const char* ___file___, uint32_t ___line___, const char *, const char *);
 boolean full_trace_vfs_unmount_res(const char* ___file___, uint32_t ___line___, const char *);
 boolean full_trace_vfs_mount_rfs(const char* ___file___, uint32_t ___line___, const char *);
@@ -6041,10 +6253,10 @@ RenderServerBackend * full_trace_render_server_backend_new(const char* ___file__
 boolean full_trace_render_server_backend_free(const char* ___file___, uint32_t ___line___, RenderServerBackend *);
 boolean full_trace_render_server_backend_set_function(const char* ___file___, uint32_t ___line___, RenderServerBackend *, const char *, fptr);
 fptr full_trace_render_server_backend_get_function(const char* ___file___, uint32_t ___line___, RenderServerBackend *, const char *);
-ChunkMemoryAllocator * full_trace_chunk_memory_allocator_new(const char* ___file___, uint32_t ___line___, u32, u32);
-void full_trace_chunk_memory_allocator_free(const char* ___file___, uint32_t ___line___, ChunkMemoryAllocator *);
+ChunkMemoryAllocator * full_trace_chunk_memory_allocator_new(const char* ___file___, uint32_t ___line___, const u32, const u32, const u8);
+boolean full_trace_chunk_memory_allocator_free(const char* ___file___, uint32_t ___line___, ChunkMemoryAllocator *);
 chunk_allocator_ptr full_trace_chunk_memory_allocator_alloc_mem(const char* ___file___, uint32_t ___line___, ChunkMemoryAllocator *);
-void full_trace_chunk_memory_allocator_free_mem(const char* ___file___, uint32_t ___line___, ChunkMemoryAllocator *, chunk_allocator_ptr);
+boolean full_trace_chunk_memory_allocator_free_mem(const char* ___file___, uint32_t ___line___, ChunkMemoryAllocator *, chunk_allocator_ptr);
 void * full_trace_chunk_memory_allocator_get_real_ptr(const char* ___file___, uint32_t ___line___, ChunkMemoryAllocator *, chunk_allocator_ptr);
 WindowServerWindow * full_trace_window_server_create_window(const char* ___file___, uint32_t ___line___, const char *, IVec2, WindowServerWindow *);
 boolean full_trace_window_server_destroy_window(const char* ___file___, uint32_t ___line___, WindowServerWindow *);
@@ -7468,6 +7680,48 @@ inline UID full_trace_uid_new(const char* ___file___, uint32_t ___line___) {
     return result;
 }
 
+inline Signal * full_trace_signal_new(const char* ___file___, uint32_t ___line___) {
+    raw___he_update_full_trace_info("signal_new", ___file___, ___line___);
+    Signal * result = raw_signal_new();
+    raw___he_update_full_trace_info("", "", -1);
+    return result;
+}
+
+inline Signal * full_trace_signal_new_with_params(const char* ___file___, uint32_t ___line___, const u32 chunk_min_size, const u8 minimal_chunks_count) {
+    raw___he_update_full_trace_info("signal_new_with_params", ___file___, ___line___);
+    Signal * result = raw_signal_new_with_params(chunk_min_size, minimal_chunks_count);
+    raw___he_update_full_trace_info("", "", -1);
+    return result;
+}
+
+inline boolean full_trace_signal_free(const char* ___file___, uint32_t ___line___, Signal * self) {
+    raw___he_update_full_trace_info("signal_free", ___file___, ___line___);
+    boolean result = raw_signal_free(self);
+    raw___he_update_full_trace_info("", "", -1);
+    return result;
+}
+
+inline boolean full_trace_signal_emit(const char* ___file___, uint32_t ___line___, Signal * self, void * args) {
+    raw___he_update_full_trace_info("signal_emit", ___file___, ___line___);
+    boolean result = raw_signal_emit(self, args);
+    raw___he_update_full_trace_info("", "", -1);
+    return result;
+}
+
+inline SignalCallbackHandler full_trace_signal_connect(const char* ___file___, uint32_t ___line___, Signal * self, SignalCallbackFunc func, void * ctx) {
+    raw___he_update_full_trace_info("signal_connect", ___file___, ___line___);
+    SignalCallbackHandler result = raw_signal_connect(self, func, ctx);
+    raw___he_update_full_trace_info("", "", -1);
+    return result;
+}
+
+inline boolean full_trace_signal_disconnect(const char* ___file___, uint32_t ___line___, Signal * self, SignalCallbackHandler handler) {
+    raw___he_update_full_trace_info("signal_disconnect", ___file___, ___line___);
+    boolean result = raw_signal_disconnect(self, handler);
+    raw___he_update_full_trace_info("", "", -1);
+    return result;
+}
+
 inline boolean full_trace_vfs_mount_res(const char* ___file___, uint32_t ___line___, const char * path, const char * mount_point) {
     raw___he_update_full_trace_info("vfs_mount_res", ___file___, ___line___);
     boolean result = raw_vfs_mount_res(path, mount_point);
@@ -7733,17 +7987,18 @@ inline fptr full_trace_render_server_backend_get_function(const char* ___file___
     return result;
 }
 
-inline ChunkMemoryAllocator * full_trace_chunk_memory_allocator_new(const char* ___file___, uint32_t ___line___, u32 element_size, u32 chunk_min_size) {
+inline ChunkMemoryAllocator * full_trace_chunk_memory_allocator_new(const char* ___file___, uint32_t ___line___, const u32 element_size, const u32 chunk_min_size, const u8 minimal_chunks_count) {
     raw___he_update_full_trace_info("chunk_memory_allocator_new", ___file___, ___line___);
-    ChunkMemoryAllocator * result = raw_chunk_memory_allocator_new(element_size, chunk_min_size);
+    ChunkMemoryAllocator * result = raw_chunk_memory_allocator_new(element_size, chunk_min_size, minimal_chunks_count);
     raw___he_update_full_trace_info("", "", -1);
     return result;
 }
 
-inline void full_trace_chunk_memory_allocator_free(const char* ___file___, uint32_t ___line___, ChunkMemoryAllocator * this) {
+inline boolean full_trace_chunk_memory_allocator_free(const char* ___file___, uint32_t ___line___, ChunkMemoryAllocator * this) {
     raw___he_update_full_trace_info("chunk_memory_allocator_free", ___file___, ___line___);
-    raw_chunk_memory_allocator_free(this);
+    boolean result = raw_chunk_memory_allocator_free(this);
     raw___he_update_full_trace_info("", "", -1);
+    return result;
 }
 
 inline chunk_allocator_ptr full_trace_chunk_memory_allocator_alloc_mem(const char* ___file___, uint32_t ___line___, ChunkMemoryAllocator * this) {
@@ -7753,10 +8008,11 @@ inline chunk_allocator_ptr full_trace_chunk_memory_allocator_alloc_mem(const cha
     return result;
 }
 
-inline void full_trace_chunk_memory_allocator_free_mem(const char* ___file___, uint32_t ___line___, ChunkMemoryAllocator * this, chunk_allocator_ptr ptr) {
+inline boolean full_trace_chunk_memory_allocator_free_mem(const char* ___file___, uint32_t ___line___, ChunkMemoryAllocator * this, chunk_allocator_ptr ptr) {
     raw___he_update_full_trace_info("chunk_memory_allocator_free_mem", ___file___, ___line___);
-    raw_chunk_memory_allocator_free_mem(this, ptr);
+    boolean result = raw_chunk_memory_allocator_free_mem(this, ptr);
     raw___he_update_full_trace_info("", "", -1);
+    return result;
 }
 
 inline void * full_trace_chunk_memory_allocator_get_real_ptr(const char* ___file___, uint32_t ___line___, ChunkMemoryAllocator * this, chunk_allocator_ptr ptr) {
@@ -8090,6 +8346,12 @@ inline fptr full_trace_render_context_get_proc_addr(const char* ___file___, uint
 #define string_utf8_push_front(dest, src) full_trace_string_utf8_push_front(__FILE__, __LINE__, dest, src)
 #define string_utf8_free(str) full_trace_string_utf8_free(__FILE__, __LINE__, str)
 #define uid_new() full_trace_uid_new(__FILE__, __LINE__)
+#define signal_new() full_trace_signal_new(__FILE__, __LINE__)
+#define signal_new_with_params(chunk_min_size, minimal_chunks_count) full_trace_signal_new_with_params(__FILE__, __LINE__, chunk_min_size, minimal_chunks_count)
+#define signal_free(self) full_trace_signal_free(__FILE__, __LINE__, self)
+#define signal_emit(self, args) full_trace_signal_emit(__FILE__, __LINE__, self, args)
+#define signal_connect(self, func, ctx) full_trace_signal_connect(__FILE__, __LINE__, self, func, ctx)
+#define signal_disconnect(self, handler) full_trace_signal_disconnect(__FILE__, __LINE__, self, handler)
 #define vfs_mount_res(path, mount_point) full_trace_vfs_mount_res(__FILE__, __LINE__, path, mount_point)
 #define vfs_unmount_res(mount_point) full_trace_vfs_unmount_res(__FILE__, __LINE__, mount_point)
 #define vfs_mount_rfs(mount_point) full_trace_vfs_mount_rfs(__FILE__, __LINE__, mount_point)
@@ -8128,7 +8390,7 @@ inline fptr full_trace_render_context_get_proc_addr(const char* ___file___, uint
 #define render_server_backend_free(backend) full_trace_render_server_backend_free(__FILE__, __LINE__, backend)
 #define render_server_backend_set_function(backend, name, function) full_trace_render_server_backend_set_function(__FILE__, __LINE__, backend, name, function)
 #define render_server_backend_get_function(backend, name) full_trace_render_server_backend_get_function(__FILE__, __LINE__, backend, name)
-#define chunk_memory_allocator_new(element_size, chunk_min_size) full_trace_chunk_memory_allocator_new(__FILE__, __LINE__, element_size, chunk_min_size)
+#define chunk_memory_allocator_new(element_size, chunk_min_size, minimal_chunks_count) full_trace_chunk_memory_allocator_new(__FILE__, __LINE__, element_size, chunk_min_size, minimal_chunks_count)
 #define chunk_memory_allocator_free(this) full_trace_chunk_memory_allocator_free(__FILE__, __LINE__, this)
 #define chunk_memory_allocator_alloc_mem(this) full_trace_chunk_memory_allocator_alloc_mem(__FILE__, __LINE__, this)
 #define chunk_memory_allocator_free_mem(this, ptr) full_trace_chunk_memory_allocator_free_mem(__FILE__, __LINE__, this, ptr)

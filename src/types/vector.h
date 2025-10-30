@@ -31,3 +31,5 @@
 /* ============> Default Vector Types <============ */
 
 vector_template_def(ptr, void*)
+
+        vector_template_def(u8, u8)

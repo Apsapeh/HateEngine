@@ -3,31 +3,74 @@
 #include <platform/memory.h>
 #include <log.h>
 #include <error.h>
+#include "types/types.h"
 
-#define CHUNK_COUNT_DEFAULT 4
+// #define CHUNK_COUNT_DEFAULT 4
 
 
-// clang-format off
-vector_template_def_static(chunkUsageBitfieldPlain, u8)
-vector_template_impl_static(chunkUsageBitfieldPlain, u8)
-struct DummyClangFormat; // This code dirty hack for normal formatting. It's does nothing for program
-// clang-format on
+boolean chunk_memory_allocator_constructor(
+        ChunkMemoryAllocator* self, const u32 element_size, const u32 chunk_min_size,
+        const u8 minimal_chunks_count
+) {
+    ERROR_ARG_CHECK(self, { return false; });
 
-/*
- * Chunk stores as SOA.
- * vec_ptr chunks is an array of allocated chunks.
- * chunk_usage_bitfield is an array of bitfields. Each chunk contains u8[chunk_size / 8]
- */
+    if (element_size == 0 || chunk_min_size == 0 || minimal_chunks_count == 0) {
+        LOG_ERROR_OR_DEBUG_FATAL(
+                "chung_memory_allocator_new: 'elemnt_size' or 'chunk_min_size' or "
+                "'minimal_chunks_count' is 0"
+        );
+        set_error(ERROR_INVALID_ARGUMENT);
+        return false;
+    }
 
-struct ChunkMemoryAllocator {
-    vec_ptr chunks;
-    vec_chunkUsageBitfieldPlain chunks_bitfield_usage;
-    u32 chunk_bitfield_size; // Size of bitfield in bytes
-    u32 chunk_element_count; // Size of chunk in element
-    u32 element_size; // Size of each element
-    u32 freed_chunks; // Number of freed chunks
-};
 
+    self->minimal_chunks_count = minimal_chunks_count;
+    self->freed_chunks = 0;
+    self->element_size = element_size;
+    self->chunk_bitfield_size = chunk_min_size >> 3;
+    if (chunk_min_size % 8 != 0)
+        self->chunk_bitfield_size++;
+    self->chunk_element_count = self->chunk_bitfield_size << 3;
+
+    // Init chunk array
+    self->chunks = vec_ptr_init();
+    vec_ptr_reserve(&self->chunks, minimal_chunks_count);
+
+    for (usize i = 0; i < minimal_chunks_count; i++) {
+        void* chunk = tmalloc(self->chunk_element_count * self->element_size);
+        ERROR_ALLOC_CHECK(chunk, {
+            for (usize j = 0; j < i; j++) {
+                tfree(self->chunks.data[j]);
+            }
+            vec_ptr_free(&self->chunks);
+            return false;
+        });
+        vec_ptr_push_back(&self->chunks, chunk);
+    }
+
+    // Init bitfield array
+    self->chunks_bitfield = vec_u8_init();
+    vec_u8_reserve(&self->chunks_bitfield, minimal_chunks_count * self->chunk_bitfield_size);
+
+    for (usize i = 0; i < minimal_chunks_count * self->chunk_bitfield_size; i++) {
+        vec_u8_push_back(&self->chunks_bitfield, 0);
+    }
+
+    return true;
+}
+
+boolean chunk_memory_allocator_destructor(ChunkMemoryAllocator* self) {
+    ERROR_ARG_CHECK(self, { return false; });
+    for (usize i = 0; i < self->chunks.size; i++) {
+        if (self->chunks.data[i]) // free(NULL) is safe by standard, but can fail on exotic systems
+                                  // (PalmOS, 3BSD)
+            tfree(self->chunks.data[i]);
+    }
+    vec_ptr_free(&self->chunks);
+    vec_u8_free(&self->chunks_bitfield);
+    set_error(ERROR_SUCCESS);
+    return true;
+}
 
 /**
  * @param chunk_min_size Minimal size (in element) of a chunk.
@@ -35,65 +78,33 @@ struct ChunkMemoryAllocator {
  *
  * @api
  */
-ChunkMemoryAllocator* chunk_memory_allocator_new(u32 element_size, u32 chunk_min_size) {
-    if (element_size == 0 || chunk_min_size == 0) {
-        LOG_ERROR_OR_DEBUG_FATAL("chung_memory_allocator_new: 'elemnt_size' or 'chunk_min_size' is 0");
-        set_error(ERROR_INVALID_ARGUMENT);
-        return NULL;
-    }
-
+ChunkMemoryAllocator* chunk_memory_allocator_new(
+        const u32 element_size, const u32 chunk_min_size, const u8 minimal_chunks_count
+) {
     ChunkMemoryAllocator* allocator = tmalloc(sizeof(ChunkMemoryAllocator));
     ERROR_ALLOC_CHECK(allocator, { return NULL; });
 
-    allocator->freed_chunks = 0;
-    allocator->element_size = element_size;
-    allocator->chunk_bitfield_size = chunk_min_size >> 3;
-    if (chunk_min_size % 8 != 0)
-        allocator->chunk_bitfield_size++;
-    allocator->chunk_element_count = allocator->chunk_bitfield_size << 3;
-
-    // Init chunk array
-    allocator->chunks = vec_ptr_init();
-    vec_ptr_reserve(&allocator->chunks, CHUNK_COUNT_DEFAULT);
-
-    for (usize i = 0; i < CHUNK_COUNT_DEFAULT; i++) {
-        void* chunk = tmalloc(allocator->chunk_element_count * allocator->element_size);
-        ERROR_ALLOC_CHECK(chunk, {
-            for (usize j = 0; j < i; j++) {
-                tfree(allocator->chunks.data[j]);
-            }
-            vec_ptr_free(&allocator->chunks);
-            tfree(allocator);
-            return NULL;
-        });
-        vec_ptr_push_back(&allocator->chunks, chunk);
-    }
-
-    // Init bitfield array
-    allocator->chunks_bitfield_usage = vec_chunkUsageBitfieldPlain_init();
-    vec_chunkUsageBitfieldPlain_reserve(
-            &allocator->chunks_bitfield_usage, CHUNK_COUNT_DEFAULT * allocator->chunk_bitfield_size
+    boolean success = chunk_memory_allocator_constructor(
+            allocator, element_size, chunk_min_size, minimal_chunks_count
     );
 
-    for (usize i = 0; i < CHUNK_COUNT_DEFAULT * allocator->chunk_bitfield_size; i++) {
-        vec_chunkUsageBitfieldPlain_push_back(&allocator->chunks_bitfield_usage, 0);
+    if (success)
+        return allocator;
+    else {
+        tfree(allocator);
+        return NULL;
     }
-
-    return allocator;
 }
 
 /**
  * @api
  */
-void chunk_memory_allocator_free(ChunkMemoryAllocator* this) {
-    for (usize i = 0; i < this->chunks.size; i++) {
-        if (this->chunks.data[i]) // free(NULL) is safe by standard, but can fail on exotic systems
-                                  // (PalmOS, 3BSD)
-            tfree(this->chunks.data[i]);
-    }
-    vec_ptr_free(&this->chunks);
-    vec_chunkUsageBitfieldPlain_free(&this->chunks_bitfield_usage);
-    tfree(this);
+boolean chunk_memory_allocator_free(ChunkMemoryAllocator* self) {
+    if (chunk_memory_allocator_destructor(self)) {
+        tfree(self);
+        return true;
+    } else
+        return false;
 }
 
 /**
@@ -106,11 +117,11 @@ chunk_allocator_ptr chunk_memory_allocator_alloc_mem(ChunkMemoryAllocator* this)
         if (this->chunks.data[c_i] == NULL) {
             this->chunks.data[c_i] = tmalloc(this->chunk_element_count * this->element_size);
             ERROR_ALLOC_CHECK(this->chunks.data[c_i], { return 0; });
-            this->chunks_bitfield_usage.data[c_i * this->chunk_bitfield_size] = 1;
+            this->chunks_bitfield.data[c_i * this->chunk_bitfield_size] = 1;
             return c_i * this->chunk_element_count + 1;
         }
 
-        u8* bitfield = &this->chunks_bitfield_usage.data[c_i * this->chunk_bitfield_size];
+        u8* bitfield = &this->chunks_bitfield.data[c_i * this->chunk_bitfield_size];
         for (usize b_i = 0; b_i < this->chunk_bitfield_size; b_i++) {
             if (bitfield[b_i] != 0xFF) {
 #if (defined(__GNUC__) || defined(__clang__))
@@ -144,33 +155,31 @@ chunk_allocator_ptr chunk_memory_allocator_alloc_mem(ChunkMemoryAllocator* this)
     }
 
     for (usize i = 0; i < this->chunk_bitfield_size; i++) {
-        if (!vec_chunkUsageBitfieldPlain_push_back(&this->chunks_bitfield_usage, 0)) {
+        if (!vec_u8_push_back(&this->chunks_bitfield, 0)) {
             tfree(chunk);
             vec_ptr_pop_back(&this->chunks);
-            vec_chunkUsageBitfieldPlain_erase_range(
-                    &this->chunks_bitfield_usage, this->chunks_bitfield_usage.size - i, i
-            );
+            vec_u8_erase_range(&this->chunks_bitfield, this->chunks_bitfield.size - i, i);
             LOG_ERROR("Chunk vector bitfield add failed");
             set_error(ERROR_ALLOCATION_FAILED);
             return 0;
         }
     }
 
-    this->chunks_bitfield_usage.data[(this->chunks.size - 1) * this->chunk_bitfield_size] = 1;
+    this->chunks_bitfield.data[(this->chunks.size - 1) * this->chunk_bitfield_size] = 1;
     return (this->chunks.size - 1) * this->chunk_element_count + 1;
 }
 
 /**
  * @api
  */
-void chunk_memory_allocator_free_mem(ChunkMemoryAllocator* this, chunk_allocator_ptr ptr) {
+boolean chunk_memory_allocator_free_mem(ChunkMemoryAllocator* this, chunk_allocator_ptr ptr) {
     ERROR_ARGS_CHECK_2(this, ptr, );
 
     --ptr;
     if (ptr >= this->chunk_element_count * this->chunks.size) {
         LOG_ERROR_OR_DEBUG_FATAL("Invalid pointer");
         set_error(ERROR_INVALID_ARGUMENT);
-        return;
+        return false;
     }
 
     const usize chunk_index = ptr / this->chunk_element_count;
@@ -180,13 +189,13 @@ void chunk_memory_allocator_free_mem(ChunkMemoryAllocator* this, chunk_allocator
     const usize bit_index = element_in_chunk % 8;
     const u8 bit_mask = 1 << bit_index;
 
-    this->chunks_bitfield_usage.data[bitfield_index + byte_index] &= ~bit_mask;
+    this->chunks_bitfield.data[bitfield_index + byte_index] &= ~bit_mask;
 
     boolean is_mid_of_chunks = false;
-    for (usize c_i = this->chunks.size; c_i-- > CHUNK_COUNT_DEFAULT;) {
+    for (usize c_i = this->chunks.size; c_i-- > this->minimal_chunks_count;) {
         boolean is_empty = true;
         for (usize i = 0; i < this->chunk_bitfield_size; ++i) {
-            if (this->chunks_bitfield_usage.data[c_i * this->chunk_bitfield_size + i] != 0) {
+            if (this->chunks_bitfield.data[c_i * this->chunk_bitfield_size + i] != 0) {
                 is_empty = false;
                 is_mid_of_chunks = true;
                 break;
@@ -207,17 +216,18 @@ void chunk_memory_allocator_free_mem(ChunkMemoryAllocator* this, chunk_allocator
 
         // If chunk is last in array, remove it
         vec_ptr_pop_back(&this->chunks);
-        vec_chunkUsageBitfieldPlain_erase_range(
-                &this->chunks_bitfield_usage, c_i * this->chunk_bitfield_size, this->chunk_bitfield_size
+        vec_u8_erase_range(
+                &this->chunks_bitfield, c_i * this->chunk_bitfield_size, this->chunk_bitfield_size
         );
         ++this->freed_chunks;
     }
 
     if (this->freed_chunks > this->chunks.size) {
         vec_ptr_shrink_to_fit(&this->chunks);
-        vec_chunkUsageBitfieldPlain_shrink_to_fit(&this->chunks_bitfield_usage);
+        vec_u8_shrink_to_fit(&this->chunks_bitfield);
         this->freed_chunks = 0;
     }
+    return true;
 }
 
 /**
@@ -244,7 +254,7 @@ void* chunk_memory_allocator_get_real_ptr(ChunkMemoryAllocator* this, chunk_allo
     const usize bit_index = element_in_chunk % 8;
     const u8 bit_mask = 1 << bit_index;
 
-    if (this->chunks_bitfield_usage.data[bitfield_index + byte_index] & bit_mask) {
+    if (this->chunks_bitfield.data[bitfield_index + byte_index] & bit_mask) {
         return (u8*) this->chunks.data[chunk_index] + element_in_chunk * this->element_size;
     }
     return NULL;

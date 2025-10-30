@@ -4,35 +4,36 @@
 #define HE_MEM_NO_MACRO
 //#include <extra/full_trace.h>
 
-#include "vfs/vfs.h"
-#include "math/ivec4.h"
-#include "object/object.h"
-#include "object/node/node3d/node3d.h"
-#include "object/node/canvas_item/control/viewport/viewport.h"
-#include "types/string.h"
-#include "math/ivec2.h"
-#include "object/node/canvas_item/control/control.h"
-#include "math/vec2.h"
-#include "object/node/node.h"
-#include "math/vec4.h"
-#include "error.h"
-#include "servers/render_context/render_context.h"
-#include "math/ivec3.h"
-#include "servers/window_server/window_server.h"
-#include "math/uvec4.h"
-#include "ex_alloc/chunk_allocator.h"
-#include "platform/memory.h"
-#include "servers/render_server/render_server.h"
-#include "math/uvec2.h"
-#include "platform/datetime.h"
-#include "object/node/window/window.h"
 #include "types/uid.h"
-#include "log.h"
-#include "platform/mutex.h"
-#include "math/mat4.h"
+#include "math/vec2.h"
+#include "object/object.h"
+#include "ex_alloc/chunk_allocator.h"
 #include "math/uvec3.h"
-#include "object/node/canvas_item/canvas_item.h"
+#include "object/node/window/window.h"
+#include "math/uvec2.h"
+#include "object/node/node3d/node3d.h"
+#include "log.h"
+#include "math/uvec4.h"
 #include "math/vec3.h"
+#include "math/mat4.h"
+#include "math/vec4.h"
+#include "object/node/node.h"
+#include "platform/datetime.h"
+#include "types/string.h"
+#include "math/ivec3.h"
+#include "object/node/canvas_item/control/viewport/viewport.h"
+#include "servers/render_server/render_server.h"
+#include "servers/render_context/render_context.h"
+#include "vfs/vfs.h"
+#include "servers/window_server/window_server.h"
+#include "math/ivec4.h"
+#include "platform/mutex.h"
+#include "types/signal.h"
+#include "object/node/canvas_item/canvas_item.h"
+#include "object/node/canvas_item/control/control.h"
+#include "platform/memory.h"
+#include "error.h"
+#include "math/ivec2.h"
 
 
 typedef struct {
@@ -146,6 +147,12 @@ APIFunctionLookupTable g_apiFunctionLookupTable[] = {
     {"render_server_load_backend", (void*)render_server_load_backend},
     {"render_server_register_backend", (void*)render_server_register_backend},
     {"set_error", (void*)set_error},
+    {"signal_connect", (void*)signal_connect},
+    {"signal_disconnect", (void*)signal_disconnect},
+    {"signal_emit", (void*)signal_emit},
+    {"signal_free", (void*)signal_free},
+    {"signal_new", (void*)signal_new},
+    {"signal_new_with_params", (void*)signal_new_with_params},
     {"string_clone", (void*)string_clone},
     {"string_cstr", (void*)string_cstr},
     {"string_equals", (void*)string_equals},

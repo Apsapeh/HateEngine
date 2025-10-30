@@ -11,7 +11,7 @@ RenderContextSurface* g_surface;
 
 WindowServerWindow* g_win2;
 RenderContextSurface* g_surface2;
-void _ready(void) {
+PUBLIC void _ready(void) {
     vfs_mount_rfs("/");
 
     string* str_hello = string_from("Hello, ");
@@ -97,7 +97,7 @@ void _ready(void) {
 
 static int g_count = 0;
 double g_time = 0;
-void _process(double delta) {
+PUBLIC void _process(double delta) {
     // printf("Process %d\n", count);
     g_time += delta;
     g_count++;

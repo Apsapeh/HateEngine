@@ -2,6 +2,7 @@
 
 #include <platform/dylib.h>
 #include <log.h>
+#include <args.h>
 
 #define CHECK_FATAL(var, fn_name)                                                                       \
     do {                                                                                                \
@@ -54,7 +55,7 @@ GameLoaderEnvironment load_environment(void) {
     GameLoaderEnvironment result;
 
     // TODO: Get game lib from settings.toml
-    c_str name = "libDev";
+    c_str name = g_gameLibrary;
 
     dylib_handle* handle = dylib_open(name);
     if (!handle) {
